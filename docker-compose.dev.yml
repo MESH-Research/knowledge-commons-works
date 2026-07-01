@@ -60,6 +60,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
@@ -125,6 +126,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
@@ -189,6 +191,7 @@ services:
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks

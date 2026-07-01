@@ -97,7 +97,7 @@ def _strip_logo(community_id: str) -> None:
 
 
 @pytest.fixture(scope="function")
-def three_communities(minimal_community_factory):
+def three_communities(minimal_community_factory, search_clear):
     """Create three communities in distinct branding states.
 
     Args:
@@ -209,6 +209,7 @@ def test_backfill_theme_only_skips_logo(three_communities) -> None:
 
 def test_backfill_preserves_admin_theme_value(
     minimal_community_factory,
+    search_clear,
 ) -> None:
     """An admin-customized theme key survives backfill (only missing keys filled)."""
     community = minimal_community_factory(slug="branded-admin-custom")
@@ -241,6 +242,7 @@ def test_backfill_preserves_admin_theme_value(
 
 def test_backfill_uses_generic_theme_for_custom_logo(
     minimal_community_factory,
+    search_clear,
 ) -> None:
     """Backfill seeds generic colors when the logo is user-uploaded."""
     community = minimal_community_factory(slug="branded-custom-logo")

@@ -142,6 +142,7 @@ package-data.kcworks = [
 
 [tool.uv]
 sources.invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
+sources.invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
 sources.invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
 sources.invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
 sources.invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
@@ -163,6 +164,7 @@ exclude = [
   "node_modules",
   "scripts",
   "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-rdm-records",
   "site/kcworks/dependencies/invenio-group-collections-kcworks",
   "site/kcworks/dependencies/invenio-modular-deposit-form",
   "site/kcworks/dependencies/invenio-modular-detail-page",
@@ -210,6 +212,7 @@ split_on_trailing_comma = true
 skip = [
   "site/kcworks/dependencies/invenio-vocabularies",
   "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-rdm-records",
   "__pycache__",                                    # Skip cache directories
   # ".venv",  # Skip virtual environment
   # "node_modules",  # Skip node modules
@@ -254,6 +257,7 @@ ini_options.addopts = """
 --ignore=private
 --ignore=scripts
 --ignore=site/kcworks/dependencies/invenio-communities
+--ignore=site/kcworks/dependencies/invenio-rdm-records
 --ignore=site/kcworks/dependencies/invenio-group-collections-kcworks
 --ignore=site/kcworks/dependencies/invenio-modular-deposit-form
 --ignore=site/kcworks/dependencies/invenio-modular-detail-page
@@ -315,6 +319,7 @@ ini_options.plugins = [
 [tool.coverage]
 run.omit = [
   "site/kcworks/dependencies/invenio-communities/*",
+  "site/kcworks/dependencies/invenio-rdm-records/*",
   "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
   "site/kcworks/dependencies/invenio-modular-deposit-form/*",
   "site/kcworks/dependencies/invenio-modular-detail-page/*",
@@ -343,6 +348,7 @@ update_catalog.output-dir = "translations/"
 [tool.pylsp]
 plugins.jedi.extra_paths = [
   "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-rdm-records",
   "site/kcworks/dependencies/invenio-group-collections-kcworks",
   "site/kcworks/dependencies/invenio-modular-deposit-form",
   "site/kcworks/dependencies/invenio-modular-detail-page",

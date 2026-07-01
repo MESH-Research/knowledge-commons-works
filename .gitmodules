@@ -41,3 +41,7 @@
 [submodule "site/kcworks/dependencies/kc-knowledge-base-sync"]
 	path = site/kcworks/dependencies/kc-knowledge-base-sync
 	url = https://github.com/MESH-Research/kc-knowledge-base-sync.git
+[submodule "site/kcworks/dependencies/invenio-rdm-records"]
+	path = site/kcworks/dependencies/invenio-rdm-records
+	url = https://github.com/MESH-Research/invenio-rdm-records.git
+	branch = local-working

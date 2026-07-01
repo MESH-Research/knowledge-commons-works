@@ -19,9 +19,10 @@ from kcworks.services.communities.default_branding import (
     branding_theme_style,
     generate_default_branding,
 )
-from kcworks.services.communities.index_mapping import (
-    apply_additive_communities_mapping_update,
-    plan_additive_communities_mapping_update,
+from kcworks.services.search.mappings_utilities import (
+    apply_additive_mapping_update,
+    mapping_update_targets,
+    plan_additive_mapping_update,
 )
 
 from .group_collections import CommunityGroupMembershipChecker
@@ -355,6 +356,28 @@ def _needs_logo(record) -> bool:
     return record.files.get("logo") is None
 
 
+def _emit_mapping_update_error(label: str, exc: Exception) -> None:
+    """Print a mapping update failure and exit.
+
+    Raises:
+        SystemExit: Always raised after printing the error.
+    """
+    click.secho(f"{label} index mapping update failed.", fg="red", err=True)
+    if isinstance(exc, search_engine.RequestError):
+        info = exc.info
+        if isinstance(info, dict):
+            error = info.get("error")
+            if isinstance(error, dict) and error.get("reason") is not None:
+                click.secho(str(error["reason"]), err=True)
+            else:
+                click.secho(str(exc), err=True)
+        else:
+            click.secho(str(exc), err=True)
+    else:
+        click.secho(str(exc), err=True)
+    raise SystemExit(1) from exc
+
+
 @click.command("update-index-mapping")
 @click.option(
     "--dry-run",
@@ -370,64 +393,42 @@ def _needs_logo(record) -> bool:
 )
 @with_appcontext
 def update_index_mapping(dry_run: bool, verbose: bool) -> None:
-    """Apply additive mapping updates from the registered communities JSON.
+    """Apply additive mapping updates from registered index mapping JSON files.
 
-    Compares the live communities index mapping to the registered
-    ``communities-communities-v2.0.0`` mapping file and ``put_mapping`` only what
-    OpenSearch can add. Unlike ``invenio index update``, fields present on the
-    live index but absent from the file (custom fields, dynamic i18n title
-    subfields, etc.) are left alone instead of blocking the command.
+    Compares the live communities, RDM records, and RDM drafts index mappings to
+    their registered mapping files and ``put_mapping`` only what OpenSearch can
+    add. Unlike ``invenio index update``, fields present on the live index but
+    absent from the file (custom fields, dynamic i18n title subfields, etc.) are
+    left alone instead of blocking the command.
 
-    Run before ``backfill-default-branding`` when migrating an existing index.
+    Run before ``backfill-default-branding`` when migrating existing indices.
     """
-    index_name = current_communities.service.config.record_cls.index._name
-    body, warnings = plan_additive_communities_mapping_update(index_name)
+    for label, index_name in mapping_update_targets():
+        body, warnings = plan_additive_mapping_update(index_name)
 
-    if verbose and warnings:
-        click.echo("Skipped (existing mapping differs):")
-        for line in warnings:
-            click.echo(f"  {line}")
+        if verbose and warnings:
+            click.echo(f"{label} — skipped (existing mapping differs):")
+            for line in warnings:
+                click.echo(f"  {line}")
 
-    if not body:
-        click.secho(
-            "Communities index mapping is already up to date (nothing to add).",
-            fg="green",
-        )
-        return
+        if not body:
+            click.secho(
+                f"{label} index mapping is already up to date (nothing to add).",
+                fg="green",
+            )
+            continue
 
-    if dry_run:
-        click.echo("Would put_mapping:")
-        click.echo(json.dumps(body, indent=2, sort_keys=True))
-        return
+        if dry_run:
+            click.echo(f"Would put_mapping on {label} ({index_name}):")
+            click.echo(json.dumps(body, indent=2, sort_keys=True))
+            continue
 
-    try:
-        apply_additive_communities_mapping_update(index_name)
-    except search_engine.RequestError as exc:
-        click.secho(
-            "Communities index mapping update failed.",
-            fg="red",
-            err=True,
-        )
-        info = exc.info
-        if isinstance(info, dict):
-            error = info.get("error")
-            if isinstance(error, dict) and error.get("reason") is not None:
-                click.secho(str(error["reason"]), err=True)
-            else:
-                click.secho(str(exc), err=True)
-        else:
-            click.secho(str(exc), err=True)
-        exit(1)
-    except Exception as exc:
-        click.secho(
-            "Communities index mapping update failed.",
-            fg="red",
-            err=True,
-        )
-        click.secho(str(exc), err=True)
-        exit(1)
+        try:
+            apply_additive_mapping_update(index_name)
+        except Exception as exc:
+            _emit_mapping_update_error(label, exc)
 
-    click.secho("Communities index mapping updated.", fg="green")
+        click.secho(f"{label} index mapping updated.", fg="green")
 
 
 def _missing_theme_keys(record) -> list[str]:
@@ -525,9 +526,12 @@ def backfill_default_branding(
         if limit is not None and total_touched >= limit:
             break
         total_seen += 1
-        slug = hit.get("slug") or hit.get("id")
+        record_id = hit.get("id")
+        slug = hit.get("slug") or record_id
         try:
-            record = current_communities.service.record_cls.pid.resolve(slug)
+            record = current_communities.service.record_cls.pid.resolve(
+                record_id or slug
+            )
         except Exception as exc:
             total_failed += 1
             click.echo(
@@ -577,19 +581,13 @@ def backfill_default_branding(
         try:
             uow = UnitOfWork()
             with uow:
-                # If --logo-only, skip theme updates entirely; same for --theme-only.
                 apply_default_branding(
-                    record, force_logo=False, force_theme=False
+                    record,
+                    force_logo=False,
+                    force_theme=False,
+                    skip_logo=not do_logo,
+                    skip_theme=not do_theme,
                 )
-                if not do_logo:
-                    # apply_default_branding would have written the logo
-                    # because needs_logo was true; but theme-only mode
-                    # said skip it. Re-clear any logo write we just did
-                    # if the logo wasn't actually missing... in practice
-                    # we don't enter here because needs_logo is False
-                    # when do_logo is False, so this branch is just for
-                    # extra safety. No-op.
-                    pass
                 uow.register(RecordCommitOp(record))
                 uow.commit()
             total_touched += 1
