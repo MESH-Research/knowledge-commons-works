@@ -2,7 +2,13 @@
 
 .ui.modal {
   .header {
-    color: @primaryColor;
+    color: @ivy80; 
+    background-color: @cream;
+  }
+  .content {
+        .header {
+          background-color: transparent;
+        }
   }
   .actions {
     background-color: @white;
@@ -12,6 +18,15 @@
       .content {
         background-color: transparent;
       }
+    }
+  }
+
+  &.large {
+    width: 95vw;
+    .ui.container.active.tab {
+      margin-left: 0px !important;
+      margin-right: 0px !important;
+      width: 100%;
     }
   }
 }

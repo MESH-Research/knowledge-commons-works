@@ -3853,6 +3853,21 @@ wheels = [
 ]
 
 [[package]]
+name = "kc-knowledge-base-sync"
+version = "0.1.0"
+source = { editable = "site/kcworks/dependencies/kc-knowledge-base-sync" }
+dependencies = [
+    { name = "pyyaml" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pyyaml", specifier = ">=6" },
+    { name = "requests", specifier = ">=2.31" },
+]
+
+[[package]]
 name = "kcworks"
 version = "0.8.1"
 source = { editable = "." }
@@ -3920,6 +3935,7 @@ dev = [
     { name = "djlint" },
     { name = "docker-services-cli" },
     { name = "jsonlines" },
+    { name = "kc-knowledge-base-sync" },
     { name = "psycopg2-binary" },
 ]
 docs = [
@@ -4000,6 +4016,7 @@ dev = [
     { name = "djlint", specifier = ">=1.36.4" },
     { name = "docker-services-cli" },
     { name = "jsonlines" },
+    { name = "kc-knowledge-base-sync", editable = "site/kcworks/dependencies/kc-knowledge-base-sync" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
 ]
 docs = [

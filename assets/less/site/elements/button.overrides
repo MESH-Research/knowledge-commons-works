@@ -441,16 +441,17 @@
   font-weight: normal;
   padding: 0;
   vertical-align: baseline;
+  text-decoration: underline;
+  text-decoration-color: transparent;
 
   &:hover,
   &:focus,
   &:active {
     background: transparent;
     background-color: transparent !important;
-    height: 1.45em;
     box-shadow: none;
     color: @linkHoverColor;
-    text-decoration: underline;
+    text-decoration-color: currentColor;
   }
 }
 

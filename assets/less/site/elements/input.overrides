@@ -22,7 +22,7 @@
     min-width: 3em;
     padding: 0 !important;
     margin: 0;
-    border: 0 transparent !important;
+    border-right: 0 transparent !important;
     flex: 0 0 auto;
     align-self: stretch;
     cursor: pointer;

@@ -929,7 +929,8 @@ html.cover-page {
       border-bottom-left-radius: @defaultBorderRadius !important;
     }
     .sidebar-container {
-      &#record-management {
+      &#record-management,
+      &#record-moderation {
         margin-bottom: 1rem;
         .ui.fluid.icon.button {
           text-align: left;
