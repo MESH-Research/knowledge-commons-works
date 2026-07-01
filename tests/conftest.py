@@ -107,14 +107,14 @@ test_config = {
     **test_config_fields,
     **test_config_logging,
     # **test_config_stats,  # Now getting directly from invenio.cfg
+    # NOTE: Postgres values set by docker-services-cli
     "SQLALCHEMY_DATABASE_URI": (
-        "postgresql+psycopg2://kcworks:kcworks@localhost:5432/kcworks"
+        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
     ),
-    # "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    "POSTGRES_USER": "invenio",
+    "POSTGRES_PASSWORD": "invenio",
+    "POSTGRES_DB": "invenio",
     "SEARCH_INDEX_PREFIX": "",  # TODO: Search index prefix triggers errors
-    "POSTGRES_USER": "kcworks",
-    "POSTGRES_PASSWORD": "kcworks",
-    "POSTGRES_DB": "kcworks",
     "WTF_CSRF_ENABLED": False,
     "WTF_CSRF_METHODS": [],
     "RATELIMIT_ENABLED": False,
@@ -179,10 +179,10 @@ test_config["DATACITE_TEST_MODE"] = True
 # ...but fake it
 
 test_config["SITE_API_URL"] = os.environ.get(
-    "INVENIO_SITE_API_URL", "https://127.0.0.1:5000/api"
+    "INVENIO_SITE_API_URL", "http://localhost/api"
 )
 test_config["SITE_UI_URL"] = os.environ.get(
-    "INVENIO_SITE_UI_URL", "https://127.0.0.1:5000"
+    "INVENIO_SITE_UI_URL", "http://localhost/api"
 )
 
 

@@ -225,10 +225,6 @@ fi
 echo "Starting the services"
 eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
 
-# Unset the environment variables that docker-services-cli set so that the values from tests/.env are used instead of those defaults from docker-services.yml
-unset SQLALCHEMY_DATABASE_URI
-unset INVENIO_SQLALCHEMY_DATABASE_URI
-
 # Run mypy
 echo "Running ty on the site directory"
 uv run ty check site/
