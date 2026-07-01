@@ -108,6 +108,7 @@ test_config = {
     **test_config_logging,
     # **test_config_stats,  # Now getting directly from invenio.cfg
     # NOTE: Postgres values set by docker-services-cli
+    "COMMONS_PROFILES_API_TOKEN": "faketoken",
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
     ),
@@ -181,9 +182,7 @@ test_config["DATACITE_TEST_MODE"] = True
 test_config["SITE_API_URL"] = os.environ.get(
     "INVENIO_SITE_API_URL", "http://localhost/api"
 )
-test_config["SITE_UI_URL"] = os.environ.get(
-    "INVENIO_SITE_UI_URL", "http://localhost/api"
-)
+test_config["SITE_UI_URL"] = os.environ.get("INVENIO_SITE_UI_URL", "http://localhost")
 
 
 @pytest.fixture(scope="module")

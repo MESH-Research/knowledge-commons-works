@@ -7,7 +7,6 @@ from kcworks.cli import group_collections
 
 # Matches invenio.cfg / tests ``group_roles`` for knowledgeCommons.
 EXPECTED_KC_TEST_GROUP_ROLES = [
-    "knowledgeCommons---test-group-123|admin",
     "knowledgeCommons---test-group-123|administrator",
     "knowledgeCommons---test-group-123|editor",
     "knowledgeCommons---test-group-123|moderator",
@@ -15,7 +14,6 @@ EXPECTED_KC_TEST_GROUP_ROLES = [
 ]
 
 EXPECTED_MSU_TEST_GROUP_ROLES = [
-    "msuCommons---test-group-456|admin",
     "msuCommons---test-group-456|administrator",
     "msuCommons---test-group-456|editor",
     "msuCommons---test-group-456|moderator",
@@ -300,7 +298,6 @@ def test_check_group_memberships_command_fixes_wrong_permissions(
     assert (
         role_permissions["knowledgeCommons---test-group-123|administrator"] == "owner"
     )
-    assert role_permissions["knowledgeCommons---test-group-123|admin"] == "owner"
     assert role_permissions["knowledgeCommons---test-group-123|moderator"] == "curator"
     assert role_permissions["knowledgeCommons---test-group-123|editor"] == "curator"
     assert role_permissions["knowledgeCommons---test-group-123|member"] == "reader"

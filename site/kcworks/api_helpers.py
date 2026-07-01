@@ -214,7 +214,11 @@ def format_commons_search_collection_payload(
     data = data if data else draft
 
     # FIXME: Handle multiple owners???
-    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "http://works.kcommons.org")
+    UI_URL_BASE = os.environ.get("INVENIO_SITE_UI_URL", "")
+    if not UI_URL_BASE:
+        UI_URL_BASE = current_app.config.get(
+            "SITE_UI_URL", "https://works.kcommons.org"
+        )
     # API_URL_BASE = os.environ.get(
     #     "INVENIO_SITE_API_URL", "http://works.kcommons.org/api"
     # )
