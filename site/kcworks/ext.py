@@ -68,6 +68,9 @@ from kcworks.services.records.components.sanitize_filenames_component import (
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
+from kcworks.services.records.record_communities.record_community_ancestor_component import (  # noqa: E501
+    RecordCommunityAncestorComponent,
+)
 from kcworks.templates.template_filters import (
     community_breadcrumb_items,
     community_dashboard_request_url,
@@ -219,10 +222,14 @@ class KCWorks:
         existing_record_communities_components = app.config.get(
             "RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS", []
         )
-        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = [
-            *existing_record_communities_components,
-            CommunityChangePermissionsComponent,
-        ]
+        record_communities_components = [*existing_record_communities_components]
+        if RecordCommunityAncestorComponent not in record_communities_components:
+            record_communities_components.append(RecordCommunityAncestorComponent)
+        if CommunityChangePermissionsComponent not in record_communities_components:
+            record_communities_components.append(CommunityChangePermissionsComponent)
+        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = (
+            record_communities_components
+        )
 
     def _ensure_rdm_service_components(self, app, components_list):
         """Ensure the components list includes all default RDM components.
