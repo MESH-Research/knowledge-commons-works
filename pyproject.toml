@@ -87,8 +87,8 @@ entry-points."invenio_base.api_apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:create_api_blueprint"
 entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
-entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".kcworks_communities_settings = "kcworks.views.communities_settings_ui:create_blueprint"
+entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
 entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.tasks"
@@ -150,8 +150,8 @@ sources.invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/i
 sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
 sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
 sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
-sources.kcworks = { path = "./site", editable = true }
 sources.kc-knowledge-base-sync = { path = "./site/kcworks/dependencies/kc-knowledge-base-sync", editable = true }
+sources.kcworks = { path = "./site", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -246,11 +246,13 @@ src.exclude = [
 ini_options.addopts = """
 --ruff --doctest-modules
 --log-cli-level=DEBUG
+--ignore=.pnpm-store
 --ignore=app_data
+--ignore=build
 --ignore=docs
 --ignore=node_modules
+--ignore=private
 --ignore=scripts
---ignore=tests/helpers
 --ignore=site/kcworks/dependencies/invenio-communities
 --ignore=site/kcworks/dependencies/invenio-group-collections-kcworks
 --ignore=site/kcworks/dependencies/invenio-modular-deposit-form
@@ -262,6 +264,7 @@ ini_options.addopts = """
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
 --ignore=site/kcworks/dependencies/kc-knowledge-base-sync
 --ignore=site/kcworks/services/search/index_templates
+--ignore=tests/helpers
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
 ini_options.norecursedirs = [
@@ -270,6 +273,7 @@ ini_options.norecursedirs = [
 ]
 ini_options.log_cli_level = "DEBUG"
 ini_options.isort_show_files = true
+ini_options.testpaths = ["tests", "site/kcworks"]
 ini_options.timeout = 300
 ini_options.timeout_method = "thread"
 ini_options.plugins = [
