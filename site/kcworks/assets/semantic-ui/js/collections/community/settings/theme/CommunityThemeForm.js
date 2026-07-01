@@ -206,7 +206,7 @@ class CommunityThemeForm extends Component {
               </Header.Subheader>
               <Header.Subheader className="mt-5">
                 {i18next.t(
-                  "Default colors are generated automatically based on your collection's unique default logo image."
+                  "If you are using an auto-generated pattern for your logo, default colors are generated automatically based that image."
                 )}
               </Header.Subheader>
             </Header>
@@ -253,11 +253,11 @@ class CommunityThemeForm extends Component {
               <ToggleField
                 fieldPath="theme.style.mainHeaderUseGradient"
                 label={i18next.t("Use gradient header background")}
-                description={i18next.t(
-                  "When disabled, the header uses a solid background color."
-                )}
+                description={i18next.t("When disabled, the header uses a solid background color.")}
               />
             </fieldset>
+
+            {/* FIXME: Add typography controls when supported
 
             <fieldset className="ui segment invenio-fieldset community-theme-typography">
               <legend className="rel-mb-1">
@@ -274,6 +274,7 @@ class CommunityThemeForm extends Component {
                 ))}
               </Form.Group>
             </fieldset>
+            */}
 
             <Button.Group>
               <label className="helptext">Changes will be visible after you refresh the page</label>
