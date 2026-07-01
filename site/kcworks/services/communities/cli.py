@@ -408,7 +408,15 @@ def update_index_mapping(dry_run: bool, verbose: bool) -> None:
             fg="red",
             err=True,
         )
-        click.secho(str(exc.info.get("error", {}).get("reason", exc)), err=True)
+        info = exc.info
+        if isinstance(info, dict):
+            error = info.get("error")
+            if isinstance(error, dict) and error.get("reason") is not None:
+                click.secho(str(error["reason"]), err=True)
+            else:
+                click.secho(str(exc), err=True)
+        else:
+            click.secho(str(exc), err=True)
         exit(1)
     except Exception as exc:
         click.secho(

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from invenio_drafts_resources.services.records.uow import ParentRecordCommitOp
 from invenio_notifications.services.uow import NotificationOp
+from invenio_requests.customizations import actions
 from invenio_rdm_records.notifications.builders import (
     CommunityInclusionAcceptNotificationBuilder,
 )
@@ -70,8 +71,15 @@ class CommunityInclusionAcceptAction(inclusion.AcceptAction):
 class KCWorksCommunityInclusion(inclusion.CommunityInclusion):
     """Community inclusion request with full ancestor propagation."""
 
-    available_actions = dict(inclusion.CommunityInclusion.available_actions)
-    available_actions["accept"] = CommunityInclusionAcceptAction
+    available_actions = {
+        "create": actions.CreateAction,
+        "submit": inclusion.SubmitAction,
+        "delete": actions.DeleteAction,
+        "accept": CommunityInclusionAcceptAction,
+        "decline": actions.DeclineAction,
+        "cancel": actions.CancelAction,
+        "expire": actions.ExpireAction,
+    }
 
 
 class CommunitySubmissionAcceptAction(submission.AcceptAction):
@@ -120,5 +128,12 @@ class CommunitySubmissionAcceptAction(submission.AcceptAction):
 class KCWorksCommunitySubmission(submission.CommunitySubmission):
     """Community submission request with full ancestor propagation."""
 
-    available_actions = dict(submission.CommunitySubmission.available_actions)
-    available_actions["accept"] = CommunitySubmissionAcceptAction
+    available_actions = {
+        "create": actions.CreateAction,
+        "submit": submission.SubmitAction,
+        "delete": actions.DeleteAction,
+        "accept": CommunitySubmissionAcceptAction,
+        "decline": submission.DeclineAction,
+        "cancel": submission.CancelAction,
+        "expire": submission.ExpireAction,
+    }
