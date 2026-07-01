@@ -6,13 +6,56 @@
  * Without this, the default toolbar is light/dark theme.
  */
 :root {
-  --sidebar-toolbar-bg-color: #626262;
-  --toolbar-bg-color: #626262;
+  --kcworks-pdf-toolbar-bg: #626262;
+  --kcworks-pdf-control-bg: #505050;
+
+  --sidebar-toolbar-bg-color: var(--kcworks-pdf-toolbar-bg);
+  --toolbar-bg-color: var(--kcworks-pdf-toolbar-bg);
+  --main-color: #f9f9fa;
+  --toolbar-icon-bg-color: #ffffff;
+  --toolbar-icon-hover-bg-color: #ffffff;
+  --field-color: #f9f9fa;
+  --field-bg-color: var(--kcworks-pdf-control-bg);
+  --field-border-color: #888;
+  --dropdown-btn-bg-color: var(--kcworks-pdf-control-bg);
+  --toggled-btn-color: #f9f9fa;
+  /* Darken on interaction instead of the default light highlight. */
+  --button-hover-color: color-mix(in srgb, var(--kcworks-pdf-toolbar-bg) 88%, black);
+  --toggled-btn-bg-color: color-mix(in srgb, var(--kcworks-pdf-toolbar-bg) 78%, black);
+  --toggled-hover-active-btn-color: color-mix(
+    in srgb,
+    var(--kcworks-pdf-toolbar-bg) 68%,
+    black
+  );
+  --separator-color: rgba(255, 255, 255, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --sidebar-toolbar-bg-color: #626262;
-    --toolbar-bg-color: #626262;
+    --sidebar-toolbar-bg-color: var(--kcworks-pdf-toolbar-bg);
+    --toolbar-bg-color: var(--kcworks-pdf-toolbar-bg);
+    --main-color: #f9f9fa;
+    --toolbar-icon-bg-color: #ffffff;
+    --toolbar-icon-hover-bg-color: #ffffff;
+    --field-color: #f9f9fa;
+    --field-bg-color: var(--kcworks-pdf-control-bg);
+    --field-border-color: #888;
+    --dropdown-btn-bg-color: var(--kcworks-pdf-control-bg);
+    --button-hover-color: color-mix(in srgb, var(--kcworks-pdf-toolbar-bg) 88%, black);
+    --toggled-btn-bg-color: color-mix(in srgb, var(--kcworks-pdf-toolbar-bg) 78%, black);
+    --toggled-hover-active-btn-color: color-mix(
+      in srgb,
+      var(--kcworks-pdf-toolbar-bg) 68%,
+      black
+    );
+    --separator-color: rgba(255, 255, 255, 0.3);
   }
 }
+
+/* Dropdown sits on a darker base; darken from that instead of the toolbar. */
+.dropdownToolbarButton:hover,
+.dropdownToolbarButton > select:is(:hover, :focus-visible) {
+  background-color: color-mix(in srgb, var(--kcworks-pdf-control-bg) 88%, black);
+  color: var(--main-color);
+}
+
