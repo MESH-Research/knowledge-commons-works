@@ -189,7 +189,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: ["celery -A invenio_app.celery beat --scheduler invenio_jobs.services.scheduler:RunScheduler --loglevel=INFO"]
+    command: ["/opt/invenio/var/instance/startup_scheduler_dev.sh"]
     image: monotasker/kcworks:${IMAGE_TAG:-latest}
     depends_on:
       mq:
