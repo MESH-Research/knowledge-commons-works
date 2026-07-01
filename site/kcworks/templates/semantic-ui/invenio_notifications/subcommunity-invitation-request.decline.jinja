@@ -1,0 +1,56 @@
+{% set request = notification.context.request %}
+{% set parent_community = request.created_by %}
+{% set community = request.receiver %}
+{% set user = notification.context.executing_user %}
+{% set community_title = community.metadata.title %}
+{% set parent_community_title = parent_community.metadata.title %}
+{% set user_name = user.profile.full_name or user.username %}
+
+{# TODO: use request.links.self_html when issue issue is resolved: https://github.com/inveniosoftware/invenio-rdm-records/issues/1327 #}
+{% set request_route = config.get("RDM_REQUESTS_ROUTES", {}).get("community-dashboard-request-details", "/communities/<pid_value>/requests/<request_pid_value>") %}
+{% set request_link = config.SITE_UI_URL.rstrip('/') ~ request_route.replace("<pid_value>", community.slug).replace("<request_pid_value>", request.id) %}
+
+{%- block subject -%}
+{{ _("KCWorks | Subcollection invitation declined for '{community_title}'").format(community_title=community_title) }}
+{%- endblock subject -%}
+
+{%- block html_body -%}
+<table style="font-family:'Lato',Helvetica,Arial,sans-serif;border-spacing:15px">
+    <tr>
+        <td>{{ _("There's been some activity in your Knowledge Commons Works collection '{parent_community_title}'.").format(parent_community_title=parent_community_title) }}</td>
+    </tr>
+    <tr>
+        <td>{{ _("'{user_name}' declined the invitation for '{community_title}' to join '{parent_community_title}' as a subcollection.").format(user_name=user_name, community_title=community_title, parent_community_title=parent_community_title) }}</td>
+    </tr>
+    <tr>
+        <td><a href="{{ request_link }}" class="button">{{ _("Check out the invitation") }}</a></td>
+    </tr>
+    <tr>
+        <td><strong>_</strong></td>
+    </tr>
+    <tr>
+        <td style="font-size:smaller">{{ _("This is an auto-generated message.") }}</td>
+    </tr>
+</table>
+{%- endblock html_body %}
+
+{%- block plain_body -%}
+{{ _("There's been some activity in your Knowledge Commons Works collection '{parent_community_title}'.").format(parent_community_title=parent_community_title) }}
+
+{{ _("'{user_name}' declined the invitation for '{community_title}' to join '{parent_community_title}' as a subcollection.").format(user_name=user_name, community_title=community_title, parent_community_title=parent_community_title) }}
+
+[{{ _("Check out the invitation") }}]({{ request_link }})
+
+{{ _("This is an auto-generated message.") }}
+{%- endblock plain_body %}
+
+{# Markdown for Slack/Mattermost/chat #}
+{%- block md_body -%}
+{{ _("There's been some activity in your Knowledge Commons Works collection '{parent_community_title}'.").format(parent_community_title=parent_community_title) }}
+
+{{ _("*{user_name}* declined the invitation for *{community_title}* to join *{parent_community_title}* as a subcollection.").format(user_name=user_name, community_title=community_title, parent_community_title=parent_community_title) }}
+
+[{{ _("Check out the invitation") }}]({{ request_link }})
+
+{{ _("This is an auto-generated message.") }}
+{%- endblock md_body %}
