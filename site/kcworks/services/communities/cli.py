@@ -1,5 +1,7 @@
 """CLI commands for community services."""
 
+import json
+
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
@@ -9,12 +11,17 @@ from invenio_records_resources.services.uow import (
     RecordCommitOp,
     UnitOfWork,
 )
+from invenio_search.engine import search as search_engine
 from marshmallow.exceptions import ValidationError
 
 from kcworks.services.communities.default_branding import (
     apply_default_branding,
-    default_theme_style,
+    branding_theme_style,
     generate_default_branding,
+)
+from kcworks.services.communities.index_mapping import (
+    apply_additive_communities_mapping_update,
+    plan_additive_communities_mapping_update,
 )
 
 from .group_collections import CommunityGroupMembershipChecker
@@ -348,6 +355,73 @@ def _needs_logo(record) -> bool:
     return record.files.get("logo") is None
 
 
+@click.command("update-index-mapping")
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Print the additive put_mapping body without writing.",
+)
+@click.option(
+    "--verbose",
+    is_flag=True,
+    default=False,
+    help="Print warnings for fields that differ and cannot be changed in place.",
+)
+@with_appcontext
+def update_index_mapping(dry_run: bool, verbose: bool) -> None:
+    """Apply additive mapping updates from the registered communities JSON.
+
+    Compares the live communities index mapping to the registered
+    ``communities-communities-v2.0.0`` mapping file and ``put_mapping`` only what
+    OpenSearch can add. Unlike ``invenio index update``, fields present on the
+    live index but absent from the file (custom fields, dynamic i18n title
+    subfields, etc.) are left alone instead of blocking the command.
+
+    Run before ``backfill-default-branding`` when migrating an existing index.
+    """
+    index_name = current_communities.service.config.record_cls.index._name
+    body, warnings = plan_additive_communities_mapping_update(index_name)
+
+    if verbose and warnings:
+        click.echo("Skipped (existing mapping differs):")
+        for line in warnings:
+            click.echo(f"  {line}")
+
+    if not body:
+        click.secho(
+            "Communities index mapping is already up to date (nothing to add).",
+            fg="green",
+        )
+        return
+
+    if dry_run:
+        click.echo("Would put_mapping:")
+        click.echo(json.dumps(body, indent=2, sort_keys=True))
+        return
+
+    try:
+        apply_additive_communities_mapping_update(index_name)
+    except search_engine.RequestError as exc:
+        click.secho(
+            "Communities index mapping update failed.",
+            fg="red",
+            err=True,
+        )
+        click.secho(str(exc.info.get("error", {}).get("reason", exc)), err=True)
+        exit(1)
+    except Exception as exc:
+        click.secho(
+            "Communities index mapping update failed.",
+            fg="red",
+            err=True,
+        )
+        click.secho(str(exc), err=True)
+        exit(1)
+
+    click.secho("Communities index mapping updated.", fg="green")
+
+
 def _missing_theme_keys(record) -> list[str]:
     """List which default theme.style keys are not set on `record`.
 
@@ -360,7 +434,7 @@ def _missing_theme_keys(record) -> list[str]:
     """
     theme = record.get("theme") or {}
     style = theme.get("style") or {}
-    defaults = default_theme_style(record.slug)
+    defaults = branding_theme_style(record)
     return [k for k in defaults if k not in style]
 
 
