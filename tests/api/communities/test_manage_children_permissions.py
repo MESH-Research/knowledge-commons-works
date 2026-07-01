@@ -72,7 +72,11 @@ def test_non_owner_cannot_enable_children_allow_via_api(
     minimal_community_factory,
     user_factory,
 ) -> None:
-    """Users without the owner role cannot set children.allow."""
+    """Users without the owner role cannot set children.allow.
+
+    Raises:
+        AssertionError: If a non-owner update succeeds unexpectedly.
+    """
     service = current_communities.service
     owner_user = user_factory()
     community = minimal_community_factory(

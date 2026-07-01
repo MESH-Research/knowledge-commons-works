@@ -12,7 +12,6 @@ This module contains custom Jinja2 template filters for KCWorks.
 """
 
 from flask import current_app
-from flask_menu.menu import MenuNode
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities as communities
 
@@ -20,6 +19,8 @@ from invenio_remote_user_data_kcworks.utils.names import (
     get_full_name,
     get_full_name_inverted,
 )
+
+
 def community_breadcrumb_items(community_ui):
     """Build a list of items for a breadcrumb menu based on current community.
 

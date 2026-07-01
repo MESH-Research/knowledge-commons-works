@@ -244,13 +244,13 @@ class InternalNotificationService(Service):
                            the entire request object is removed from the list
                            of unread requests.
 
-        Raises:
-            ValueError: If the comment_id parameter is provided without the
-                             request_id parameter.
-
         Returns:
             The updated list of unread notifications as a JSON string.
             (The format it takes in the user profile record.)
+
+        Raises:
+            ValueError: If the comment_id parameter is provided without the
+                             request_id parameter.
         """
         self.require_permission(identity, "clear_unread", user_id=user_id)
 

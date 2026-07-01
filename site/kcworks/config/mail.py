@@ -19,8 +19,6 @@ env vars.
 
 import os
 
-from invenio_i18n import lazy_gettext as _
-
 # SMTP transport
 # --------------
 MAIL_SERVER = "smtp.sparkpostmail.com"

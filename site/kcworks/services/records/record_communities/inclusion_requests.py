@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from invenio_drafts_resources.services.records.uow import ParentRecordCommitOp
 from invenio_notifications.services.uow import NotificationOp
-from invenio_requests.customizations import actions
 from invenio_rdm_records.notifications.builders import (
     CommunityInclusionAcceptNotificationBuilder,
 )
@@ -24,6 +23,7 @@ from invenio_rdm_records.requests import community_inclusion as inclusion
 from invenio_rdm_records.requests import community_submission as submission
 from invenio_rdm_records.services.errors import InvalidAccessRestrictions
 from invenio_records_resources.services.uow import RecordIndexOp
+from invenio_requests.customizations import actions
 from kcworks.services.records.record_communities.ancestors import (
     add_ancestor_communities_to_record_parent,
 )
@@ -65,7 +65,7 @@ class CommunityInclusionAcceptAction(inclusion.AcceptAction):
                     )
                 )
             )
-        super(inclusion.AcceptAction, self).execute(identity, uow, **kwargs)
+        super(inclusion.AcceptAction, self).execute(identity, uow)
 
 
 class KCWorksCommunityInclusion(inclusion.CommunityInclusion):
@@ -122,7 +122,7 @@ class CommunitySubmissionAcceptAction(submission.AcceptAction):
                     )
                 )
             )
-        super(submission.AcceptAction, self).execute(identity, uow, **kwargs)
+        super(submission.AcceptAction, self).execute(identity, uow)
 
 
 class KCWorksCommunitySubmission(submission.CommunitySubmission):

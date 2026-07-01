@@ -25,7 +25,6 @@ from invenio_communities.communities.services.components import (
 from invenio_communities.communities.services.components import (
     CommunityParentComponent as BaseCommunityParentComponent,
 )
-from invenio_i18n import lazy_gettext as _  # type: ignore[import-untyped]
 from invenio_oauth2server.proxies import current_oauth2server
 from invenio_rdm_records.services.communities.components import (
     CommunityAccessComponent as RDMCommunityAccessComponent,
@@ -292,7 +291,9 @@ def register_community_menu_items(app: Flask) -> None:
         app: Flask UI application object (unused; runs in app context so
             ``current_menu`` resolves to this app's menu tree).
     """
-    app.logger.info("register_community_menu_items: applying COMMUNITIES_DETAIL_MENU_ITEMS")
+    app.logger.info(
+        "register_community_menu_items: applying COMMUNITIES_DETAIL_MENU_ITEMS"
+    )
     alter_menu_from_config(
         app, current_menu.submenu("communities"), "COMMUNITIES_DETAIL_MENU_ITEMS"
     )

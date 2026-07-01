@@ -29,7 +29,6 @@
 # UserAccessRequestSubmitNotificationBuilder,
 """
 
-from typing import TypedDict, Unpack
 
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
