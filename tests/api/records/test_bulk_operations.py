@@ -241,7 +241,7 @@ def test_update_community_records_metadata_dict(
     assert results["updated_records"][0]["old_value"] == [
         {
             "person_or_org": {
-                "name": "Creator, Test",
+                "name": "Test Creator",
                 "family_name": "Creator",
                 "given_name": "Test",
                 "type": "personal",
@@ -264,7 +264,7 @@ def test_update_community_records_metadata_dict(
     assert updated_record.data["metadata"]["creators"] == [
         {
             "person_or_org": {
-                "name": "Creator, New",
+                "name": "New Creator",
                 "family_name": "Creator",
                 "given_name": "New",
                 "type": "personal",
