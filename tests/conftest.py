@@ -108,7 +108,6 @@ test_config = {
     **test_config_logging,
     # **test_config_stats,  # Now getting directly from invenio.cfg
     # NOTE: Postgres values set by docker-services-cli
-    "COMMONS_PROFILES_API_TOKEN": "faketoken",
     "SQLALCHEMY_DATABASE_URI": (
         "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
     ),
@@ -371,6 +370,7 @@ def app(
     app,
     app_config,
     database,
+    location,
     search,
     bootstrap_vocabularies,
     template_loader,
@@ -381,8 +381,9 @@ def app(
     This fixture should be used in conjunction with the `running_app`
     fixture to provide a complete app with all the typically needed
     fixtures. This fixture sets up the basic functions like db, search,
-    and template loader once per modules. The `running_app` fixture is function
-    scoped and initializes all the fixtures that should be reset between tests.
+    the default files location, and template loader once per modules.
+    The `running_app` fixture is function scoped and initializes per-test
+    fixtures such as cache and custom fields that should be reset between tests.
 
     Yields:
         Flask: The Flask application instance.
