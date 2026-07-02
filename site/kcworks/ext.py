@@ -323,16 +323,22 @@ def _schedule_community_menu_overrides(app: Flask) -> None:
 def finalize_app(app: Flask) -> None:
     """Register KCWorks UI error handlers and instrument blueprint ones.
 
-    The wrap step must run after every other extension's ``finalize_app`` /
-    ``api_finalize_app`` has had a chance to register its blueprints and
+    Registers themed HTML error pages via
+    `register_themed_error_handlers`, then wraps blueprint-scoped
+    handlers with logging. Themed registration must run before the wrap
+    step so both app-wide and blueprint handlers log before returning
+    fallback responses.
+
+    The wrap step must run after every other extension's `finalize_app` /
+    `api_finalize_app` has had a chance to register its blueprints and
     blueprint-scoped error handlers; entry-point ordering means this isn't
     fully guaranteed, but in practice all relevant invenio extensions have
-    registered theirs by the time KCWorks' ``finalize_app`` runs. Any
+    registered theirs by the time KCWorks' `finalize_app` runs. Any
     blueprint that registers handlers later than this would simply be
     skipped (still works, just no logging).
     """
     _schedule_community_menu_overrides(app)
-    # register_themed_error_handlers(app)
+    register_themed_error_handlers(app)
     wrap_blueprint_error_handlers_with_logging(app)
 
 
@@ -414,16 +420,13 @@ def _static_token_before_request() -> None:
 
 
 def api_finalize_app(app: Flask) -> None:
-    """Entry point for invenio_base.api_finalize_app (API app).
+    """Entry point for `invenio_base.api_finalize_app` (API app).
 
-    Registers the same exception routing as the UI app, but with
-    ``by_api=True`` so every handler always returns JSON instead of
-    attempting to render UI templates (which the API app doesn't have
-    fully wired up). Also installs the static-token before-request hook
-    when configured.
+    Installs the static-token before-request hook when configured.
+    Themed error handlers are registered on the UI app only
+    (`finalize_app`); the API app relies on Invenio/Flask
+    `HTTPException` and `RESTException` handling instead.
     """
-    register_themed_error_handlers(app, by_api=True)
-
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
     static_user_id = app.config.get("STATIC_API_TOKEN_USER_ID")
     if not routes_map or static_user_id is None:
