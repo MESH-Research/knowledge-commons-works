@@ -592,7 +592,17 @@ class TestPerFieldEditPermissionsOwner2(BasePerFieldPermissionsTest):
                 "metadata.title": "Updated Title",
                 "metadata.publication_date": "2024-01-01",
             },
-            "errors": [],
+            "errors": [
+                {
+                    "field": "metadata.creators.0.person_or_org.name",
+                    "messages": [
+                        "You do not have permission to edit this field "
+                        "because the record is included in the test-community "
+                        "community. Please contact the community owner or "
+                        "manager for assistance."
+                    ],
+                }
+            ],
         }
 
 

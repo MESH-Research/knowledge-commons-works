@@ -5,10 +5,8 @@ from __future__ import annotations
 from kcworks.templates.template_filters import community_dashboard_request_url
 
 
-def test_community_dashboard_request_url_uses_rdm_requests_routes(running_app) -> None:
+def test_community_dashboard_request_url_uses_rdm_requests_routes(app) -> None:
     """Request links honor RDM_REQUESTS_ROUTES collection path prefix."""
     url = community_dashboard_request_url("parent-slug", "request-uuid")
-    assert (
-        url
-        == "https://127.0.0.1:5000/collections/parent-slug/requests/request-uuid"
-    )
+    base = app.config.get("SITE_UI_URL")
+    assert url == f"{base}/collections/parent-slug/requests/request-uuid"

@@ -66,6 +66,19 @@ def test_add_ancestor_communities_to_record_parent_walks_full_chain() -> None:
     assert record_communities.calls == [("grandparent-id", False)]
 
 
+def test_add_ancestor_communities_skips_immediate_parent_when_requested() -> None:
+    """bulk_add callers can defer the immediate parent to upstream."""
+    child = _community_chain("grandparent-id", "parent-id", "child-id")
+    record_communities = FakeRecordCommunities()
+
+    add_ancestor_communities_to_record_parent(
+        record_communities, child, skip_immediate_parent=True
+    )
+
+    assert record_communities.ids == ["grandparent-id"]
+    assert record_communities.calls == [("grandparent-id", False)]
+
+
 def test_add_ancestor_communities_to_record_parent_no_parent_is_noop() -> None:
     """Top-level communities have no ancestors to add."""
     community = SimpleNamespace(id="top-level-id", parent=None)
@@ -121,10 +134,12 @@ def test_add_ancestor_communities_to_record_parent_with_real_nested_communities(
     record = minimal_published_record_factory()
     child_record = service.record_cls.pid.resolve(child.id)
 
-    record.parent.communities.add(child_record)
-    add_ancestor_communities_to_record_parent(record.parent.communities, child_record)
+    record._record.parent.communities.add(child_record)
+    add_ancestor_communities_to_record_parent(
+        record._record.parent.communities, child_record
+    )
 
-    community_ids = set(record.parent.communities.ids)
+    community_ids = set(record._record.parent.communities.ids)
     assert str(grandparent.id) in community_ids
     assert str(parent.id) in community_ids
     assert str(child.id) in community_ids

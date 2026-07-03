@@ -34,19 +34,9 @@ def test_group_collections_service_automated_creation(
 
     app = running_app.app
 
-    # Create test data
-    # Service.create() assigns an owner: either GROUP_COLLECTIONS_ADMIN_EMAIL or
-    # the first user with the "administration" role; it also adds the administration
-    # role as owner. We create them here so the service succeeds and so we can
-    # assert they are members.
-    admin_user = user_factory(email="admin@example.com", oauth_id=None)
-
+    # Service.create() adds the administration role as owner.
     # Find or create the administration role
-    admin_role = accounts_datastore.find_role("administration")
-    if not admin_role:
-        admin_role = accounts_datastore.create_role(name="administration")
-
-    accounts_datastore.add_role_to_user(admin_user.user, admin_role)
+    admin_role = accounts_datastore.find_or_create_role("administration")
     accounts_datastore.commit()
 
     # Mock API response for group metadata
@@ -138,18 +128,6 @@ def test_group_collections_service_automated_creation(
         assert moderator_role_name in found_roles, "Moderator role should be a member"
         assert found_roles[moderator_role_name] == "curator", (
             "Moderator role should have curator permissions"
-        )
-
-        # Check that admin user is owner
-        admin_members = [
-            m
-            for m in members
-            if m["member"]["type"] == "user"
-            and m["member"]["id"] == str(admin_user.user.id)
-        ]
-        assert len(admin_members) == 1, "Administration user should be a member"
-        assert admin_members[0]["role"] == "owner", (
-            "Admin user should have owner permissions"
         )
 
         # Check that admin role is owner

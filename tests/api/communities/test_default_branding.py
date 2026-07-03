@@ -21,14 +21,15 @@ doesn't depend on `to_png`), and `generate_default_branding.delay`
 gets called.
 """
 
-from __future__ import annotations
-
 import hashlib
 from io import BytesIO
 from typing import Any
 
 import pytest
 from invenio_access.permissions import system_identity
+from invenio_communities.communities.services.components import (  # type: ignore[import-not-found]
+    CommunityParentComponent as BaseCommunityParentComponent,
+)
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.services.communities.components import (
     CommunityAccessComponent as RDMCommunityAccessComponent,
@@ -37,6 +38,9 @@ from invenio_rdm_records.services.communities.components import (
     CommunityServiceComponents,
 )
 from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
+from kcworks.services.communities.community_parent import (
+    CommunityParentComponent as KCWorksCommunityParentComponent,
+)
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
     apply_default_branding,
@@ -105,7 +109,8 @@ def test_ext_registers_default_branding_after_upstream(running_app) -> None:
 
     The KCWorks `init_components` hook appends `DefaultBrandingComponent` to the
     list inherited from `invenio-rdm-records`'s `CommunityServiceComponents`
-    (with `RDMCommunityAccessComponent` swapped for the base one elsewhere).
+    (with `RDMCommunityAccessComponent` swapped for the base one and
+    `CommunityParentComponent` swapped for the KCWorks nested-parent variant).
     The component's correctness depends on the upstream PID, ownership, and
     theme components having already run; appending is what guarantees that.
     """
@@ -114,14 +119,19 @@ def test_ext_registers_default_branding_after_upstream(running_app) -> None:
     branding_idx = components.index(DefaultBrandingComponent)
 
     for upstream in CommunityServiceComponents:
-        # `ext.py` swaps this one specifically; every other upstream
-        # component must still appear in the list and precede branding.
+        # `ext.py` swaps these specifically; every other upstream component
+        # must still appear in the list and precede branding.
         if upstream is RDMCommunityAccessComponent:
+            continue
+        if upstream is BaseCommunityParentComponent:
             continue
         assert upstream in components, f"{upstream.__name__} missing from list"
         assert components.index(upstream) < branding_idx, (
             f"{upstream.__name__} must run before DefaultBrandingComponent"
         )
+
+    assert KCWorksCommunityParentComponent in components
+    assert components.index(KCWorksCommunityParentComponent) < branding_idx
 
 
 def test_create_sets_logo_and_theme(running_app, db, branded_community) -> None:
@@ -369,10 +379,10 @@ def test_inline_failure_still_sets_theme_and_enqueues_celery(
     item = minimal_community_factory(slug="branding-fail-test")
     record = _read_record(item.id)
 
-    # The theme half ran before the PNG render exploded, so all three
-    # slug-derived keys should still be present:
+    # The theme half ran before the PNG render exploded, so the full
+    # default theme.style should still be present:
     style = (record.get("theme") or {}).get("style") or {}
-    expected = derive_theme_colors("branding-fail-test")
+    expected = default_theme_style("branding-fail-test")
     for key in THEME_KEYS:
         assert style.get(key) == expected[key]
 

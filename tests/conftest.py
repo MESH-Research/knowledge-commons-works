@@ -182,6 +182,7 @@ test_config["SITE_API_URL"] = os.environ.get(
     "INVENIO_SITE_API_URL", "http://localhost/api"
 )
 test_config["SITE_UI_URL"] = os.environ.get("INVENIO_SITE_UI_URL", "http://localhost")
+test_config["OAISERVER_ID_PREFIX"] = test_config["SITE_UI_URL"]
 
 
 @pytest.fixture(scope="module")
