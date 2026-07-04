@@ -137,6 +137,7 @@ def test_per_field_permissions_get_permissions_config(
     config: dict,
     record_has_community: bool,
     expected: dict,
+    search_clear: Callable,
 ) -> None:
     """Test the get_permissions_config method of PerFieldEditPermissionsComponent.
 
@@ -218,6 +219,7 @@ class BasePerFieldPermissionsTest(abc.ABC):
         minimal_community_factory: Callable,
         mock_send_remote_api_update_fixture: Callable,
         client: FlaskClient,
+        search_clear: Callable,
     ) -> None:
         """Test the update_draft method of PerFieldEditPermissionsComponent."""
         # Create a user and get their identity
@@ -728,6 +730,7 @@ def test_per_field_permissions_find_changed_restricted_fields(
     db: SQLAlchemy,
     user_factory: Callable,
     record_metadata: Callable,
+    search_clear: Callable,
 ) -> None:
     """Test the _find_changed_restricted_fields static method.
 
@@ -948,6 +951,7 @@ class TestCollectionRemoveRestricted:
         minimal_community_factory: Callable,
         mock_send_remote_api_update_fixture: Callable,
         client: FlaskClient,
+        search_clear: Callable,
     ) -> None:
         """Test that a community is not removed if the field is restricted."""
         running_app.app.config["RDM_RECORDS_PERMISSIONS_PER_FIELD"] = {
@@ -1153,6 +1157,7 @@ def test_community_change_permissions_check_default_permission(
     user_factory: Callable,
     minimal_published_record_factory: Callable,
     minimal_community_factory: Callable,
+    search_clear: Callable,
 ) -> None:
     """Test the _check_default_community_permission method."""
     # Create a user and get their identity

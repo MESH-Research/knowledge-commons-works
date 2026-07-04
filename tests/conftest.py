@@ -16,8 +16,6 @@ import jinja2
 import pytest
 from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
-from invenio_search.proxies import current_search_client
-
 # Imports after logging setup (E402 suppressed - logging must be set up first)
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
@@ -296,35 +294,6 @@ def running_app(
         create_communities_custom_fields,
         create_records_custom_fields,
     )
-
-
-@pytest.fixture(scope="function")
-def search_clear(search_clear):
-    """Clear search indices after test finishes (function scope).
-
-    the search_clear fixture should each time start by running
-    ```python
-    current_search.create()
-    current_search.put_templates()
-    ```
-    and then clear the indices during the fixture teardown. But
-    this doesn't catch the stats indices, so we need to add an
-    additional step to delete the stats indices and template manually.
-    Otherwise, the stats indices aren't cleared between tests.
-
-    Yields:
-        None: Yields control to the test.
-    """
-    # Clear identity cache before each test to prevent stale community role data
-    from invenio_communities.proxies import current_identities_cache
-
-    current_identities_cache.flush()
-
-    yield search_clear
-
-    # Delete stats indices and templates if they exist
-    current_search_client.indices.delete("*stats*", ignore=[404])
-    current_search_client.indices.delete_template("*stats*", ignore=[404])
 
 
 @pytest.fixture(scope="module")
