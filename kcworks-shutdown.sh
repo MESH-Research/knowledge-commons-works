@@ -39,11 +39,23 @@ if [[ ! -f docker-compose.yml || ! -f docker-compose.dev.yml ]]; then
   exit 1
 fi
 
+COMPOSE_DEV_ENV="${REPO_ROOT}/docker-compose.dev.env"
+if [[ ! -f "$COMPOSE_DEV_ENV" ]]; then
+  echo "Error: expected ${COMPOSE_DEV_ENV} (dev host port defaults)." >&2
+  exit 1
+fi
+
+COMPOSE_ENV_FILES=(--env-file "$COMPOSE_DEV_ENV")
+if [[ -f "${REPO_ROOT}/.env" ]]; then
+  COMPOSE_ENV_FILES+=(--env-file "${REPO_ROOT}/.env")
+fi
+
 if [[ -n "$IMAGE_TAG_ARG" ]]; then
   export IMAGE_TAG="$IMAGE_TAG_ARG"
 fi
 
 docker compose \
+  "${COMPOSE_ENV_FILES[@]}" \
   --file docker-compose.yml \
   --file docker-compose.dev.yml \
   stop

@@ -12,7 +12,11 @@
 #   ./kcworks-startup.sh
 #
 # This script always runs:
-#   docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
+#   docker compose --env-file docker-compose.dev.env [--env-file .env] \
+#     --file docker-compose.yml --file docker-compose.dev.yml up -d
+#
+# Host port defaults live in docker-compose.dev.env (tracked, no secrets).
+# When .env exists, it is loaded second so your clone-specific overrides win.
 #
 # Default SM target when you do not set KCWORKS_SM_* or pass flags (edit if your clone differs):
 #   Secret id: staging/kcworks
@@ -116,6 +120,17 @@ if [[ ! -f docker-compose.yml || ! -f docker-compose.dev.yml ]]; then
   exit 1
 fi
 
+COMPOSE_DEV_ENV="${REPO_ROOT}/docker-compose.dev.env"
+if [[ ! -f "$COMPOSE_DEV_ENV" ]]; then
+  echo "Error: expected ${COMPOSE_DEV_ENV} (dev host port defaults)." >&2
+  exit 1
+fi
+
+COMPOSE_ENV_FILES=(--env-file "$COMPOSE_DEV_ENV")
+if [[ -f "${REPO_ROOT}/.env" ]]; then
+  COMPOSE_ENV_FILES+=(--env-file "${REPO_ROOT}/.env")
+fi
+
 FILTER_SCRIPT="${REPO_ROOT}/scripts/kcworks_sm_secret_to_envfile.py"
 if [[ ! -f "$FILTER_SCRIPT" ]]; then
   echo "Error: missing ${FILTER_SCRIPT}" >&2
@@ -179,6 +194,7 @@ if [[ "$BUILD_ARG" -eq 1 ]]; then
 fi
 
 docker compose \
+  "${COMPOSE_ENV_FILES[@]}" \
   --file docker-compose.yml \
   --file docker-compose.dev.yml \
   up -d "${BUILD_FLAGS[@]}"
