@@ -8189,7 +8189,7 @@ SAMPLE_RDMRECORDS_RECORDS_HIT = {
                         "given_name": "Shirli",
                         "family_name": "Gilbert",
                         "identifiers": [
-                            {"scheme": "hc_username", "identifier": "sgilbert"}
+                            {"scheme": "kc_username", "identifier": "sgilbert"}
                         ],
                     },
                 }

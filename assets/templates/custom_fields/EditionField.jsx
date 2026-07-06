@@ -9,7 +9,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/i18next";
-import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextField";
 
 const EditionField = ({
   fieldPath,

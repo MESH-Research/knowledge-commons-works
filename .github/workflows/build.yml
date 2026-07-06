@@ -19,29 +19,15 @@ on:
       - staging
 env:
   DOCKER_BUILDKIT: 1
-  TARGET_PLATFORMS: linux/amd64,linux/arm64
   DOCKERHUB_REGISTRY: docker.io
   GITHUB_REGISTRY: ghcr.io
   IMAGE_NAME: kcworks
   RELEASE_VERSION: unset
-  CILOGON_CLIENT_ID: ${{secrets.CILOGON_CLIENT_ID}}
-  CILOGON_CLIENT_SECRET: ${{secrets.CILOGON_CLIENT_SECRET}}
-  INVENIO_RECORD_IMPORTER_LOCAL_DATA_DSECRET: ${{vars.CILOGON_CLIENT_SECRET}}
-  INVENIO_RECORD_IMPORTER_DATA_DIR: ${{vars.INVENIO_RECORD_IMPORTER_DATA_DIR}}
-  INVENIO_SEARCH_DOMAIN: ${{vars.INVENIO_SEARCH_DOMAIN}}
-  INVENIO_INSTANCE_PATH: ${{vars.INVENIO_INSTANCE_PATH}}
-  INVENIO_SECRET_KEY: ${{secrets.INVENIO_SECRET_KEY}}
-  INVENIO_SQLALCHEMY_DATABASE_URI: ${{vars.INVENIO_SQLALCHEMY_DATABASE_URI}}
-  POSTGRES_USER: ${{vars.POSTGRES_USER}}
-  POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-  POSTGRES_DB: ${{vars.POSTGRES_DB}}
-  PGADMIN_DEFAULT_EMAIL: ${{secrets.PGADMIN_DEFAULT_EMAIL}}
-  PGADMIN_DEFAULT_PASSWORD: ${{secrets.PGADMIN_DEFAULT_PASSWORD}}
-  REDIS_DOMAIN: ${{vars.REDIS_DOMAIN}}
-  STATIC_API_BEARER: ${{secrets.STATIC_API_BEARER}}
-  WEBHOOK_TOKEN: ${{secrets.WEBHOOK_TOKEN}}
 jobs:
   build_and_release:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -84,33 +70,33 @@ jobs:
           pr_number=${{ github.event.number }}
           echo "RELEASE_VERSION=pr-$pr_number" >> $GITHUB_ENV
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # v2.1.2
         with:
           mask-password: true
       # Checks-out your repository under $GITHUB_WORKSPACE
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           submodules: recursive
       # Set up Python 3.12 environment
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12.x"
       # Cache docker images so they don't rebuild every time
@@ -167,17 +153,33 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_FRONTEND_REPO:latest
       - name: Start containers
         if: always()
+        env:
+          CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
+          CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
+          INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR: /tmp/import_data
+          INVENIO_RECORD_IMPORTER_DATA_DIR: ${{ vars.INVENIO_RECORD_IMPORTER_DATA_DIR }}
+          INVENIO_SEARCH_DOMAIN: ${{ vars.INVENIO_SEARCH_DOMAIN }}
+          INVENIO_INSTANCE_PATH: ${{ vars.INVENIO_INSTANCE_PATH }}
+          INVENIO_SECRET_KEY: ${{ secrets.INVENIO_SECRET_KEY }}
+          INVENIO_SQLALCHEMY_DATABASE_URI: ${{ vars.INVENIO_SQLALCHEMY_DATABASE_URI }}
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
+          PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
+          REDIS_DOMAIN: ${{ vars.REDIS_DOMAIN }}
+          STATIC_API_BEARER: ${{ secrets.STATIC_API_BEARER }}
+          WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
         run: |
-          echo "[cli]" >> .invenio.private && \
-          echo "services_setup=False" >> .invenio.private && \
-          echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
           touch tests/.env
           touch .env
+          install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
           docker compose --file docker-compose.yml up -d
       - name: Destroy containers
         if: always()
         run: |
           touch .env
+          install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
           docker compose --file docker-compose.yml down
       - name: Prune Docker
         run: docker system prune -af

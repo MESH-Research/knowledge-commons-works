@@ -11,8 +11,12 @@ When adding or publishing a record to a community, invenio-rdm-records calls
 InvalidAccessRestrictions if a public record is added to a restricted community.
 We patch that function to always allow (return True), so community visibility
 can be changed (e.g. from remote sync) without blocking existing or new records.
-No changes to invenio-rdm-records source are required.
 """
+
+from collections.abc import Callable
+from typing import Any
+
+Validator = Callable[[Any, Any], bool]
 
 
 def _allow_all_access_restrictions(record, community) -> bool:
@@ -31,6 +35,5 @@ def patch_community_access_restriction_check() -> None:
     """
     from invenio_rdm_records import requests as rdm_requests
 
-    rdm_requests.community_inclusion.is_access_restriction_valid = (
-        _allow_all_access_restrictions
-    )
+    validator = _allow_all_access_restrictions
+    rdm_requests.community_inclusion.is_access_restriction_valid: Validator = validator

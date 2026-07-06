@@ -36,10 +36,11 @@ def test_check_result_initialization():
     assert result.message == "Test message"
 
 
-def test_get_expected_roles():
+def test_get_expected_roles(running_app):
     """Test _get_expected_roles method."""
-    checker = CommunityGroupMembershipChecker()
-    expected_roles = checker._get_expected_roles("test-commons", "test-group")
+    with running_app.app.app_context():
+        checker = CommunityGroupMembershipChecker()
+        expected_roles = checker._get_expected_roles("test-commons", "test-group")
 
     # Check that expected roles are created with correct structure
     assert "owner" in expected_roles

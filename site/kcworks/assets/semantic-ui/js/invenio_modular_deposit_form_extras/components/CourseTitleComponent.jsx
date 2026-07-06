@@ -1,16 +1,13 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
-const CourseTitleComponent = ({ ...extraProps }) => {
-  return (
-    <CustomFieldInjector
-      sectionName="Course"
-      fieldName="kcr:course_title"
-      idString="CourseTitleField"
-      description={""}
-      {...extraProps}
-    />
-  );
-};
+const CourseTitleComponent = ({ ...extraProps }) => (
+  <CustomField
+    fieldName="kcr:course_title"
+    idString="CourseTitleField"
+    description=""
+    {...extraProps}
+  />
+);
 
 export { CourseTitleComponent };

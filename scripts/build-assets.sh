@@ -1,4 +1,12 @@
 #! /bin/bash
+#
+# Build collect + webpack static into /opt/invenio/var/instance/static.
+#
+# Docker Compose mounts the static_data volume at that path on web-ui and
+# frontend (docker-compose.yml and docker-compose.dev.yml). The volume starts
+# empty and replaces image-baked static there, so the UI is not usable until
+# this script has been run at least once in web-ui after ``docker compose up``.
+# Re-run after asset or dependency static changes, or after removing the volume.
 
 # Color variables
 red='\033[0;31m'
@@ -12,24 +20,33 @@ clear='\033[0m'
 
 echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear}"
 
-# Fix axios version conflict in invenio_search_ui
-echo -e "${yellow}Fixing axios version conflict in invenio_search_ui...${clear}"
-if [ -f "/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui/webpack.py" ]; then
-    sed -i '/"axios": "^0.21.0"/d' /opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui/webpack.py
-    echo -e "${green}Fixed axios version conflict in invenio_search_ui${clear}"
-elif [ -f "/opt/invenio/src/.venv/lib/python3.9/site-packages/invenio_search_ui/webpack.py" ]; then
-    sed -i '/"axios": "^0.21.0"/d' /opt/invenio/src/.venv/lib/python3.9/site-packages/invenio_search_ui/webpack.py
-    echo -e "${green}Fixed axios version conflict in invenio_search_ui${clear}"
-else
-    echo -e "${red}Warning: Could not find invenio_search_ui/webpack.py to fix axios conflict${clear}"
-fi
+# All `invenio webpack ...` calls below are bundler-/package-manager-agnostic:
+# they delegate to whichever project + npm package class are configured in
+# invenio.cfg via WEBPACKEXT_PROJECT and WEBPACKEXT_NPM_PKG_CLS. KCWorks sets
+#   WEBPACKEXT_PROJECT      = "invenio_assets.webpack:rspack_project"
+#   WEBPACKEXT_NPM_PKG_CLS  = "pynpm.package:PNPMPackage"
+# so create/install/build run against the rspack scaffold and shell out to
+# pnpm (PNPMPackage hard-codes npm_bin="pnpm" and uses --shamefully-hoist).
+# We intentionally do NOT replicate invenio_cli's js_pkg_man.env_overrides()
+# wrapper — those env vars only matter when subprocesses pick up the package
+# manager from $PATH/env; PNPMPackage invokes pnpm directly via subprocess.
+
+cd /opt/invenio/src
+
+echo -e "${yellow}Compiling Python translation catalogs...${clear}"
+pybabel compile -d /opt/invenio/src/translations --use-fuzzy
+pybabel compile -d /opt/invenio/src/site/kcworks/translations --use-fuzzy
+
+echo -e "${yellow}Distributing JS translation overrides...${clear}"
+# Do this before `webpack clean create` so the assembled asset tree includes
+# the rewritten per-package translation catalogs.
+invenio i18n js-translation build --all-packages -o /opt/invenio/src/js-translations
 
 echo -e "${yellow}Collecting static files...${clear}"
 invenio collect -v
 echo -e "${yellow}Building assets...${clear}"
 invenio webpack clean create
 invenio webpack install
-cd /opt/invenio/src
 invenio shell ./scripts/symlink_assets.py
 invenio webpack build
 echo -e "${green}All done building assets...${clear}"

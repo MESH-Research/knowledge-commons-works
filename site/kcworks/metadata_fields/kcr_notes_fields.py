@@ -33,9 +33,11 @@ class NotesCF(BaseCF):
 
     def __init__(self, name, **kwargs):
         """Constructor."""
-        super().__init__(
+        # BaseCF.__init__ accepts only (name, field_args); this subclass passes
+        # field_cls and multiple used by other custom field implementations.
+        super().__init__(  # ty: ignore[unknown-argument]
             name,
-            field_cls=fields.Nested,
+            field_cls=fields.Nested,  # ty: ignore[unknown-argument]
             field_args={
                 "nested": {
                     "note_text": SanitizedHTML(),
@@ -43,7 +45,7 @@ class NotesCF(BaseCF):
                     "note_description": SanitizedUnicode(),
                 }
             },
-            multiple=True,
+            multiple=True,  # ty: ignore[unknown-argument]
             **kwargs,
         )
 

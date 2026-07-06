@@ -65,14 +65,26 @@ list_vocabulary_values, list_string_values, show_custom_field %}
     </div>
     {% endif %}
 
+    {# Custom-fields sections and fields may set `show_on_about: False` in
+       `COMMUNITIES_CUSTOM_FIELDS_UI` to be excluded from this page while
+       still appearing in the community settings form. The default is True. #}
     {% set custom_fields = community.ui.custom_fields %}
-    {% for section_cfg in custom_fields_ui if custom_fields %}
+    {% for section_cfg in custom_fields_ui
+       if custom_fields and section_cfg.get("show_on_about", True) %}
     {% set section_fields = section_cfg.fields %}
+    {% set ns = namespace(any_visible=false) %}
+    {% for field_cfg in section_fields %}
+    {% if custom_fields.get(field_cfg.field)
+       and field_cfg.get("show_on_about", True) %}
+    {% set ns.any_visible = true %}
+    {% endif %}
+    {% endfor %}
 
+    {% if ns.any_visible %}
     <div class="communities-detail-about-section communities-detail-custom-fields-section">
     <h3>{{ section_cfg.section }}</h3>
 
-    {% for field_cfg in section_fields %}
+    {% for field_cfg in section_fields if field_cfg.get("show_on_about", True) %}
     {% set field_value = custom_fields.get(field_cfg.field) %}
     {% if field_value and field_cfg.template %}
     {% include field_cfg.template %}
@@ -83,6 +95,7 @@ list_vocabulary_values, list_string_values, show_custom_field %}
     {% endfor %}
 
     </div>
+    {% endif %}
 
     {%- endfor %}
   </div>

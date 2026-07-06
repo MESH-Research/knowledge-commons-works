@@ -5,7 +5,7 @@ import { CommunityCompactItemComputer } from "./CommunityCompactItemComputer";
 import { CommunityCompactItemMobile } from "./CommunityCompactItemMobile";
 import { Trans } from "react-i18next";
 import { i18next } from "@translations/i18next";
-import { readableFieldLabels } from "@js/invenio_modular_deposit_form/readableFieldLabels";
+import { readableFieldLabels } from "@js/invenio_modular_deposit_form/helpers/readableFieldLabels";
 
 /**
  * Find the fields with editing restrictions for a community

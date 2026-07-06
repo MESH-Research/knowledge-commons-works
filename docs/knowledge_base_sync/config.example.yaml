@@ -1,0 +1,32 @@
+# Configuration for kb-sync (kc-knowledge-base-sync)
+#
+# Copy to config.yaml in this directory. config.yaml is gitignored.
+# When running kb-sync from the kcworks-next root, config.yaml is the default.
+
+kcworks_root: ../..  # kcworks-next repo root (relative to this file)
+knowledge_base_path: ~/Development/knowledge-base
+
+audience: Developers / ops
+owner: _unassigned_
+branch_prefix: kb-sync
+
+lm_studio:
+  base_url: http://localhost:1234/v1
+  model: ""  # empty = use the first model loaded in LM Studio
+  temperature: 0.2
+  timeout_seconds: 300
+
+sources:
+  - docs_dir: docs/source/admin_guide
+    kb_topic: internal/works-maintenance
+    filename_prefix: ""
+    extra_keywords:
+      - kcworks
+      - invenio
+      - cli
+    files:
+      - user_data_management.md
+      - organization_management.md
+      - moderation.md
+      - running_commands.md
+      - file_storage.md

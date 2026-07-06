@@ -8,10 +8,16 @@
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
+      padding-right: @small;
+      padding-left: @small;
       background-color: @sidebarBackgroundColor;
       border-color: @verdigris60;
       border-top: 1px solid @sidebarBorderColor;
       border-bottom: 1px solid @sidebarBorderColor;
+      @media all and (min-width: @largeMonitorBreakpoint) {
+        padding-right: 2rem;
+        padding-left: 2rem;
+      }
       .title {
         font-size: @small;
         color: @sidebarHeaderColor;

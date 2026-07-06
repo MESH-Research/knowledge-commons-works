@@ -56,7 +56,7 @@ class ProtectionButtonsComponent extends Component {
           {i18next.t("Public")}
         </Button>
         <Button
-          className={`${restrictedColor} ${!!active ? "basic" : ""}`}
+          className={`${restrictedColor} ${active ? "basic" : ""}`}
           data-testid="protection-buttons-component-restricted"
           active={!active}
           onClick={this.handleRestrictionButtonClick}

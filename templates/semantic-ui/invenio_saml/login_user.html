@@ -44,7 +44,7 @@
         </div>
       {%- endblock form_outer %}
       <div class="ui center aligned mt-30">
-        {{ _('Not yet a member?') }} <a href="{{ config.KC_REGISTER_URL }}">{{ _('Sign up') }}</a>!
+        {{ _('Not yet a member?') }} <a href="{{ config.get("KC_REGISTER_URL", "#") }}">{{ _('Sign up') }}</a>!
       </div>
     </div>
   </div>

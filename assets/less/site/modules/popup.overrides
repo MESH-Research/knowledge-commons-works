@@ -1,0 +1,27 @@
+/* Part of Knowledge Commons Works
+ * Copyright (C) 2023-2026, MESH Research
+ *
+ * Knowledge Commons Works is an instance of InvenioRDM, which is
+ * Copyright (c) 2019-2026, CERN
+ *
+ * Knowledge Commons Works and InvenioRDM are both free software;
+ * You can redistribute and/or modify them under the terms of the
+ * MIT License; see LICENSE file for more details.
+ */
+
+/*
+ * Bridge classes to use semantic-ui styles with the native popup api
+ */
+.ui.popup.native-popup-tooltip[popover]:popover-open {
+  display: block;
+  max-width: min(90vw, 30rem);
+  width: max-content;
+}
+
+.ui.popup.native-popup-tooltip[popover] {
+  position-anchor: implicit;
+  position-area: top center;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+}
+

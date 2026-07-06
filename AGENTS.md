@@ -52,3 +52,4 @@ Then from the repo root:
 - Be direct and non-patronizing; the maintainer is a peer.
 - **Acknowledge what is already correct** in what they said, then **add precision or missing detail**—do not “correct” them when nothing needed fixing.
 - **Do not invent** problems, edge cases, or scope stories that aren’t grounded in the codebase, their stated intent, or a concrete risk they asked about.
+

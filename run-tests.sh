@@ -20,9 +20,14 @@ set -o errexit
 # Quit on unbound symbols
 set -o nounset
 
-# Always bring down docker services
+# Always bring down docker services and remove any AWS-fetched test secrets
 function cleanup() {
-  eval "$(uv run docker-services-cli down --env)"
+  if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
+    rm -f "$TEST_SECRET_FILE"
+  fi
+  if [[ ${keep_services:-0} -eq 0 ]]; then
+    eval "$(uv run docker-services-cli down --env)"
+  fi
 }
 
 # Check if any docker-compose projects are running
@@ -53,10 +58,10 @@ function check_docker_compose_running() {
 # Create symlinks to submodule tests
 function create_test_symlinks() {
   echo "Creating symlinks to submodule tests..."
-  
+
   # invenio-stats-dashboard
   submodule_tests_dir="site/kcworks/dependencies/invenio-stats-dashboard/tests"
-  
+
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
@@ -67,7 +72,7 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
       echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
     fi
-    
+
     if [ -d "$submodule_tests_dir/cli" ]; then
       if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
         rm -f "tests/cli/stats_dashboard"
@@ -75,7 +80,7 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
       echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
     fi
-    
+
     if [ -d "$submodule_tests_dir/ui" ]; then
       if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
         rm -f "tests/ui/stats_dashboard"
@@ -84,10 +89,10 @@ function create_test_symlinks() {
       echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
     fi
   fi
-  
+
   # invenio-record-importer-kcworks
   submodule_tests_dir="site/kcworks/dependencies/invenio-record-importer-kcworks/tests"
-  
+
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
@@ -98,13 +103,44 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/api" "tests/api/record_importer"
       echo "Created symlink: tests/api/record_importer -> $submodule_tests_dir/api"
     fi
-    
+
     if [ -d "$submodule_tests_dir/cli" ]; then
       if [ -L "tests/cli/record_importer" ] || [ -e "tests/cli/record_importer" ]; then
         rm -f "tests/cli/record_importer"
       fi
       ln -s "../../$submodule_tests_dir/cli" "tests/cli/record_importer"
       echo "Created symlink: tests/cli/record_importer -> $submodule_tests_dir/cli"
+    fi
+  fi
+
+  # invenio-remote-user-data-kcworks
+  submodule_tests_dir="site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests"
+
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      if [ -L "tests/api/remote_user_data" ] || [ -e "tests/api/remote_user_data" ]; then
+        rm -f "tests/api/remote_user_data"
+      fi
+      ln -s "../../$submodule_tests_dir/api" "tests/api/remote_user_data"
+      echo "Created symlink: tests/api/remote_user_data -> $submodule_tests_dir/api"
+    fi
+
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      if [ -L "tests/cli/remote_user_data" ] || [ -e "tests/cli/remote_user_data" ]; then
+        rm -f "tests/cli/remote_user_data"
+      fi
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/remote_user_data"
+      echo "Created symlink: tests/cli/remote_user_data -> $submodule_tests_dir/cli"
+    fi
+
+    if [ -d "$submodule_tests_dir/ui" ]; then
+      if [ -L "tests/ui/remote_user_data" ] || [ -e "tests/ui/remote_user_data" ]; then
+        rm -f "tests/ui/remote_user_data"
+      fi
+      ln -s "../../$submodule_tests_dir/ui" "tests/ui/remote_user_data"
+      echo "Created symlink: tests/ui/remote_user_data -> $submodule_tests_dir/ui"
     fi
   fi
 }
@@ -131,9 +167,10 @@ for arg in $@; do
   esac
 done
 
-if [[ ${keep_services} -eq 0 ]]; then
-  trap cleanup EXIT
-fi
+# Always trap so the AWS-fetched test secret file is removed even when
+# --keep-services is set; the docker-services-cli teardown is gated inside
+# cleanup() on keep_services so behavior there is unchanged.
+trap cleanup EXIT
 
 # Create symlinks to submodule tests
 create_test_symlinks
@@ -157,35 +194,49 @@ uv run sphinx-build -b html docs/source/ docs/build/
 # Check for running docker-compose projects before starting services
 check_docker_compose_running
 
-# Check if tests/.env exists and set env_file_arg accordingly
+# Resolve env files for the test run. Order matters: AWS-fetched secrets are
+# loaded second so they override matching keys in tests/.env (which holds
+# non-secret defaults committed-locally per developer).
+env_file_args=()
+
 if [ -f "tests/.env" ]; then
-  env_file_arg="--env-file tests/.env"
-  echo "Using tests/.env file for environment variables"
+  env_file_args+=(--env-file tests/.env)
+  echo "Using tests/.env file for non-secret environment variables"
 else
-  env_file_arg=""
-  echo "No tests/.env file found, using default environment"
+  echo "No tests/.env file found"
+fi
+
+TEST_SECRET_FILE=""
+if test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
+  if [ -n "$test_secret_file" ]; then
+    TEST_SECRET_FILE="$test_secret_file"
+    env_file_args+=(--env-file "$TEST_SECRET_FILE")
+    echo "Using AWS Secrets Manager test secrets at ${TEST_SECRET_FILE}"
+  else
+    echo "AWS Secrets Manager lookup skipped (KCWORKS_TEST_SM_DISABLE=1)"
+  fi
+else
+  echo "Error: failed to fetch test secrets from AWS Secrets Manager." >&2
+  echo "       Set KCWORKS_TEST_SM_DISABLE=1 to skip and rely on tests/.env only." >&2
+  exit 1
 fi
 
 # Start the services and get their environment variables
 echo "Starting the services"
-eval "$(uv run ${env_file_arg} docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
-
-# Unset the environment variables that docker-services-cli set so that the values from tests/.env are used instead of those defaults from docker-services.yml
-unset SQLALCHEMY_DATABASE_URI
-unset INVENIO_SQLALCHEMY_DATABASE_URI
+eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
 
 # Run mypy
-echo "Running mypy on the site directory"
-uv run mypy --config-file pyproject.toml site/
+echo "Running ty on the site directory"
+uv run ty check site/
 
 # Note: expansion of pytest_args looks like below to not cause an unbound
 # variable error when 1) "nounset" and 2) the array is empty.
 if [ ${#pytest_args[@]} -eq 0 ]; then
   echo "Running pytest"
-  uv run ${env_file_arg} python -m pytest -vv -s --disable-warnings
+  uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest -vv -s --disable-warnings
 else
   echo "Running pytest with additional arguments"
-  uv run ${env_file_arg} python -m pytest ${pytest_args[@]} -s --disable-warnings
+  uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest ${pytest_args[@]} -s --disable-warnings
 fi
 
 tests_exit_code=$?

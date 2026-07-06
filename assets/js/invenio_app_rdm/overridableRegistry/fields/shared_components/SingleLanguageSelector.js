@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { LanguagesField } from "@js/invenio_modular_deposit_form/replacement_components/LanguagesField";
+import { LanguagesField } from "@js/invenio_modular_deposit_form/replacement_components/field_components/LanguagesField";
 import { i18next } from "@translations/i18next";
 import { useFormikContext } from "formik";
 

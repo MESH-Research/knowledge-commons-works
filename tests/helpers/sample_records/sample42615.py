@@ -31,10 +31,7 @@ rec42615 = {
                 "issn": "2660-583X",
                 "issue": "2",
                 "pages": "359-370",
-                "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
-                ),
+                "title": ("Journal of Traditional Building, Architecture and Urbanism"),
             },
             "kcr:commons_domain": "sah.hcommons.org",
             "kcr:submitter_email": "pedro.palazzo@gmail.com",
@@ -60,8 +57,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -85,7 +81,7 @@ rec42615 = {
                         ),  # FIXME: why is initial with family name?
                         "given_name": "Pedro",
                         "identifiers": [
-                            {"identifier": "palazzo", "scheme": "hc_username"}
+                            {"identifier": "palazzo", "scheme": "kc_username"}
                         ],
                         "name": (
                             "P. Palazzo, Pedro"
@@ -199,8 +195,7 @@ rec42615 = {
             ],
             "publisher": "Toledo: INTBAU Spain",
             "title": (
-                "Vernacular Patterns in Portugal and Brazil: Evolution "
-                "and Adaptations"
+                "Vernacular Patterns in Portugal and Brazil: Evolution and Adaptations"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "1011841"}]}},
@@ -209,6 +204,7 @@ rec42615 = {
     "expected_serialized": {
         "record_source": "knowledgeCommons",
         "created": "2021-11-10T15:06:20Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -239,10 +235,7 @@ rec42615 = {
                 "issn": "2660-583X",
                 "issue": "2",
                 "pages": "359-370",
-                "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
-                ),
+                "title": ("Journal of Traditional Building, Architecture and Urbanism"),
             },
             "kcr:commons_domain": "sah.hcommons.org",
             "kcr:submitter_email": "pedro.palazzo@gmail.com",
@@ -268,8 +261,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -293,7 +285,7 @@ rec42615 = {
                         ),  # FIXME: why is initial with family name?
                         "given_name": "Pedro",
                         "identifiers": [
-                            {"identifier": "palazzo", "scheme": "hc_username"}
+                            {"identifier": "palazzo", "scheme": "kc_username"}
                         ],
                         "name": (
                             "P. Palazzo, Pedro"
@@ -387,8 +379,7 @@ rec42615 = {
             ],
             "publisher": "Toledo: INTBAU Spain",
             "title": (
-                "Vernacular Patterns in Portugal and Brazil: Evolution "
-                "and Adaptations"
+                "Vernacular Patterns in Portugal and Brazil: Evolution and Adaptations"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "1011841"}]}},
@@ -404,6 +395,7 @@ rec42615 = {
                 "provider": "datacite",
             }
         },
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -427,10 +419,7 @@ rec42615 = {
                 "issn": "2660-583X",
                 "issue": "2",
                 "pages": "359-370",
-                "title": (
-                    "Journal of Traditional Building, Architecture and "
-                    "Urbanism"
-                ),
+                "title": ("Journal of Traditional Building, Architecture and Urbanism"),
             },
             "kcr:commons_domain": "sah.hcommons.org",
             "kcr:submitter_email": "pedro.palazzo@gmail.com",
@@ -456,8 +445,7 @@ rec42615 = {
             "entries": {
                 "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf": {  # noqa: E501
                     "key": (
-                        "palazzo-vernacular_patterns_in_portugal_and_b"
-                        "razil-2021.pdf"
+                        "palazzo-vernacular_patterns_in_portugal_and_brazil-2021.pdf"
                     ),
                     "mimetype": "application/pdf",
                     "size": "17181",
@@ -488,7 +476,7 @@ rec42615 = {
                         ),  # FIXME: why is initial with family name?
                         "given_name": "Pedro",
                         "identifiers": [
-                            {"identifier": "palazzo", "scheme": "hc_username"}
+                            {"identifier": "palazzo", "scheme": "kc_username"}
                         ],
                         "name": (
                             "P. Palazzo, Pedro"
@@ -613,8 +601,7 @@ rec42615 = {
             ],
             "publisher": "Toledo: INTBAU Spain",
             "title": (
-                "Vernacular Patterns in Portugal and Brazil: Evolution "
-                "and Adaptations"
+                "Vernacular Patterns in Portugal and Brazil: Evolution and Adaptations"
             ),
         },
         "parent": {"access": {"owned_by": [{"user": "1011841"}]}},

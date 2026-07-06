@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { setupStore } from '@custom-test-utils/redux_store';
 import { renderWithProviders } from '@custom-test-utils/redux_test_utils';
 import { AdditionalTitlesField } from './AdditionalTitlesField';
-import { FormUIStateContext } from '@js/invenio_modular_deposit_form/InnerDepositForm';
+import { FormUIStateContext } from '@js/invenio_modular_deposit_form/FormLayoutContainer';
 import { renderWithFormik, setupFormMocks } from '@custom-test-utils/formik_test_utils';
 import axios from 'axios';
 import { Provider } from 'react-redux';

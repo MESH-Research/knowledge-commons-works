@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
+import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextField";
 
 export class Volumes extends Component {
   render() {

@@ -76,7 +76,7 @@ sample_metadata_chapter4_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "matthewjdillon",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillon, M.",
@@ -235,7 +235,7 @@ sample_metadata_chapter4_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "matthewjdillon",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillon, M.",
@@ -385,7 +385,7 @@ sample_metadata_chapter4_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "matthewjdillon",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillon, M.",

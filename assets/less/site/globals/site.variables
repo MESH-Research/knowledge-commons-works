@@ -31,8 +31,8 @@
       Breakpoints
 --------------------*/
 
-@mobileBreakpoint: 320px;
-@tabletBreakpoint: 768px;
+// @mobileBreakpoint: 320px;
+// @tabletBreakpoint: 768px;
 @computerBreakpoint: 992px;
 @largeMonitorBreakpoint: 1200px;
 @widescreenMonitorBreakpoint: 1920px;
@@ -54,6 +54,7 @@
 @mint: #c9e3db;
 @seafoam: #f0faf5;
 @ivory: #f5f5eb;
+@cream: #faf8f5;
 
 @ivy90: #33534a;
 @ivy80: #49665e;
@@ -143,7 +144,8 @@
 @white: #fff;
 @salmon: #e47719;
 @salmonDark: #b05c14;
-@red: #db6228;
+@orange: #db6228;
+@red: #c26133;
 @redDark: #b54f1e;
 @yellow: @gold;
 @infoBlue: #276F86;
@@ -212,7 +214,7 @@
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
-@formInputBorderColor: @ivy30;
+@formInputBorderColor: @ivy20;
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
 

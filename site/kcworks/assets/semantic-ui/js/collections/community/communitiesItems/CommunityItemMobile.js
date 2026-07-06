@@ -9,25 +9,12 @@ import { CommunityTypeLabel } from "../labels";
 import { RestrictedLabel } from "../labels";
 import React from "react";
 import { Image } from "react-invenio-forms";
-import { Button, Grid, Icon } from "semantic-ui-react";
+import { Button, Grid, Icon, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import GeoPattern from "geopattern";
 
 export const CommunityItemMobile = ({ result, index }) => {
   const communityType = result.ui?.type?.title_l10n;
   const canUpdate = result.ui.permissions.can_update;
-
-  const self_link = result.links.self_html.replace(
-    "communities",
-    "collections"
-  );
-  const settings_link = result.links.settings_html.replace(
-    "communities",
-    "collections"
-  );
-
-
-  const pattern = GeoPattern.generate(encodeURI(result.slug));
 
   return (
     <Grid className="mobile only item community-item">
@@ -52,14 +39,26 @@ export const CommunityItemMobile = ({ result, index }) => {
               size="mini"
               className="community-image rel-mr-1"
               alt=""
-              fallbackSrc={pattern.toDataUri()}
+              fallbackSrc="/static/images/square-placeholder.png"
             />
             <div>
               <a
                 className="truncate-lines-2 ui medium header m-0"
-                href={self_link}
+                href={result.links.self_html}
               >
                 {result.metadata.title}
+                {/* Show the icon for subcommunities */}
+                {result.parent && (
+                  <p className="ml-5 display-inline-block">
+                    <Popup
+                      content={i18next.t("Verified community")}
+                      trigger={
+                        <Icon size="small" color="green" name="check circle outline" />
+                      }
+                      position="top center"
+                    />
+                  </p>
+                )}
               </a>
             </div>
           </div>
@@ -75,7 +74,7 @@ export const CommunityItemMobile = ({ result, index }) => {
             <Button
               compact
               size="tiny"
-              href={settings_link}
+              href={result.links.settings_html}
               className="mt-0 mr-0"
               labelPosition="left"
               icon="edit"
@@ -93,6 +92,14 @@ export const CommunityItemMobile = ({ result, index }) => {
             </p>
           </Grid.Column>
         </Grid.Row>
+      )}
+      {result.parent && (
+        <div className="pl-0 sub header">
+          {i18next.t("Part of")}{" "}
+          <a href={`/collections/${result.parent.slug}`}>
+            {result.parent.metadata.title}
+          </a>
+        </div>
       )}
 
       {(communityType || result.metadata.website || result.metadata.organizations) && (

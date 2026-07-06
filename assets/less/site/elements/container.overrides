@@ -23,7 +23,6 @@
     background: radial-gradient(ellipse at 100% 0%, transparent, #fff 60%),
       url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png"),
       @mint;
-    // background: radial-gradient(ellipse at 100% 0%, @mint50, transparent 60%);
 
     @media all and (max-width: @largestMobileScreen) {
       text-align: center;
@@ -33,7 +32,11 @@
       height: 8rem;
     }
 
-    .ui.container.page-subheader {
+    // Community detail header keeps Semantic UI grid layout; menus live in
+    // `.community-header-menus` as siblings (see header.html).
+    .ui.container.page-subheader:not(.community-header) {
+      position: relative;
+      z-index: 1;
       height: 100%;
       display: flex;
       align-items: center;
@@ -57,6 +60,11 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  .community-header-menus {
+    position: relative;
+    z-index: 1;
   }
 
   > .ui.container:last-of-type {

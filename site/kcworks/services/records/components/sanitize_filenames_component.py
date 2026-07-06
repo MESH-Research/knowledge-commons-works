@@ -5,7 +5,7 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-"""File service component to sanitize upload file names."""
+"""Service component to sanitize problematic characters in uploaded filenames."""
 
 import re
 

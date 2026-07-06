@@ -1,5 +1,5 @@
 # Part of Knowledge Commons Works
-# Copyright (C) 2023-2025 MESH Research
+# Copyright (C) 2023-2026 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
@@ -12,13 +12,18 @@ and components.
 
 import os
 import warnings
+from typing import cast
 
 from flask import Flask, current_app, g, request
+from flask_menu import current_menu  # type: ignore[import-untyped]
 from flask_principal import Identity, identity_changed
 from invenio_accounts.models import User
 from invenio_accounts.proxies import current_datastore
 from invenio_communities.communities.services.components import (
     CommunityAccessComponent as BaseCommunityAccessComponent,
+)
+from invenio_communities.communities.services.components import (
+    CommunityParentComponent as BaseCommunityParentComponent,
 )
 from invenio_oauth2server.proxies import current_oauth2server
 from invenio_rdm_records.services.communities.components import (
@@ -29,28 +34,20 @@ from invenio_rdm_records.services.communities.components import (
 )
 from invenio_rdm_records.services.components import DefaultRecordsComponents
 from invenio_rdm_records.services.config import FileServiceConfig
-from invenio_remote_user_data_kcworks.errors import (
-    BrokerExpiryValueError,
-    BrokerNonceValidationError,
-    BrokerPayloadExpiredError,
-    BrokerPayloadProcessingError,
-    BrokerTokenDecryptionError,
-    BrokerTokenMissingError,
-    IDTokenInvalid,
-    NoIDPFoundError,
-    StateTokenInvalid,
-    UserDataRequestFailed,
-    UserDataRequestTimeout,
-)
-from invenio_remote_user_data_kcworks.utils import extract_bearer_token
 from pydantic import BaseModel, ConfigDict
-from werkzeug.exceptions import (
-    Forbidden,
-    InternalServerError,
-    NotFound,
-    Unauthorized,
-)
+from werkzeug.local import LocalProxy
 
+from invenio_remote_user_data_kcworks.services.components import (
+    CitedNamesUpsertComponent,
+)
+from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
+from kcworks.services.communities.community_parent import (
+    CommunityParentComponent as KCWorksCommunityParentComponent,
+)
+from kcworks.services.communities.default_branding import (
+    DefaultBrandingComponent,
+)
+from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -70,12 +67,19 @@ from kcworks.services.records.components.sanitize_filenames_component import (
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
-from kcworks.templates.template_filters import user_profile_dict
+from kcworks.services.records.record_communities.record_community_ancestor_component import (  # noqa: E501
+    RecordCommunityAncestorComponent,
+)
+from kcworks.templates.template_filters import (
+    community_breadcrumb_items,
+    community_dashboard_request_url,
+    community_theme_settings_menu_visible,
+    user_profile_dict,
+)
+from kcworks.utils.menu_utils import alter_menu_from_config
 from kcworks.views.error_handlers import (
-    oauth_401_handler,
-    oauth_403_handler,
-    oauth_404_handler,
-    oauth_500_handler,
+    register_themed_error_handlers,
+    wrap_blueprint_error_handlers_with_logging,
 )
 
 # Stand-ins for request.oauth in the static-token flow. Real OAuth flow sets
@@ -108,6 +112,7 @@ class KCWorks:
             app (Flask): The Flask application object on which to initialize
                 the extension
         """
+        self._community_menu_overrides_applied = False
         if app:
             self.init_app(app)
 
@@ -151,14 +156,32 @@ class KCWorks:
         # CommunityAccessComponent (which blocks restricting a community
         # when it has public records) with the base one, so e.g. remote
         # group visibility sync can change community visibility.
-        existing_communities_components = app.config.get(
+        # Start from any components already configured (e.g. those appended
+        # by other extensions such as invenio-stats-dashboard's
+        # CommunityCustomFieldsDefaultsComponent) so we don't drop them.
+        existing_community_components = app.config.get(
             "COMMUNITIES_SERVICE_COMPONENTS", CommunityServiceComponents
         )
+
+        def _replace_community_component(component):
+            if component is RDMCommunityAccessComponent:
+                return BaseCommunityAccessComponent
+            if component is BaseCommunityParentComponent:
+                return KCWorksCommunityParentComponent
+            return component
+
         _community_components = [
-            BaseCommunityAccessComponent if c is RDMCommunityAccessComponent else c
-            for c in existing_communities_components
+            _replace_community_component(c) for c in existing_community_components
         ]
+        # DefaultBrandingComponent must run AFTER PIDComponent (so
+        # record.id and record.slug are stable), OwnershipComponent, and
+        # CommunityThemeComponent (so any user-supplied theme survives
+        # and we only fill in missing keys). Appending last satisfies
+        # all three.
+        if DefaultBrandingComponent not in _community_components:
+            _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
+        app.config["COMMUNITIES_PERMISSION_POLICY"] = KCWorksCommunityPermissionPolicy
 
         patch_community_access_restriction_check()
 
@@ -177,6 +200,7 @@ class KCWorks:
             *existing_rdm_record_components,
             FirstRecordComponent,
             PerFieldEditPermissionsComponent,
+            CitedNamesUpsertComponent,
         ]
 
         existing_record_file_components = app.config.get(
@@ -197,10 +221,14 @@ class KCWorks:
         existing_record_communities_components = app.config.get(
             "RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS", []
         )
-        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = [
-            *existing_record_communities_components,
-            CommunityChangePermissionsComponent,
-        ]
+        record_communities_components = [*existing_record_communities_components]
+        if RecordCommunityAncestorComponent not in record_communities_components:
+            record_communities_components.append(RecordCommunityAncestorComponent)
+        if CommunityChangePermissionsComponent not in record_communities_components:
+            record_communities_components.append(CommunityChangePermissionsComponent)
+        app.config["RDM_RECORD_COMMUNITIES_SERVICE_COMPONENTS"] = (
+            record_communities_components
+        )
 
     def _ensure_rdm_service_components(self, app, components_list):
         """Ensure the components list includes all default RDM components.
@@ -248,26 +276,70 @@ class KCWorks:
         Args:
             app: Flask application
         """
+        app.jinja_env.filters["community_breadcrumb_items"] = community_breadcrumb_items
+        app.jinja_env.filters["community_theme_settings_menu_visible"] = (
+            community_theme_settings_menu_visible
+        )
         app.jinja_env.filters["user_profile_dict"] = user_profile_dict
+        app.add_template_global(community_dashboard_request_url)
+
+
+def register_community_menu_items(app: Flask) -> None:
+    """Apply KCWorks community header menu overrides from config.
+
+    Args:
+        app: Flask UI application object (unused; runs in app context so
+            ``current_menu`` resolves to this app's menu tree).
+    """
+    app.logger.info(
+        "register_community_menu_items: applying COMMUNITIES_DETAIL_MENU_ITEMS"
+    )
+    alter_menu_from_config(
+        app, current_menu.submenu("communities"), "COMMUNITIES_DETAIL_MENU_ITEMS"
+    )
+
+
+def _schedule_community_menu_overrides(app: Flask) -> None:
+    """Apply community menu config after every extension has registered menus.
+
+    ``invenio_base.finalize_app`` entry points run in undefined order. KCWorks
+    was running before ``invenio_app_rdm`` / ``invenio_communities`` had
+    registered ``communities`` children, so overrides targeted empty stubs and
+    were overwritten on the next hook. Defer until the first request instead.
+    """
+    @app.before_request
+    def _apply_community_menu_overrides_once() -> None:
+        kcworks_ext = app.extensions.get("kcworks")
+        if kcworks_ext is None or kcworks_ext._community_menu_overrides_applied:
+            return
+        app.logger.info(
+            "Applying COMMUNITIES_DETAIL_MENU_ITEMS on first request "
+            "(after all finalize_app menu registration)"
+        )
+        register_community_menu_items(app)
+        kcworks_ext._community_menu_overrides_applied = True
 
 
 def finalize_app(app: Flask) -> None:
-    """Registers OAuth/UI error handlers (UI app)."""
-    app.register_error_handler(BrokerTokenMissingError, oauth_403_handler)
-    app.register_error_handler(BrokerTokenDecryptionError, oauth_403_handler)
-    app.register_error_handler(BrokerPayloadExpiredError, oauth_403_handler)
-    app.register_error_handler(BrokerExpiryValueError, oauth_403_handler)
-    app.register_error_handler(BrokerNonceValidationError, oauth_403_handler)
-    app.register_error_handler(BrokerPayloadProcessingError, oauth_403_handler)
-    app.register_error_handler(Forbidden, oauth_403_handler)
-    app.register_error_handler(IDTokenInvalid, oauth_401_handler)
-    app.register_error_handler(InternalServerError, oauth_500_handler)
-    app.register_error_handler(NoIDPFoundError, oauth_401_handler)
-    app.register_error_handler(NotFound, oauth_404_handler)
-    app.register_error_handler(StateTokenInvalid, oauth_401_handler)
-    app.register_error_handler(Unauthorized, oauth_401_handler)
-    app.register_error_handler(UserDataRequestFailed, oauth_401_handler)
-    app.register_error_handler(UserDataRequestTimeout, oauth_401_handler)
+    """Register KCWorks UI error handlers and instrument blueprint ones.
+
+    Registers themed HTML error pages via
+    `register_themed_error_handlers`, then wraps blueprint-scoped
+    handlers with logging. Themed registration must run before the wrap
+    step so both app-wide and blueprint handlers log before returning
+    fallback responses.
+
+    The wrap step must run after every other extension's `finalize_app` /
+    `api_finalize_app` has had a chance to register its blueprints and
+    blueprint-scoped error handlers; entry-point ordering means this isn't
+    fully guaranteed, but in practice all relevant invenio extensions have
+    registered theirs by the time KCWorks' `finalize_app` runs. Any
+    blueprint that registers handlers later than this would simply be
+    skipped (still works, just no logging).
+    """
+    _schedule_community_menu_overrides(app)
+    register_themed_error_handlers(app)
+    wrap_blueprint_error_handlers_with_logging(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
@@ -332,22 +404,28 @@ def _static_token_before_request() -> None:
     # Same as invenio_oauth2server: set request user and notify Principal without
     # triggering user_logged_in (no login_user()).
     g._login_user = user
-    identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+    identity_changed.send(
+        cast(LocalProxy, current_app)._get_current_object(),
+        identity=Identity(user.id),  # type: ignore
+    )
     # Provide the OAuth stand-in objects for the request.
     scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
-    request.oauth = OAuthStandIn(
+    request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
     )
     # Skip CSRF and OAuth verification.
-    request.skip_csrf_check = True
-    request.oauth_verify_has_run = True
+    request.skip_csrf_check = True  # ty: ignore[unresolved-attribute]
+    request.oauth_verify_has_run = True  # ty: ignore[unresolved-attribute]
 
 
 def api_finalize_app(app: Flask) -> None:
-    """Entry point for invenio_base.api_finalize_app (API app).
+    """Entry point for `invenio_base.api_finalize_app` (API app).
 
-    Registers API app finalization only; no UI error handlers.
+    Installs the static-token before-request hook when configured.
+    Themed error handlers are registered on the UI app only
+    (`finalize_app`); the API app relies on Invenio/Flask
+    `HTTPException` and `RESTException` handling instead.
     """
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
     static_user_id = app.config.get("STATIC_API_TOKEN_USER_ID")

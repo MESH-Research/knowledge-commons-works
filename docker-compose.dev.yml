@@ -3,7 +3,12 @@
 #
 # Usage::
 #
-#   $ docker-compose --file docker-compose.yml --file docker-compose.dev.yml up -d
+#   $ ./kcworks-startup.sh
+#
+# Or manually (host port defaults in docker-compose.dev.env; .env overrides):
+#
+#   $ docker compose --env-file docker-compose.dev.env --env-file .env \
+#       --file docker-compose.yml --file docker-compose.dev.yml up -d
 #
 # Extends the web-ui, web-api, and worker services to include bind mounts for
 # local copies of installed python files. The mounts are based on three environment
@@ -22,21 +27,45 @@
 # the installed python files. This allows for development of the KCWorks modules
 # without having to rebuild the container.
 #
+# Bind mounts from this repo (not in docker-compose.yml alone):
+#   var/instance/ — invenio.cfg, app_data, templates, translations
+#   src/ — .env, .invenio, .invenio.private, static, assets, scripts,
+#     workflows, docs, pyproject/uv lock, README/LICENSE, git metadata,
+#     optional UI log file, and the JS/pnpm toolchain.
+# Repo ./static mounts to src/static only; served static uses static_data
+# (see docker-compose.yml header).
+# CI using docker-compose.yml alone relies on the image for those paths.
+#
 services:
   web-ui:
     extends:
       file: docker-compose.yml
       service: web-ui
+    # Dev uses the Dockerfile's `builder` stage (Node + pnpm + uv toolchain)
+    # so `invenio webpack install/build` can shell out to `pnpm` via PNPMPackage.
+    # Tagged with a dev-only name so the slim runtime image stays untouched.
+    # Built locally on first `up`; rebuild with `docker compose ... build web-ui`.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
@@ -53,25 +82,56 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
+      - ./static:/opt/invenio/src/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
   web-api:
     extends:
       file: docker-compose.yml
       service: web-api
+    # See web-ui above for the dev-image rationale.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
@@ -88,25 +148,55 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./static:/opt/invenio/src/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes
   worker:
     extends:
       file: docker-compose.yml
       service: worker
+    # See web-ui above for the dev-image rationale.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
     environment:
       - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
     volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
-      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
@@ -123,9 +213,26 @@ services:
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
-
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./static:/opt/invenio/src/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes

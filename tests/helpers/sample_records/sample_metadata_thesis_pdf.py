@@ -41,7 +41,9 @@ sample_metadata_thesis_pdf = {
             "macroeconomics",
             "modelling",
         ],
-        "thesis:university": ("Universidad Nacional Autónoma de México (UNAM)"),
+        "thesis:thesis": {
+            "university": ("Universidad Nacional Autónoma de México (UNAM)")
+        },
     },
     "files": {
         "default_preview": (
@@ -133,7 +135,7 @@ sample_metadata_thesis_pdf = {
                     "identifiers": [
                         {
                             "identifier": "gabogabito123",
-                            "scheme": "hc_username",
+                            "scheme": "kc_username",
                         }
                     ],
                     "name": "Martínez Hernández, Alberto-Gabino",

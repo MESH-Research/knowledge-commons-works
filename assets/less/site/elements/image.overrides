@@ -29,8 +29,32 @@
     }
   }
 }
-.community-header .ui.image.community-image {
+.community-header .ui.image.community-image.community-header-logo {
   margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+
+  @media (max-width: @largestMobileScreen) {
+    width: 5rem;
+    max-width: 5rem;
+  }
+
+  img {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+  }
+}
+// preview in the community settings form
+.form.communities-profile .ui.image.community-logo img {
+  height: auto !important;
+  object-fit: fill;
+}
+// also used elsewhere
+img.community-header-logo { 
+  border-radius: @defaultBorderRadius;
+  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
+  border: 1px solid @sidebarBorderColor;
 }
 .communities-frontpage {
   .ui.icon.message > .icon:not(.close) {
@@ -40,7 +64,14 @@
     object-fit: cover;
   }
 }
-#communities.sidebar-container
+#communities.sidebar-container {
+  .row.default-community
+  .community-image
+  img {
+    min-width: 0px;
+    max-width: 70px;
+    min-height: 0px;
+  }
   .row:not(.default-community)
   .community-image
   img {
@@ -51,11 +82,7 @@
   min-width: 40px;
   box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
   border: 1px solid @sidebarBorderColor;
-}
-img.community-header-logo {
-  border-radius: @defaultBorderRadius;
-  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
-  border: 1px solid @sidebarBorderColor;
+  }
 }
 
 #communities-carousel .carousel .ui.items .item img {

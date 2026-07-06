@@ -2,7 +2,7 @@ h1.ui.header {
   color: @verdigris;
   margin-top: 2rem;
 }
-.deposit-form-header {
+.deposit-form-title {
   h1.ui.header {
     margin-bottom: 0;
   }
@@ -47,11 +47,25 @@ h2.ui.header {
   }
 }
 
+
+.communities-settings h2.ui.small.header {
+  font-size: @big;
+  font-weight: bold;
+
+  &:first-of-type {
+    margin-top: 0.25em;
+  }
+
+  .sub.header {
+    font-style: italic;
+  }
+}
+
 #detail-main-content {
   h1.ui.header {
     margin-top: 0;
     // font-weight: normal;
-    color: @primaryColor;
+    color: @ivy80;
   }
   .sidebar-container {
     h2.ui.header {
@@ -109,6 +123,7 @@ h2.ui.header {
     }
   }
 }
+
 
 .request-detail-page > .computer-flex-header.rel-mt-2 {
   margin-top: 1rem !important;

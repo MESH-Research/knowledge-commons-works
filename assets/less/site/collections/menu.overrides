@@ -1,3 +1,13 @@
+.ui.secondary.pointing.menu > .item {
+  &:has(.label),
+  &:has(.label) + .item{
+    line-height: 1.5rem;
+    .icon {
+      line-height: 1rem;
+    }
+  }
+}
+
 .ui.menu.pagination {
   box-shadow: none;
   border: 1px solid @formInputBorderColor;

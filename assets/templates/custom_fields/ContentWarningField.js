@@ -3,7 +3,7 @@ import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
 import { Checkbox, Form } from "semantic-ui-react";
 import { FieldLabel } from "react-invenio-forms";
-import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/TextArea";
+import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextArea";
 
 const ContentWarningField = ({
   fieldPath,

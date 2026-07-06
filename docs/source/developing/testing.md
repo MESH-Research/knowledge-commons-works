@@ -80,7 +80,30 @@ Pytest will also run any doctests that are found in these directories. This incl
 
 The top-level `conftest.py` file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the `invenio.cfg` file. Some of these variables are then overridden in the `test_config` dictionary that `conftest.py` passes to the app instance.
 
-The test environment does not use the top-level `.env` file that is used in the development environment. Where environment variables are needed, these are provided in a dedicated environment file `tests/.env` that is used to configure the test environment in the test runner script `run-tests.sh`.
+The test environment does not use the top-level `.env` file that is used in the development environment. Instead, `run-tests.sh` layers two environment files into the `uv run` invocation that launches pytest:
+
+1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
+2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed on exit) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
+
+The secret file is produced by `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
+
+- `SPARKPOST_USERNAME`
+- `SPARKPOST_API_KEY`
+- `INVENIO_ADMIN_EMAIL`
+
+The defaults can be overridden without editing the script:
+
+- `KCWORKS_TEST_SM_SECRET_ID` (or `--secret-id`): override the AWS Secrets Manager secret id.
+- `KCWORKS_TEST_SM_KEYS` (or `--keys`): comma-separated list of keys to pull from the secret.
+- `--region`: forwarded to `aws` for cross-region secrets.
+- `--allow-missing`: warn instead of failing when a listed key is absent from the secret.
+- `KCWORKS_TEST_SM_DISABLE=1`: skip the AWS lookup entirely; rely on `tests/.env` (used in CI, where secrets come from GitHub Actions secrets).
+
+Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
+
+```{note}
+On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys via the `Run tests` step's `env:` block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.
+```
 
 ### Pytest fixtures
 
@@ -100,18 +123,23 @@ Pytest does not directly test custom javascript files or React components. In or
 ```console
 bash run-js-tests.sh
 ```
-These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.
+These tests are run using the Jest test runner, configured in the root `package.json` file.
 
-This is equivalent to running
-```console
-npm run test
-```
-
-Note that these tests run using a local npm configuration in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
+Enable **Corepack** once per Node.js install (`corepack enable`) so the **`pnpm`** CLI matches the version pinned in **`packageManager`**. Installing dependencies is equivalent to running:
 
 ```console
-npm install
+pnpm install
 ```
+
+For CI and reproducible installs, use **`pnpm install --frozen-lockfile`** with the committed **`pnpm-lock.yaml`**.
+
+This is equivalent to running:
+
+```console
+pnpm run test
+```
+
+Note that these tests use a **local pnpm** setup in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local `package.json` and will be installed under `node_modules`. Since that folder is not included in git, run **`pnpm install`** in the repo root before you run the JavaScript tests.
 
 ## Ghost Inspector tests
 

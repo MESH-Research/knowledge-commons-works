@@ -4,7 +4,10 @@ requires = ["babel>2.8", "setuptools>=61", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.8.2"
+version = "0.8.1"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -13,82 +16,70 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "aiohttp>=3.11.15",
-  "async-timeout>=4.0.3",
-  "flask-admin==1.6.1",
-  "flask-babelex",
-  "flask-breadcrumbs",
-  "flask-iiif",
-  "flask-principal",
-  "invenio-app-rdm[opensearch2]==12.1",
-  "invenio-communities==13.0.3",
+  "cairosvg>=2.7",
+  "invenio-app-rdm[opensearch2,s3,tests]~=13.0.0",
+  "invenio-communities>=19,<20",
   "invenio-group-collections-kcworks",
-  "invenio-logging[sentry]==2.1.5",
+  "invenio-logging[sentry]>=4,<5",
   "invenio-modular-deposit-form",
   "invenio-modular-detail-page",
-  "invenio-rdm-records==10.9.2",
+  "invenio-rdm-records>=19,<20",
   "invenio-record-importer-kcworks",
-  "invenio-records-resources==5.10",
   "invenio-remote-api-provisioner",
   "invenio-remote-user-data-kcworks",
-  "invenio-requests==4.1.4",
   "invenio-s3",
-  "invenio-search-ui==2.8.9",
   "invenio-stats-dashboard",
   "invenio-subjects-fast",
   "invenio-utilities-tuw",
-  "isbnlib",
   "langdetect",
-  "linkify-it-py>=2.0.3",
   "lxml==5.2.1",
-  "openpyxl",
   "pandas",
-  "pip",
-  "pluggy>=0.12,<2",
+  "pillow>=11",
   "pydantic",
-  "python-dotenv",
-  "python-iso639",
-  "python-stdnum",
-  "selenium",
   "sentry-sdk[flask]>=1,<2",
   "sqlalchemy[asyncio]",
-  "timefhuman",
-  "titlecase",
   "tqdm",
-  "unidecode",
   "uwsgi>=2.0.23",
 ]
 optional-dependencies.dev = [
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
-  "furo",
   "jsonlines",
-  "mypy>=1.8",
-  "myst-parser",
   "psycopg2-binary>=2.9.10",
-  "requests-mock",
-  "ruff>=0.3",
-  "selenium",
+  "types-requests",
+]
+optional-dependencies.docs = [
+  "furo",
+  "linkify-it-py>=2.0.3",
+  "myst-parser",
   "sphinx",
   "sphinx-copybutton>=0.5.2",
 ]
 optional-dependencies.tests = [
+  "coverage",
+  "pytest",
   "pytest-cov>=6.2.1",
-  "pytest-invenio>=2.2.2,<3",
+  "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
   "pytest-mock",
-  "pytest-mypy>=0.10",
   "pytest-ruff>=0.1",
   "pytest-timeout",
+  "requests-mock",
+  "ruff>=0.3",
+  "selenium",
   "ty",
 ]
 scripts.group-collections = "kcworks.cli:group_collections"
+scripts.kcworks-communities = "kcworks.cli:kcworks_communities"
 scripts.kcworks-index = "kcworks.cli:kcworks_index"
+scripts.kcworks-jobs = "kcworks.cli:kcworks_jobs"
 scripts.kcworks-records = "kcworks.cli:kcworks_records"
 scripts.kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."flask.commands".group-collections = "kcworks.cli:group_collections"
+entry-points."flask.commands".kcworks-communities = "kcworks.cli:kcworks_communities"
 entry-points."flask.commands".kcworks-index = "kcworks.cli:kcworks_index"
+entry-points."flask.commands".kcworks-jobs = "kcworks.cli:kcworks_jobs"
 entry-points."flask.commands".kcworks-records = "kcworks.cli:kcworks_records"
 entry-points."flask.commands".kcworks-users = "kcworks.cli:kcworks_users"
 entry-points."invenio_assets.webpack".kcworks_theme = "kcworks.webpack:theme"
@@ -96,13 +87,18 @@ entry-points."invenio_base.api_apps".kcworks = "kcworks.ext:KCWorks"
 entry-points."invenio_base.api_blueprints".kcworks_api = "kcworks.views.views:create_api_blueprint"
 entry-points."invenio_base.api_finalize_app".kcworks = "kcworks.ext:api_finalize_app"
 entry-points."invenio_base.apps".kcworks = "kcworks.ext:KCWorks"
+entry-points."invenio_base.blueprints".kcworks_communities_settings = "kcworks.views.communities_settings_ui:create_blueprint"
 entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:create_blueprint"
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
+entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.tasks"
+entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
+entry-points."invenio_modular_deposit_form.components_registry".kcworks = "kcworks.utils.deposit_extras:get_components_registry_js_path"
+entry-points."invenio_modular_deposit_form.transformations".kcworks = "kcworks.utils.deposit_extras:get_transformations_js_path"
+entry-points."invenio_modular_deposit_form.validator".kcworks = "kcworks.utils.deposit_extras:get_validator_js_path"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
-entry-points."invenio_previewer.previewers".custom_pdf_viewer = "kcworks.views.previewers.invenio_custom_pdf_viewer.custom_pdf_viewer"
 entry-points."invenio_previewer.previewers".custom_pptx_viewer = "kcworks.views.previewers.invenio_custom_pptx_viewer.custom_pptx_viewer"
 entry-points."invenio_search.index_templates".kcworks = "kcworks.services.search.index_templates.templates:get_index_templates"
 
@@ -111,37 +107,51 @@ dev = [
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
-  "mypy>=1.8",
+  "jsonlines",
+  "kc-knowledge-base-sync",
   "psycopg2-binary>=2.9.10",
+]
+docs = [
+  "furo",
+  "linkify-it-py>=2.0.3",
+  "myst-parser",
+  "sphinx",
+  "sphinx-copybutton>=0.5.2",
+]
+tests = [
+  "pytest-cov>=6.2.1",
+  "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
   "pytest-mock",
+  "pytest-ruff>=0.1",
   "pytest-timeout",
   "requests-mock",
   "ruff>=0.3",
   "selenium",
+  "ty",
 ]
 
 [tool.setuptools]
 package-dir = { "" = "site" }
 package-data."*" = ["*.po", "*.pot", "*.mo"]
-
-[tool.hatch]
-build.targets.wheel.packages = ["site"]
-metadata.allow-direct-references = true
+package-data.kcworks = [
+  "translations/**/*.po",
+  "translations/**/*.pot",
+  "translations/**/*.mo",
+]
 
 [tool.uv]
 sources.invenio-communities = { path = "./site/kcworks/dependencies/invenio-communities", editable = true }
+sources.invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
 sources.invenio-group-collections-kcworks = { path = "./site/kcworks/dependencies/invenio-group-collections-kcworks", editable = true }
 sources.invenio-modular-deposit-form = { path = "./site/kcworks/dependencies/invenio-modular-deposit-form", editable = true }
 sources.invenio-modular-detail-page = { path = "./site/kcworks/dependencies/invenio-modular-detail-page", editable = true }
-sources.invenio-rdm-records = { path = "./site/kcworks/dependencies/invenio-rdm-records", editable = true }
 sources.invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/invenio-record-importer-kcworks", editable = true }
-sources.invenio-records-resources = { path = "./site/kcworks/dependencies/invenio-records-resources", editable = true }
 sources.invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
 sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
-sources.invenio-requests = { path = "./site/kcworks/dependencies/invenio-requests", editable = true }
 sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
 sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
+sources.kc-knowledge-base-sync = { path = "./site/kcworks/dependencies/kc-knowledge-base-sync", editable = true }
 sources.kcworks = { path = "./site", editable = true }
 
 [tool.ruff]
@@ -154,17 +164,16 @@ exclude = [
   "node_modules",
   "scripts",
   "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-rdm-records",
   "site/kcworks/dependencies/invenio-group-collections-kcworks",
   "site/kcworks/dependencies/invenio-modular-deposit-form",
   "site/kcworks/dependencies/invenio-modular-detail-page",
-  "site/kcworks/dependencies/invenio-rdm-records",
   "site/kcworks/dependencies/invenio-record-importer-kcworks",
-  "site/kcworks/dependencies/invenio-records-resources",
   "site/kcworks/dependencies/invenio-remote-api-provisioner",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
-  "site/kcworks/dependencies/invenio-requests",
   "site/kcworks/dependencies/invenio-stats-dashboard",
   "site/kcworks/dependencies/invenio-vocabularies",
+  "site/kcworks/dependencies/kc-knowledge-base-sync",
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
@@ -184,6 +193,7 @@ lint.per-file-ignores."tests/api/test_stats.py" = ["C416"]
 lint.isort.known-first-party = [
   "invenio_stats_dashboard",
   "invenio_record_importer_kcworks",
+  "invenio_remote_user_data_kcworks",
   "tests",
 ]
 lint.pydocstyle.convention = "google"
@@ -200,100 +210,94 @@ use_parentheses = true
 ensure_newline_before_comments = true
 split_on_trailing_comma = true
 skip = [
-  "site/kcworks/dependencies/invenio-rdm-records",
-  "site/kcworks/dependencies/invenio-records-resources",
-  "site/kcworks/dependencies/invenio-requests",
   "site/kcworks/dependencies/invenio-vocabularies",
   "site/kcworks/dependencies/invenio-communities",
-  "__pycache__",                                         # Skip cache directories
+  "site/kcworks/dependencies/invenio-rdm-records",
+  "__pycache__",                                    # Skip cache directories
   # ".venv",  # Skip virtual environment
   # "node_modules",  # Skip node modules
 ]
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
-disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = false
-warn_no_return = false
-ignore_missing_imports = true
-follow_imports = "skip"
-allow_untyped_globals = true
-exclude = [
-  "^tests/",
-  "^site/kcworks/dependencies/",
-  "^site/kcworks/services/search/index_templates/",
-]
-
-[[tool.mypy.overrides]]
-module = "kcworks.services.search.index_templates.*"
-ignore_errors = true
-ignore_missing_imports = true
-follow_imports = "skip"
-
 [tool.ty]
+analysis = {}
+# Type checking with ty (replaces mypy)
 environment.python-version = "3.12"
-rules.unresolved-import = "ignore"
-src.exclude = [
-  "**/tests/**",
-  "**/site/kcworks/dependencies/**",
-  "**/site/kcworks/services/search/index_templates/**",
+overrides = [
+  # Exclude these paths from type checking (.gitignore-style patterns)
+  # Broaden if you need to allow specific third-party modules, e.g.:
+  # allowed-unresolved-imports = ["some_untyped_lib.**"]
 ]
-
-[[tool.ty.overrides]]
-include = ["**/kcworks/services/search/index_templates/**"]
-rules = { unresolved-attribute = "ignore", invalid-assignment = "ignore", unresolved-import = "ignore" }
+# Pylsp/Jedi: so "go to definition" and "find references" resolve in local dependencies
+# Rule severities (ty uses rule names; mypy options translated below)
+# warn_redundant_casts = true
+rules.redundant-cast = "warn"
+# warn_unused_ignores = false → don't warn about unused type: ignore
+rules.unused-ignore-comment = "ignore"
+rules.unused-type-ignore-comment = "ignore"
+# ignore_missing_imports = true → suppress unresolved-import
+rules.unresolved-import = "ignore"
+# allow_untyped_globals = true → don't error on undeclared globals
+rules.unresolved-global = "ignore"
+# Suppress unresolved-import for modules we don't type-check (optional extra)
+src.exclude = [
+  "tests",
+  "site/kcworks/dependencies",
+  "site/kcworks/services/search/index_templates",
+]
 
 [tool.pytest]
 ini_options.addopts = """
 --ruff --doctest-modules
 --log-cli-level=DEBUG
+--ignore=.pnpm-store
 --ignore=app_data
+--ignore=build
 --ignore=docs
 --ignore=node_modules
+--ignore=private
 --ignore=scripts
---ignore=tests/helpers
 --ignore=site/kcworks/dependencies/invenio-communities
+--ignore=site/kcworks/dependencies/invenio-rdm-records
 --ignore=site/kcworks/dependencies/invenio-group-collections-kcworks
 --ignore=site/kcworks/dependencies/invenio-modular-deposit-form
 --ignore=site/kcworks/dependencies/invenio-modular-detail-page
---ignore=site/kcworks/dependencies/invenio-rdm-records
 --ignore=site/kcworks/dependencies/invenio-record-importer-kcworks
---ignore=site/kcworks/dependencies/invenio-records-resources
 --ignore=site/kcworks/dependencies/invenio-remote-api-provisioner
 --ignore=site/kcworks/dependencies/invenio-remote-user-data-kcworks
---ignore=site/kcworks/dependencies/invenio-requests
 --ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
+--ignore=site/kcworks/dependencies/kc-knowledge-base-sync
 --ignore=site/kcworks/services/search/index_templates
+--ignore=tests/helpers
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
 ini_options.norecursedirs = [
   "site/kcworks/services/search/index_templates/records/os-v2",
   "site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches",
-  "site/kcworks/**/os-v1",
 ]
 ini_options.log_cli_level = "DEBUG"
 ini_options.isort_show_files = true
+ini_options.testpaths = ["tests", "site/kcworks"]
 ini_options.timeout = 300
 ini_options.timeout_method = "thread"
 ini_options.plugins = [
+  "celery.contrib.pytest",
   "tests.fixtures.caching",
   "tests.fixtures.cli",
   "tests.fixtures.communities",
+  "tests.fixtures.community_events",
   "tests.fixtures.custom_fields",
+  "tests.fixtures.files",
+  "tests.fixtures.fixtures",
+  "tests.fixtures.frontend",
   "tests.fixtures.identifiers",
   "tests.fixtures.idms",
+  "tests.fixtures.logging",
   "tests.fixtures.mail",
-  "tests.fixtures.metadata_fields",
+  "tests.fixtures.names",
   "tests.fixtures.records",
   "tests.fixtures.roles",
+  "tests.fixtures.search",
   "tests.fixtures.search_provisioning",
   "tests.fixtures.stats",
   "tests.fixtures.uow",
@@ -315,16 +319,15 @@ ini_options.plugins = [
 [tool.coverage]
 run.omit = [
   "site/kcworks/dependencies/invenio-communities/*",
+  "site/kcworks/dependencies/invenio-rdm-records/*",
   "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
   "site/kcworks/dependencies/invenio-modular-deposit-form/*",
   "site/kcworks/dependencies/invenio-modular-detail-page/*",
-  "site/kcworks/dependencies/invenio-rdm-records/*",
   "site/kcworks/dependencies/invenio-record-importer-kcworks/*",
-  "site/kcworks/dependencies/invenio-records-resources/*",
   "site/kcworks/dependencies/invenio-remote-api-provisioner/*",
   "site/kcworks/dependencies/invenio-remote-user-data-kcworks/*",
-  "site/kcworks/dependencies/invenio-requests/*",
   "site/kcworks/dependencies/invenio-vocabularies/*",
+  "site/kcworks/dependencies/kc-knowledge-base-sync/*",
   "site/kcworks/services/search/index_templates/*",
   "site/kcworks/views/task_results/*",
 ]
@@ -341,3 +344,17 @@ init_catalog.input-file = "translations/messages.pot"
 init_catalog.output-dir = "translations/"
 update_catalog.input-file = "translations/messages.pot"
 update_catalog.output-dir = "translations/"
+
+[tool.pylsp]
+plugins.jedi.extra_paths = [
+  "site/kcworks/dependencies/invenio-communities",
+  "site/kcworks/dependencies/invenio-rdm-records",
+  "site/kcworks/dependencies/invenio-group-collections-kcworks",
+  "site/kcworks/dependencies/invenio-modular-deposit-form",
+  "site/kcworks/dependencies/invenio-modular-detail-page",
+  "site/kcworks/dependencies/invenio-remote-api-provisioner",
+  "site/kcworks/dependencies/invenio-record-importer-kcworks",
+  "site/kcworks/dependencies/invenio-remote-user-data-kcworks",
+  "site/kcworks/dependencies/invenio-stats-dashboard",
+  "site/kcworks/dependencies/invenio-vocabularies",
+]

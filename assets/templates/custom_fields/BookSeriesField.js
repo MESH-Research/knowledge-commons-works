@@ -32,7 +32,7 @@ const BookSeriesField = ({
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
 
   useEffect(() => {
-    if (!!haveChangedNumber) {
+    if (haveChangedNumber) {
       if (seriesLength < 0) {
         // console.log(document.getElementById(`${fieldPath}.add-button`));
         document.getElementById(`${fieldPath}.add-button`)?.focus();
@@ -82,7 +82,7 @@ const BookSeriesField = ({
               <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
             </Form.Field> */}
 
-          {!!values.custom_fields
+          {values.custom_fields
             ? values.custom_fields["kcr:book_series"]?.map(
                 ({ title, volume }, index) => {
                   const fieldPathPrefix = `${fieldPath}.${index}`;

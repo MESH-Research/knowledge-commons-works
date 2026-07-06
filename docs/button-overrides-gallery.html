@@ -1,0 +1,614 @@
+<!--
+  KC Works — Button override style gallery (draft)
+
+  Paste the contents of <div id="button-style-gallery">…</div> (or the whole
+  invenio-page-body block) into a standalone CMS/static page on the site.
+
+  Requires site Semantic UI CSS + icon font (same as any normal page).
+  Gallery chrome styles are scoped to #button-style-gallery only.
+-->
+<div class="invenio-page-body">
+  <div class="ui container" id="button-style-gallery">
+    <style>
+      #button-style-gallery {
+        background-color: #faf8f5;
+      }
+
+      #button-style-gallery .gallery-intro {
+        margin-bottom: 2rem;
+      }
+
+      #button-style-gallery .gallery-section {
+        margin-bottom: 2.5rem;
+      }
+
+      #button-style-gallery .override-ref {
+        color: rgba(0, 0, 0, 0.55);
+        font-size: 0.9rem;
+        margin: 0.25rem 0 1rem;
+      }
+
+      #button-style-gallery .sample-row {
+        align-items: flex-end;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      #button-style-gallery .sample-cell {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      #button-style-gallery .sample-label {
+        color: rgba(0, 0, 0, 0.5);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.72rem;
+        line-height: 1.3;
+        max-width: 18rem;
+      }
+
+      #button-style-gallery .context-box {
+        border: 1px dashed rgba(0, 0, 0, 0.2);
+        border-radius: 0.28571429rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+      }
+
+      #button-style-gallery .context-box>.context-title {
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      #button-style-gallery h2.ui.header {
+        margin-top: 1.5rem;
+      }
+
+      #button-style-gallery .ui.divider {
+        margin: 2rem 0;
+      }
+    </style>
+
+    <div class="gallery-intro">
+      <h1 class="ui header">Button style gallery</h1>
+      <p>
+        Side-by-side samples for rationalizing KC Works Semantic UI button overrides.
+        Each cell shows the markup classes; section notes cite the override file.
+      </p>
+      <div class="ui small message">
+        <div class="content">
+          Compare default, hover, focus, active, and disabled states in the browser.
+          Grouped buttons are the main corner-radius stress test.
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">1. Global default (<code>button.overrides</code>)</h2>
+    <p class="override-ref">
+      <code>.ui.button</code>, <code>.ui.buttons &gt; .ui.button</code> — white fill, verdigris inset border, ivy text.
+    </p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui button" type="button">Default</button>
+        <span class="sample-label">.ui.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui button" type="button" disabled>Disabled</button>
+        <span class="sample-label">.ui.button disabled</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui loading button" type="button">Loading</button>
+        <span class="sample-label">.ui.loading.button</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">2. Emphasis &amp; semantic colors</h2>
+    <p class="override-ref">
+      Primary block + color variants in <code>button.overrides</code> lines 64–128.
+    </p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui primary button" type="button">Primary</button>
+        <span class="sample-label">.ui.primary.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui secondary button" type="button">Secondary</button>
+        <span class="sample-label">.ui.secondary.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui positive button" type="button">Positive</button>
+        <span class="sample-label">.ui.positive.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui negative button" type="button">Negative</button>
+        <span class="sample-label">.ui.negative.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui warning button" type="button">Warning</button>
+        <span class="sample-label">.ui.warning.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui blue button" type="button">Blue</button>
+        <span class="sample-label">.ui.blue.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui transparent button" type="button">Transparent</button>
+        <span class="sample-label">.ui.transparent.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui search button" type="button">Search</button>
+        <span class="sample-label">.ui.search.button</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">3. Basic buttons</h2>
+    <p class="override-ref">
+      <code>.ui.basic.button</code> and basic + primary / secondary / negative — <code>button.overrides</code> ~159–225.
+    </p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui basic button" type="button">Basic</button>
+        <span class="sample-label">.ui.basic.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui basic primary button" type="button">Basic primary</button>
+        <span class="sample-label">.ui.basic.primary.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui basic secondary button" type="button">Basic secondary</button>
+        <span class="sample-label">.ui.basic.secondary.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui basic negative button" type="button">Basic negative</button>
+        <span class="sample-label">.ui.basic.negative.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui basic negative active button" type="button">Basic negative active</button>
+        <span class="sample-label">.ui.basic.negative.active.button</span>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">Context: .right-sidebar .ui.message (site.overrides)</div>
+      <div class="right-sidebar">
+        <div class="ui message">
+          <button class="ui basic warning button" type="button">Basic warning</button>
+        </div>
+      </div>
+      <span class="sample-label">.right-sidebar .ui.message .ui.basic.warning.button</span>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">4. Button groups (corner radius)</h2>
+    <p class="override-ref">
+      SUI group rules vs global <code>.ui.buttons &gt; .ui.button</code> override.
+      Commented partial fix at <code>button.overrides</code> ~228–233.
+    </p>
+
+    <div class="sample-row">
+      <div class="sample-cell">
+        <div class="ui buttons">
+          <button class="ui button" type="button">One</button>
+          <button class="ui button" type="button">Two</button>
+          <button class="ui button" type="button">Three</button>
+        </div>
+        <span class="sample-label">.ui.buttons (plain)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui buttons">
+          <button class="ui primary button" type="button">Save</button>
+          <button class="ui button" type="button">Cancel</button>
+        </div>
+        <span class="sample-label">.ui.buttons primary + default</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui buttons">
+          <button class="ui primary icon left labeled button" type="button">
+            <i class="save icon"></i>
+            Save
+          </button>
+          <button class="ui icon left labeled button" type="button">
+            <i class="undo icon"></i>
+            Reset
+          </button>
+        </div>
+        <span class="sample-label">Theme form pattern: icon + left labeled (no group labeled/icon classes)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui labeled icon buttons">
+          <button class="ui primary icon left labeled button" type="button">
+            <i class="save icon"></i>
+            Save
+          </button>
+          <button class="ui icon left labeled button" type="button">
+            <i class="undo icon"></i>
+            Reset
+          </button>
+        </div>
+        <span class="sample-label">.ui.labeled.icon.buttons (SUI group class)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui vertical buttons">
+          <button class="ui button" type="button">Top</button>
+          <button class="ui button" type="button">Middle</button>
+          <button class="ui button" type="button">Bottom</button>
+        </div>
+        <span class="sample-label">.ui.vertical.buttons</span>
+      </div>
+    </div>
+
+    <p class="override-ref"><code>.ui.buttons.basic</code> — active state mint fill (~lines 7–31).</p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <div class="ui basic buttons">
+          <button class="ui button" type="button">Off</button>
+          <button class="ui active button" type="button">On</button>
+          <button class="ui button" type="button">Off</button>
+        </div>
+        <span class="sample-label">.ui.basic.buttons + .active</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui basic toggle buttons">
+          <button class="ui toggle button" type="button">No</button>
+          <button class="ui active toggle button" type="button">Yes</button>
+        </div>
+        <span class="sample-label">.ui.basic.toggle.buttons</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">5. Labeled &amp; icon buttons</h2>
+    <p class="override-ref">
+      <code>&amp;.labeled.icon &gt; .icon { background-color: transparent }</code> — affects icon segment / corners.
+    </p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui icon button" type="button" aria-label="Icon only">
+          <i class="close icon"></i>
+        </button>
+        <span class="sample-label">.ui.icon.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui icon left labeled button" type="button">
+          <i class="save icon"></i>
+          Left labeled
+        </button>
+        <span class="sample-label">.ui.icon.left.labeled.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui icon right labeled button" type="button">
+          Right labeled
+          <i class="download icon"></i>
+        </button>
+        <span class="sample-label">.ui.icon.right.labeled.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui primary icon left labeled button" type="button">
+          <i class="save icon"></i>
+          Primary labeled
+        </button>
+        <span class="sample-label">.ui.primary.icon.left.labeled.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui toggle active primary icon left labeled button" type="button">
+          <i class="check icon"></i>
+          Toggle active
+        </button>
+        <span class="sample-label">.toggle.active.primary… (theme Save when saved)</span>
+      </div>
+    </div>
+
+    <p class="override-ref"><code>.ui.button.icon.fluid.labeled.centered</code> — extra right padding.</p>
+    <div class="sample-row">
+      <div class="sample-cell" style="flex: 1; min-width: 12rem; max-width: 20rem;">
+        <button class="ui fluid icon labeled centered button" type="button">
+          <i class="list icon"></i>
+          Fluid centered labeled
+        </button>
+        <span class="sample-label">.ui.fluid.icon.labeled.centered.button</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">6. Sizes</h2>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui mini button" type="button">Mini</button>
+        <span class="sample-label">.mini</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui tiny button" type="button">Tiny</button>
+        <span class="sample-label">.tiny</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui small button" type="button">Small</button>
+        <span class="sample-label">.small</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui button" type="button">Default</button>
+        <span class="sample-label">(default)</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui large button" type="button">Large</button>
+        <span class="sample-label">.large</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui big button" type="button">Big</button>
+        <span class="sample-label">.big</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui huge button" type="button">Huge</button>
+        <span class="sample-label">.huge</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui massive left fluid labeled icon button" type="button">
+          <i class="upload icon"></i>
+          Massive fluid
+        </button>
+        <span class="sample-label">.massive.left.fluid.labeled.icon (padding override)</span>
+      </div>
+    </div>
+
+    <div class="ui form gallery-section">
+      <p class="override-ref"><code>.ui.form .ui.mini.ui.button</code> — mini rendered at 1em.</p>
+      <button class="ui mini button" type="button">Mini inside .ui.form</button>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">7. Project-specific button classes</h2>
+
+    <p class="override-ref"><code>.close-btn</code> — red, float right, extra top margin without adjacent label.</p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui icon button close-btn" type="button" aria-label="Clear">
+          <i class="close icon"></i>
+        </button>
+        <span class="sample-label">.close-btn (standalone)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui form">
+          <div class="field">
+            <button class="ui icon button close-btn no-label" type="button" aria-label="Clear">
+              <i class="close icon"></i>
+            </button>
+            <label>Field label below floated close</label>
+          </div>
+        </div>
+        <span class="sample-label">.close-btn:not(:has(+ label)) margin test</span>
+      </div>
+    </div>
+
+    <p class="override-ref"><code>.link-button</code> — text link appearance.</p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui button link-button" type="button">Link button</button>
+        <span class="sample-label">.ui.button.link-button</span>
+      </div>
+    </div>
+
+    <div class="ui form">
+      <p class="override-ref">
+        <code>.ui.form .add-btn</code> / <code>.add-button</code> / <code>.add-id-button</code> /
+        <code>.add-url-button</code>
+      </p>
+      <div class="sample-row">
+        <div class="sample-cell">
+          <button class="ui labeled icon button add-btn" type="button">
+            <i class="add icon"></i>
+            Add (add-btn)
+          </button>
+          <span class="sample-label">.add-btn</span>
+        </div>
+        <div class="sample-cell">
+          <button class="ui labeled icon button add-button" type="button">
+            <i class="add icon"></i>
+            Add (add-button)
+          </button>
+          <span class="sample-label">.add-button</span>
+        </div>
+        <div class="sample-cell">
+          <button class="ui labeled icon button add-id-button" type="button">
+            <i class="add icon"></i>
+            Add ID
+          </button>
+          <span class="sample-label">.add-id-button</span>
+        </div>
+        <div class="sample-cell">
+          <button class="ui labeled icon button add-url-button" type="button">
+            <i class="add icon"></i>
+            Add URL
+          </button>
+          <span class="sample-label">.add-url-button</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">8. Action-input buttons (<code>input.overrides</code>)</h2>
+    <p class="override-ref">
+      <code>.ui.action.input &gt; .button.icon:last-child</code> — float/margin fix (vs .close-btn).
+    </p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <div class="ui action input w-rel-8">
+          <input type="text" placeholder="#RRGGBB" value="#336699" aria-label="Hex" />
+          <button class="ui icon button" type="button" aria-label="Clear">
+            <i class="close icon"></i>
+          </button>
+        </div>
+        <span class="sample-label">.ui.action.input + icon clear (typography pattern)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui action input w-rel-8">
+          <input type="text" value="Sample" aria-label="Text" />
+          <button class="ui icon button close-btn" type="button" aria-label="Clear">
+            <i class="close icon"></i>
+          </button>
+        </div>
+        <span class="sample-label">.ui.action.input + .close-btn (legacy)</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui left labeled action input theme-color-field">
+          <label class="ui label theme-color-swatch" style="background-color: #336699;" aria-label="Pick color">
+            <input type="color" class="theme-color-input-native" value="#336699" tabindex="-1" aria-hidden="true" />
+          </label>
+          <input type="text" value="#336699" aria-label="Primary color" />
+          <button class="ui icon button" type="button" aria-label="Clear">
+            <i class="close icon"></i>
+          </button>
+        </div>
+        <span class="sample-label">.theme-color-field fused control</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">9. Context-scoped overrides</h2>
+
+    <div class="context-box">
+      <div class="context-title">.ui.info.message (button.overrides)</div>
+      <div class="ui info message">
+        <i class="info circle icon"></i>
+        <div class="content">
+          <p>Message with default button.</p>
+          <button class="ui button" type="button">Message action</button>
+          <button class="ui icon button" type="button" aria-label="Icon in message">
+            <i class="setting icon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">.sidebar-container (button.overrides)</div>
+      <div class="sidebar-container" style="max-width: 22rem;">
+        <button class="ui fluid icon primary left labeled button" type="button">
+          <i class="upload icon"></i>
+          Fluid primary sidebar
+        </button>
+        <button class="ui fluid icon left labeled button" type="button">
+          <i class="edit icon"></i>
+          Fluid default sidebar
+        </button>
+        <button class="ui fluid icon secondary left labeled button" type="button">
+          <i class="warning icon"></i>
+          Fluid secondary
+        </button>
+        <button class="ui fluid icon secondary basic left labeled button" type="button">
+          <i class="warning icon"></i>
+          Fluid secondary basic
+        </button>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">#record-export (button.overrides)</div>
+      <div id="record-export" style="max-width: 16rem;">
+        <button class="ui basic fluid button" type="button">Export basic</button>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">#frontpage-search-bar (button.overrides)</div>
+      <div id="frontpage-search-bar">
+        <div class="ui form">
+          <div class="ui action input">
+            <input type="search" placeholder="Search…" />
+            <button class="ui icon primary button" type="submit">
+              <i class="search icon"></i>
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+      <span class="sample-label">Primary icon + gold/verdigris outline rules</span>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">.right-sidebar #record-management / #download (site.overrides)</div>
+      <div class="right-sidebar" style="max-width: 22rem;">
+        <div class="sidebar-container" id="record-management">
+          <button class="ui fluid icon button" type="button">
+            <i class="settings icon"></i>
+            Record management
+          </button>
+        </div>
+        <div class="sidebar-container" id="download">
+          <button class="ui fluid icon right labeled button" type="button">
+            Download
+            <i class="download icon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">#detail-main-content (button.overrides)</div>
+      <div id="detail-main-content">
+        <button class="ui tiny button show-less" type="button">Show less</button>
+      </div>
+    </div>
+
+    <div class="context-box">
+      <div class="context-title">.ui.message.flashed .close-btn (message.overrides)</div>
+      <div class="ui success message flashed">
+        <div class="ui grid centered">
+          <div class="sixteen wide column">
+            Flash message
+            <button class="ui icon button close-btn" type="button" aria-label="Dismiss">
+              <i class="close icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <h2 class="ui dividing header">10. SUI stock patterns (may inherit global overrides)</h2>
+    <p class="override-ref">Useful baselines — same classes, no extra KC wrapper.</p>
+    <div class="sample-row">
+      <div class="sample-cell">
+        <button class="ui attached button" type="button">Attached</button>
+        <span class="sample-label">.attached.button</span>
+      </div>
+      <div class="sample-cell">
+        <div class="ui top attached buttons">
+          <button class="ui button" type="button">Tab A</button>
+          <button class="ui button" type="button">Tab B</button>
+        </div>
+        <span class="sample-label">.top.attached.buttons</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui circular icon button" type="button" aria-label="Circular">
+          <i class="heart icon"></i>
+        </button>
+        <span class="sample-label">.circular.icon.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui compact button" type="button">Compact</button>
+        <span class="sample-label">.compact.button</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui left floated button" type="button">Left floated</button>
+        <button class="ui right floated button" type="button">Right floated</button>
+        <span class="sample-label">.left.floated / .right.floated</span>
+      </div>
+    </div>
+
+    <div class="ui divider"></div>
+    <p class="override-ref">
+      <strong>Not included:</strong> inverted buttons (excluded from global override selectors),
+      <code>.invenio-fieldset.resource_type .menu .button.item</code> (needs full dropdown menu),
+      stats-dashboard-specific rules, facet hidden button.
+      Add those on the live page if needed.
+    </p>
+  </div>
+</div>

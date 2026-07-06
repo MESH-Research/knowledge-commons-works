@@ -17,8 +17,9 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": {
             "entry": {
-                "custom_pdf_viewer_js": "./js/invenio_custom_pdf_viewer/pdfjs.js",
-                "custom_pdf_viewer_css": "./scss/invenio_custom_pdf_viewer/pdfjs.scss",
+                "pdf_viewer_overrides_css": (
+                    "./scss/invenio_custom_pdf_viewer/pdfjs_overrides.scss"
+                ),
                 "custom_default_viewer_css": (
                     "./less/site/views/previewers/custom_default_viewer.less"
                 ),
@@ -29,8 +30,8 @@ theme = WebpackThemeBundle(
                 "invenio-communities-search-custom": (
                     "./js/collections/community/search.js"
                 ),
-                "invenio-communities-featured-custom": (
-                    "./js/collections/community/featuredCommunities/index.js"
+                "invenio-communities-subcommunities-custom": (
+                    "./js/collections/community/subcommunitySearch.js"
                 ),
                 "invenio-communities-carousel-custom": (
                     "./js/collections/community/communitiesCarousel/index.js"
@@ -38,9 +39,15 @@ theme = WebpackThemeBundle(
                 "invenio-app-rdm-community-records-search-custom": (
                     "./js/collections/communityRecordsSearch/index.js"
                 ),
-                "invenio-communities-header": "./js/collections/community/header.js",
-                # "invenio-communities-profile-custom": "./js/collections/"
-                # "settings/profile/index.js",
+                "invenio-communities-header-custom": (
+                    "./js/collections/community/header.js"
+                ),
+                "invenio-communities-browse-custom": (
+                    "./js/collections/community/browse.js"
+                ),
+                "invenio-communities-theme-custom": (
+                    "./js/collections/community/settings/theme/index.js"
+                ),
                 "invenio-app-rdm-frontpage-custom": (
                     "./js/invenio_app_rdm_custom/frontpage/index.js"
                 ),
@@ -50,13 +57,11 @@ theme = WebpackThemeBundle(
                 "main_ui_main_menu": "./js/main_ui/main_menu.js",
             },
             "dependencies": {
-                "geopattern": "^1.2.3",
                 "orcid-utils": "^1.2.2",
+                "yup": "^0.32.11",
             },
             "aliases": {
-                "@js/invenio_modular_deposit_form_extras": (
-                    "js/invenio_modular_deposit_form_extras"
-                ),
+                "@js/kcworks": "js",
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",

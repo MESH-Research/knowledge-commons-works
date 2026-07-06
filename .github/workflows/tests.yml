@@ -15,15 +15,17 @@ on:
         default: "Manual trigger"
 jobs:
   test:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           submodules: true
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.12.x'
       - name: Install prerequisites
@@ -39,15 +41,18 @@ jobs:
           export CFLAGS="-Wno-error=incompatible-pointer-types"
           uv pip install --reinstall --no-binary=lxml "lxml==5.2.1"
       - name: set up docker
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20.x
+          cache: pnpm
+      - name: Enable Corepack (pnpm from package.json packageManager)
+        run: corepack enable
       - name: Create config files
         run: |
           echo "[cli]" >> .invenio.private && \
@@ -56,24 +61,20 @@ jobs:
           touch tests/.env
       - name: Run tests
         env:
+          # CI gets test secrets from GitHub Actions secrets (this env: block),
+          # not from AWS Secrets Manager. Disable the launcher's SM lookup so
+          # run-tests.sh skips the AWS path and relies on the values below.
+          KCWORKS_TEST_SM_DISABLE: "1"
           CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
           CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
           COMMONS_API_TOKEN: ${{ secrets.TEST_COMMONS_API_TOKEN }}
-          COMMONS_API_TOKEN_PROD: ${{ secrets.TEST_COMMONS_API_TOKEN_PROD }}
           COMMONS_PROFILES_API_TOKEN: ${{ secrets.TEST_COMMONS_PROFILES_API_TOKEN }}
-          COMMONS_SEARCH_API_TOKEN: ${{ secrets.TEST_COMMONS_SEARCH_API_TOKEN }}
-          INVENIO_SEARCH_DOMAIN: ${{ vars.INVENIO_SEARCH_DOMAIN }}
           INVENIO_ADMIN_EMAIL: ${{ secrets.TEST_INVENIO_ADMIN_EMAIL }}
           INVENIO_SITE_UI_URL: ${{ vars.INVENIO_SITE_UI_URL }}
           INVENIO_SITE_API_URL: ${{ vars.INVENIO_SITE_API_URL }}
           INVENIO_STATIC_BEARER_TOKEN: ${{ secrets.INVENIO_STATIC_BEARER_TOKEN }}
-          SQLALCHEMY_DATABASE_URI: ${{ vars.TEST_SQLALCHEMY_DATABASE_URI }}
-          INVENIO_SQLALCHEMY_DATABASE_URI: ${{ vars.TEST_SQLALCHEMY_DATABASE_URI }}
-          POSTGRESQL_USER: ${{ vars.POSTGRES_USER }}
-          POSTGRESQL_PASSWORD: ${{ vars.POSTGRES_DB }}
-          POSTGRESQL_DB: ${{ vars.POSTGRES_DB }}
           INVENIO_COMMONS_API_REQUEST_PROTOCOL: https
-          INVENIO_MAIL_SUPPRESS_SEND: False
+          INVENIO_MAIL_SUPPRESS_SEND: True
           SPARKPOST_API_KEY: ${{ secrets.TEST_SPARKPOST_API_KEY }}
           SPARKPOST_USERNAME: ${{ secrets.TEST_SPARKPOST_USERNAME }}
           PYTHONWARNINGS: "ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::UserWarning"
@@ -83,15 +84,14 @@ jobs:
       # - name: Run translations test
       #   run: ./run-i18n-tests.sh
       - name: Install deps for frontend tests
-        # TODO: Add frontend tests
-        # - name: Run eslint test
-        #   run: ./run-js-linter.sh -i
-
         working-directory: .
-        run: npm install
+        run: pnpm install --frozen-lockfile
+      - name: Lint JavaScript
+        working-directory: .
+        run: pnpm run lint
       # - name: Install deps for frontend tests - translations
       #   working-directory: ./translations/kcworks
-      #   run: npm install
+      #   run: pnpm install --frozen-lockfile
       - name: Run frontend tests
         working-directory: .
         run: |-

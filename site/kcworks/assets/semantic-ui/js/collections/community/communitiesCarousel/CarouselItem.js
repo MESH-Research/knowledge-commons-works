@@ -13,17 +13,10 @@ import React, { Component } from "react";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Button, Grid, Header, Item } from "semantic-ui-react";
-import GeoPattern from "geopattern";
 
 class CarouselItem extends Component {
   render() {
     const { community, defaultLogo, className, showUploadBtn } = this.props;
-    const self_link = community.links.self_html.replace(
-      "communities",
-      "collections"
-    );
-
-    const pattern = GeoPattern.generate(encodeURI(community.slug));
 
     return (
       <Overridable
@@ -39,12 +32,12 @@ class CarouselItem extends Component {
           <Image
             size="small"
             src={community.links.logo}
-            fallbackSrc={pattern.toDataUri()}
+            fallbackSrc={defaultLogo || "/static/images/square-placeholder.png"}
           />
           <Item.Content as={Grid}>
             <Grid.Column computer="12" tablet="16" className="pl-0 pb-0">
               <Item.Header stackable className="rel-pb-1">
-                <Header as="a" size="medium" href={self_link}>
+                <Header as="a" size="medium" href={community.links.self_html}>
                   {community.metadata.title}
                 </Header>
               </Item.Header>
@@ -63,7 +56,7 @@ class CarouselItem extends Component {
               <div className="buttons-wrapper">
               <Button
                 size="mini"
-                href={self_link}
+                href={community.links.self_html}
                 content={i18next.t("Browse")}
                 className="browse-btn"
               />

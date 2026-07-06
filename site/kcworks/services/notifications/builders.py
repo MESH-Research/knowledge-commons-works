@@ -29,6 +29,7 @@
 # UserAccessRequestSubmitNotificationBuilder,
 """
 
+
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
     CommunityInvitationAcceptNotificationBuilder,
@@ -274,7 +275,13 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.create"
 
     @classmethod
-    def build(cls, data: dict, record: RDMDraft, sender: User):
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        data: dict,
+        record: RDMDraft,
+        sender: User,
+    ) -> Notification:
         """Build notification with context.
 
         Returns:
@@ -341,7 +348,13 @@ class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.publish"
 
     @classmethod
-    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User) -> Notification:
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        draft: RDMDraft,
+        record: RDMRecord,
+        sender: User,
+    ) -> Notification:
         """Build notification with context.
 
         Returns:
