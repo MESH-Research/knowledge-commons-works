@@ -3,7 +3,8 @@
 .ui.label.basic,
 .ui.label,
 .ui.small.labels .label,
-.ui.list .item .label {
+.ui.list .item .label,
+.ui.menu.secondary.pointing > .item > .label {
   background-color: @sidebarBackgroundColor;
   border: 1px solid @verdigris40;
   color: @ivy80;
@@ -34,6 +35,7 @@
 .ui-label.negative,
 .ui.label.access-status.restricted {
   border-color: @negativeColor;
+  background-color: @negativeColor;
   color: @white;
 }
 

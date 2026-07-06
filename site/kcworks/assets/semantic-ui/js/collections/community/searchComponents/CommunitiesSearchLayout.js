@@ -9,7 +9,11 @@ import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { SearchBar, Sort } from "react-searchkit";
 import { Button, Container, Grid, Icon } from "semantic-ui-react";
 
-export const CommunitiesSearchLayout = ({ config, appName }) => {
+export const CommunitiesSearchLayout = ({
+  config,
+  appName,
+  searchBarPlaceholder = i18next.t("Search collections..."),
+}) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   return (
     <Container>
@@ -22,7 +26,7 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
             floated="right"
             className="mt-10"
           >
-            <SearchBar placeholder={i18next.t("Search collections...")} />
+            <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
         </Grid.Row>
 
@@ -60,7 +64,7 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
         {/* Desktop search header */}
         <Grid.Row className="computer widescreen large-monitor only communities-search-bar">
           <Grid.Column width={12}>
-            <SearchBar placeholder={i18next.t("Search collections...")} />
+            <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
           <Grid.Column width={4} />
         </Grid.Row>
@@ -111,8 +115,10 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
 CommunitiesSearchLayout.propTypes = {
   config: PropTypes.object.isRequired,
   appName: PropTypes.string,
+  searchBarPlaceholder: PropTypes.string,
 };
 
 CommunitiesSearchLayout.defaultProps = {
   appName: "",
+  searchBarPlaceholder: i18next.t("Search collections..."),
 };

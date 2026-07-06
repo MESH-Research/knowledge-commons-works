@@ -6,14 +6,15 @@
     background-color: @cream;
   }
   .content {
-        .header {
-          background-color: transparent;
-        }
+    .header {
+      background-color: transparent;
+    }
+    background-color: transparent;
   }
   .actions {
     background-color: @white;
-    border-top: 0;
-    padding-top: 0;
+    // border-top: 0;
+    // padding-top: 0;
     .message {
       .content {
         background-color: transparent;

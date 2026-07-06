@@ -144,7 +144,8 @@
 @white: #fff;
 @salmon: #e47719;
 @salmonDark: #b05c14;
-@red: #db6228;
+@orange: #db6228;
+@red: #c26133;
 @redDark: #b54f1e;
 @yellow: @gold;
 @infoBlue: #276F86;

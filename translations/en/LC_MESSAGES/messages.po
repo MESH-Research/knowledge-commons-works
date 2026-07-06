@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-07-01 17:05-0400\n"
+"POT-Creation-Date: 2026-07-04 17:38-0400\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -3746,14 +3746,14 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches/invenio_rdm_records/services/communities/service.py:201
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/communities/service.py:194
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:194
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:195
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches/invenio_rdm_records/services/communities/service.py:201
 msgid "Community not found."
 msgstr "Collection not found."
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches/invenio_rdm_records/services/communities/service.py:494
 #: /Users/ianscott/Development/kcworks-next/private/invenio-rdm-records-master/invenio_rdm_records/services/communities/service.py:467
-#: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:467
+#: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/communities/service.py:490
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches/invenio_rdm_records/services/communities/service.py:494
 msgid "Community already included."
 msgstr "Collection already included."

@@ -33,8 +33,8 @@
 
 // Basic styles
 
-.ui.buttons > .ui.button:not(.inverted),
-.ui.buttons:not(.inverted) > .ui.button,
+.ui.buttons > .ui.button:not(.basic):not(.inverted),
+.ui.buttons:not(.basic):not(.inverted) > .ui.button,
 .ui.button,
 .ui.info.message .button,
 .ui.info.message .ui.button.icon {

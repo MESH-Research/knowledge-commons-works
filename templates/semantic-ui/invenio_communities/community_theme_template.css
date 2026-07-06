@@ -282,13 +282,13 @@ border-radius: 0.5em;
   z-index: -1;
   {%- if theme.get("mainHeaderUseGradient") %}
   background-image: radial-gradient(
-    ellipse at 100% 80%,
+    circle at 100% 80%,
     {%- if theme.get("mainHeaderUseLogo") %}
-    rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.1),
+    rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.3),
     {%- else %}
     color-mix(in srgb, {{ theme.mainHeaderBackgroundColor }}, black 15%),
     {%- endif %}
-    {{ theme.mainHeaderBackgroundColor }} 80%
+    {{ theme.mainHeaderBackgroundColor }} 70%
   );
   {%- else %}
   background-color: {{ theme.mainHeaderBackgroundColor }};

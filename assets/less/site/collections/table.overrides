@@ -1,17 +1,17 @@
 
 .ui.table {
   thead th {
-      background-color: transparent;  // @seafoam50;
+      background-color: @cream;  // @seafoam50;
       color: @ivy80;
       line-height: 1.15rem;
   }
   tr.active,
   tr td.active {
-      background-color: @mint50 !important;
+      background-color: darken(@cream, 2.0%) !important;
       color: @ivy;
   }
   &.striped tbody tr:nth-child(even) {
-      background-color: @seafoam50;
+      background-color: @cream;
   }
   &.definition {
       // thead:not(.full-width) th:nth-child(2) {
@@ -23,9 +23,9 @@
           color: @ivy80;
           font-weight: normal;
           }
-          td:nth-child(2) {
-              border-color: transparent; // @borderColor;
-          }
+          // td:nth-child(2) {
+          //     border-color: transparent; // @borderColor;
+          // }
       }
   }
   &:not(.unstackable) {  // stacking behaviour
