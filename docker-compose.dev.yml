@@ -236,3 +236,68 @@ services:
       - ./.git:/opt/invenio/src/.git
       - ./.gitmodules:/opt/invenio/src/.gitmodules
       - ./.gitattributes:/opt/invenio/src/.gitattributes
+  scheduler:
+    extends:
+      file: docker-compose.yml
+      service: scheduler
+    # See web-ui above for the dev-image rationale.
+    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: builder
+    environment:
+      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+      - INVENIO_MAIL_SUPPRESS_SEND=True
+    volumes:
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
+      - ./app_data:/opt/invenio/var/instance/app_data
+      - static_data:/opt/invenio/var/instance/static
+      - ./.env:/opt/invenio/src/.env
+      - ./.invenio:/opt/invenio/src/.invenio
+      - ./.invenio.private:/opt/invenio/src/.invenio.private
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-requests:/opt/invenio/src/site/kcworks/dependencies/invenio-requests
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-stats-dashboard:/opt/invenio/src/site/kcworks/dependencies/invenio-stats-dashboard
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-vocabularies:/opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_app_rdm
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_accounts
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_base:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_base
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_config:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_config
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_drafts_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_drafts_resources
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_files_rest:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_files_rest
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_indexer:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_indexer
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_oauthclient:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_oauthclient
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_pidstore:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_pidstore
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio-rdm-records:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio-rdm-records
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_saml:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_saml
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_search_ui:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_search_ui
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_stats:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_stats
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_users_resources:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_users_resources
+      - ./package.json:/opt/invenio/src/package.json
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml
+      - ./babel.config.js:/opt/invenio/src/babel.config.js
+      - ./static:/opt/invenio/src/static
+      - ./templates:/opt/invenio/var/instance/templates
+      - ./translations:/opt/invenio/var/instance/translations
+      - ./assets:/opt/invenio/src/assets
+      - ./scripts:/opt/invenio/src/scripts
+      - ./workflows:/opt/invenio/src/workflows
+      - ./docs:/opt/invenio/src/docs
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml
+      - ./uv.lock:/opt/invenio/src/uv.lock
+      - ./README.md:/opt/invenio/src/README.md
+      - ./LICENSE.txt:/opt/invenio/src/LICENSE.txt
+      - ./.git:/opt/invenio/src/.git
+      - ./.gitmodules:/opt/invenio/src/.gitmodules
+      - ./.gitattributes:/opt/invenio/src/.gitattributes

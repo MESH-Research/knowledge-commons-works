@@ -16,6 +16,7 @@ import jinja2
 import pytest
 from invenio_app.factory import create_app as _create_app
 from invenio_queues import current_queues
+
 # Imports after logging setup (E402 suppressed - logging must be set up first)
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
