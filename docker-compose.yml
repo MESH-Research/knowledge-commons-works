@@ -189,6 +189,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-scheduler
     command: ["/opt/invenio/var/instance/startup_scheduler_dev.sh"]
     image: monotasker/kcworks:${IMAGE_TAG:-latest}
     depends_on:
