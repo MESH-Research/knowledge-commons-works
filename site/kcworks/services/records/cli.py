@@ -7,12 +7,17 @@ from pprint import pformat
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import User
 from invenio_accounts.proxies import current_datastore
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_records_resources.services.records.results import RecordItem
+from invenio_rdm_records.requests.user_moderation.utils import get_user_records
 
 from invenio_record_importer_kcworks.services.records import RecordsHelper
+from invenio_remote_user_data_kcworks.proxies import (
+    current_record_kc_username_sync_service,
+)
+from invenio_remote_user_data_kcworks.tasks import (
+    rewrite_records_for_kc_username_change,
+)
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.export import KCWorksRecordsExporter
 from kcworks.services.records.test_data import import_test_records
@@ -328,61 +333,352 @@ def export_records(
 
 
 @click.command("change-record-owner")
-@click.option("--record-id", "-r", type=str)
+@click.option("--record-id", "-r", type=str, default="")
+@click.option(
+    "--old-owner-id",
+    "-o",
+    type=int,
+    default=0,
+    help="Transfer all published records owned by this user id.",
+)
 @click.option("--new-owner-id", "-n", type=int, default=0)
 @click.option("--new-owner-email", "-e", type=str, default="")
 @with_appcontext
-def change_record_owner_command(record_id, new_owner_id, new_owner_email):
-    """Change a record's owner in KCWorks.
+def change_record_owner_command(
+    record_id, old_owner_id, new_owner_id, new_owner_email
+):
+    """Change record ownership in KCWorks.
+
+    - **Single record:** `--record-id` with `--new-owner-id` or `--new-owner-email`.
+    - **All published records for a user:** `--old-owner-id` with `--new-owner-id`
+      or `--new-owner-email`.
 
     Raises:
-        click.Abort: If an error occurs during the ownership change operation.
+        click.Abort: If validation fails or a record update fails.
     """
-    click.echo("=======================================")
-    click.echo(f"Changing ownership of record {record_id}")
-    click.echo("=======================================")
-    try:
-        existing_record: RecordItem = records_service.read(
-            system_identity, id_=record_id
-        )
-        existing_record_dict: dict = existing_record.to_dict()
-        new_owner: User | None = None
-        if new_owner_id == 0 and new_owner_email != "":
-            new_owner = current_datastore.get_user_by_email(new_owner_email)
-            new_owner_id = new_owner.id
-        else:
-            new_owner = current_datastore.get_user_by_id(new_owner_id)
-        click.echo(f"Assigning to new owner {new_owner_id}")
-        click.echo(f"    email: {new_owner.email}")
-        click.echo(f"    username: {new_owner.username}\n")
-
-        submitted_owners = [
-            {
-                "user": str(new_owner.id),  # Fastest lookup for existing users
-                "email": new_owner.email,  # Fallback lookup for existing users
-            }
-        ]
-
-        assigned_owners = RecordsHelper.assign_record_ownership(
-            draft_id=record_id,
-            submitted_data=existing_record_dict,
-            user_id=0,  # System user performing the action (fallback only)
-            submitted_owners=submitted_owners,
-            collection_id=None,
-            existing_record=existing_record_dict,
-            notify_record_owners=False,
-        )
-
-        click.secho("Update complete", fg="green")
+    if old_owner_id:
+        if record_id:
+            click.secho(
+                "Use either --record-id or --old-owner-id, not both.",
+                fg="red",
+                err=True,
+            )
+            raise click.Abort()
+        if new_owner_id == 0 and not new_owner_email:
+            click.secho(
+                "Provide --new-owner-id or --new-owner-email.",
+                fg="red",
+                err=True,
+            )
+            raise click.Abort()
+        record_ids = list(get_user_records(old_owner_id, from_db=True))
+    elif not record_id:
         click.secho(
-            f"    new record owner id: {assigned_owners['owner_id']}", fg="green"
+            "Provide --record-id, or --old-owner-id with --new-owner-id.",
+            fg="red",
+            err=True,
         )
-        click.secho(
-            f"    record access grants: {pformat(assigned_owners['access_grants'])}",
-            fg="green",
+        raise click.Abort()
+    else:
+        record_ids = [record_id]
+        if new_owner_id == 0 and not new_owner_email:
+            click.secho(
+                "Provide --new-owner-id or --new-owner-email.",
+                fg="red",
+                err=True,
+            )
+            raise click.Abort()
+
+    if new_owner_id == 0 and new_owner_email:
+        new_owner = current_datastore.get_user_by_email(new_owner_email)
+        if new_owner is None:
+            click.secho(f"No user found for email {new_owner_email!r}.", fg="red")
+            raise click.Abort()
+        new_owner_id = new_owner.id
+    else:
+        new_owner = current_datastore.get_user_by_id(new_owner_id)
+        if new_owner is None:
+            click.secho(f"No user found for id {new_owner_id}.", fg="red")
+            raise click.Abort()
+
+    click.echo("=======================================")
+    click.echo("Changing record ownership")
+    click.echo("=======================================")
+    click.echo(f"New owner id: {new_owner_id}")
+    click.echo(f"    email: {new_owner.email}")
+    click.echo(f"    username: {new_owner.username}\n")
+    click.echo(f"Records to update: {len(record_ids)}")
+
+    submitted_owners = [
+        {"user": str(new_owner.id), "email": new_owner.email},
+    ]
+
+    updated = 0
+    failed = 0
+    for rid in record_ids:
+        click.echo(f"Updating record {rid}")
+        try:
+            existing_record = records_service.read(system_identity, id_=rid)
+            existing_record_dict = existing_record.to_dict()
+            assigned = RecordsHelper.assign_record_ownership(
+                draft_id=rid,
+                submitted_data=existing_record_dict,
+                user_id=0,
+                submitted_owners=submitted_owners,
+                collection_id=None,
+                existing_record=existing_record_dict,
+                notify_record_owners=False,
+            )
+            updated += 1
+            click.secho("Update complete", fg="green")
+            click.secho(
+                f"    new record owner id: {assigned['owner_id']}", fg="green"
+            )
+        except Exception as e:
+            failed += 1
+            click.secho("Something went wrong updating ownership:", fg="red")
+            click.secho(str(e), fg="red")
+            click.secho(traceback.format_exc(), fg="red")
+            raise click.Abort() from e
+
+    click.secho(f"Done. Updated {updated} record(s).", fg="green")
+    if failed:
+        click.secho(f"Failed: {failed} record(s).", fg="red")
+        raise click.Abort()
+
+
+@click.command("update_contributors_username")
+@click.option(
+    "--old-kc-username",
+    "-o",
+    required=True,
+    help=(
+        "KC username currently stored on matching creator/contributor "
+        "metadata entries."
+    ),
+)
+@click.option(
+    "--new-kc-username",
+    "-n",
+    required=True,
+    help="KC username to write in place of the old value.",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help=(
+        "List published and draft record IDs that would be updated, without "
+        "writing changes."
+    ),
+)
+@click.option(
+    "--background",
+    is_flag=True,
+    default=False,
+    help=(
+        "Queue the rewrite on Celery and return immediately with the task id, "
+        "instead of running synchronously in the CLI."
+    ),
+)
+@with_appcontext
+def update_contributors_username_command(
+    old_kc_username: str,
+    new_kc_username: str,
+    dry_run: bool,
+    background: bool,
+) -> None:
+    """Update kc_username on record creators and contributors.
+
+    For account merge/migration: updates metadata citations from
+    `--old-kc-username` to `--new-kc-username`. Does not change record
+    ownership or Names vocabulary entries. Uses
+    `rewrite_records_for_kc_username_change` with Names pruning disabled.
+
+    Raises:
+        click.UsageError: When usernames are empty or identical, or when
+            `--dry-run` is combined with `--background`.
+        click.Abort: When the rewrite reports phase errors.
+    """
+    old_kc_username = old_kc_username.strip()
+    new_kc_username = new_kc_username.strip()
+    if not old_kc_username or not new_kc_username:
+        raise click.UsageError(
+            "Both --old-kc-username and --new-kc-username are required."
         )
-    except Exception as e:
-        click.secho("Something went wrong updating ownership:", fg="red")
-        click.secho(str(e), fg="red")
-        click.secho(traceback.format_exc(), fg="red")
-        raise click.Abort() from e
+    if old_kc_username == new_kc_username:
+        raise click.UsageError("Old and new KC usernames must differ.")
+    if dry_run and background:
+        raise click.UsageError("--dry-run cannot be used with --background.")
+
+    if dry_run:
+        click.echo(
+            f"Records that would update kc_username "
+            f"{old_kc_username!r} -> {new_kc_username!r}:"
+        )
+        matches = current_record_kc_username_sync_service.find_record_ids_for_kc_username(
+            old_kc_username
+        )
+        total = 0
+        for phase in ("published", "drafts"):
+            record_ids = matches.get(phase) or []
+            total += len(record_ids)
+            click.echo(f"{phase} ({len(record_ids)} record(s)):")
+            for record_id in record_ids:
+                click.echo(f"  {record_id}")
+        click.echo(f"Total: {total} record(s) would be updated.")
+        return
+
+    click.echo(
+        f"Rewriting kc_username {old_kc_username!r} -> {new_kc_username!r}"
+    )
+
+    if background:
+        async_result = rewrite_records_for_kc_username_change.delay(
+            0,
+            old_kc_username,
+            new_kc_username,
+            prune_names=False,
+        )
+        click.echo(f"Queued rewrite task: {async_result.id}")
+        return
+
+    summary = rewrite_records_for_kc_username_change(
+        0,
+        old_kc_username,
+        new_kc_username,
+        prune_names=False,
+    )
+    records = summary.get("records") or {}
+    for phase in ("published", "drafts"):
+        phase_stats = records.get(phase) or {}
+        click.echo(
+            f"{phase}: matched={phase_stats.get('matched', 0)} "
+            f"updated={phase_stats.get('updated', 0)} "
+            f"failed={phase_stats.get('failed', 0)}"
+        )
+    if summary.get("errors"):
+        click.secho(f"Phase errors: {summary['errors']}", fg="red")
+        raise click.Abort()
+
+
+@click.command("migrate_user")
+@click.option(
+    "--old-owner-id",
+    type=int,
+    required=True,
+    help="Local user id of the duplicate account whose published works to move.",
+)
+@click.option(
+    "--new-owner-id",
+    type=int,
+    required=True,
+    help="Local user id of the canonical account that should own the works.",
+)
+@click.option(
+    "--old-kc-username",
+    required=True,
+    help=(
+        "KC username of the duplicate account, as stored on creator/contributor "
+        "metadata entries to rewrite."
+    ),
+)
+@click.option(
+    "--new-kc-username",
+    required=True,
+    help="KC username of the canonical account to write on those entries.",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help=(
+        "Show published records that would change ownership and record IDs "
+        "that would receive contributor username updates, without writing."
+    ),
+)
+@click.option(
+    "--background",
+    is_flag=True,
+    default=False,
+    help=(
+        "After ownership transfer completes synchronously, queue the "
+        "contributor username rewrite on Celery."
+    ),
+)
+@click.pass_context
+@with_appcontext
+def migrate_user_command(
+    ctx: click.Context,
+    old_owner_id: int,
+    new_owner_id: int,
+    old_kc_username: str,
+    new_kc_username: str,
+    dry_run: bool,
+    background: bool,
+) -> None:
+    """Merge a duplicate local account into a canonical account.
+
+    Runs two steps in order:
+
+    1. `change-record-owner` — transfer all **published** records from
+       `--old-owner-id` to `--new-owner-id`.
+    2. `update_contributors_username` — rewrite creator/contributor
+       `kc_username` citations from `--old-kc-username` to
+       `--new-kc-username`.
+
+    Does not deactivate the duplicate account or change Names entries.
+
+    Raises:
+        click.UsageError: When ids or usernames are invalid or flags conflict.
+        click.Abort: When either delegated step fails.
+    """
+    old_kc_username = old_kc_username.strip()
+    new_kc_username = new_kc_username.strip()
+    if old_owner_id == new_owner_id:
+        raise click.UsageError("--old-owner-id and --new-owner-id must differ.")
+    if not old_kc_username or not new_kc_username:
+        raise click.UsageError(
+            "Both --old-kc-username and --new-kc-username are required."
+        )
+    if old_kc_username == new_kc_username:
+        raise click.UsageError("Old and new KC usernames must differ.")
+    if dry_run and background:
+        raise click.UsageError("--dry-run cannot be used with --background.")
+
+    if dry_run:
+        click.echo("Step 1: record ownership transfer (dry run)")
+        owned_ids = list(get_user_records(old_owner_id, from_db=True))
+        click.echo(
+            f"Would transfer {len(owned_ids)} published record(s) from "
+            f"user {old_owner_id} to user {new_owner_id}:"
+        )
+        for record_id in owned_ids:
+            click.echo(f"  {record_id}")
+        click.echo("\nStep 2: contributor username update (dry run)")
+        ctx.invoke(
+            update_contributors_username_command,
+            old_kc_username=old_kc_username,
+            new_kc_username=new_kc_username,
+            dry_run=True,
+            background=False,
+        )
+        return
+
+    click.echo("Step 1: transferring record ownership")
+    ctx.invoke(
+        change_record_owner_command,
+        record_id="",
+        old_owner_id=old_owner_id,
+        new_owner_id=new_owner_id,
+        new_owner_email="",
+    )
+
+    click.echo("\nStep 2: updating contributor usernames")
+    ctx.invoke(
+        update_contributors_username_command,
+        old_kc_username=old_kc_username,
+        new_kc_username=new_kc_username,
+        dry_run=False,
+        background=background,
+    )

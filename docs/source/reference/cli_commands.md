@@ -188,18 +188,70 @@ Also note that the `community_id` argument is the ID (the UUID) of the collectio
 
 #### `invenio kcworks-records change-record-owner`
 
-Changes the owner of a single record. Uses the record importer's ownership assignment logic so that access grants and parent-record ownership are updated consistently.
+Changes record ownership using the record importer's ownership assignment logic so that access grants and parent-record ownership are updated consistently.
 
-Named options (one of the owner identifiers is required):
+**Single record:**
 
 - `--record-id` / `-r`: the record UUID to update.
-- `--new-owner-id` / `-n`: the local Invenio user id of the new owner.
-- `--new-owner-email` / `-e`: the email address of the new owner (used when `--new-owner-id` is not supplied).
+- `--new-owner-id` / `-n` or `--new-owner-email` / `-e`: the new owner.
 
-Example:
+**All published records for a user** (by local user id):
+
+- `--old-owner-id`: current owner's local user id.
+- `--new-owner-id` / `-n` or `--new-owner-email` / `-e`: the new owner.
+
+Examples:
 
 ```shell
+# Single record
 invenio kcworks-records change-record-owner --record-id abc123-def456 --new-owner-email user@example.org
+
+# All published records owned by user 100 -> user 200
+invenio kcworks-records change-record-owner --old-owner-id 100 --new-owner-id 200
+```
+
+#### `invenio kcworks-records update_contributors_username`
+
+Rewrites `kc_username` identifiers in record `metadata.creators` and
+`metadata.contributors`. For account merge/migration after
+`change-record-owner` when creator blocks still cite the duplicate's KC
+username. Calls `rewrite_records_for_kc_username_change` with
+`prune_names=False` (record metadata only; no Names prune).
+
+Named options:
+
+- `--old-kc-username` / `-o` (required): KC username on matching creator/contributor entries.
+- `--new-kc-username` / `-n` (required): KC username to write in its place.
+- `--dry-run`: list matching record IDs without writing changes.
+- `--background`: queue the rewrite on Celery instead of running synchronously.
+
+```shell
+invenio kcworks-records update_contributors_username \
+  -o duplicateuser \
+  -n canonicaluser
+```
+
+#### `invenio kcworks-records migrate_user`
+
+Runs account merge in two steps: `change-record-owner` (all published records
+from `--old-owner-id` to `--new-owner-id`), then
+`update_contributors_username` (`--old-kc-username` to `--new-kc-username`).
+
+Named options:
+
+- `--old-owner-id` (required): duplicate account local user id.
+- `--new-owner-id` (required): canonical account local user id.
+- `--old-kc-username` (required): duplicate KC username on creator/contributor metadata.
+- `--new-kc-username` (required): canonical KC username to write.
+- `--dry-run`: preview both steps without writing.
+- `--background`: queue the contributor-username step on Celery after synchronous ownership transfer.
+
+```shell
+invenio kcworks-records migrate_user \
+  --old-owner-id 100 \
+  --new-owner-id 200 \
+  --old-kc-username duplicateuser \
+  --new-kc-username canonicaluser
 ```
 
 
@@ -529,7 +581,7 @@ Bulk-creates or updates local users from a Profiles API JSONL dump or a CSV of u
 
 Names vocabulary maintenance commands:
 
-- `sync-now`: re-sync a user's Names entry from Profiles (accepts the same `--by-email` / `--by-username` / `--source` flags as `users update`; supports `--background`)
+- `sync-now`: re-sync Names entries from current local profile data (per-user ids, or `--all` for bulk backfill; accepts the same `--by-email` / `--by-username` / `--source` flags as `users update`; `--missing-only`, `--dry-run`, and `--limit` apply with `--all`; supports `--background`)
 - `backfill-cited-from-records`: bulk backfill Names entries from published record metadata
 - `show`: inspect a Names record by pid or ORCID
 - `merge-orcid-duplicates`: auto-merge duplicate Names entries that share an ORCID
@@ -539,4 +591,5 @@ Example:
 
 ```shell
 invenio user-data names sync-now user@example.org --by-email
+invenio user-data names sync-now --all --missing-only --dry-run
 ```
