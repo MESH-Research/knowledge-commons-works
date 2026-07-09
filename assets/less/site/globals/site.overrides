@@ -82,7 +82,6 @@
 
 #community-detail-header {
   .breadcrumb-wrap {
-    container-type: inline-size;
     min-width: 0;
     flex: 1 1 auto;
     max-width: 100%;
@@ -116,7 +115,7 @@
     }
 
     &.truncate-2 a.section:not(.ellipsis) {
-      max-width: clamp(12ch, 25cqi, 18ch);
+      max-width: clamp(6ch, 25cqi, 18ch);
     }
 
     &.truncate-many a.section:not(.ellipsis) {
