@@ -232,6 +232,9 @@ db_uri_parts() {
     host="$hostport"
     port=""
   fi
+  # Always emit an explicit port: bash read collapses consecutive tab
+  # delimiters, so an empty port field would shift user/db into the wrong slots.
+  [[ -z "$port" ]] && port=5432
   printf '%s\t%s\t%s\t%s' "$host" "$port" "$user" "$dbpart"
 }
 
@@ -930,6 +933,12 @@ print(int(m) if m is not None else 0)' 2>/dev/null || true)"
   fi
 }
 
+# True when GET / on the site UI returns an unauthenticated SSO broker redirect.
+is_ui_sso_redirect() {
+  [[ "$HTTP_PROBE_CODE" == "302" ]] || return 1
+  printf '%s' "$HTTP_PROBE_BODY" | grep -qiE 'silent-login|/broker/'
+}
+
 check_site() {
   local ui_url api_url
   ui_url="$(cfg INVENIO_SITE_UI_URL "")"
@@ -937,6 +946,27 @@ check_site() {
 
   if [[ -z "$ui_url" ]]; then
     record_fail "Site UI: missing INVENIO_SITE_UI_URL (env or ${ENV_SOURCE})"
+  elif [[ "$MODE" != "local" ]]; then
+    # Nginx /healthcheck is the authoritative liveness probe on staging/production.
+    http_probe "${ui_url%/}/healthcheck"
+    if [[ "$HTTP_PROBE_CODE" != "200" ]]; then
+      record_fail "Healthcheck: HTTP ${HTTP_PROBE_CODE} (expected 200) GET /healthcheck"
+    else
+      report "Healthcheck" "OK - HTTP 200 /healthcheck"
+      detail "${ui_url%/}/healthcheck"
+    fi
+    http_probe "$ui_url"
+    if [[ "$HTTP_PROBE_CODE" == "200" ]]; then
+      report "Site UI" "OK - HTTP 200"
+      detail "${ui_url}"
+    elif is_ui_sso_redirect; then
+      report "Site UI" "OK - HTTP 302 SSO redirect"
+      detail "${ui_url} (unauthenticated redirect to broker is expected)"
+    else
+      local ui_brief
+      ui_brief="$(printf '%s' "$HTTP_PROBE_BODY" | brief_line 240)"
+      record_fail "Site UI: HTTP ${HTTP_PROBE_CODE} (expected 200 or SSO redirect). ${ui_brief}"
+    fi
   else
     http_probe "$ui_url"
     if [[ "$HTTP_PROBE_CODE" != "200" ]]; then
@@ -946,15 +976,6 @@ check_site() {
     else
       report "Site UI" "OK - HTTP 200"
       detail "${ui_url}"
-    fi
-    # Cheap nginx-level liveness (independent of full app boot) in ECS modes.
-    if [[ "$MODE" != "local" ]]; then
-      http_probe "${ui_url%/}/healthcheck"
-      if [[ "$HTTP_PROBE_CODE" == "200" ]]; then
-        report "Healthcheck" "OK - HTTP 200 /healthcheck"
-      else
-        report_warn "Healthcheck" "GET ${ui_url%/}/healthcheck returned HTTP ${HTTP_PROBE_CODE}"
-      fi
     fi
   fi
 
