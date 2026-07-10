@@ -77,8 +77,8 @@ def test_change_record_owner_by_id(
     )
 
     assert result.exit_code == 0
-    assert f"Changing ownership of record {record.id}" in result.output
-    assert f"Assigning to new owner {new_owner_id}" in result.output
+    assert f"Updating record {record.id}" in result.output
+    assert f"New owner id: {new_owner_id}" in result.output
     assert f"email: {new_owner_email}" in result.output
     assert "Update complete" in result.output
     assert f"new record owner id: {new_owner_id}" in result.output
@@ -161,8 +161,8 @@ def test_change_record_owner_by_email(
     )
 
     assert result.exit_code == 0
-    assert f"Changing ownership of record {record.id}" in result.output
-    assert f"Assigning to new owner {new_owner_id}" in result.output
+    assert f"Updating record {record.id}" in result.output
+    assert f"New owner id: {new_owner_id}" in result.output
     assert f"email: {new_owner_email}" in result.output
     assert "Update complete" in result.output
     assert f"new record owner id: {new_owner_id}" in result.output
@@ -392,3 +392,87 @@ def test_change_record_owner_same_owner(
     # Verify ownership is still the same
     updated_record = records_service.read(system_identity, id_=record.id)._record
     assert updated_record.parent.access.owned_by.owner_id == int(owner.id)
+
+
+def _record_metadata_for_owner(owner_id: str, title: str) -> dict:
+    """Build minimal published record metadata for an owner.
+
+    Args:
+        owner_id: User id stored on the parent record access.
+        title: Record title in metadata.
+
+    Returns:
+        Record metadata dict suitable for `minimal_published_record_factory`.
+    """
+    return {
+        "metadata": {
+            "resource_type": {"id": "textDocument-journalArticle"},
+            "title": title,
+            "publisher": "Test Publisher",
+            "publication_date": "2025-01-01",
+            "creators": [
+                {
+                    "person_or_org": {
+                        "name": "Test Creator",
+                        "family_name": "Creator",
+                        "given_name": "Test",
+                        "type": "personal",
+                    }
+                }
+            ],
+        },
+        "files": {
+            "enabled": False,
+        },
+        "parent": {
+            "access": {
+                "owned_by": {"user": str(owner_id)},
+            },
+        },
+    }
+
+
+def test_change_record_owner_transfer_all_published(
+    running_app,
+    db,
+    minimal_published_record_factory,
+    user_factory,
+    search_clear,
+    cli_runner,
+):
+    """Test transferring all published records from one user id to another."""
+    original_owner = user_factory(
+        email="bulk-current-original@example.com",
+        password="test",
+        oauth_src="",
+        oauth_id="",
+    )
+    new_owner = user_factory(
+        email="bulk-current-new@example.com",
+        password="test",
+        oauth_src="",
+        oauth_id="",
+    )
+
+    record_one = minimal_published_record_factory(
+        metadata=_record_metadata_for_owner(original_owner.id, "Current One"),
+    )
+    record_two = minimal_published_record_factory(
+        metadata=_record_metadata_for_owner(original_owner.id, "Current Two"),
+    )
+
+    result = cli_runner(
+        kcworks_records,
+        "change-record-owner",
+        "--old-owner-id",
+        str(original_owner.id),
+        "--new-owner-id",
+        str(new_owner.id),
+    )
+
+    assert result.exit_code == 0
+    assert "Done. Updated 2 record(s)." in result.output
+
+    for record_id in (record_one.id, record_two.id):
+        updated = records_service.read(system_identity, id_=record_id)._record
+        assert updated.parent.access.owned_by.owner_id == int(new_owner.id)
