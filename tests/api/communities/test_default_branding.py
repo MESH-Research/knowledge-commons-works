@@ -3,7 +3,7 @@
 Covers the four guarantees the component is supposed to provide on top
 of the standard `invenio-communities` create/update flow:
 
-1. A freshly-created community has both a logo file AND the three theme
+1. A freshly-created community has both a logo file AND the default theme
    keys derived from its slug.
 2. Calling `apply_default_branding` again on a community that already
    has a logo never overwrites the logo file (only the theme is
@@ -53,6 +53,8 @@ from kcworks.services.geopattern import derive_theme_colors, to_png
 THEME_KEYS = (
     "primaryColor",
     "primaryTextColor",
+    "secondaryColor",
+    "secondaryTextColor",
     "mainHeaderBackgroundColor",
     "mainHeaderUseLogo",
     "mainHeaderUseGradient",
@@ -61,6 +63,8 @@ THEME_KEYS = (
 _THEME_COLOR_KEYS = (
     "primaryColor",
     "primaryTextColor",
+    "secondaryColor",
+    "secondaryTextColor",
     "mainHeaderBackgroundColor",
 )
 
@@ -135,7 +139,7 @@ def test_ext_registers_default_branding_after_upstream(running_app) -> None:
 
 
 def test_create_sets_logo_and_theme(running_app, db, branded_community) -> None:
-    """A freshly-created community has a logo file and the three theme keys."""
+    """A freshly-created community has a logo file and the default theme keys."""
     record = _read_record(branded_community.id)
     expected = default_theme_style("branded-test-community")
     style = (record.get("theme") or {}).get("style") or {}
@@ -209,6 +213,8 @@ def test_service_update_tops_up_missing_theme_keys(
     expected = default_theme_style("branded-test-community")
     assert style["primaryColor"] == "#123456"
     assert style["primaryTextColor"] == expected["primaryTextColor"]
+    assert style["secondaryColor"] == expected["secondaryColor"]
+    assert style["secondaryTextColor"] == expected["secondaryTextColor"]
     assert style["mainHeaderBackgroundColor"] == expected["mainHeaderBackgroundColor"]
 
 
