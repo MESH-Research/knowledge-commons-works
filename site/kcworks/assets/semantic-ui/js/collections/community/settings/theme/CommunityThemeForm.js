@@ -11,7 +11,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import _defaultsDeep from "lodash/defaultsDeep";
 import _isEmpty from "lodash/isEmpty";
 import _pickBy from "lodash/pickBy";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Button, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { ColorField, InlineLabeledField, ToggleField } from "./ColorField";
@@ -25,6 +25,49 @@ const OPTIONAL_STYLE_KEYS = [
 ];
 
 const FONT_KEYS = ["family", "weight", "size"];
+
+const FORM_STATUS_ID = "community-theme-form-status";
+
+/**
+ * Saved/dirty status text for the theme form.
+ *
+ * @param {object} props - Component props.
+ * @param {boolean} props.isDirty - Whether the form has unsaved changes.
+ * @param {boolean} props.isSaved - Whether the latest save succeeded.
+ * @param {boolean} [props.hiddenFromReaders] - When true, hide from assistive tech (duplicate placement).
+ * @returns {React.ReactElement} Status region markup.
+ */
+function ThemeFormStatus({ classnames, isDirty, isSaved, hiddenFromReaders = false }) {
+  const content =
+    isSaved && !isDirty
+      ? "Saved changes will be visible after you refresh the page"
+      : isDirty
+        ? "Changes will be visible after you save and refresh the page"
+        : null;
+
+  return isSaved || isDirty ? (
+    <div
+      id={FORM_STATUS_ID}
+      role="status"
+      aria-live="polite"
+      aria-hidden={hiddenFromReaders ? "true" : "false"}
+      aria-atomic="true"
+      className={`ui info label ${classnames}`}
+    >
+      {i18next.t(content)}
+    </div>
+  ) : null;
+}
+
+ThemeFormStatus.propTypes = {
+  isDirty: PropTypes.bool.isRequired,
+  isSaved: PropTypes.bool.isRequired,
+  hiddenFromReaders: PropTypes.bool,
+};
+
+ThemeFormStatus.defaultProps = {
+  hiddenFromReaders: false,
+};
 
 const COLOR_FIELDS = [
   {
@@ -98,50 +141,39 @@ export function sanitizeTheme(theme) {
   };
 }
 
-class CommunityThemeForm extends Component {
-  state = {
-    error: undefined,
-    isSaved: false,
-  };
-
-  getInitialValues = () => {
-    const { community } = this.props;
-    return _defaultsDeep(_cloneDeep(community), {
-      theme: {
-        enabled: true,
-        style: {
-          primaryColor: "",
-          secondaryColor: "",
-          tertiaryColor: "",
-          primaryTextColor: "",
-          secondaryTextColor: "",
-          tertiaryTextColor: "",
-          mainHeaderBackgroundColor: "",
-          mainHeaderUseLogo: false,
-          mainHeaderUseGradient: false,
-          font: {
-            family: "",
-            weight: "",
-            size: "",
-          },
+function getInitialValues(community) {
+  return _defaultsDeep(_cloneDeep(community), {
+    theme: {
+      enabled: true,
+      style: {
+        primaryColor: "",
+        secondaryColor: "",
+        tertiaryColor: "",
+        primaryTextColor: "",
+        secondaryTextColor: "",
+        tertiaryTextColor: "",
+        mainHeaderBackgroundColor: "",
+        mainHeaderUseLogo: false,
+        mainHeaderUseGradient: false,
+        font: {
+          family: "",
+          weight: "",
+          size: "",
         },
       },
-    });
-  };
+    },
+  });
+}
 
-  setGlobalError = (errorMsg) => {
-    this.setState({ error: errorMsg });
-  };
+function CommunityThemeForm({ community, defaultTheme }) {
+  const [error, setError] = useState(undefined);
+  const [isSaved, setIsSaved] = useState(false);
 
-  setIsSavedState = (newValue) => {
-    this.setState({ isSaved: newValue });
-  };
+  const hasError = error !== undefined;
 
-  onSubmit = async (values, { setSubmitting, setFieldError }) => {
-    const { community } = this.props;
-
+  const onSubmit = async (values, { setSubmitting, setFieldError, resetForm }) => {
     setSubmitting(true);
-    this.setIsSavedState(false);
+    setIsSaved(false);
 
     try {
       const client = new CommunityApi();
@@ -150,16 +182,17 @@ class CommunityThemeForm extends Component {
         theme: sanitizeTheme(values.theme),
       };
       await client.update(community.id, payload);
-      this.setIsSavedState(true);
-    } catch (error) {
-      if (error === "UNMOUNTED") {
+      setIsSaved(true);
+      resetForm({ values });
+    } catch (submitError) {
+      if (submitError === "UNMOUNTED") {
         return;
       }
 
-      const { message, errors } = communityErrorSerializer(error);
+      const { message, errors } = communityErrorSerializer(submitError);
 
       if (message) {
-        this.setGlobalError(message);
+        setError(message);
       }
 
       if (errors) {
@@ -170,32 +203,32 @@ class CommunityThemeForm extends Component {
     setSubmitting(false);
   };
 
-  handleResetToDefaults = (setValues) => {
-    const { community, defaultTheme } = this.props;
-    this.setIsSavedState(false);
-    this.setGlobalError(undefined);
-    setValues({
-      ...community,
-      theme: _cloneDeep(defaultTheme),
+  const handleResetToDefaults = (resetForm) => {
+    setIsSaved(false);
+    setError(undefined);
+    resetForm({
+      values: {
+        ...community,
+        theme: _cloneDeep(defaultTheme),
+      },
     });
   };
 
-  render() {
-    const { error, isSaved } = this.state;
-    const { defaultTheme } = this.props;
-    const hasError = error !== undefined;
+  return (
+    <Formik
+      initialValues={getInitialValues(community)}
+      validationSchema={communityThemeValidationSchema}
+      validateOnChange={false}
+      validateOnBlur
+      onSubmit={onSubmit}
+    >
+      {({ dirty: isDirty, handleSubmit, isSubmitting, resetForm }) => {
+        const hasStatusMessage = isDirty || (isSaved && !isDirty);
+        const statusDescribedBy = hasStatusMessage ? FORM_STATUS_ID : undefined;
 
-    return (
-      <Formik
-        initialValues={this.getInitialValues()}
-        validationSchema={communityThemeValidationSchema}
-        validateOnChange={false}
-        validateOnBlur
-        onSubmit={this.onSubmit}
-      >
-        {({ handleSubmit, isSubmitting, setValues }) => (
-          <Form onSubmit={handleSubmit}>
-            <Message hidden={!hasError} negative>
+        return (
+          <Form onSubmit={handleSubmit} aria-describedby={statusDescribedBy}>
+            <Message role="alert" hidden={!hasError} negative>
               <Message.Content>{error}</Message.Content>
             </Message>
 
@@ -210,6 +243,8 @@ class CommunityThemeForm extends Component {
                 )}
               </Header.Subheader>
             </Header>
+
+            <ThemeFormStatus isDirty={isDirty} isSaved={isSaved} />
 
             {/* <ThemeEnabledField /> */}
 
@@ -259,53 +294,58 @@ class CommunityThemeForm extends Component {
 
             {/* FIXME: Add typography controls when supported
 
-            <fieldset className="ui segment invenio-fieldset community-theme-typography">
-              <legend className="rel-mb-1">
-                <Header as="h3">{i18next.t("Typography")}</Header>
-              </legend>
+          <fieldset className="ui segment invenio-fieldset community-theme-typography">
+            <legend className="rel-mb-1">
+              <Header as="h3">{i18next.t("Typography")}</Header>
+            </legend>
 
-              <Form.Group unstackable>
-                {FONT_KEYS.map((fontKey) => (
-                  <InlineLabeledField
-                    key={fontKey}
-                    fieldPath={`theme.style.font.${fontKey}`}
-                    label={i18next.t(`Font ${fontKey}`)}
-                  />
-                ))}
-              </Form.Group>
-            </fieldset>
-            */}
+            <Form.Group unstackable>
+              {FONT_KEYS.map((fontKey) => (
+                <InlineLabeledField
+                  key={fontKey}
+                  fieldPath={`theme.style.font.${fontKey}`}
+                  label={i18next.t(`Font ${fontKey}`)}
+                />
+              ))}
+            </Form.Group>
+          </fieldset>
+          */}
 
-            <Button.Group>
-              <label className="helptext">Changes will be visible after you refresh the page</label>
-              <Button
-                primary
-                icon
-                labelPosition="left"
-                loading={isSubmitting}
-                toggle
-                active={isSaved}
-                type="submit"
-              >
-                <Icon name="save" />
-                {isSaved ? i18next.t("Saved") : i18next.t("Save")}
-              </Button>
-              <Button
-                type="button"
-                icon
-                labelPosition="left"
-                disabled={!defaultTheme}
-                onClick={() => this.handleResetToDefaults(setValues)}
-              >
-                <Icon name="undo" />
-                {i18next.t("Reset to defaults")}
-              </Button>
-            </Button.Group>
+            <Button
+              primary
+              icon
+              labelPosition="left"
+              loading={isSubmitting}
+              toggle
+              active={isSaved}
+              type="submit"
+              aria-describedby={statusDescribedBy}
+            >
+              <Icon name="save" />
+              {isSaved ? i18next.t("Saved") : i18next.t("Save")}
+            </Button>
+            <Button
+              type="button"
+              icon
+              labelPosition="left"
+              disabled={!defaultTheme}
+              onClick={() => handleResetToDefaults(resetForm)}
+            >
+              <Icon name="undo" />
+              {i18next.t("Reset to defaults")}
+            </Button>
+            <br />
+            <ThemeFormStatus
+              classnames="rel-mt-1"
+              isDirty={isDirty}
+              isSaved={isSaved}
+              hiddenFromReaders
+            />
           </Form>
-        )}
-      </Formik>
-    );
-  }
+        );
+      }}
+    </Formik>
+  );
 }
 
 CommunityThemeForm.propTypes = {
