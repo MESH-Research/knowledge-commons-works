@@ -77,7 +77,7 @@
       <div class="ml-5 ui breadcrumb {{ breadcrumb_truncate }}">
         {% for item in breadcrumb_items %}
           {% set is_collapsed_middle = breadcrumb_count > 3 and not loop.first and not loop.last %}
-          <a class="section{% if is_collapsed_middle %} ellipsis{% endif %}"
+          <a class="section{% if is_collapsed_middle %} ellipsis{% endif %} theme-secondary"
              href="{{ url_for('invenio_app_rdm_communities.communities_home', pid_value=item['slug']) }}"
              aria-label="{{ item['title'] }}"
              data-tooltip="{{ item['title'] }}"><span class="section-text">
@@ -103,7 +103,7 @@
   <!--  -->
   <!-- Inner layout grid -->
   <!--  -->
-  <div class="ui container relaxed grid page-subheader community-header mr-0-mobile ml-0-mobile theme-secondary">
+  <div class="ui container relaxed grid page-subheader community-header mr-0-mobile ml-0-mobile theme-primary">
     <!--  -->
     <!-- Top breadcrumb row -->
     <!--  -->
@@ -135,8 +135,8 @@
           <!-- -->
           <!-- Info under title -->
           <!-- -->
-          <div class="row pl-5 pt-5 computer tablet only">{{ community_info("computer", community_ui) }}</div>
-          <div class="row pl-5 pt-5 mobile only centered">{{ community_info("mobile", community_ui) }}</div>
+          <div class="row pl-5 pt-5 computer tablet only theme-secondary">{{ community_info("computer", community_ui) }}</div>
+          <div class="row pl-5 pt-5 mobile only centered theme-secondary">{{ community_info("mobile", community_ui) }}</div>
         </div>
       </div>
       <div class="one wide widescreen large-monitor only middle aligned column pr-0 pl-0">
