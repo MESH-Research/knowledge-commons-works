@@ -325,3 +325,9 @@
     }
   }
 }
+
+.dashboard-user-header.ui.relaxed.grid {
+  &> .row > .column:nth-child(2) {
+    padding-left: 0;
+  }
+}

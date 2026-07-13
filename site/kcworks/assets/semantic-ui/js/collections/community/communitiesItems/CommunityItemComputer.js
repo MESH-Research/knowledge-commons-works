@@ -44,7 +44,7 @@ export const CommunityItemComputer = ({ result }) => {
             )}
             <a className="ui medium header mb-0" href={result.links.self_html}>
               {result.metadata.title}
-              {/* Show the icon for subcommunities */}
+              {/* Show the icon for subcommunities
               {result.parent && (
                 <p className="ml-5 display-inline-block">
                   <Popup
@@ -56,6 +56,7 @@ export const CommunityItemComputer = ({ result }) => {
                   />
                 </p>
               )}
+              */}
             </a>
             {result.metadata.description && (
               <p className="truncate-lines-1 text size small text-muted mt-5">

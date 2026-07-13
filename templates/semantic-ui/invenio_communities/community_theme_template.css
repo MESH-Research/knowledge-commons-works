@@ -4,7 +4,7 @@
 --bgMidDarkTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.55);
 --bgMidTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.5);
 --bgFaintTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.1);
---bgDarkShade: color-mix(in srgb, {{ theme.mainHeaderBackgroundColor }}, black 15%);
+--bgDarkShade: rgb(from {{ theme.secondaryColor }} r g b / 0.3);
 --neutralLight: #f5f5f5;
 --neutralMidLight: #d2d2d2;
 --neutralText: #606060;
@@ -12,8 +12,11 @@
 {# ------------------------------------------------------------------------ #}
 {# Page header area #}
 {# ------------------------------------------------------------------------ #}
+{# ------------------------------------------------------------------------ #}
+{# Header container #}
+{# ------------------------------------------------------------------------ #}
 {%- if theme.mainHeaderBackgroundColor %}
-  .page-subheader-outer {
+  .invenio-page-body .ui.container.page-subheader-outer {
   background-color: none;
   position: relative;
   min-height: calc(8rem + 2rem);
@@ -24,6 +27,9 @@
   position: relative;
   z-index: 1;
   }
+  {# ------------------------------------------------------------------------ #}
+  {# Header background gradients #}
+  {# ------------------------------------------------------------------------ #}
   .page-subheader-outer::after {
   content: "";
   position: absolute;
@@ -45,6 +51,9 @@
   background-image: none;
   {%- endif %}
   }
+  {# ------------------------------------------------------------------------ #}
+  {# Header background logo repeat #}
+  {# ------------------------------------------------------------------------ #}
   {%- if theme.get("mainHeaderUseLogo") %}
   .page-subheader-outer::before {
   content: "";
@@ -62,96 +71,176 @@
   }
   {%- endif %}
 {%- endif %}
+
 {# ------------------------------------------------------------------------ #}
 {# Basic text elements #}
 {# ------------------------------------------------------------------------ #}
-{%- if theme.secondaryColor or theme.secondaryTextColor %}
-  .theme-secondary, .ui.secondary.button {
-  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
-  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
-  }
-  .invenio-page-body .ui.search.button {
-  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
-  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
-  }
-{%- endif %}
-{%- if theme.primaryTextColor %}
-  .theme-primary a, .theme-primary h1, .theme-primary h2, .theme-primary p, .theme-primary .link-button, .invenio-page-body:has(#community-detail-header) h2,  .invenio-page-body:has(#community-detail-header) a {
-  color: {{ theme.primaryTextColor }} !important;
-  }
-{%- endif %}
-section.right.floated h2.ui.small.header {
-  text-shadow: 0 -1px 2px @white;
-}
 
 {# ------------------------------------------------------------------------ #}
 {# Menu #}
 {# ------------------------------------------------------------------------ #}
 {%- if theme.secondaryColor %}
-  .theme-primary.pointing.menu .item.active {
-  border-color: {{ theme.secondaryColor }} !important;
+    .theme-primary.pointing.menu .item.active {
+      border-color: {{ theme.secondaryColor }} !important;
+    }
+{%- endif %}
+{%- if theme.primaryColor and theme.primaryTextColor %}
+  .ui.menu.theme-primary.pointing.menu {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff !important;
+    border-radius: 0.5em;
+    box-shadow: 0 0 10px 0 rgb(from {{ theme.primaryColor }} r g b / 0.15);
+  }
+  .ui.menu.theme-primary a.item:hover {
+    background-color: rgba(255, 255, 255, 0.35) !important;
+    border-bottom: 2px solid rgb(from {{ theme.primaryColor }} r g b / 0.15);
+  }
+  .ui.menu.theme-primary .item.active {
+    background-color: rgba(255, 255, 255, 0.35) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 {%- endif %}
-.ui.menu.theme-primary-menu {
-background-color: rgba(255, 255, 255, 0.5) !important;
-backdrop-filter: blur(4px);
--webkit-backdrop-filter: blur(4px);
-border: 2px solid #ffffff;
-border-bottom: 2px solid #ffffff !important;
-border-radius: 0.5em;
-{%- if theme.primaryColor %}box-shadow: 0 0 10px 0 rgb(from {{ theme.primaryColor }} r g b / 0.15);{%- endif %}
-  }
-  .theme-primary-menu .item.active {
-  background-color: rgba(255, 255, 255, 0.35) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  }
 
-  {# ------------------------------------------------------------------------ #}
-  {# General typography #}
-  {# ------------------------------------------------------------------------ #}
-  {% set font = theme.get("font", {}) %}
-  {%- if font.family or font.weight or font.size %}
-    .theme-primary .item, .theme-primary-menu, .page-subheader-outer {
-    {% if font.family %}font-family: {{ font.family }} !important;{% endif %}
-    {% if font.weight %}font-weight: {{ font.weight }} !important;{% endif %}
-    {% if font.size %}font-size: {{ font.size }};{% endif %}
-    }
-  {%- endif %}
-  {%- if theme.primaryColor %}
-    /* .theme-primary { */
-    /*   background-color: {{ theme.primaryColor }} !important; */
-    /* } */
-    .theme-primary-text a,
-    .theme-primary-text h1 {
+{# ------------------------------------------------------------------------ #}
+{# Primary containers and sections #}
+{# ------------------------------------------------------------------------ #}
+/* {%- if theme.primaryColor %} */
+  /* .theme-primary { */
+  /*   background-color: {{ theme.primaryColor }} !important; */
+  /* } */
+/* {%- endif %} */
+
+{# ------------------------------------------------------------------------ #}
+{# General typography #}
+{# ------------------------------------------------------------------------ #}
+{% set font = theme.get("font", {}) %}
+{%- if font.family or font.weight or font.size %}
+  .theme-primary .item, .theme-primary-menu, .page-subheader-outer {
+  {% if font.family %}font-family: {{ font.family }} !important;{% endif %}
+  {% if font.weight %}font-weight: {{ font.weight }} !important;{% endif %}
+  {% if font.size %}font-size: {{ font.size }};{% endif %}
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Default links #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.secondaryTextColor %}
+  .invenio-page-body:has(#community-detail-header) a {
+    color: {{ theme.secondaryTextColor }} !important;
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Primary buttons, links #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.primaryTextColor %}
+  .theme-primary-text a,
+  .theme-primary .link-button, 
+  .theme-primary a:not(.theme-secondary):not(.theme-tertiary) {
+    color: {{ theme.primaryTextColor }} !important;
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Primary body text #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.primaryTextColor %}
+  .theme-primary p {
+    color: {{ theme.primaryTextColor }} !important;
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Secondary buttons, links #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.secondaryColor or theme.secondaryTextColor %}
+  .theme-secondary .ui.button:not(.link-button), .ui.secondary.button:not(.link-button) {
+  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
+  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
+  }
+  .theme-secondary a:not(.button) {
+  {% if theme.secondaryColor %}background-color: transparent;{% endif %}
+  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }};{% endif %}
+  }
+  .invenio-page-body .ui.search.button {
+  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
+  {% if theme.mainHeaderBackgroundColor %}color: {{ theme.mainHeaderBackgroundColor }} !important;{% endif %}
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# Tertiary buttons, links #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.tertiaryColor or theme.tertiaryTextColor %}
+  .theme-tertiary .ui.button, .ui.tertiary.button {
+  {% if theme.tertiaryColor %}background-color: {{ theme.tertiaryColor }} !important;{% endif %}
+  {% if theme.tertiaryTextColor %}color: {{ theme.tertiaryTextColor }};{% endif %}
+  }
+{%- endif %}
+
+{# ------------------------------------------------------------------------ #}
+{# H1 Headings #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.primaryColor %}
+  .theme-primary h1,
+  .theme-primary-text h1 {
     color: {{ theme.primaryColor }} !important;
-    }
-  {%- endif %}
-  {%- if theme.tertiaryColor or theme.tertiaryTextColor %}
-    .theme-tertiary, .ui.tertiary.button {
-    {% if theme.tertiaryColor %}background-color: {{ theme.tertiaryColor }} !important;{% endif %}
-    {% if theme.tertiaryTextColor %}color: {{ theme.tertiaryTextColor }};{% endif %}
-    }
-  {%- endif %}
-
-  {# ------------------------------------------------------------------------ #}
-  {# H1 Headings #}
-  {# ------------------------------------------------------------------------ #}
-  {%- if font.weight %}
-    .theme-font h1 {
+  }
+  .invenio-page-body:has(#community-detail-header) .community-header h1.huge.header a.theme-primary-text,
+  h1.huge.header a.theme-primary-text {
+    color: {{ theme.primaryColor }} !important;
+    text-decoration: none;
+  }
+{%- endif %}
+{%- if font.weight %}
+  .theme-font h1 {
     font-weight: {{ font.weight }} !important;
-    }
-  {%- endif %}
+  }
+{%- endif %}
 
-  {# ------------------------------------------------------------------------ #}
-  {# Accordions #}
-  {# ------------------------------------------------------------------------ #}
-  {%- if theme.primaryColor or theme.primaryTextColor %}
-    .invenio-accordion-field .title {
+{# ------------------------------------------------------------------------ #}
+{# H2 Headings #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.primaryColor %}
+  .invenio-page-body:has(#community-detail-header) h2,  
+  .theme-primary h2,
+  .theme-primary-text h2 {
+    color: {{ theme.primaryColor }} !important;
+  }
+
+  /* for visibility against header color */
+  section.right.floated h2.ui.small.header {
+    text-shadow: 0 -1px 2px @white;
+  }
+{%- endif %}
+
+
+{# ------------------------------------------------------------------------ #}
+{# Labels #}
+{# ------------------------------------------------------------------------ #}
+.communities-settings .ui.label,
+#communities-details-search .ui.label:not(.access-status):not(.transparent),
+#communities-details-search .ui.label.small:not(.access-status):not(.transparent),
+#community-members-search-root tbody .item .ui.label.tiny.primary {
+  background-color: {{ theme.mainHeaderBackgroundColor }};
+  border: 1px solid rgb( from {{theme.primaryColor}} r g b / 0.1 );
+  color: {{ theme.primaryColor }};
+}
+
+{# ------------------------------------------------------------------------ #}
+{# Accordions #}
+{# ------------------------------------------------------------------------ #}
+{%- if theme.primaryColor or theme.primaryTextColor %}
+  .invenio-accordion-field .title {
     /*
     {% if theme.primaryColor %}background-color: {{ theme.primaryColor }} !important;{% endif %}
     */
-    {% if theme.primaryTextColor %}color: {{ theme.primaryTextColor }} !important;{% endif %}
+    {% if theme.primaryColor %}color: {{ theme.primaryColor }} !important;{% endif %}
     }
     /* .ui.primary.button { */
     /*
@@ -161,141 +250,214 @@ border-radius: 0.5em;
     {% if theme.primaryTextColor %}color: {{ theme.primaryTextColor }} !important;{% endif %}
     */
     /* } */
-  {%- endif %}
+{%- endif %}
 
-  {# ------------------------------------------------------------------------ #}
-  {# Page controls #}
-  {# ------------------------------------------------------------------------ #}
-  .ui.card.borderless.facet {
-    background-color: var(--neutralLight) !important;
-    border-color: var(--neutralMidLight) !important; 
-  }
+{# ------------------------------------------------------------------------ #}
+{# Page controls #}
+{# ------------------------------------------------------------------------ #}
+.ui.card.borderless.facet {
+  background-color: var(--neutralLight) !important;
+  border-color: var(--neutralMidLight) !important; 
+}
 
-  .ui.buttons.basic>.ui.button.request-search-filter {
-    color: var(--neutralText) !important;
-  }
-  .ui.buttons.basic>.ui.button.active.request-search-filter {
-    background-color: var(--neutralLight) !important;
-    color: var(--neutralText) !important;
-  }
-  .ui.buttons.basic>.ui.button.request-search-filter:hover,
-  .ui.buttons.basic>.ui.button.active.request-search-filter:hover {
-    background-color: var(--bgMidTransparency) !important;
-  }
+.ui.buttons.basic>.ui.button.request-search-filter {
+  color: var(--neutralText) !important;
+}
+.ui.buttons.basic>.ui.button.active.request-search-filter {
+  background-color: var(--neutralLight) !important;
+  color: var(--neutralText) !important;
+}
+.ui.buttons.basic>.ui.button.request-search-filter:hover,
+.ui.buttons.basic>.ui.button.active.request-search-filter:hover {
+  background-color: var(--bgMidTransparency) !important;
+}
 
-  .ui.label:not(.transparent):not(type="color") {
-    background-color: var(--neutralLight) !important;
-    border-color: var(--neutralMidLight) !important; 
-    color: var(--neutralText) !important;
-  }
-  .ui.label.transparent {
-    color: var(--neutralText) !important;
-  }
+.ui.label:not(.transparent):not(type="color") {
+  background-color: var(--neutralLight) !important;
+  border-color: var(--neutralMidLight) !important; 
+  color: var(--neutralText) !important;
+}
+.ui.label.transparent {
+  color: var(--neutralText) !important;
+}
 
-  .ui.menu.pagination a.item.active {
-    background-color: var(--neutralLight) !important;
-    color: var(--neutralText) !important;
+.ui.menu.pagination a.item.active {
+  background-color: var(--neutralLight) !important;
+  color: var(--neutralText) !important;
+}
+
+
+{# ------------------------------------------------------------------------ #}
+{# Sidebar menu #}
+{# ------------------------------------------------------------------------ #}
+
+.communities-stats .ui.vertical.menu .item, 
+.communities-settings .ui.vertical.menu .item, 
+.communities-members .ui.vertical.menu .item {
+  border-left: 2px solid #eee !important
+}
+.communities-stats .ui.vertical.menu .item.active, 
+.communities-settings .ui.vertical.menu .item.active, 
+.communities-members .ui.vertical.menu .item.active {
+  border-left: 2px solid {{theme.primaryColor}} !important
+}
+.communities-stats .ui.vertical.menu .item:hover, 
+.communities-settings .ui.vertical.menu .item:hover, 
+.communities-members .ui.vertical.menu .item:hover {
+  background-color: var(--bgMidTransparency);
+}
+.communities-stats .ui.vertical.menu .item.active:hover, 
+.communities-settings .ui.vertical.menu .item.active:hover, 
+.communities-members .ui.vertical.menu .item.active:hover, 
+.communities-members .ui.vertical.menu .item.active:active,
+.communities-members .ui.vertical.menu .item.active:focus {
+  background-color: var(--bgMidDarkTransparency) !important;
+}
+
+@media all and (max-width: 991px) {
+  .communities-stats .ui.vertical.menu, 
+  .communities-settings .ui.vertical.menu, 
+  .communities-members .ui.vertical.menu {
+    border-radius: 0.5em !important;
+    border: 2px solid var(--primaryFaintTransparency);
+    background-color: {{theme.mainHeaderBackgroundColor}} !important;
+    {%- if theme.primaryColor %}box-shadow: 0 0 10px 0 rgb(from {{ theme.primaryColor }} r g b / 0.15);{%- endif %}
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
-
-
-  {# ------------------------------------------------------------------------ #}
-  {# Sidebar menu #}
-  {# ------------------------------------------------------------------------ #}
 
   .communities-stats .ui.vertical.menu .item, 
   .communities-settings .ui.vertical.menu .item, 
   .communities-members .ui.vertical.menu .item {
-    border-left: 2px solid #eee !important
+    border-left: 0px transparent !important;
+    background-color: var(--bgFaintTransparency) !important;
+    border-bottom:  2px solid var(--primaryFaintTransparency) !important;
+    margin-bottom: -2px;
   }
-  .communities-stats .ui.vertical.menu .item.active, 
-  .communities-settings .ui.vertical.menu .item.active, 
-  .communities-members .ui.vertical.menu .item.active {
-    border-left: 2px solid {{theme.primaryColor}} !important
+
+  .communities-stats .ui.vertical.menu .item:first-child, 
+  .communities-settings .ui.vertical.menu .item:first-child, 
+  .communities-members .ui.vertical.menu .item:first-child,
+  .communities-stats .ui.vertical.menu .item.active:first-child,
+  .communities-settings .ui.vertical.menu .item.active:first-child,
+  .communities-members .ui.vertical.menu .item.active:first-child {
+    border-radius: 0.5em 0em 0em 0.5em;
   }
+
+  .communities-stats .ui.vertical.menu .item:last-child, 
+  .communities-settings .ui.vertical.menu .item:last-child, 
+  .communities-members .ui.vertical.menu .item:last-child,
+  .communities-stats .ui.vertical.menu .item.active:last-child,
+  .communities-settings .ui.vertical.menu .item.active:last-child,
+  .communities-members .ui.vertical.menu .item.active:last-child {
+    border-radius: 0em 0.5em 0.5em 0em;
+  }
+
   .communities-stats .ui.vertical.menu .item:hover, 
   .communities-settings .ui.vertical.menu .item:hover, 
   .communities-members .ui.vertical.menu .item:hover {
-    background-color: var(--bgMidTransparency);
+    background-color: rgba(255, 255, 255, 0.3) !important;
   }
-  .communities-stats .ui.vertical.menu .item.active:hover, 
-  .communities-settings .ui.vertical.menu .item.active:hover, 
-  .communities-members .ui.vertical.menu .item.active:hover, 
-  .communities-members .ui.vertical.menu .item.active:active,
-  .communities-members .ui.vertical.menu .item.active:focus {
-    background-color: var(--bgMidDarkTransparency) !important;
+  
+  .communities-stats .ui.vertical.menu .item.active,
+  .communities-settings .ui.vertical.menu .item.active,
+  .communities-members .ui.vertical.menu .item.active {
+    border-left: 2px transparent !important;
+    border-bottom: 2px solid {{theme.primaryColor}} !important;
+    background-color: rgba(255, 255, 255, 0.75) !important;
   }
+}
 
-  @media and (max-width: 991px) {
-    .communities-stats .ui.horizontal.menu .item, 
-    .communities-settings .ui.horizontal.menu .item, 
-    .communities-members .ui.horizontal.menu .item {
-      background-color: var(--bgFaintTransparency) !important;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 2px solid var(--bgMidTranparency) !important;
-      border-bottom:  2px solid var(--bgMidTranparency) !important;
-      border-radius: 0.5em;
-      {%- if theme.primaryColor %}box-shadow: 0 0 10px 0 rgb(from {{ theme.primaryColor }} r g b / 0.15);{%- endif %}
-    }
-    .communities-stats .ui.horizontal.menu .item.active,
-    .communities-settings .ui.horizontal.menu .item.active,
-    .communities-members .ui.horizontal.menu .item.active {
-      background-color: rgba(255, 255, 255, 0.35) !important;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-  }
+
+{# ------------------------------------------------------------------ #}
+{# Forms #}
+{# ------------------------------------------------------------------ #}
+
+.form.communities-profile .ui.grid {
+  margin-top: 0;
+}
+
+.form:not(.communities-profile) {
+  margin-left: 5px;
+}
+
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox .box:before, 
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox label:before {
+  background-color: {{theme.mainHeaderBackgroundColor}} !important;
+}
+
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox input:checked ~ .box:before, 
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox input:checked ~ label:before {
+  background-color: {{theme.secondaryColor}} !important;
+}
+
+{# ------------------------------------------------------------------ #}
+{# Community search results #}
+{# ------------------------------------------------------------------ #}
+
+#communities-details-search .item.search-result > .content > h2.header > a {
+  color: {{theme.primaryTextColor}} !important;
+}
+
+#communities-details-search .item.search-result .creatibutors a.creatibutor-link > .creatibutor-name {
+  color: {{theme.secondaryTextColor}};
+}
+
+#communities-details-search .ui.items > .search-result.item .content .creatibutors .icon {
+  color: rgb(from {{theme.secondaryTextColor}} r g b / 0.5);
+}
 
 {# ------------------------------------------------------------------ #}
 {# Record detail pages #}
 {# ------------------------------------------------------------------ #}
 
 #detail-main-content #communities .row.default-community .community-image img {
-  border: 1px solid color-mix(in srgb, {{ theme.primaryColor }}, {{ theme.mainHeaderBackgroundColor }} 80%);
+border: 1px solid color-mix(in srgb, {{ theme.primaryColor }}, {{ theme.mainHeaderBackgroundColor }} 80%);
 }
 
 #detail-main-content #communities .row.default-community {
-  position: relative;
-  overflow: hidden;
-  background: transparent !important;
-  border: 1px solid color-mix(in srgb, {{ theme.primaryColor }}, {{ theme.mainHeaderBackgroundColor }} 80%);
+position: relative;
+overflow: hidden;
+background: transparent !important;
+border: 1px solid color-mix(in srgb, {{ theme.primaryColor }}, {{ theme.mainHeaderBackgroundColor }} 80%);
 }
 
 {%- if theme.get("mainHeaderUseLogo") %}
 #detail-main-content #communities .row.default-community::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: url("/api/communities/{{ request.view_args.pid_value }}/logo");
-  background-size: 120px auto;
-  background-position: right 1rem center;
-  background-repeat: repeat;
-  opacity: 0.5;
+content: "";
+position: absolute;
+inset: 0;
+z-index: -1;
+background-image: url("/api/communities/{{ request.view_args.pid_value }}/logo");
+background-size: 120px auto;
+background-position: right 1rem center;
+background-repeat: repeat;
+opacity: 0.5;
 }
 {%- endif %}
 
 #detail-main-content #communities .row.default-community::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  {%- if theme.get("mainHeaderUseGradient") %}
-  background-image: radial-gradient(
-    circle at 100% 80%,
-    {%- if theme.get("mainHeaderUseLogo") %}
-    rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.3),
-    {%- else %}
-    color-mix(in srgb, {{ theme.mainHeaderBackgroundColor }}, black 15%),
-    {%- endif %}
-    {{ theme.mainHeaderBackgroundColor }} 70%
-  );
+content: "";
+position: absolute;
+inset: 0;
+z-index: -1;
+{%- if theme.get("mainHeaderUseGradient") %}
+background-image: radial-gradient(
+  circle at 100% 80%,
+  {%- if theme.get("mainHeaderUseLogo") %}
+  rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.3),
   {%- else %}
-  background-color: {{ theme.mainHeaderBackgroundColor }};
+  color-mix(in srgb, {{ theme.mainHeaderBackgroundColor }}, black 15%),
   {%- endif %}
+  {{ theme.mainHeaderBackgroundColor }} 70%
+);
+{%- else %}
+background-color: {{ theme.mainHeaderBackgroundColor }};
+{%- endif %}
 }
 
 #detail-main-content #communities .row.default-community a,
 #detail-main-content #communities .row.default-community h3 {
-    color: {{theme.primaryTextColor}}
+  color: {{theme.primaryTextColor}}
 }
+

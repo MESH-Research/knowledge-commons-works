@@ -4,7 +4,7 @@ Focuses on the parts of [`color`][kcworks.services.geopattern.color] that
 are NOT covered by the JS parity test:
 
 - `darken_hex` / `lighten_hex` (KCWorks-only helpers used to derive the
-  three theme fields on the community record).
+  theme fields on the community record).
 - `hex2rgb` / `rgb2hex` round-trips for malformed and shorthand inputs.
 - The public [`derive_theme_colors`]
   [kcworks.services.geopattern.derive_theme_colors] result shape and
@@ -108,12 +108,14 @@ def test_lighten_hex_invalid_input_raises() -> None:
         lighten_hex("not-a-color")
 
 
-def test_derive_theme_colors_has_three_keys() -> None:
-    """`derive_theme_colors(slug)` returns the three documented keys."""
+def test_derive_theme_colors_has_five_keys() -> None:
+    """`derive_theme_colors(slug)` returns the five documented keys."""
     out = derive_theme_colors("alpha")
     assert set(out.keys()) == {
         "primaryColor",
         "primaryTextColor",
+        "secondaryColor",
+        "secondaryTextColor",
         "mainHeaderBackgroundColor",
     }
     for v in out.values():
@@ -130,3 +132,10 @@ def test_derive_theme_colors_primary_matches_pattern_color() -> None:
     from kcworks.services.geopattern import generate
 
     assert derive_theme_colors("alpha")["primaryColor"] == generate("alpha").color
+
+
+def test_derive_theme_colors_secondary_matches_primary() -> None:
+    """Secondary colors default to the same values as their primary counterparts."""
+    out = derive_theme_colors("alpha")
+    assert out["secondaryColor"] == out["primaryColor"]
+    assert out["secondaryTextColor"] == out["primaryTextColor"]

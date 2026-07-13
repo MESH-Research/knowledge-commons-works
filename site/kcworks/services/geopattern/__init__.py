@@ -12,8 +12,9 @@ Public surface:
   `raster.svg_to_png`).
 - [`derive_theme_colors(slug)`]
   [kcworks.services.geopattern.derive_theme_colors]:
-  The trio of slug-derived theme colors KCWorks persists on the community
-  record (`primaryColor`, `primaryTextColor`, `mainHeaderBackgroundColor`).
+  The slug-derived theme colors KCWorks persists on the community record
+  (`primaryColor`, `primaryTextColor`, `secondaryColor`,
+  `secondaryTextColor`, `mainHeaderBackgroundColor`).
 """
 
 from __future__ import annotations
@@ -25,7 +26,7 @@ from .pattern import Pattern
 
 
 class ThemeColors(TypedDict):
-    """Three theme-color fields persisted on each community's `theme.style`.
+    """Theme-color fields persisted on each community's `theme.style`.
 
     All values are 7-char `#RRGGBB` hex strings. Keys match the existing
     invenio-communities `theme.style` schema verbatim.
@@ -33,6 +34,8 @@ class ThemeColors(TypedDict):
 
     primaryColor: str
     primaryTextColor: str
+    secondaryColor: str
+    secondaryTextColor: str
     mainHeaderBackgroundColor: str
 
 
@@ -152,7 +155,7 @@ def to_png(
 
 
 def derive_theme_colors(slug: str) -> ThemeColors:
-    """Return the slug-derived trio of community theme colors.
+    """Return the slug-derived community theme colors.
 
     Composes [`generate`][kcworks.services.geopattern.generate] with the
     [`darken_hex`][kcworks.services.geopattern.color.darken_hex] and
@@ -164,13 +167,17 @@ def derive_theme_colors(slug: str) -> ThemeColors:
 
     Returns:
         A [`ThemeColors`][kcworks.services.geopattern.ThemeColors] dict
-        with three `#RRGGBB` keys.
+        with five `#RRGGBB` keys. Secondary colors default to the same
+        values as their primary counterparts.
     """
     pattern = generate(slug)
     primary = pattern.color
+    primary_text = darken_hex(primary, 0.35)
     return {
         "primaryColor": primary,
-        "primaryTextColor": darken_hex(primary, 0.35),
+        "primaryTextColor": primary_text,
+        "secondaryColor": primary,
+        "secondaryTextColor": primary_text,
         "mainHeaderBackgroundColor": lighten_hex(primary, 0.85),
     }
 
