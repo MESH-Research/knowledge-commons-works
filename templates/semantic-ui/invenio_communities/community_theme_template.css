@@ -1,10 +1,12 @@
-.invenio-page-body:has(#community-detail-header) {
+.invenio-page-body:has(#community-detail-header),
+.invenio-page-body:has(#detail-main-content #communities .row.default-community) {
 --primaryFaintTransparency: rgb(from {{ theme.primaryColor }} r g b / 0.15);
 --primaryMidTransparency: rgb(from {{ theme.primaryColor }} r g b / 0.5);
 --bgMidDarkTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.55);
 --bgMidTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.5);
+--bgMidFaintTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.25);
 --bgFaintTransparency: rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.1);
---bgDarkShade: rgb(from {{ theme.secondaryColor }} r g b / 0.3);
+--bgDarkShade: rgb(from {{ theme.secondaryColor }} r g b / 0.2);
 --neutralLight: #f5f5f5;
 --neutralMidLight: #d2d2d2;
 --neutralText: #606060;
@@ -96,11 +98,13 @@
   }
   .ui.menu.theme-primary a.item:hover {
     background-color: rgba(255, 255, 255, 0.35) !important;
-    border-bottom: 2px solid rgb(from {{ theme.primaryColor }} r g b / 0.15);
+    border-bottom: 2px solid rgb(from {{ theme.primaryColor }} r g b / 0.25);
   }
   .ui.menu.theme-primary .item.active {
     background-color: rgba(255, 255, 255, 0.35) !important;
     backdrop-filter: blur(12px);
+    border-bottom: 2px solid {{ theme.tertiaryColor }};
+    border-color: {{ theme.tertiaryColor }} !important;
     -webkit-backdrop-filter: blur(12px);
   }
 {%- endif %}
@@ -443,16 +447,15 @@ inset: 0;
 z-index: -1;
 {%- if theme.get("mainHeaderUseGradient") %}
 background-image: radial-gradient(
-  circle at 100% 80%,
-  {%- if theme.get("mainHeaderUseLogo") %}
-  rgb(from {{ theme.mainHeaderBackgroundColor }} r g b / 0.3),
-  {%- else %}
-  color-mix(in srgb, {{ theme.mainHeaderBackgroundColor }}, black 15%),
-  {%- endif %}
-  {{ theme.mainHeaderBackgroundColor }} 70%
+  ellipse at 100% 80%,
+  {%- if theme.get("mainHeaderUseLogo") %}var(--bgMidTransparency){%- else %}var(--bgMidDarkTransparency){%- endif %},
+  {{ theme.mainHeaderBackgroundColor }} 80%
 );
+background-size: 100% auto;
+background-repeat: no-repeat;
 {%- else %}
 background-color: {{ theme.mainHeaderBackgroundColor }};
+background-image: none;
 {%- endif %}
 }
 

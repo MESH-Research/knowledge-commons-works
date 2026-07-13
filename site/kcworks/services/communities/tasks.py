@@ -20,10 +20,18 @@ from invenio_records_resources.services.uow import RecordCommitOp, UnitOfWork
     max_retries=3,
     default_retry_delay=30,
 )
-def generate_default_branding(self: Any, community_id: str) -> None:
+def generate_default_branding(
+    self: Any,
+    community_id: str,
+    *,
+    force_theme: bool = False,
+    skip_logo: bool = False,
+    skip_theme: bool = False,
+) -> None:
     """Celery fallback: re-run the default-branding pipeline for `community_id`.
 
-    Only invoked when the inline component path raises. Runs the same
+    Only invoked when the inline component path raises, or when the
+    backfill CLI runs with ``--async``. Runs the same
     [`apply_default_branding`][kcworks.services.communities.default_branding.apply_default_branding]
     inside a fresh unit of work so the changes get committed correctly
     outside any active request UoW.
@@ -32,6 +40,9 @@ def generate_default_branding(self: Any, community_id: str) -> None:
         self: Celery `bind=True` task self-reference.
         community_id: The community's UUID or slug. Resolved via the
             standard PID resolver.
+        force_theme: When ``True``, overwrite all default theme keys.
+        skip_logo: When ``True``, do not write or regenerate the logo file.
+        skip_theme: When ``True``, do not seed or update theme keys.
 
     The Celery framework re-raises the result of `self.retry(...)` when
     the inner pipeline raises (up to `max_retries` attempts with
@@ -42,7 +53,12 @@ def generate_default_branding(self: Any, community_id: str) -> None:
     def _do() -> None:
         with UnitOfWork(db.session) as uow:
             record = current_communities.service.record_cls.pid.resolve(community_id)
-            apply_default_branding(record)
+            apply_default_branding(
+                record,
+                force_theme=force_theme,
+                skip_logo=skip_logo,
+                skip_theme=skip_theme,
+            )
             uow.register(RecordCommitOp(record))
             uow.commit()
 

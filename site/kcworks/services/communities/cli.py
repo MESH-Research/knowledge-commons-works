@@ -16,8 +16,9 @@ from marshmallow.exceptions import ValidationError
 
 from kcworks.services.communities.default_branding import (
     apply_default_branding,
-    branding_theme_style,
     generate_default_branding,
+    missing_theme_style_keys,
+    theme_style_differs_from_defaults,
 )
 from kcworks.services.search.mappings_utilities import (
     apply_additive_mapping_update,
@@ -431,22 +432,6 @@ def update_index_mapping(dry_run: bool, verbose: bool) -> None:
         click.secho(f"{label} index mapping updated.", fg="green")
 
 
-def _missing_theme_keys(record) -> list[str]:
-    """List which default theme.style keys are not set on `record`.
-
-    Args:
-        record: A Community record.
-
-    Returns:
-        The list of `_THEME_KEYS` not currently present in
-        `record["theme"]["style"]`. Empty when all defaults are set.
-    """
-    theme = record.get("theme") or {}
-    style = theme.get("style") or {}
-    defaults = branding_theme_style(record)
-    return [k for k in defaults if k not in style]
-
-
 @click.command("backfill-default-branding")
 @click.option(
     "--dry-run",
@@ -473,6 +458,15 @@ def _missing_theme_keys(record) -> list[str]:
     help="Only seed missing theme.style colors; skip logo.",
 )
 @click.option(
+    "--reset-theme",
+    is_flag=True,
+    default=False,
+    help=(
+        "Overwrite existing theme.style values with current service "
+        "defaults. Without this flag, only unset keys are filled in."
+    ),
+)
+@click.option(
     "--async",
     "async_",
     is_flag=True,
@@ -490,6 +484,7 @@ def backfill_default_branding(
     limit: int | None,
     logo_only: bool,
     theme_only: bool,
+    reset_theme: bool,
     async_: bool,
 ) -> None:
     """Backfill default geopattern logos and theme colors on existing communities.
@@ -499,14 +494,13 @@ def backfill_default_branding(
 
     - "Missing logo": no file at `record.files["logo"]`. Backfill adds a
       slug-derived geopattern PNG.
-    - "Missing theme": at least one default `theme.style` key is unset on
-      `record["theme"]["style"]`. Backfill seeds slug-derived colors and
-      service-default header flags for the missing keys.
+    - "Theme": by default, only unset ``theme.style`` keys are seeded from
+      the service default for that community's logo type. With
+      ``--reset-theme``, any key that differs from the current service
+      default is overwritten (colors and header flags).
 
-    User-uploaded logos are never overwritten and admin-customized theme
-    values are never replaced; backfill only ever fills in what is
-    currently missing. (Use `service.delete_logo` to explicitly reset to
-    defaults.)
+    User-uploaded logos are never overwritten. Use `service.delete_logo`
+    to explicitly revert to the geopattern logo and slug-derived theme.
     """
     if logo_only and theme_only:
         click.echo("Error: --logo-only and --theme-only are mutually exclusive.")
@@ -540,27 +534,38 @@ def backfill_default_branding(
             continue
 
         needs_logo = do_logo and _needs_logo(record)
-        missing_theme = _missing_theme_keys(record) if do_theme else []
-        if not needs_logo and not missing_theme:
+        if do_theme:
+            theme_diff = (
+                theme_style_differs_from_defaults(record)
+                if reset_theme
+                else missing_theme_style_keys(record)
+            )
+        else:
+            theme_diff = []
+        if not needs_logo and not theme_diff:
             continue
 
-        # Sanitize for the report line; record.slug is always present.
-        what: list[str] = []
+        updates: list[str] = []
         if needs_logo:
-            what.append("logo")
+            updates.append("logo")
             total_logo_needed += 1
-        if missing_theme:
-            what.append(f"theme[{','.join(missing_theme)}]")
+        if theme_diff:
+            updates.append(f"theme[{','.join(theme_diff)}]")
             total_theme_needed += 1
 
         if dry_run:
-            click.echo(f"  would update {record.slug}: {' + '.join(what)}")
+            click.echo(f"  would update {record.slug}: {' + '.join(updates)}")
             total_touched += 1
             continue
 
         if async_:
             try:
-                generate_default_branding.delay(str(record.id))
+                generate_default_branding.delay(
+                    str(record.id),
+                    force_theme=reset_theme,
+                    skip_logo=not do_logo,
+                    skip_theme=not do_theme,
+                )
                 total_enqueued += 1
                 total_touched += 1
                 click.echo(
@@ -584,14 +589,14 @@ def backfill_default_branding(
                 apply_default_branding(
                     record,
                     force_logo=False,
-                    force_theme=False,
+                    force_theme=reset_theme,
                     skip_logo=not do_logo,
                     skip_theme=not do_theme,
                 )
                 uow.register(RecordCommitOp(record))
                 uow.commit()
             total_touched += 1
-            click.echo(f"  updated {record.slug}: {' + '.join(what)}")
+            click.echo(f"  updated {record.slug}: {' + '.join(updates)}")
         except Exception as exc:
             total_failed += 1
             click.echo(
