@@ -171,7 +171,7 @@ function CommunityThemeForm({ community, defaultTheme }) {
 
   const hasError = error !== undefined;
 
-  const onSubmit = async (values, { setSubmitting, setFieldError, resetForm }) => {
+  const onSubmit = async (values, { setSubmitting, setFieldError }) => {
     setSubmitting(true);
     setIsSaved(false);
 
@@ -182,8 +182,7 @@ function CommunityThemeForm({ community, defaultTheme }) {
         theme: sanitizeTheme(values.theme),
       };
       await client.update(community.id, payload);
-      setIsSaved(true);
-      resetForm({ values });
+      window.location.reload();
     } catch (submitError) {
       if (submitError === "UNMOUNTED") {
         return;
