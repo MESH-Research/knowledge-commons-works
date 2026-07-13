@@ -47,7 +47,7 @@ export const CommunityItemMobile = ({ result, index }) => {
                 href={result.links.self_html}
               >
                 {result.metadata.title}
-                {/* Show the icon for subcommunities */}
+                {/* Show the icon for subcommunities
                 {result.parent && (
                   <p className="ml-5 display-inline-block">
                     <Popup
@@ -59,6 +59,7 @@ export const CommunityItemMobile = ({ result, index }) => {
                     />
                   </p>
                 )}
+                */}
               </a>
             </div>
           </div>
