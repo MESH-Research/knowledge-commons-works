@@ -33,8 +33,8 @@
 
 // @mobileBreakpoint: 320px;
 // @tabletBreakpoint: 768px;
-@computerBreakpoint: 992px;
-@largeMonitorBreakpoint: 1200px;
+@computerBreakpoint: 1024px; // 992px;  // stock 1280px
+@largeMonitorBreakpoint: 1400px;  // stock 1680px
 @widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------

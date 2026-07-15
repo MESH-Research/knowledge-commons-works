@@ -29,7 +29,7 @@ _FORM_TITLE = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 1,
+            "largeScreen": 2,
             "widescreen": 2,
             "only": "large screen",
         },
@@ -38,7 +38,7 @@ _FORM_TITLE = {
             "mobile": 16,
             "tablet": 16,
             "computer": 16,
-            "largeScreen": 15,
+            "largeScreen": 14,
             "widescreen": 14,
         },
     ],
@@ -58,7 +58,7 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
         {
             "component": "SpacerColumn",
             "largeScreen": 1,
-            "widescreen": 2,
+            "widescreen": 1,
             "only": "large screen",
         },
         {
@@ -70,7 +70,7 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
         {
             "component": "FormStepper",
             "classnames": "column",
-            "largeScreen": 11,
+            "largeScreen": 10,
             "widescreen": 10,
             "computer": 11,
             "only": "computer",
@@ -110,7 +110,7 @@ _FORM_LEFT_SIDEBAR_MENU = {
         {
             "component": "FormSidebarPageMenu",
             "label": _("Steps"),
-            "classnames": "computer widescreen large-monitor only",
+            "classnames": "computer widescreen large screen only",
         },
     ],
 }
@@ -119,7 +119,7 @@ _FORM_LEFT_SIDEBAR_EMPTY = {
     "component": "FormLeftSidebar",
     "classnames": "default-layout",
     "largeScreen": 1,
-    "widescreen": 2,
+    "widescreen": 1,
     "only": "large screen",
     "subsections": [
         {},
@@ -132,7 +132,7 @@ _FORM_RIGHT_SIDEBAR = {
     # Sidebar widths: 4 (widescreen), 4 (largeScreen), 5 (computer)
     "only": "computer",
     "computer": 5,
-    "largeScreen": 4,
+    "largeScreen": 5,
     "widescreen": 4,
     "subsections": [
         {
