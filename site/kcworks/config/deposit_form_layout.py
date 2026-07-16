@@ -29,8 +29,8 @@ _FORM_TITLE = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 2,
-            "widescreen": 2,
+            "largeScreen": 1,
+            "widescreen": 1,
             "only": "large screen",
         },
         {
@@ -71,7 +71,7 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
             "component": "FormStepper",
             "classnames": "column",
             "largeScreen": 10,
-            "widescreen": 10,
+            "widescreen": 11,
             "computer": 11,
             "only": "computer",
         },
