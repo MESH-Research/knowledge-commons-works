@@ -40,6 +40,7 @@
   }
 }
 
+.deposit-right-sidebar .ui.card,
 .ui.card.borderless.facet {
   background-color: @sidebarBackgroundColor;
   padding: 1rem;
@@ -47,6 +48,7 @@
   border-radius: @defaultBorderRadius;
   width: auto;
   border: 1px solid @sidebarBorderColor !important; // @verdigris30 !important;
+  box-shadow: 0px 0px 15px 0px transparent;
 
   > .content {
     margin-bottom: 0;
@@ -93,4 +95,8 @@
       padding-top: 0;
     }
   }
+}
+
+.deposit-right-sidebar .ui.card {
+  padding-top: 0;
 }
