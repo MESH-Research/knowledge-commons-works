@@ -27,7 +27,7 @@ MAIL_USE_TLS = True
 MAIL_USE_SSL = False
 MAIL_USERNAME = os.getenv("SPARKPOST_USERNAME")
 MAIL_PASSWORD = os.getenv("SPARKPOST_API_KEY")
-MAIL_DEFAULT_SENDER = os.getenv("INVENIO_ADMIN_EMAIL")
+MAIL_DEFAULT_SENDER = os.getenv("INVENIO_ADMIN_EMAIL", "myemail@sample.org")
 # MAIL_MAX_EMAILS = None
 # MAIL_ASCII_ATTACHMENTS: bool = False
 
@@ -37,9 +37,13 @@ MAIL_SUPPRESS_SEND = (
 
 # Admin recipients (cross-extension)
 # ----------------------------------
-RECORD_IMPORTER_ADMIN_EMAIL = os.getenv("INVENIO_ADMIN_EMAIL")  # default owner account
-APP_RDM_ADMIN_EMAIL_RECIPIENT = os.getenv("INVENIO_ADMIN_EMAIL")
-GROUP_COLLECTIONS_ADMIN_EMAIL = os.getenv("INVENIO_ADMIN_EMAIL")  # admin owner account
+RECORD_IMPORTER_ADMIN_EMAIL = os.getenv(
+    "INVENIO_ADMIN_EMAIL", MAIL_DEFAULT_SENDER
+)  # default owner account
+APP_RDM_ADMIN_EMAIL_RECIPIENT = os.getenv("INVENIO_ADMIN_EMAIL", MAIL_DEFAULT_SENDER)
+GROUP_COLLECTIONS_ADMIN_EMAIL = os.getenv(
+    "INVENIO_ADMIN_EMAIL", MAIL_DEFAULT_SENDER
+)  # admin owner account
 
 # Welcome email
 # -------------
