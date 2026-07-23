@@ -25,6 +25,7 @@ const SubjectsField = ({
   multiple = true,
   placeholder = i18next.t("Search using full words"),
   required = false,
+  showLabel = true,
   limitToOptions,
   noQueryMessage = " ",
   // noResultsMessage = " ",
@@ -93,89 +94,87 @@ const SubjectsField = ({
 
   return (
     <>
-      <GroupField className="main-group-field">
-        <Form.Field className="subjects-field-inner" width={16}>
-          <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
-          {!!description && (
-            <div id={`${fieldPath}-helpt-text`} className="helptext label top">
-              {description}
-            </div>
-          )}
-          <GroupField fluid>
-            {/* <Form.Field
+      <Form.Field className="subjects-field-inner" width={16}>
+        {showLabel && label ? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} /> : null}
+        {!!description && (
+          <div id={`${fieldPath}-helpt-text`} className="helptext label top">
+            {description}
+          </div>
+        )}
+        <GroupField fluid>
+          {/* <Form.Field
             width={4}
             style={{ marginBottom: "auto", marginTop: "auto" }}
             className=""
           >
             {i18next.t("Suggest from")}
           </Form.Field> */}
-            <Field name={fieldPath} width={10}>
-              {({ field, form: { values } }) => {
-                return (
-                  <RemoteSelectField
-                    {...otherProps}
-                    allowAdditions={false}
-                    aria-describedby={`${fieldPath}-helpt-text`}
-                    clearable={clearable}
-                    description={undefined} /** Description is rendered separately */
-                    fieldPath={fieldPath}
-                    helpText={undefined} /** Help text is rendered separately */
-                    initialSuggestions={getIn(values, fieldPath, [])}
-                    label={
-                      <>
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label className="mobile-hidden">&nbsp;</label>
-                      </>
-                    } /** For alignment purposes */
-                    multiple={multiple}
-                    noQueryMessage={noQueryMessage}
-                    // noResultsMessage={noResultsMessage}
-                    onValueChange={({ formikProps }, selectedSuggestions) => {
-                      formikProps.form.setFieldValue(
-                        fieldPath,
-                        selectedSuggestions.map((suggestion) => ({
-                          subject: suggestion.value,
-                          id: suggestion.id,
-                        }))
-                      );
-                    }}
-                    placeholder={placeholder}
-                    preSearchChange={prepareSuggest}
-                    suggestionAPIQueryParams={{ type: "best_fields" }}
-                    required={required}
-                    serializeSuggestions={serializeSubjects}
-                    serializeAddedValue={(value) => ({
-                      text: value,
-                      value: value,
-                      key: value,
-                      subject: value,
-                    })}
-                    suggestionAPIUrl="/api/subjects"
-                    value={getIn(values, fieldPath, []).map((val) => val.subject)}
-                    width={11}
-                    scrolling
-                  />
-                );
-              }}
-            </Field>
-            <Form.Dropdown
-              defaultValue={facetOptions[0].value}
-              fluid
-              onChange={(event, data) => setLimitTo(data.value)}
-              options={facetOptions}
-              selection
-              scrolling
-              width={6}
-              label={i18next.t("From subject category...")}
-            />
-          </GroupField>
-          {!!helpText && (
-            <div id={`${fieldPath}-helpt-text`} className="helptext label">
-              {helpText}
-            </div>
-          )}
-        </Form.Field>
-      </GroupField>
+          <Field name={fieldPath} width={10}>
+            {({ field, form: { values } }) => {
+              return (
+                <RemoteSelectField
+                  {...otherProps}
+                  allowAdditions={false}
+                  aria-describedby={`${fieldPath}-helpt-text`}
+                  clearable={clearable}
+                  description={undefined} /** Description is rendered separately */
+                  fieldPath={fieldPath}
+                  helpText={undefined} /** Help text is rendered separately */
+                  initialSuggestions={getIn(values, fieldPath, [])}
+                  label={
+                    <>
+                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                      <label className="mobile-hidden">&nbsp;</label>
+                    </>
+                  } /** For alignment purposes */
+                  multiple={multiple}
+                  noQueryMessage={noQueryMessage}
+                  // noResultsMessage={noResultsMessage}
+                  onValueChange={({ formikProps }, selectedSuggestions) => {
+                    formikProps.form.setFieldValue(
+                      fieldPath,
+                      selectedSuggestions.map((suggestion) => ({
+                        subject: suggestion.value,
+                        id: suggestion.id,
+                      }))
+                    );
+                  }}
+                  placeholder={placeholder}
+                  preSearchChange={prepareSuggest}
+                  suggestionAPIQueryParams={{ type: "best_fields" }}
+                  required={required}
+                  serializeSuggestions={serializeSubjects}
+                  serializeAddedValue={(value) => ({
+                    text: value,
+                    value: value,
+                    key: value,
+                    subject: value,
+                  })}
+                  suggestionAPIUrl="/api/subjects"
+                  value={getIn(values, fieldPath, []).map((val) => val.subject)}
+                  width={11}
+                  scrolling
+                />
+              );
+            }}
+          </Field>
+          <Form.Dropdown
+            defaultValue={facetOptions[0].value}
+            fluid
+            onChange={(event, data) => setLimitTo(data.value)}
+            options={facetOptions}
+            selection
+            scrolling
+            width={6}
+            label={i18next.t("From subject category...")}
+          />
+        </GroupField>
+        {!!helpText && (
+          <div id={`${fieldPath}-helpt-text`} className="helptext label">
+            {helpText}
+          </div>
+        )}
+      </Form.Field>
     </>
   );
 };
@@ -193,4 +192,3 @@ SubjectsField.propTypes = {
 };
 
 export { SubjectsField };
-

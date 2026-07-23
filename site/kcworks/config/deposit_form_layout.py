@@ -70,16 +70,16 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
         {
             "component": "FormStepper",
             "classnames": "column",
-            "largeScreen": 10,
-            "widescreen": 11,
-            "computer": 11,
+            "largeScreen": 12,
+            "widescreen": 12,
+            "computer": 12,
             "only": "computer",
         },
         {
             "component": "SpacerColumn",
-            "computer": 5,
-            "largeScreen": 4,
-            "widescreen": 4,
+            "computer": 4,
+            "largeScreen": 3,
+            "widescreen": 3,
             "only": "computer",
         },
         # Mobile/tablet only: FormFeedbackComponent shown full-width under the
@@ -131,9 +131,9 @@ _FORM_RIGHT_SIDEBAR = {
     "classnames": "default-layout",
     # Sidebar widths: 4 (widescreen), 4 (largeScreen), 5 (computer)
     "only": "computer",
-    "computer": 5,
-    "largeScreen": 5,
-    "widescreen": 4,
+    "computer": 4,
+    "largeScreen": 3,
+    "widescreen": 3,
     "subsections": [
         {
             "section": "form_feedback",
@@ -367,84 +367,49 @@ _FORM_PAGES = {
                 {
                     "section": "subjects",
                     "label": _("Subjects"),
-                    "component": "FormSection",
-                    "show_heading": True,
-                    "classnames": "basic",
-                    "subsections": [
-                        {
-                            "section": "subjects_field",
-                            "label": None,
-                            "component": "SubjectsComponent",
-                            "description": _(
-                                "Search using full words and press enter to select. "
-                                "(For best results, choose a subject category at "
-                                "right.)"
-                            ),
-                            "helpText": _(
-                                "These formal subject headings let people find "
-                                "your work in subject searches."
-                            ),
-                            "placeholder": _(
-                                "e.g., Nelson Mandela, Genetics,Shakespeare"
-                            ),
-                        },
-                    ],
+                    "component": "SubjectsComponent",
+                    "description": _(
+                        "Search using full words and press enter to select. "
+                        "(For best results, choose a subject category at "
+                        "right.)"
+                    ),
+                    "helpText": _(
+                        "These formal subject headings let people find "
+                        "your work in subject searches."
+                    ),
+                    "placeholder": _("e.g., Nelson Mandela, Genetics,Shakespeare"),
+                    "classnames": "basic prominent-field-label",
                 },
                 {
                     "section": "keywords",
                     "label": _("User-defined Keywords"),
-                    "component": "FormSection",
-                    "show_heading": True,
-                    "classnames": "basic",
-                    "subsections": [
-                        {
-                            "section": "keyworks_field",
-                            "icon": "tags",
-                            "label": None,
-                            "component": "KeywordsComponent",
-                            "description": (
-                                "Add keywords of your own to aid in searches. "
-                                "Press enter to add each keyword."
-                            ),
-                        }
-                    ],
+                    "icon": "tags",
+                    "component": "KeywordsComponent",
+                    "description": (
+                        "Add keywords of your own to aid in searches. "
+                        "Press enter to add each keyword."
+                    ),
+                    "classnames": "basic prominent-field-label",
                 },
                 {
                     "section": "content_warning",
                     "label": _("Content Warning"),
-                    "component": "FormSection",
-                    "show_heading": True,
-                    "classnames": "basic",
-                    "subsections": [
-                        {
-                            "section": "content_warning_field",
-                            "label": None,
-                            "component": "ContentWarningComponent",
-                            "description": (
-                                "Please provide a brief warning about any "
-                                "content that some may find upsetting."
-                                " (E.g., 'Includes nudity.')"
-                            ),
-                            "helpText": (
-                                "This text will be displayed on the detail page for "
-                                "the work."
-                            ),
-                        },
-                    ],
+                    "component": "ContentWarningComponent",
+                    "description": (
+                        "Please provide a brief warning about any "
+                        "content that some may find upsetting."
+                        " (E.g., 'Includes nudity.')"
+                    ),
+                    "helpText": (
+                        "This text will be displayed on the detail page for the work."
+                    ),
+                    "classnames": "basic prominent-field-label",
                 },
                 {
                     "section": "related",
                     "label": _("Related Works"),
-                    "component": "FormSection",
-                    "show_heading": True,
-                    "classnames": "basic",
-                    "subsections": [
-                        {
-                            "section": "related_works",
-                            "label": None,
-                            "component": "RelatedWorksComponent",
-                        },
-                    ],
+                    "component": "RelatedWorksComponent",
+                    "classnames": "basic prominent-field-label",
                 },
             ],
         },
