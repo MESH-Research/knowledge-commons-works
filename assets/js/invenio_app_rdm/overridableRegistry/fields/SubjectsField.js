@@ -97,7 +97,7 @@ const SubjectsField = ({
       <Form.Field className="subjects-field-inner" width={16}>
         {showLabel && label ? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} /> : null}
         {!!description && (
-          <div id={`${fieldPath}-helpt-text`} className="helptext label top">
+          <div id={`${fieldPath}-helpt-text`} className="description">
             {description}
           </div>
         )}
@@ -121,12 +121,8 @@ const SubjectsField = ({
                   fieldPath={fieldPath}
                   helpText={undefined} /** Help text is rendered separately */
                   initialSuggestions={getIn(values, fieldPath, [])}
-                  label={
-                    <>
-                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="mobile-hidden">&nbsp;</label>
-                    </>
-                  } /** For alignment purposes */
+                  label={i18next.t("Subject terms")} /** For alignment purposes */
+                  labelIcon={null}
                   multiple={multiple}
                   noQueryMessage={noQueryMessage}
                   // noResultsMessage={noResultsMessage}
@@ -141,8 +137,9 @@ const SubjectsField = ({
                   }}
                   placeholder={placeholder}
                   preSearchChange={prepareSuggest}
-                  suggestionAPIQueryParams={{ type: "best_fields" }}
                   required={required}
+                  restrictOptionsToResults={true}
+                  searchOnFocus={false}
                   serializeSuggestions={serializeSubjects}
                   serializeAddedValue={(value) => ({
                     text: value,
@@ -150,6 +147,7 @@ const SubjectsField = ({
                     key: value,
                     subject: value,
                   })}
+                  suggestionAPIQueryParams={{ type: "best_fields" }}
                   suggestionAPIUrl="/api/subjects"
                   value={getIn(values, fieldPath, []).map((val) => val.subject)}
                   width={11}

@@ -377,7 +377,7 @@ _FORM_PAGES = {
                         "These formal subject headings let people find "
                         "your work in subject searches."
                     ),
-                    "placeholder": _("e.g., Nelson Mandela, Genetics,Shakespeare"),
+                    "placeholder": _("e.g., Nelson Mandela, Genetics, Shakespeare"),
                     "classnames": "basic prominent-field-label",
                 },
                 {
