@@ -3434,14 +3434,18 @@ provides-extras = ["dev", "docs", "tests"]
 
 [[package]]
 name = "invenio-subjects-fast"
-version = "2023.7.5"
+version = "2026.7.23"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
+    { name = "halo" },
+    { name = "jsonlines" },
+    { name = "requests" },
+    { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/8e/b50606bb6e7e5a715367479834b245de5da6cd11f731a8ab314c910e71e5/invenio-subjects-fast-2023.7.5.tar.gz", hash = "sha256:ae8e37e7138b13954b0236c17e148bac029425d4b4affe1a1e01277deeb0487d", size = 32152677, upload-time = "2023-07-05T13:47:28.961Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/45/f9d714693581ebc8a80964350ec611f5edcabd7906bb380e75b33d249e05/invenio_subjects_fast-2026.7.23.tar.gz", hash = "sha256:f208fb4c199626f6aec2fdd123d8cfc9593a2a5857b3db27ea7e0e94ba5a5f82", size = 32312740, upload-time = "2026-07-24T02:52:28.719Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/bb/61561fbfd8070d6783fa758e633e4c08a2ec4103e9d3fc53d3a7adaa1405/invenio_subjects_fast-2023.7.5-py2.py3-none-any.whl", hash = "sha256:b725cf430bcc806c4516be95e4c76b33385a1c1a8aa1d06c8fbf3feb43643be3", size = 33178841, upload-time = "2023-07-05T13:47:15.399Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/33/7aa02c551e24b8d17d0f0d7c4ca8c47f5a8f7eea88b7d42b34754e918ce0/invenio_subjects_fast-2026.7.23-py3-none-any.whl", hash = "sha256:063fcd3f5199a991f36a28ca9cafac621f13a90880a4c5e33943af71d9bb409f", size = 33295681, upload-time = "2026-07-24T02:52:16.532Z" },
 ]
 
 [[package]]
@@ -4017,7 +4021,7 @@ requires-dist = [
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-stats-dashboard", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
-    { name = "invenio-subjects-fast" },
+    { name = "invenio-subjects-fast", specifier = ">=2026.7.23" },
     { name = "invenio-utilities-tuw" },
     { name = "jsonlines", marker = "extra == 'dev'" },
     { name = "langdetect" },
@@ -5041,7 +5045,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "ptyprocess" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [
