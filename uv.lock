@@ -3434,7 +3434,7 @@ provides-extras = ["dev", "docs", "tests"]
 
 [[package]]
 name = "invenio-subjects-fast"
-version = "2026.7.23"
+version = "2026.7.24"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -3443,9 +3443,9 @@ dependencies = [
     { name = "requests" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/45/f9d714693581ebc8a80964350ec611f5edcabd7906bb380e75b33d249e05/invenio_subjects_fast-2026.7.23.tar.gz", hash = "sha256:f208fb4c199626f6aec2fdd123d8cfc9593a2a5857b3db27ea7e0e94ba5a5f82", size = 32312740, upload-time = "2026-07-24T02:52:28.719Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1f/58/205e03e98c45b36d45a32a4348e2fbaf51b685146f1e090afccc7d9a2928/invenio_subjects_fast-2026.7.24.tar.gz", hash = "sha256:22bd6c966332fc2e0bac09187d79becf3d7f3c927ab9b87d657db0599d87cc89", size = 32313390, upload-time = "2026-07-24T14:52:25.438Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/33/7aa02c551e24b8d17d0f0d7c4ca8c47f5a8f7eea88b7d42b34754e918ce0/invenio_subjects_fast-2026.7.23-py3-none-any.whl", hash = "sha256:063fcd3f5199a991f36a28ca9cafac621f13a90880a4c5e33943af71d9bb409f", size = 33295681, upload-time = "2026-07-24T02:52:16.532Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/88/31825430348af452e22e4879b4733f9d4dc33fe419aa49b2a6eef7aa7c2b/invenio_subjects_fast-2026.7.24-py3-none-any.whl", hash = "sha256:7fa13b55eb07dd2365e454213e35d0b8ca090b1a11d3614e8f3038687570ccf2", size = 33296240, upload-time = "2026-07-24T14:52:21.494Z" },
 ]
 
 [[package]]
@@ -4021,7 +4021,7 @@ requires-dist = [
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-stats-dashboard", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
-    { name = "invenio-subjects-fast", specifier = ">=2026.7.23" },
+    { name = "invenio-subjects-fast", specifier = ">=2026.7.24" },
     { name = "invenio-utilities-tuw" },
     { name = "jsonlines", marker = "extra == 'dev'" },
     { name = "langdetect" },

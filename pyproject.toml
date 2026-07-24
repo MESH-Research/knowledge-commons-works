@@ -29,7 +29,7 @@ dependencies = [
   "invenio-remote-user-data-kcworks",
   "invenio-s3",
   "invenio-stats-dashboard",
-  "invenio-subjects-fast>=2026.7.23",
+  "invenio-subjects-fast>=2026.7.24",
   "invenio-utilities-tuw",
   "langdetect",
   "lxml==5.2.1",
