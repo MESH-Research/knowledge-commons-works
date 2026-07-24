@@ -42,6 +42,7 @@ const ContentWarningField = ({
           name="content-warning-toggle-yes"
           onChange={(_, data) => setHaveWarning(data.checked)}
           checked={haveWarning}
+          className="rel-ml-2"
         />
         <Checkbox
           radio
@@ -54,6 +55,7 @@ const ContentWarningField = ({
               setFieldValue(fieldPath, "");
             }
           }}
+          className="rel-ml-2"
         />
       </Form.Group>
       {!!haveWarning && (
