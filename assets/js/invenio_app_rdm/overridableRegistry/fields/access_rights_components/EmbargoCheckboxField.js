@@ -12,13 +12,14 @@ import PropTypes from "prop-types";
 
 class EmbargoCheckboxComponent extends Component {
   render() {
-    const { fieldPath, formik, checked, disabled } = this.props;
+    const { fieldPath, formik, checked, disabled, label, ...restProps } = this.props;
     return (
       <Checkbox
         id={fieldPath}
         data-testid="embargo-checkbox-component"
         disabled={disabled}
         checked={checked}
+        label={label}
         onChange={() => {
           if (formik.field.value) {
             // NOTE: We reset values, so if embargo filled and user unchecks,
@@ -31,6 +32,7 @@ class EmbargoCheckboxComponent extends Component {
             formik.form.setFieldValue(fieldPath, true);
           }
         }}
+        {...restProps}
       />
     );
   }

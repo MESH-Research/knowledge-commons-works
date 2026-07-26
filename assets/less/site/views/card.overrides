@@ -9,6 +9,18 @@
       color: @ivy;
     }
   }
+  &.attached {
+    &.top  {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-bottom: -2px;
+    }
+    &.bottom {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      margin-top: -2px;
+    }
+  }
 }
 
 #Contributors-tab-section {

@@ -181,9 +181,10 @@
 @warningColorDown: darken(@gold, 10%);
 
 @positiveColor: @green;
-@positiveTextColor: @green; // darken(@green, 10%);
+@positiveTextColor: @green; 
+@positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
-@positiveBorderColor: @seafoam;
+@positiveBorderColor: @ivy30;
 
 @negativeColor: @red;
 @negativeTextColor: @redDark;

@@ -141,12 +141,11 @@ _FORM_RIGHT_SIDEBAR = {
         },
         {
             "section": "submit_actions",
-            "label": "Publish",
             "component": "SubmissionComponent",
         },
         {
             "section": "access",
-            "label": "Visibility",
+            "label": None,  # "Visibility",
             "component": "AccessRightsComponent",
         },
     ],
