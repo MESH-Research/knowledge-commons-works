@@ -334,7 +334,7 @@ RestrictedFieldsMessage.defaultProps = {
 };
 
 const CommunityFieldComponent = ({
-  classnames  = "",
+  classnames = "",
   community = undefined,
   changeSelectedCommunity,
   showCommunitySelectionButton,
@@ -462,7 +462,7 @@ const CommunityFieldComponent = ({
           community={community}
         />
       )}
-    </>
+    </div>
   );
 };
 
