@@ -10,10 +10,10 @@
 // you can redistribute and/or modify them under the terms of the MIT License;
 // see LICENSE file for more details.
 
-import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
-import PropTypes from "prop-types";
 import React, { useState, useContext } from "react";
 import { connect, useStore } from "react-redux";
+import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
+import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
@@ -61,11 +61,15 @@ const AddEditCommunityButton = ({
   community,
   changeSelectedCommunity,
   focusAddButtonHandler,
+  isPublished,
+  isNewVersion,
   setModalOpen,
   modalOpen,
   selectionButtonDisabled,
   permissionsPerField,
 }) => {
+  const showSubmissionWarning = !community && !isPublished && !isNewVersion;
+
   return (
     <CommunitySelectionModal
       permissionsPerField={permissionsPerField}
@@ -116,11 +120,7 @@ AddEditCommunityButton.defaultProps = {
   permissionsPerField: undefined,
 };
 
-const RemoveCommunityButton = ({
-  community,
-  changeSelectedCommunity,
-  selectionButtonDisabled,
-}) => {
+const RemoveCommunityButton = ({ community, changeSelectedCommunity, selectionButtonDisabled }) => {
   return (
     <Overridable
       id="InvenioRdmRecords.CommunityHeader.RemoveCommunityButton.Container"
@@ -145,12 +145,7 @@ RemoveCommunityButton.propTypes = {
   selectionButtonDisabled: PropTypes.bool.isRequired,
 };
 
-const usePerFieldPermissions = (
-  community,
-  permissionsPerField,
-  isPublished,
-  isNewVersion
-) => {
+const usePerFieldPermissions = (community, permissionsPerField, isPublished, isNewVersion) => {
   let removalRestricted = false;
   const currentCommunityPermissions = permissionsPerField?.[community?.slug]?.policy;
   let AffectedFields = [];
@@ -158,9 +153,7 @@ const usePerFieldPermissions = (
     AffectedFields = Array.isArray(currentCommunityPermissions)
       ? currentCommunityPermissions
       : Object.keys(currentCommunityPermissions);
-    if (
-      AffectedFields.some((field) => field.startsWith("parent.communities.default"))
-    ) {
+    if (AffectedFields.some((field) => field.startsWith("parent.communities.default"))) {
       removalRestricted = true;
       AffectedFields = AffectedFields.filter(
         (field) => !field.startsWith("parent.communities.default")
@@ -177,16 +170,14 @@ const usePerFieldPermissions = (
   );
   const restrictionMessage = !isPublished ? (
     <p>
-      {i18next.t("After publishing your work to the ")}{" "}
-      <i>{community?.metadata?.title}</i>{" "}
+      {i18next.t("After publishing your work to the ")} <i>{community?.metadata?.title}</i>{" "}
       {i18next.t(
         " collection you will not be able to change these metadata fields without the approval and assistance of the collection administrators:"
       )}
     </p>
   ) : (
     <p>
-      {i18next.t("Since this work was published to the ")}{" "}
-      <i>{community?.metadata?.title}</i>{" "}
+      {i18next.t("Since this work was published to the ")} <i>{community?.metadata?.title}</i>{" "}
       {i18next.t(
         " collection, you cannot to change these metadata fields without the approval and assistance of the collection administrators:"
       )}
@@ -245,10 +236,7 @@ InReviewMessage.propTypes = {
   communityTitle: PropTypes.string.isRequired,
 };
 
-const RemovalRestrictedMessage = ({
-  removalRestrictionHeader,
-  removalRestrictionMessage,
-}) => {
+const RemovalRestrictedMessage = ({ removalRestrictionHeader, removalRestrictionMessage }) => {
   return (
     <Message info icon>
       <Icon name="info circle" />
@@ -346,12 +334,12 @@ RestrictedFieldsMessage.defaultProps = {
 };
 
 const CommunityFieldComponent = ({
+  classnames  = "",
   community = undefined,
   changeSelectedCommunity,
-  imagePlaceholderLink,
   showCommunitySelectionButton,
   disableCommunitySelectionButton,
-  label = "Community submission",
+  label = i18next.t("Community submission"),
 }) => {
   const [modalOpen, setModalOpen] = useState();
   const store = useStore();
@@ -374,8 +362,7 @@ const CommunityFieldComponent = ({
     isInReview ||
     isNewVersion ||
     isPublished;
-  const selectionButtonShown =
-    showCommunitySelectionButton && !isPublished && !isNewVersion;
+  const selectionButtonShown = showCommunitySelectionButton && !isPublished && !isNewVersion;
 
   const {
     removalRestricted,
@@ -401,12 +388,9 @@ const CommunityFieldComponent = ({
   );
 
   return (
-    <>
+    <div className={`invenio-field-wrapper community-field ${classnames}`}>
       <Form.Field>
-        <label
-          htmlFor="community-selector"
-          className="field-label-class invenio-field-label"
-        >
+        <label htmlFor="community-selector" className="field-label-class invenio-field-label">
           <Icon name="users" />
           {label}
         </label>
@@ -430,6 +414,8 @@ const CommunityFieldComponent = ({
               <AddEditCommunityButton
                 community={community}
                 changeSelectedCommunity={changeSelectedCommunity}
+                isPublished={isPublished}
+                isNewVersion={isNewVersion}
                 focusAddButtonHandler={focusAddButtonHandler}
                 setModalOpen={setModalOpen}
                 modalOpen={modalOpen}
@@ -450,9 +436,7 @@ const CommunityFieldComponent = ({
           <Form.Field width={11} className="communities-helptext-wrapper">
             <label htmlFor="community-selector" className="helptext">
               {selectionButtonShown
-                ? i18next.t(
-                    "Do you want to submit this deposit for publication by a collection?"
-                  )
+                ? i18next.t("Do you want to submit this deposit for publication by a collection?")
                 : changeOnDetailPageMessage}
             </label>
           </Form.Field>
@@ -461,9 +445,7 @@ const CommunityFieldComponent = ({
 
       {!isInReview && <PublicationReviewWarning />}
 
-      {isInReview && (
-        <InReviewMessage communityTitle={community?.metadata?.title} />
-      )}
+      {isInReview && <InReviewMessage communityTitle={community?.metadata?.title} />}
 
       {removalRestricted && (
         <RemovalRestrictedMessage
@@ -502,10 +484,8 @@ CommunityFieldComponent.defaultProps = {
 
 const mapStateToProps = (state) => ({
   community: state.deposit.editorState.selectedCommunity,
-  disableCommunitySelectionButton:
-    state.deposit.editorState.ui.disableCommunitySelectionButton,
-  showCommunitySelectionButton:
-    state.deposit.editorState.ui.showCommunitySelectionButton,
+  disableCommunitySelectionButton: state.deposit.editorState.ui.disableCommunitySelectionButton,
+  showCommunitySelectionButton: state.deposit.editorState.ui.showCommunitySelectionButton,
   showCommunityHeader: state.deposit.editorState.ui.showCommunityHeader,
 });
 
@@ -513,7 +493,4 @@ const mapDispatchToProps = (dispatch) => ({
   changeSelectedCommunity: (community) => dispatch(changeSelectedCommunity(community)),
 });
 
-export const CommunityField = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunityFieldComponent);
+export const CommunityField = connect(mapStateToProps, mapDispatchToProps)(CommunityFieldComponent);
