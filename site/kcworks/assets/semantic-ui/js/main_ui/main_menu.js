@@ -325,7 +325,7 @@ const MainMenu = ({
   }, [userId]);
 
   return (
-    <nav id="invenio-nav" className="ui menu borderless stackable pr-0">
+    <nav id="invenio-nav" className="ui menu borderless stackable pr-0 pl-0">
       <div className="item logo p-0">
         <Brand themeLogoURL={themeLogoURL} themeSitename={themeSitename} />
       </div>

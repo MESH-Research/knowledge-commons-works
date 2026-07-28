@@ -20,7 +20,6 @@ textarea {
   }
 }
 
-
 // Forms
 // outside #rdm-deposit-form to include modal forms
 // .ui.form,

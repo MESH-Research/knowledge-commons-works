@@ -8,10 +8,10 @@
 
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { FieldLabel, GroupField, Icon, Label } from "react-invenio-forms";
+import { FieldLabel, GroupField } from "react-invenio-forms";
 import { RemoteSelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/RemoteSelectField";
 import { Form } from "semantic-ui-react";
-import { Field, getIn, useFormik } from "formik";
+import { Field, getIn } from "formik";
 import { i18next } from "@translations/i18next";
 
 const SubjectsField = ({

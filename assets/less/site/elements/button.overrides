@@ -59,13 +59,16 @@
 
   &.search {
     background-color: @secondaryColor;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
+      0px 0em 0px 0px darken(@secondaryColor, 10%) inset !important;
     &:hover,
     &:active,
     &:focus {
       background-color: darken(@secondaryColor, 10%) !important;
-      border-color: darken(@secondaryColor, 10%);
+      border-color: darken(@secondaryColor, 10%) !important;
       box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
-        0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
+        0px 0em 0px 0px darken(@secondaryColor, 10%) inset !important;
     }
   }
 
