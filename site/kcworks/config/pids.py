@@ -66,6 +66,7 @@ RDM_PERSISTENT_IDENTIFIERS = {
         "validator": is_doi,
         "normalizer": normalize_doi,
         "is_enabled": providers.DataCitePIDProvider.is_enabled,
+        "ui": {"default_selected": "no"},
     },
     "oai": {
         "providers": ["oai"],
