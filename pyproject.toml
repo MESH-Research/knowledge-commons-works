@@ -31,6 +31,7 @@ dependencies = [
   "invenio-stats-dashboard",
   "invenio-subjects-fast>=2026.7.24",
   "invenio-utilities-tuw",
+  "invenio-vocabularies>=8,<9",
   "langdetect",
   "lxml==5.2.1",
   "pandas",
@@ -150,7 +151,7 @@ sources.invenio-record-importer-kcworks = { path = "./site/kcworks/dependencies/
 sources.invenio-remote-api-provisioner = { path = "./site/kcworks/dependencies/invenio-remote-api-provisioner", editable = true }
 sources.invenio-remote-user-data-kcworks = { path = "site/kcworks/dependencies/invenio-remote-user-data-kcworks", editable = true }
 sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-stats-dashboard", editable = true }
-sources.invenio-vocabularies = { path = "site/kcworks/dependencies/invenio-vocabularies", editable = true }
+sources.invenio-vocabularies = { path = "./site/kcworks/dependencies/invenio-vocabularies", editable = true }
 sources.kc-knowledge-base-sync = { path = "./site/kcworks/dependencies/kc-knowledge-base-sync", editable = true }
 sources.kcworks = { path = "./site", editable = true }
 
