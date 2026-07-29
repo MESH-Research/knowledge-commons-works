@@ -61,14 +61,15 @@ const AddEditCommunityButton = ({
   community,
   changeSelectedCommunity,
   focusAddButtonHandler,
-  isPublished,
+  isInReview,
   isNewVersion,
+  isPublished,
   setModalOpen,
   modalOpen,
   selectionButtonDisabled,
   permissionsPerField,
 }) => {
-  const showSubmissionWarning = !community && !isPublished && !isNewVersion;
+  const showSubmissionWarning = !isInReview && !community && !isPublished && !isNewVersion;
 
   return (
     <CommunitySelectionModal
@@ -89,6 +90,8 @@ const AddEditCommunityButton = ({
       trigger={
         <Overridable id="InvenioRdmRecords.CommunityHeader.CommunitySelectionButton.Container">
           <Button
+            aria-haspopup="dialog"
+            aria-expanded={modalOpen}
             className="community-field-button add-button"
             disabled={selectionButtonDisabled}
             onClick={() => setModalOpen(true)}
@@ -102,6 +105,8 @@ const AddEditCommunityButton = ({
         </Overridable>
       }
       focusAddButtonHandler={focusAddButtonHandler}
+      showSubmissionWarning={showSubmissionWarning}
+      setModalOpen={setModalOpen}
     />
   );
 };
@@ -253,40 +258,6 @@ RemovalRestrictedMessage.propTypes = {
   removalRestrictionMessage: PropTypes.string.isRequired,
 };
 
-const PublicationReviewWarning = () => {
-  return (
-    <Message warning icon className="deposit-publication-review-warning">
-      <Icon name="warning sign" />
-      <Message.Content>
-        <Message.Header>
-          <Trans
-            defaults="You may want to submit to collections <0>after</0> your work is published"
-            components={[<i />]}
-          />
-        </Message.Header>
-        <p>
-          <Trans
-            defaults="Submitting to a collection is optional. If you submit your work for publication by a collection now, your upload <0>will not be publicly visible</0> until it has been approved by that collection's curators."
-            components={[<b />]}
-          />
-        </p>
-        <p>
-          <Trans
-            defaults="Most collections are <0>not curated by the KCWorks team</0> , and collection curators may take a significant amount of time to review your work."
-            components={[<b />]}
-          />
-        </p>
-        <p>
-          <Trans
-            defaults="You can submit your work to a collection <0>after publication</0> from the sidebar of your published record's detail page"
-            components={[<b />]}
-          />
-        </p>
-      </Message.Content>
-    </Message>
-  );
-};
-
 const RestrictedFieldsMessage = ({
   restrictionHeader,
   restrictionMessage,
@@ -414,6 +385,7 @@ const CommunityFieldComponent = ({
               <AddEditCommunityButton
                 community={community}
                 changeSelectedCommunity={changeSelectedCommunity}
+                isInReview={isInReview}
                 isPublished={isPublished}
                 isNewVersion={isNewVersion}
                 focusAddButtonHandler={focusAddButtonHandler}
@@ -442,8 +414,6 @@ const CommunityFieldComponent = ({
           </Form.Field>
         )}
       </Form.Group>
-
-      {!isInReview && <PublicationReviewWarning />}
 
       {isInReview && <InReviewMessage communityTitle={community?.metadata?.title} />}
 

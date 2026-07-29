@@ -1,4 +1,1 @@
-export {
-  CommunitySelectionModal,
-  CommunitySelectionModalComponent,
-} from "./CommunitySelectionModal";
+export { CommunitySelectionModal } from "./CommunitySelectionModal";
