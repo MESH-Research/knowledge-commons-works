@@ -10,7 +10,7 @@
 // you can redistribute and/or modify them under the terms of the MIT License;
 // see LICENSE file for more details.
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { connect, useStore } from "react-redux";
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
 import PropTypes from "prop-types";
@@ -68,6 +68,7 @@ const AddEditCommunityButton = ({
   modalOpen,
   selectionButtonDisabled,
   permissionsPerField,
+  triggerButtonRef,
 }) => {
   const showSubmissionWarning = !isInReview && !community && !isPublished && !isNewVersion;
 
@@ -90,6 +91,7 @@ const AddEditCommunityButton = ({
       trigger={
         <Overridable id="InvenioRdmRecords.CommunityHeader.CommunitySelectionButton.Container">
           <Button
+            ref={triggerButtonRef}
             aria-haspopup="dialog"
             aria-expanded={modalOpen}
             className="community-field-button add-button"
@@ -119,6 +121,7 @@ AddEditCommunityButton.propTypes = {
   modalOpen: PropTypes.bool.isRequired,
   selectionButtonDisabled: PropTypes.bool.isRequired,
   permissionsPerField: PropTypes.object,
+  triggerButtonRef: PropTypes.object,
 };
 
 AddEditCommunityButton.defaultProps = {
@@ -313,6 +316,7 @@ const CommunityFieldComponent = ({
   label = i18next.t("Community submission"),
 }) => {
   const [modalOpen, setModalOpen] = useState();
+  const triggerButtonRef = useRef(null);
   const store = useStore();
   const isPublished = store.getState().deposit.record?.is_published;
   const isInReview = store.getState().deposit.record?.status === "in_review";
@@ -324,7 +328,8 @@ const CommunityFieldComponent = ({
     community && communities ? communities.filter((c) => c.id !== community.id) : [];
 
   const focusAddButtonHandler = () => {
-    document.querySelectorAll(`.community-field-button`)[0].focus();
+    // SUI Button exposes .focus() on the component instance
+    triggerButtonRef.current?.focus?.();
   };
 
   const selectionButtonDisabled =
@@ -393,6 +398,7 @@ const CommunityFieldComponent = ({
                 modalOpen={modalOpen}
                 selectionButtonDisabled={selectionButtonDisabled}
                 permissionsPerField={permissionsPerField}
+                triggerButtonRef={triggerButtonRef}
               />
               {community && (
                 <RemoveCommunityButton

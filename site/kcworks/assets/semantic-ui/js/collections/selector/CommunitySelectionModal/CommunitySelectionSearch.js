@@ -29,13 +29,15 @@ import PropTypes from "prop-types";
 const Element = ({
   actionProps,
   autofocus,
+  inputRef,
   onBtnSearchClick,
   onInputChange,
   onKeyPress,
   placeholder,
   queryString,
 }) => {
-  const focusInput = useRef(null);
+  const localFocusInput = useRef(null);
+  const focusInput = inputRef || localFocusInput;
 
   useEffect(() => {
     if (autofocus && focusInput.current) {
@@ -66,6 +68,7 @@ const CommunitySearchBarElement = ({
   toggleText,
   currentQueryState,
   updateQueryState,
+  searchInputRef,
 }) => {
   const [currentValue, setCurrentValue] = useState("");
 
@@ -97,6 +100,7 @@ const CommunitySearchBarElement = ({
         "aria-label": i18next.t("Search"),
       }}
       autofocus={true}
+      inputRef={searchInputRef}
       onBtnSearchClick={executeSearch}
       onInputChange={onInputChange}
       onKeyPress={onKeyPress}
@@ -134,6 +138,7 @@ export class CommunitySelectionSearch extends Component {
       record,
       isInitialSubmission,
       permissionsPerField,
+      searchInputRef,
     } = this.props;
     const searchApi = new InvenioSearchApi(selectedsearchApi);
     const overriddenComponents = {
@@ -208,7 +213,7 @@ export class CommunitySelectionSearch extends Component {
                 verticalAlign="middle"
                 className="pt-0 pr-0 pl-0"
               >
-                <CommunitySearchBar toggleText={toggleText} />
+                <CommunitySearchBar toggleText={toggleText} searchInputRef={searchInputRef} />
               </Grid.Column>
             </Modal.Content>
 
@@ -251,6 +256,7 @@ CommunitySelectionSearch.propTypes = {
   record: PropTypes.object.isRequired,
   isInitialSubmission: PropTypes.bool,
   permissionsPerField: PropTypes.object,
+  searchInputRef: PropTypes.object,
 };
 
 CommunitySelectionSearch.defaultProps = {

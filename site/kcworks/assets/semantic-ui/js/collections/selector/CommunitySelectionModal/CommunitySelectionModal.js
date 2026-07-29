@@ -8,7 +8,7 @@
 // you can redistribute and/or modify them under the terms of the MIT License;
 // see LICENSE file for more details.
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
 import { Trans } from "react-i18next";
 import PropTypes from "prop-types";
@@ -17,7 +17,13 @@ import { Button, Header, Modal } from "semantic-ui-react";
 import { CommunityContext } from "@js/invenio_rdm_records/src/deposit/components/CommunitySelectionModal/CommunityContext";
 import { CommunitySelectionSearch } from "./CommunitySelectionSearch";
 
-const SubmissionWarningModal = ({ open = false, onCancel, onAccept }) => {
+const SubmissionWarningModal = ({
+  open = false,
+  onCancel,
+  onAccept,
+  cancelButtonRef,
+  acceptButtonRef,
+}) => {
   return (
     <Modal
       className="deposit-publication-review-warning"
@@ -53,8 +59,10 @@ const SubmissionWarningModal = ({ open = false, onCancel, onAccept }) => {
         </p>
       </Modal.Content>
       <Modal.Actions>
-        <Button onClick={onCancel}>{i18next.t("Cancel")}</Button>
-        <Button positive onClick={onAccept}>
+        <Button ref={cancelButtonRef} onClick={onCancel}>
+          {i18next.t("Cancel")}
+        </Button>
+        <Button ref={acceptButtonRef} positive onClick={onAccept}>
           {i18next.t("Choose a collection")}
         </Button>
       </Modal.Actions>
@@ -62,11 +70,20 @@ const SubmissionWarningModal = ({ open = false, onCancel, onAccept }) => {
   );
 };
 
+SubmissionWarningModal.propTypes = {
+  open: PropTypes.bool,
+  onCancel: PropTypes.func.isRequired,
+  onAccept: PropTypes.func.isRequired,
+  cancelButtonRef: PropTypes.object,
+  acceptButtonRef: PropTypes.object,
+};
+
 const CommunitySelectionModal = ({
   apiConfigs = undefined,
   chosenCommunity = undefined,
   displaySelected = false,
   extraContentComponents = undefined,
+  focusAddButtonHandler = undefined,
   isInitialSubmission = true,
   modalHeader = undefined,
   modalOpen = false,
@@ -77,13 +94,15 @@ const CommunitySelectionModal = ({
   setModalOpen = undefined,
   showSubmissionWarning = false,
   trigger = undefined,
-  ...restProps
 }) => {
   const state = useStore().getState();
   const userCommunitiesMemberships = state.deposit.config.user_communities_memberships;
   const [localChosenCommunity, setLocalChosenCommunity] = useState(chosenCommunity);
   const [warningOpen, setWarningOpen] = useState(false);
   const [warningSeen, setWarningSeen] = useState(false);
+  const warningCancelButtonRef = useRef(null);
+  const warningAcceptButtonRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   const getChosenCommunity = () => {
     return localChosenCommunity;
@@ -104,18 +123,43 @@ const CommunitySelectionModal = ({
   // Button onClick sets modalOpen; Modal onOpen does not fire with Overridable as
   // trigger root. Open the warning from controlled open state instead.
   useEffect(() => {
-    console.log("modalOpen", modalOpen);
-    console.log("showSubmissionWarning", showSubmissionWarning);
-    console.log("warningSeen", warningSeen);
     if (modalOpen && showSubmissionWarning && !warningSeen) {
-      console.log("opening warning");
       setWarningOpen(true);
     }
   }, [modalOpen, showSubmissionWarning, warningSeen]);
 
+  useEffect(() => {
+    if (warningOpen) {
+      // Defer until the warning portal has mounted
+      window.setTimeout(() => {
+        warningCancelButtonRef.current?.focus?.();
+      }, 0);
+    }
+  }, [warningOpen]);
+
   const handleModalOpen = () => {
     setLocalChosenCommunity(chosenCommunity);
     onModalChange && onModalChange(true);
+  };
+
+  const handleWarningCancel = () => {
+    setWarningSeen(true);
+    setWarningOpen(false);
+    onModalChange && onModalChange(false);
+    // Parent onModalChange(false) also calls focusAddButtonHandler; defer in case
+    // the warning portal is still releasing focus.
+    window.setTimeout(() => {
+      focusAddButtonHandler?.();
+    }, 50);
+  };
+
+  const handleWarningAccept = () => {
+    setWarningSeen(true);
+    setWarningOpen(false);
+    onModalChange && onModalChange(true);
+    window.setTimeout(() => {
+      searchInputRef.current?.focus?.();
+    }, 50);
   };
 
   return (
@@ -134,7 +178,6 @@ const CommunitySelectionModal = ({
           }}
           onOpen={handleModalOpen}
           trigger={trigger}
-          {...restProps}
         >
           <Modal.Header className="pb-15 pt-25">
             <Header as="h2" id="community-modal-header">
@@ -147,6 +190,7 @@ const CommunitySelectionModal = ({
             record={record}
             isInitialSubmission={isInitialSubmission}
             permissionsPerField={permissionsPerField}
+            searchInputRef={searchInputRef}
           />
           {extraContentComponents && <Modal.Content>{extraContentComponents}</Modal.Content>}
 
@@ -157,16 +201,10 @@ const CommunitySelectionModal = ({
       </CommunityContext.Provider>
       <SubmissionWarningModal
         open={warningOpen}
-        onCancel={() => {
-          setWarningSeen(true);
-          setWarningOpen(false);
-          onModalChange && onModalChange(false);
-        }}
-        onAccept={() => {
-          setWarningSeen(true);
-          setWarningOpen(false);
-          onModalChange && onModalChange(true);
-        }}
+        onCancel={handleWarningCancel}
+        onAccept={handleWarningAccept}
+        cancelButtonRef={warningCancelButtonRef}
+        acceptButtonRef={warningAcceptButtonRef}
       />
     </>
   );
@@ -178,6 +216,7 @@ CommunitySelectionModal.propTypes = {
   trigger: PropTypes.object,
   userCommunitiesMemberships: PropTypes.object.isRequired,
   extraContentComponents: PropTypes.node,
+  focusAddButtonHandler: PropTypes.func,
   modalHeader: PropTypes.string,
   onModalChange: PropTypes.func,
   displaySelected: PropTypes.bool,
