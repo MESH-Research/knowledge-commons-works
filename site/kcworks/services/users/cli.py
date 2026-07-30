@@ -6,17 +6,163 @@
 
 """CLI commands for the users service."""
 
+from collections import defaultdict
 from pprint import pprint
+from typing import Any
 
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import Role, User
+from invenio_accounts.models import Role, User, UserIdentity
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
 from invenio_users_resources.proxies import current_users_service
 from kcworks.services.users.service import UserProfileService
 from sqlalchemy import select
+
+KC_USERNAME_PREFIX = "knowledgeCommons-"
+
+
+def _user_summary(user: User) -> dict[str, Any]:
+    """Return a compact dict of identity fields for duplicate reporting.
+
+    Args:
+        user: An `invenio_accounts` User row.
+
+    Returns:
+        Summary fields used when printing duplicate pairs.
+    """
+    profile = user.user_profile or {}
+    return {
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+        "identifier_kc_username": profile.get("identifier_kc_username"),
+        "identifier_orcid": profile.get("identifier_orcid"),
+    }
+
+
+def _identity_summary(identity: UserIdentity) -> dict[str, Any]:
+    """Return a compact dict for a UserIdentity row.
+
+    Args:
+        identity: An `accounts_useridentity` row.
+
+    Returns:
+        Fields useful when inspecting OAuth / external links.
+    """
+    return {
+        "method": identity.method,
+        "id": identity.id,
+        "id_user": identity.id_user,
+        "created": str(identity.created) if identity.created else None,
+        "updated": str(identity.updated) if identity.updated else None,
+    }
+
+
+def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
+    """Find pairs/groups of users that look like duplicate accounts.
+
+    Detects:
+
+    - duplicate non-empty ``identifier_kc_username`` values
+    - duplicate non-empty ``identifier_orcid`` values
+    - an ``identifier_kc_username`` equal to another user's ``username``
+    - an ``identifier_kc_username`` equal to another user's ``username`` after
+      stripping the ``knowledgeCommons-`` prefix from that username
+
+    Returns:
+        Mapping of reason keys to lists of match groups. Each group is a dict
+        with ``matched_value`` and ``users`` (list of user summaries).
+    """
+    users = list(User.query.all())
+    by_kc: dict[str, list[User]] = defaultdict(list)
+    by_orcid: dict[str, list[User]] = defaultdict(list)
+    by_username: dict[str, list[User]] = defaultdict(list)
+    by_username_stripped: dict[str, list[User]] = defaultdict(list)
+
+    for user in users:
+        profile = user.user_profile or {}
+        kc_username = profile.get("identifier_kc_username")
+        orcid = profile.get("identifier_orcid")
+        if kc_username:
+            by_kc[kc_username.lower()].append(user)
+        if orcid:
+            by_orcid[orcid].append(user)
+        if user.username:
+            username_key = user.username.lower()
+            by_username[username_key].append(user)
+            prefix = KC_USERNAME_PREFIX.lower()
+            if username_key.startswith(prefix):
+                stripped = username_key[len(prefix) :]
+                if stripped:
+                    by_username_stripped[stripped].append(user)
+
+    results: dict[str, list[dict[str, Any]]] = {
+        "duplicate_kc_username": [],
+        "duplicate_orcid": [],
+        "kc_username_equals_username": [],
+        "kc_username_equals_prefixed_username": [],
+    }
+
+    for value, matched in by_kc.items():
+        if len(matched) > 1:
+            results["duplicate_kc_username"].append(
+                {
+                    "matched_value": value,
+                    "users": [_user_summary(u) for u in matched],
+                }
+            )
+
+    for value, matched in by_orcid.items():
+        if len(matched) > 1:
+            results["duplicate_orcid"].append(
+                {
+                    "matched_value": value,
+                    "users": [_user_summary(u) for u in matched],
+                }
+            )
+
+    # Cross-field: A's identifier_kc_username == B's username (A != B).
+    # Deduplicate unordered pairs so (A,B) is reported once.
+    seen_exact: set[frozenset[int]] = set()
+    for kc_value, kc_users in by_kc.items():
+        username_matches = by_username.get(kc_value, [])
+        for kc_user in kc_users:
+            for other in username_matches:
+                if kc_user.id == other.id:
+                    continue
+                pair_key = frozenset({kc_user.id, other.id})
+                if pair_key in seen_exact:
+                    continue
+                seen_exact.add(pair_key)
+                results["kc_username_equals_username"].append(
+                    {
+                        "matched_value": kc_value,
+                        "users": [_user_summary(kc_user), _user_summary(other)],
+                    }
+                )
+
+    # Cross-field: A's identifier_kc_username == strip("knowledgeCommons-", B.username)
+    seen_prefixed: set[frozenset[int]] = set()
+    for kc_value, kc_users in by_kc.items():
+        prefixed_matches = by_username_stripped.get(kc_value, [])
+        for kc_user in kc_users:
+            for other in prefixed_matches:
+                if kc_user.id == other.id:
+                    continue
+                pair_key = frozenset({kc_user.id, other.id})
+                if pair_key in seen_prefixed:
+                    continue
+                seen_prefixed.add(pair_key)
+                results["kc_username_equals_prefixed_username"].append(
+                    {
+                        "matched_value": kc_value,
+                        "users": [_user_summary(kc_user), _user_summary(other)],
+                    }
+                )
+
+    return results
 
 
 @click.command("name-parts")
@@ -154,26 +300,32 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
         users = current_users_service.search(
             system_identity, q=f"email:{email}"
         ).to_dict()
-        if len(users["hits"]["hits"]) > 1:
-            pprint(f"Multiple users found with email {email}.")
+        hits = users["hits"]["hits"]
+        if len(hits) > 1:
+            ids = [hit["id"] for hit in hits]
+            print(f"Multiple users found with email {email}: {ids}")
             return
-        elif len(users["hits"]["hits"]) == 0:
+        if len(hits) == 0:
             pprint(f"No user found with email {email}.")
             return
-        else:
-            user = users["hits"]["hits"][0]
-            user2 = current_accounts.datastore.get_user_by_email(email)
+        user = hits[0]
+        user2 = current_accounts.datastore.get_user_by_email(email)
     elif kc_id:
         stmt = select(User).where(
             User._user_profile.op("->>")("identifier_kc_username") == kc_id
         )
-        user = db.session.execute(stmt).scalar_one_or_none()
-        if user is None:
+        matched = list(db.session.execute(stmt).scalars().all())
+        if not matched:
             pprint(f"No user found with KC ID {kc_id}.")
             return
-        else:
-            user = current_users_service.read(system_identity, id_=user.id).to_dict()
-            user2 = current_accounts.datastore.get_user_by_id(user["id"])
+        if len(matched) > 1:
+            ids = [u.id for u in matched]
+            print(f"Multiple users found with KC ID {kc_id}: {ids}")
+            return
+        user = current_users_service.read(
+            system_identity, id_=matched[0].id
+        ).to_dict()
+        user2 = current_accounts.datastore.get_user_by_id(user["id"])
     else:
         print("No user ID, email, or KC ID provided.")
         return
@@ -189,6 +341,35 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
     print("Groups/roles:")
     pprint([r.name for r in user2.roles] if user2.roles else "No groups/roles found")
     print("=============")
+    print("UserIdentity rows:")
+    identities = list(user2.external_identifiers or [])
+    if identities:
+        pprint([_identity_summary(identity) for identity in identities])
+    else:
+        pprint("No UserIdentity rows found")
+    print("=============")
+
+
+@click.command("find-duplicates")
+@with_appcontext
+def find_duplicates() -> None:
+    """Find pairs of local accounts that look like duplicates.
+
+    Reports users sharing the same ``identifier_kc_username`` or
+    ``identifier_orcid``, and users where one account's
+    ``identifier_kc_username`` matches another's ``username`` (exactly or
+    after stripping a ``knowledgeCommons-`` prefix from the username).
+    """
+    results = find_duplicate_accounts()
+    total = sum(len(groups) for groups in results.values())
+    print("=============")
+    print(f"Duplicate account matches found: {total}")
+    print("=============")
+    for reason, groups in results.items():
+        print(f"{reason}: {len(groups)}")
+        if groups:
+            pprint(groups)
+        print("=============")
 
 
 @click.command("groups")
