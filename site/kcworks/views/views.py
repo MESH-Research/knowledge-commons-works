@@ -8,6 +8,10 @@ from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.task_results.task_results import TaskResults
 
+from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
+from kcworks.views.remote_data_collections.globus_callback import GlobusCallback
+from kcworks.views.remote_data_collections.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS, GlobusGuestCollectionProvision
+
 
 def create_blueprint(app):
     """Register blueprint routes on app.
@@ -29,6 +33,30 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         "/admin_login",
         view_func=AdminLogin.as_view("admin_login"),
+    )
+
+    # --- GLOBUS UI ROUTES ---
+    blueprint.add_url_rule(
+        "/globus/login",
+        view_func=GlobusLogin.as_view("globus_login"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/callback",
+        view_func=GlobusCallback.as_view("globus_callback"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/login/start",
+        view_func=GlobusStart.as_view("globus_start"),
+    )
+    
+    blueprint.add_url_rule(
+        "/globus/endpoints",
+        view_func=GlobusEndpointInfo.as_view("globus_endpoint_info"),
+        methods=["GET"],
     )
 
     # Register context processor
@@ -54,6 +82,19 @@ def create_api_blueprint(app):
             "/users/<int:user_id>/notifications/unread/<string:action>",
             view_func=InternalNotifications.as_view("internal_notifications"),
             methods=["GET", "DELETE"],
+        )
+
+        # --- GLOBUS API ROUTES ---
+        blueprint.add_url_rule(
+            "/globus/ls/<string:endpoint_id>",
+            view_func=GlobusFolderLS.as_view("globus_folder_ls"),
+            methods=["GET"],
+        )
+
+        blueprint.add_url_rule(
+            "/globus/provision",
+            view_func=GlobusGuestCollectionProvision.as_view("globus_guest_collection_provision"),
+            methods=["POST"],
         )
 
         # Register error handlers

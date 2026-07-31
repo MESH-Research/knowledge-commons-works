@@ -5,6 +5,7 @@ from invenio_oauthclient.models import RemoteAccount, RemoteToken
 from invenio_oauthclient.proxies import current_oauthclient
 import json
 import traceback
+import requests
 from flask_wtf.csrf import generate_csrf
 from urllib.parse import quote
 
@@ -71,6 +72,16 @@ class GlobusEndpointInfo(View):
                 data = response.data
                 current_app.logger.info("endpoint response data: %s", data)
                 endpoint_data = data.get('DATA', [])
+
+                static_endpoints = current_app.config.get('GLOBUS_MAPPED_COLLECTIONS', {})
+                for key, ep_info in static_endpoints.items():
+                    # Append to the list if it's not somehow already there
+                    if not any(ep.get('id') == ep_info['id'] for ep in endpoint_data):
+                        endpoint_data.append({
+                            "id": ep_info['id'],
+                            "display_name": ep_info['display_name'],
+                            "entity_type": "GCSv5_mapped_collection"
+                        })
                 
                 return jsonify({
                     "endpoints": endpoint_data,
@@ -91,17 +102,16 @@ class GlobusFolderLS(View):
         path = request.args.get("path", "/")
 
         try:
-            globus_remote = current_oauthclient.oauth.remote_apps.get('globus')
-            if not globus_remote:
-                current_app.logger.error("No 'globus' remote app configured in oauth client.")
-                resp = jsonify({"error": "Server configuration error: globus remote not found"})
-                resp.status_code = 500
+            remote_account = RemoteAccount.query.filter_by(user_id=current_user.get_id()).first()
+            if not remote_account:
+                resp = jsonify({"error": "Globus account not linked"})
+                resp.status_code = 401
                 resp.headers['X-CSRFToken'] = generate_csrf()
                 return resp
 
             transfer_token = RemoteToken.get(
                 user_id=current_user.get_id(),
-                client_id=globus_remote.consumer_key,
+                client_id=remote_account.client_id,
                 token_type="transfer",
             )
 
@@ -115,26 +125,23 @@ class GlobusFolderLS(View):
             path_string = quote(path.lstrip('/'), safe='')
             ls_url = f"https://transfer.api.globus.org/v0.10/operation/endpoint/{endpoint_id}/ls?path=/{path_string}"
 
-            ls_res = globus_remote.get(ls_url, token=transfer_token.token())
+            headers = {"Authorization": f"Bearer {transfer_token.access_token}"}
+            ls_res = requests.get(ls_url, headers=headers)
 
-            if not hasattr(ls_res, "status") or not hasattr(ls_res, "data"):
-                current_app.logger.error("Unexpected response object from globus_remote.get: %r", ls_res)
-                resp = jsonify({"error": "Unexpected response from Globus client"})
-                resp.status_code = 500
-                resp.headers['X-CSRFToken'] = generate_csrf()
-                return resp
-
-
-            if ls_res.status == 200:
-                resp = jsonify(ls_res.data.get('DATA', []))
+            if ls_res.status_code == 200:
+                resp = jsonify(ls_res.json().get('DATA', []))
                 resp.headers['X-CSRFToken'] = generate_csrf()
                 return resp
 
             # return Globus API error details back to client
-            details = ls_res.data if isinstance(ls_res.data, dict) else {"raw": str(ls_res.data)}
+            try:
+                details = ls_res.json()
+            except Exception:
+                details = {"raw": ls_res.text}
+
             current_app.logger.error("Globus API returned error: %s", details)
             resp = jsonify({"error": "Globus API returned error", "details": details})
-            resp.status_code = ls_res.status
+            resp.status_code = ls_res.status_code
             resp.headers['X-CSRFToken'] = generate_csrf()
             return resp
 
@@ -142,6 +149,68 @@ class GlobusFolderLS(View):
             tb = traceback.format_exc()
             current_app.logger.error("Unhandled exception in GlobusFolderLS: %s\n%s", str(e), tb)
             resp = jsonify({"error": str(e), "traceback": tb})
+            resp.status_code = 500
+            resp.headers['X-CSRFToken'] = generate_csrf()
+            return resp
+
+class GlobusGuestCollectionProvision(View):
+    """API view to handle provisioning new buckets/guest collections."""
+    decorators = [login_required]
+
+    def dispatch_request(self):
+        try:
+            # parsing JSON payload from frontend
+            data = request.get_json()
+            if not data:
+                return jsonify({"error": "Invalid JSON payload"}), 400
+
+            bucket_name = data.get("bucket_name")
+            mapped_collection_id = data.get("mapped_collection_id")
+
+            if not bucket_name or not mapped_collection_id:
+                return jsonify({"error": "Missing bucket_name or mapped_collection_id"}), 400
+
+            remote_account = RemoteAccount.query.filter_by(user_id=current_user.get_id()).first()
+            if not remote_account:
+                resp = jsonify({"error": "No Globus remote account found. Please reconnect Globus."})
+                resp.status_code = 401
+                resp.headers['X-CSRFToken'] = generate_csrf()
+                return resp
+
+            transfer_token = RemoteToken.get(
+                user_id=current_user.get_id(),
+                client_id=remote_account.client_id,
+                token_type="transfer",
+            )
+
+            if not transfer_token:
+                current_app.logger.warning("No transfer token found for user provisioning request.")
+                resp = jsonify({"error": "No transfer token found. Please reconnect Globus."})
+                resp.status_code = 401
+                resp.headers['X-CSRFToken'] = generate_csrf()
+                return resp
+
+            # waiting for Derek's ICER API
+            current_app.logger.info(f"Simulating bucket creation for '{bucket_name}' on {mapped_collection_id}")
+            
+            simulated_bucket_uuid = "icer-sim-bucket-uuid-12345"
+            simulated_guest_collection_uuid = "globus-sim-guest-uuid-67890"
+
+            # returning new UUIDs to the frontend to save in the KCWorks record
+            resp = jsonify({
+                "status": "success",
+                "bucket_id": simulated_bucket_uuid,
+                "guest_collection_id": simulated_guest_collection_uuid,
+                "path": f"/{bucket_name}"
+            })
+            resp.status_code = 201
+            resp.headers['X-CSRFToken'] = generate_csrf()
+            return resp
+
+        except Exception as e:
+            tb = traceback.format_exc()
+            current_app.logger.error("Unhandled exception in GlobusGuestCollectionProvision: %s\n%s", str(e), tb)
+            resp = jsonify({"error": "Internal server error during provisioning", "traceback": tb})
             resp.status_code = 500
             resp.headers['X-CSRFToken'] = generate_csrf()
             return resp
