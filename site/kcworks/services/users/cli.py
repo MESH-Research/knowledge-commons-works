@@ -16,6 +16,7 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.models import Role, User, UserIdentity
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
+from invenio_remote_user_data_kcworks.tasks import sync_user_to_names
 from invenio_users_resources.proxies import current_users_service
 from kcworks.services.users.service import UserProfileService
 from sqlalchemy import select
@@ -237,6 +238,9 @@ def name_parts(
 ) -> None:
     """CLI command to update the name parts for the specified user.
 
+    After a successful update, queues ``sync_user_to_names`` so the Names
+    vocabulary entry reflects the new local split.
+
     Parameters:
         user_id (str): The ID of the user to update.
         given (str | None): The given name of the user.
@@ -271,6 +275,11 @@ def name_parts(
         pprint(new_user.user_profile)
         print("Updated name parts:")
         pprint(new_user.user_profile["name_parts_local"])
+        async_result = sync_user_to_names.delay(int(user_id))
+        print(
+            f"Queued Names vocabulary sync for user {user_id} "
+            f"(task {async_result.id})."
+        )
         return
 
 

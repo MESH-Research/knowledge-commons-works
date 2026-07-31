@@ -260,7 +260,7 @@ invenio kcworks-records migrate_user \
 - **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/users/cli.py)
 
 #### `invenio kcworks-users name-parts`
-Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.
+Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata. Updates also queue an asynchronous Names vocabulary sync for the user.
 
 Positional arguments:
 - `user_id`: the ID of the user to read or update.

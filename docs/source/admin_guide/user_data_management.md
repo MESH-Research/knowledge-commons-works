@@ -39,8 +39,9 @@ CLI reference:
 ## How do I retrieve a user's details via the CLI?
 
 Use `invenio kcworks-users read` to print a user's KCWorks account data,
-including profile fields, KC username, and group/role memberships. Provide
-exactly one of `--user-id`, `--email`, or `--kc-id`:
+including profile fields, KC username, group/role memberships, and
+`UserIdentity` rows (external auth links). Provide exactly one of `--user-id`,
+`--email`, or `--kc-id`:
 
 ```shell
 invenio kcworks-users read --user-id <user_id>
@@ -49,7 +50,8 @@ invenio kcworks-users read --kc-id <kc_username>
 ```
 
 The command prints the full user record from the users service, the KC username,
-and a list of Flask-Security roles assigned to the account.
+a list of Flask-Security roles assigned to the account, and any linked
+`UserIdentity` rows (`method`, external `id`, timestamps).
 
 Related commands for inspecting group membership:
 
@@ -64,9 +66,22 @@ invenio kcworks-users group-users <group_name>
 invenio kcworks-users user-groups --kc-id <kc_username>
 ```
 
+To inventory likely duplicate local accounts before a merge, run:
+
+```shell
+invenio kcworks-users find-duplicates
+```
+
+That command reports pairs/groups that share the same
+`identifier_kc_username` or `identifier_orcid`, or where one account's
+`identifier_kc_username` matches another's `username` (exactly or after
+stripping a `knowledgeCommons-` prefix from the username). See
+[How do I merge two user accounts?](#how-do-i-merge-two-user-accounts).
+
 CLI reference:
 
 - [`invenio kcworks-users read`](../reference/cli_commands.md#invenio-kcworks-users-read)
+- [`invenio kcworks-users find-duplicates`](../reference/cli_commands.md#invenio-kcworks-users-find-duplicates)
 - [`invenio kcworks-users groups`](../reference/cli_commands.md#invenio-kcworks-users-groups)
 - [`invenio kcworks-users group-users`](../reference/cli_commands.md#invenio-kcworks-users-group-users)
 - [`invenio kcworks-users user-groups`](../reference/cli_commands.md#invenio-kcworks-users-user-groups)
@@ -104,9 +119,10 @@ Available name-part flags include `--given`, `--family`, `--middle`, `--suffix`,
 for descriptions of each.
 
 ```{note}
-After changing name parts, re-sync the user's Names vocabulary entry so creator
-lookup reflects the new division (see
-[How do I update a KCWorks user's Names index entry with new data?](#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data)).
+Changing name parts also queues an asynchronous Names vocabulary sync so
+creator lookup reflects the new division. If that task fails or you need to
+re-run it, see
+[How do I update a KCWorks user's Names index entry with new data?](#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data).
 ```
 
 CLI reference:
@@ -280,7 +296,10 @@ one local account to another.
 1. Decide which local account is **canonical** and which is the **duplicate** to
    retire. Use
    [How do I retrieve a user's details via the CLI?](#how-do-i-retrieve-a-user-s-details-via-the-cli)
-   to compare user ids, KC usernames, and OAuth linkage.
+   to compare user ids, KC usernames, and OAuth linkage. To scan the whole
+   database for likely duplicates first, run
+   `invenio kcworks-users find-duplicates` (see
+   [`invenio kcworks-users find-duplicates`](../reference/cli_commands.md#invenio-kcworks-users-find-duplicates)).
 2. If you need an inventory of the duplicate's works, you can use:
    - the **Records** tab in the admin interface to search for the duplicate
      user's works (using `parent.access.owned_by:<duplicate_user_id>`);
