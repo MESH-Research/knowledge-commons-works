@@ -285,37 +285,37 @@
 
 }
 
-.ui.form,
-.ui.modal {
-  .ui.button {
-    font-weight: normal;
-    &.add-btn,
-    &.add-id-button,
-    &.add-url-button,
-    &.add-button {
-      background-color: transparent;
-      box-shadow: none;
-      color: @linkColor;
-      border: 1px solid transparent;
-      &:hover,
-      &:focus,
-      &:active {
-        color: darken(@linkColor, 15%);
-        border: 1px solid @sidebarBorderColor;
-      }
-      &.labeled.icon {
-        padding-left: 2.5rem !important;
-      }
-      .add.icon {
-        background-color: transparent;
-      }
-    }
-  }
-  .ui.mini.ui.button {
-    font-size: 1em;
-  }
-
-}
+// .ui.form,
+// .ui.modal {
+//   .ui.button {
+//     font-weight: normal;
+//     &.add-btn,
+//     &.add-id-button,
+//     &.add-url-button,
+//     &.add-button {
+//       background-color: transparent;
+//       box-shadow: none;
+//       color: @linkColor;
+//       border: 1px solid transparent;
+//       &:hover,
+//       &:focus,
+//       &:active {
+//         color: darken(@linkColor, 15%);
+//         border: 1px solid @sidebarBorderColor;
+//       }
+//       &.labeled.icon {
+//         padding-left: 2.5rem !important;
+//       }
+//       .add.icon {
+//         background-color: transparent;
+//       }
+//     }
+//   }
+//   .ui.mini.ui.button {
+//     font-size: 1em;
+//   }
+//
+// }
 
 .invenio-fieldset.resource_type {
     .menu .button.item {
