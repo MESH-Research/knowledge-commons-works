@@ -15,6 +15,8 @@ resource type, for invenio-modular-deposit-form.
 
 from invenio_i18n import lazy_gettext as _
 
+MODULAR_DEPOSIT_FORM_SHOW_COMMUNITY_BANNER_AT_TOP = False
+
 PRIORITY_TYPES_CONFIG = [
     "textDocument-journalArticle",
     "textDocument-review",
