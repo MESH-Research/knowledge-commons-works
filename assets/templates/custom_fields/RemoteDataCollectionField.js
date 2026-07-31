@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import apiClient from "@js/kcworks/utils/apiClient";
-import { Accordion, AccordionTitle, AccordionContent, Icon, Popup } from "semantic-ui-react";
+import { Accordion, AccordionTitle, AccordionContent, Icon, Popup, Menu, Segment, Input, Button, Dropdown, Message } from "semantic-ui-react";
 import { FieldLabel } from "react-invenio-forms";
 import { useFormikContext, getIn } from "formik";
 
@@ -198,21 +198,51 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
   const [hasToken, setHasToken] = useState(false);
   const [loadingInitial, setLoadingInitial] = useState(true);
 
-  const [selectedCollection, setSelectedCollection] = useState(null);
   const [rootFiles, setRootFiles] = useState([]);
   const [loadingTree, setLoadingTree] = useState(false);
   const [treeError, setTreeError] = useState(null);
 
+  const [activeTab, setActiveTab] = useState("existing");
+
+  // creating guest collection - tab 2
+  const [bucketName, setBucketName] = useState("");
+  const [mappedCollection, setMappedCollection] = useState("");
+  const [isProvisioning, setIsProvisioning] = useState(false);
+  const [provisionError, setProvisionError] = useState(null);
+
+  const [globusState, setGlobusState] = useState({});
+
   useEffect(() => {
     const initialFormikValue = getIn(values, fieldPath, null);
     if (initialFormikValue) {
-      setSelectedCollection(initialFormikValue);
+      try {
+        setGlobusState(JSON.parse(initialFormikValue));
+      } catch (e) {
+        setGlobusState({ guest_collection_id: initialFormikValue });
+      }
     }
   }, []);
+
+  // watching for internal state changes and syncing them OUT to Formik
+  useEffect(() => {
+    if (Object.keys(globusState).length > 0) {
+      setFieldValue(fieldPath, JSON.stringify(globusState));
+    }
+  }, [globusState, fieldPath, setFieldValue]);
+
+  // helper function to safely update our internal React state
+  const updateGlobusState = (newData) => {
+    setGlobusState(prevState => ({ ...prevState, ...newData }));
+  };
+
+  const selectedCollection = globusState.guest_collection_id || "";
 
   useEffect(() => {
     apiClient.get('/globus/endpoints')
       .then((response) => {
+        if (response.data.endpoints && response.data.endpoints.length > 0) {
+            setMappedCollection(response.data.endpoints[0].id);
+        }
         setHasToken(true);
         setEndpoints(response.data.endpoints || []);
       })
@@ -242,6 +272,33 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
           setLoadingTree(false);
       });
   }, [selectedCollection]);
+
+  const handleProvision = async () => {
+    if (!bucketName || !mappedCollection) return;
+    setIsProvisioning(true);
+    setProvisionError(null);
+
+    try {
+      const response = await apiClient.post('/api/globus/provision', {
+        bucket_name: bucketName,
+        mapped_collection_id: mappedCollection
+      });
+      
+      // store new UUIDs into Formik JSON
+      updateGlobusState({
+        bucket_id: response.data.bucket_id,
+        guest_collection_id: response.data.guest_collection_id,
+        folder_path: response.data.path
+      });
+      
+      // switch back to 'existing' tab to show the file tree for the new bucket
+      setActiveTab("existing");
+    } catch (err) {
+      setProvisionError("Failed to provision bucket. Please try again.");
+    } finally {
+      setIsProvisioning(false);
+    }
+  };
 
   if (loadingInitial) {
     return (
@@ -278,79 +335,92 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
     );
   }
 
+  const dropdownOptions = endpoints.map(ep => ({
+    key: ep.id,
+    value: ep.id,
+    text: ep.display_name || ep.id
+  }));
+
   return (
     <div className="field mb-20">
-      <FieldLabel
-        htmlFor={endpoints.length > 0 ? `radio-${endpoints[0].id}` : fieldPath}
-        id={`${fieldPath}.label`}
-        icon="database"
-        label="Globus Collection"
-      />
+      <FieldLabel htmlFor={fieldPath} icon="cloud download" label="Globus Transfer Configuration" />
+      <p style={{ color: "#666", marginBottom: "1em" }}>Link an existing Data Hub Guest Collection or provision a new bucket.</p>
 
-      <div className="ui form">
-        <div 
-          className="grouped fields" 
-          role="radiogroup"
-          aria-labelledby={`${fieldPath}.label`}
-          aria-describedby={selectedCollection ? `${fieldPath}.selectedMessage ${fieldPath}.fileTree.label` : undefined}
-          style={{ maxHeight: "200px", overflowY: "auto", paddingRight: "10px" }}
-        >
-          {endpoints && endpoints.length > 0 ? (
-            endpoints.map((ep) => (
-              <div className="field" key={ep.id}>
-                <div className="ui radio checkbox">
-                  <input
-                    type="radio"
-                    name="globus_collection"
-                    id={`radio-${ep.id}`}
-                    value={ep.id}
-                    checked={selectedCollection === ep.id}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedCollection(val);
-                      setFieldValue(fieldPath, val); 
-                    }}
-                    onClick={(e) => {
-                      if (selectedCollection === ep.id) {
-                        setSelectedCollection("");
-                        setFieldValue(fieldPath, "");
-                      }
-                    }}
-                    style={{ cursor: "pointer" }}
-                  />
-                  <label htmlFor={`radio-${ep.id}`} style={{ cursor: "pointer" }}>
-                    {ep.display_name || ep.id}</label>
+      {/* THE TABS */}
+      <Menu pointing secondary color="blue">
+        <Menu.Item name="Select Existing Guest Collection" active={activeTab === "existing"} onClick={() => setActiveTab("existing")} />
+        <Menu.Item name="Provision New Bucket" active={activeTab === "new"} onClick={() => setActiveTab("new")} />
+      </Menu>
+
+      <Segment attached="bottom">
+        {/* TAB 1: EXISTING FILE TREE */}
+        {activeTab === "existing" && (
+          <div className="ui form">
+            <div className="grouped fields" style={{ maxHeight: "200px", overflowY: "auto", paddingRight: "10px" }}>
+              {endpoints.length > 0 ? endpoints.map((ep) => (
+                <div className="field" key={ep.id}>
+                  <div className="ui radio checkbox">
+                    <input
+                      id={`radio-${ep.id}`}
+                      type="radio"
+                      checked={selectedCollection === ep.id}
+                      onChange={() => updateGlobusState({ guest_collection_id: ep.id })}
+                      style={{ cursor: "pointer" }}
+                    />
+                    <label htmlFor={`radio-${ep.id}`} style={{ cursor: "pointer" }}>
+                      {ep.display_name || ep.id}
+                    </label>
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="ui message info">No collections found on your account.</div>
-          )}
-        </div>
-      </div>
+              )) : <Message info>No collections found on your account.</Message>}
+            </div>
 
-      {selectedCollection && (
-        <div className="field pl-15" style={{ marginTop: "15px" }}>
-          <div 
-            id={`${fieldPath}.selectedMessage`}
-            style={{ padding: "10px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px", marginBottom: "15px" }}
-          >
-            <strong>Selected Collection ID:</strong> <br/>
-            {selectedCollection}
-          </div>
-            {loadingTree ? (
-                <div className="ui active centered inline loader"></div>
-            ) : treeError ? (
-                <div className="ui negative message">{treeError}</div>
-            ) : (
-                <FileTree 
-                    initialFiles={rootFiles} 
-                    endpointId={selectedCollection} 
-                    fieldPath={fieldPath} 
-                />
+            {selectedCollection && (
+              <div style={{ marginTop: "15px", padding: "15px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px" }}>
+                <div style={{ marginBottom: "15px" }}><strong>Active Collection:</strong> <code>{selectedCollection}</code></div>
+                {loadingTree ? <div className="ui active centered inline loader"></div> 
+                 : treeError ? <Message negative>{treeError}</Message> 
+                 : <FileTree initialFiles={rootFiles} endpointId={selectedCollection} fieldPath={fieldPath} />}
+              </div>
             )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* TAB 2: PROVISION NEW BUCKET */}
+        {activeTab === "new" && (
+          <div className="ui form">
+            <div className="field">
+              <label htmlFor="mappedCollectionDropdown">Parent Mapped Collection</label>
+              <Dropdown
+                id="mappedCollectionDropdown"
+                selection
+                fluid
+                options={dropdownOptions}
+                value={mappedCollection}
+                onChange={(e, { value }) => setMappedCollection(value)}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="bucketNameInput">New Bucket / Folder Name</label>
+              <Input
+                id="bucketNameInput"
+                placeholder="e.g., my-research-dataset"
+                value={bucketName}
+                onChange={(e) => setBucketName(e.target.value)}
+              />
+            </div>
+            {provisionError && <Message negative>{provisionError}</Message>}
+            <Button 
+              primary 
+              loading={isProvisioning} 
+              disabled={isProvisioning || !bucketName}
+              onClick={handleProvision}
+            >
+              Provision Bucket
+            </Button>
+          </div>
+        )}
+      </Segment>
     </div>
   );
 };

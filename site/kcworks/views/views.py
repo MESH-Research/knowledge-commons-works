@@ -7,6 +7,13 @@ from werkzeug.exceptions import Forbidden, MethodNotAllowed
 from kcworks.views.admin_login.admin_login import AdminLogin
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.dev_ui_gallery import dev_ui_gallery
+from kcworks.views.remote_data_collections.globus_callback import GlobusCallback
+from kcworks.views.remote_data_collections.globus_endpoints import (
+    GlobusEndpointInfo,
+    GlobusFolderLS,
+    GlobusGuestCollectionProvision,
+)
+from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
 from kcworks.views.task_results.task_results import TaskResults
 
 
@@ -38,6 +45,30 @@ def create_blueprint(app):
         methods=["GET"],
     )
 
+    # --- GLOBUS UI ROUTES ---
+    blueprint.add_url_rule(
+        "/globus/login",
+        view_func=GlobusLogin.as_view("globus_login"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/callback",
+        view_func=GlobusCallback.as_view("globus_callback"),
+        methods=["GET"],
+    )
+
+    blueprint.add_url_rule(
+        "/globus/login/start",
+        view_func=GlobusStart.as_view("globus_start"),
+    )
+
+    blueprint.add_url_rule(
+        "/globus/endpoints",
+        view_func=GlobusEndpointInfo.as_view("globus_endpoint_info"),
+        methods=["GET"],
+    )
+
     # Register context processor
     # blueprint.app_context_processor(search_app_context)
 
@@ -63,16 +94,29 @@ def create_api_blueprint(app):
             methods=["GET", "DELETE"],
         )
 
+        # --- GLOBUS API ROUTES ---
+        blueprint.add_url_rule(
+            "/globus/ls/<string:endpoint_id>",
+            view_func=GlobusFolderLS.as_view("globus_folder_ls"),
+            methods=["GET"],
+        )
+
+        blueprint.add_url_rule(
+            "/globus/provision",
+            view_func=GlobusGuestCollectionProvision.as_view(
+                "globus_guest_collection_provision"
+            ),
+            methods=["POST"],
+        )
+
         # Register error handlers
         blueprint.register_error_handler(
             Forbidden,
             lambda e: make_response(
-                jsonify(
-                    {
-                        "message": "You are not authorized to perform this action",
-                        "status": 403,
-                    }
-                ),
+                jsonify({
+                    "message": "You are not authorized to perform this action",
+                    "status": 403,
+                }),
                 403,
             ),
         )
@@ -85,12 +129,10 @@ def create_api_blueprint(app):
         blueprint.register_error_handler(
             PermissionDeniedError,
             lambda e: make_response(
-                jsonify(
-                    {
-                        "message": "You are not authorized to perform this action",
-                        "status": 403,
-                    }
-                ),
+                jsonify({
+                    "message": "You are not authorized to perform this action",
+                    "status": 403,
+                }),
                 403,
             ),
         )

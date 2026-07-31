@@ -20,6 +20,8 @@ from __future__ import annotations
 import os
 from datetime import timedelta
 
+from kcworks.services.remote_data_collections.globus_api import GLOBUS_API_REMOTE_APP
+
 from .site_urls import COMMONS_API_REQUEST_PROTOCOL, KC_PROFILES_DOMAIN
 
 # Invenio-Accounts
@@ -89,7 +91,12 @@ STATIC_API_TOKEN_ROUTES = {
 
 # CILogon OAuth is no longer used directly. Authentication is delegated
 # to the KC Profiles microservice via the SSO broker.
-OAUTHCLIENT_REMOTE_APPS = {}
+# We declare the globus app here in order to use oauthclient infrastructure
+# to manage users' secondary authentication with Globus.
+OAUTHCLIENT_REMOTE_APPS = {
+    "globus": GLOBUS_API_REMOTE_APP,
+}
+
 OAUTHCLIENT_AUTO_REDIRECT_TO_EXTERNAL_LOGIN = False
 # Import string: resolved by invenio-accounts via ``obj_or_import_string``.
 ACCOUNTS_LOGIN_VIEW_FUNCTION = "invenio_remote_user_data_kcworks.views:sso_broker_login"
