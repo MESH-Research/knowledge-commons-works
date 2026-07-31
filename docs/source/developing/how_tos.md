@@ -56,6 +56,12 @@ The `User` object has the following properties:
 
 Most of this data can be obtained by calling `User.__dict__`
 
+```{note}
+Once you have a `User` instance, its linked `UserIdentity` rows (external auth
+links) are available on the `.external_identifiers` property. That is the same
+relationship stored in the `accounts_useridentity` table.
+```
+
 The User object also has some helper methods and properties:
 - `active_sessions` (list)
 - `confirmed_at` (datetime)
@@ -116,12 +122,49 @@ from invenio_accounts import current_accounts
 user = current_accounts.datastore.get_user(identity.id)
 ```
 
+The returned `User` exposes linked `UserIdentity` rows on
+`user.external_identifiers`.
+
 #### accessing user by email
 
 ```python
 from invenio_accounts import current_accounts
 user = current_accounts.datastore.get_user_by_email(email)
 ```
+
+#### accessing user by a database field value
+
+For columns on the `accounts_user` table, filter directly with `User.query`:
+
+```python
+from invenio_accounts.models import User
+
+user = User.query.filter_by(username="myusername").one_or_none()
+# or with an explicit comparison:
+user = User.query.filter(User.email == "user@example.org").one_or_none()
+```
+
+Profile fields live in the JSON `user_profile` column. Query those with the
+PostgreSQL `->>` operator on `User._user_profile` (the underlying mapped
+column; the public `user_profile` property is a `UserProfileDict` wrapper):
+
+```python
+from invenio_accounts.models import User
+
+user = User.query.filter(
+    User._user_profile.op("->>")("identifier_kc_username") == "some_kc_username"
+).one_or_none()
+
+# Same pattern for other profile keys, e.g. ORCID:
+user = User.query.filter(
+    User._user_profile.op("->>")("identifier_orcid") == "0000-0002-1825-0097"
+).one_or_none()
+```
+
+Use `.all()` instead of `.one_or_none()` when more than one match is possible.
+
+Once you have the `User`, its `UserIdentity` rows are on
+`user.external_identifiers`.
 
 #### accessing user based on external auth info
 
@@ -194,7 +237,7 @@ This `UserIdentity` object has the following properties:
 - `id_user` (int): the Invenio user id
 
 
-The `User` object also has an `external_identifiers` property that is a list of objects with the same properties as the `UserIdentity` object.
+The `User` object also has an `external_identifiers` property that is a list of objects with the same properties as the `UserIdentity` object. Prefer that property when you already have a `User` instance and only need its linked identities.
 
 
 #### link a user with an external auth method
@@ -205,6 +248,45 @@ This can be done directly via the `UserIdentity` object.
 from invenio_accounts.models import UserIdentity
 # OR from invenio_oauthclient.models import UserIdentity
 UserIdentity.create(myuser, <idp label>, <id on idp>)
+```
+
+#### unlink a user from an external auth method
+
+Use the `UserIdentity` classmethods (they open a nested transaction). Commit
+afterward.
+
+By external id and method:
+
+```python
+from invenio_accounts.models import UserIdentity
+from invenio_db import db
+
+UserIdentity.delete_by_external_id("<idp label>", "<id on idp>")
+db.session.commit()
+```
+
+By user and method (removes that IDP link for the user):
+
+```python
+from invenio_accounts.models import UserIdentity
+from invenio_db import db
+
+UserIdentity.delete_by_user("<idp label>", myuser)
+db.session.commit()
+```
+
+Or delete a looked-up row directly:
+
+```python
+from invenio_accounts.models import UserIdentity
+from invenio_db import db
+
+identity = UserIdentity.query.filter_by(
+    method="<idp label>", id="<id on idp>"
+).one_or_none()
+if identity:
+    db.session.delete(identity)
+    db.session.commit()
 ```
 
 ## Creating and Modifying Records in General
