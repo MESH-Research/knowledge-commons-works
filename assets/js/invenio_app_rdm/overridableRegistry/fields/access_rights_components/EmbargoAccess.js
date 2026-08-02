@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { TextAreaField } from "react-invenio-forms";
 import { Button, Divider, Form, Icon, List } from "semantic-ui-react";
+import { EmbargoCheckboxField } from "./EmbargoCheckboxField.js";
 import { EmbargoDateField } from "./EmbargoDateField";
 import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
@@ -38,27 +39,29 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
   const restrictedColor = embargoActive ? "negative" : "negative";
 
   const handlePublicButtonClick = () => {
-    setFieldValue('access.files', "public");
+    setFieldValue("access.files", "public");
     setFieldValue("access.embargo", {
       active: false,
     });
-  }
+  };
 
   const handleRestrictedButtonClick = () => {
-    setFieldValue('access.files', "restricted");
+    setFieldValue("access.files", "restricted");
     setFieldValue("access.embargo", {
       active: true,
     });
-  }
+  };
 
   return (
     <>
-    <Form.Field>
-      <label htmlFor="access.embargo.active" className="invenio-field-label" id="access.embargo.active.label">
-        <Icon name="clock outline" />
-        {i18next.t("Apply an embargo")}
-      </label>
-      <Button.Group widths="2" aria-labelledby="access.embargo.active.label">
+      <Form.Field className="mb-0">
+        <EmbargoCheckboxField
+          fieldPath="access.embargo.active"
+          disabled={!embargoEnabled}
+          label={i18next.t("Apply an embargo")}
+          checked={!!embargoActive}
+        />
+        {/*<Button.Group widths="2" aria-labelledby="access.embargo.active.label">
         <Button
           className={`${publicColor} ${!embargoEnabled ? "disabled" : ""} ${!embargoActive ? "active" : "basic"}`}
           disabled={!embargoEnabled}
@@ -75,39 +78,36 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
         >
           {i18next.t("Embargoed")}
         </Button>
-      </Button.Group>
-    </Form.Field>
+      </Button.Group>*/}
+      </Form.Field>
 
-    <List divided relaxed>
+      <Divider className="mt-15 mb-15" />
+
+      <List divided relaxed>
         <List.Content>
-          <List.Header as="label" htmlFor="access.embargo.active" >
-          </List.Header>
+          <List.Header as="label" htmlFor="access.embargo.active"></List.Header>
 
           {!metadataOnly && filesPublic && !embargoActive && (
-          <List.Description>
-            <Trans>
-              Record or files access must be <b>restricted</b> to apply an embargo.
-            </Trans>
-          </List.Description>
+            <List.Description>
+              <Trans>
+                Record or files access must be <b>restricted</b> to apply an embargo.
+              </Trans>
+            </List.Description>
           )}
 
           {embargoActive && (
             <>
-              <Divider hidden className="rel-mb-1" />
               <EmbargoDateField fieldPath="access.embargo.until" required />
               <TextAreaField
                 label={i18next.t("Embargo reason")}
                 fieldPath="access.embargo.reason"
-                placeholder={i18next.t(
-                  "Optionally, describe the reason for the embargo."
-                )}
+                placeholder={i18next.t("Optionally, describe the reason for the embargo.")}
                 optimized="true"
               />
             </>
           )}
           {embargoWasLifted && (
             <>
-              <Divider hidden />
               <p>
                 {i18next.t(`Embargo was lifted on {{fmtDate}}.`, {
                   fmtDate: fmtDate,
@@ -121,8 +121,8 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
             </>
           )}
         </List.Content>
-    </List>
-  </>
+      </List>
+    </>
   );
 };
 

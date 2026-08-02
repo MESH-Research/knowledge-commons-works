@@ -1,80 +1,170 @@
-// This file is part of Invenio-RDM-Records
-// Copyright (C) 2020-2023 CERN.
+// This file is part of Knowledge-Commons-Works
+// Copyright (C) 2024-2026 Mesh Research
 //
-// Customized for Knowledge Commons Works
-// Copyright (C) 2024 Mesh Research
+// Adapted from a component in Invenio-RDM-Records
+// Copyright (C) 2020-2023 CERN.
 //
 // Invenio-RDM-Records and Knowledge Commons Works are free software;
 // you can redistribute and/or modify them under the terms of the MIT License;
 // see LICENSE file for more details.
 
+import React, { useEffect, useRef, useState } from "react";
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
-import _isEmpty from "lodash/isEmpty";
+import { Trans } from "react-i18next";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import { useStore } from "react-redux";
 import { Button, Header, Modal } from "semantic-ui-react";
 import { CommunityContext } from "@js/invenio_rdm_records/src/deposit/components/CommunitySelectionModal/CommunityContext";
 import { CommunitySelectionSearch } from "./CommunitySelectionSearch";
 
-export class CommunitySelectionModalComponent extends Component {
-  constructor(props) {
-    super(props);
-    const { chosenCommunity, userCommunitiesMemberships, displaySelected } = props;
+const SubmissionWarningModal = ({
+  open = false,
+  onCancel,
+  onAccept,
+  cancelButtonRef,
+  acceptButtonRef,
+}) => {
+  return (
+    <Modal
+      className="deposit-publication-review-warning"
+      open={open}
+      onClose={onCancel}
+      closeOnDimmerClick={false}
+      small
+    >
+      <Modal.Header>
+        <Trans
+          defaults="You may want to submit to collections <0>after</0> your work is published"
+          components={[<i />]}
+        />
+      </Modal.Header>
+      <Modal.Content>
+        <p>
+          <Trans
+            defaults="Submitting to a collection is optional. If you submit your work for publication by a collection now, your upload <0>will not be publicly visible</0> until it has been approved by that collection's curators."
+            components={[<b />]}
+          />
+        </p>
+        <p>
+          <Trans
+            defaults="Most collections are <0>not curated by the KCWorks team</0> , and collection curators may take a significant amount of time to review your work."
+            components={[<b />]}
+          />
+        </p>
+        <p>
+          <Trans
+            defaults="You can submit your work to a collection <0>after publication</0> from the sidebar of your published record's detail page"
+            components={[<b />]}
+          />
+        </p>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button ref={cancelButtonRef} onClick={onCancel}>
+          {i18next.t("Cancel")}
+        </Button>
+        <Button ref={acceptButtonRef} positive onClick={onAccept}>
+          {i18next.t("Choose a collection")}
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+};
 
-    this.state = {
-      localChosenCommunity: chosenCommunity,
-    };
+SubmissionWarningModal.propTypes = {
+  open: PropTypes.bool,
+  onCancel: PropTypes.func.isRequired,
+  onAccept: PropTypes.func.isRequired,
+  cancelButtonRef: PropTypes.object,
+  acceptButtonRef: PropTypes.object,
+};
 
-    this.contextValue = {
-      setLocalCommunity: this.setCommunity,
-      getChosenCommunity: this.getChosenCommunity,
-      userCommunitiesMemberships,
-      displaySelected,
-    };
-  }
+const CommunitySelectionModal = ({
+  apiConfigs = undefined,
+  chosenCommunity = undefined,
+  displaySelected = false,
+  extraContentComponents = undefined,
+  focusAddButtonHandler = undefined,
+  isInitialSubmission = true,
+  modalHeader = undefined,
+  modalOpen = false,
+  onCommunityChange = undefined,
+  onModalChange = undefined,
+  permissionsPerField = undefined,
+  record = {},
+  setModalOpen = undefined,
+  showSubmissionWarning = false,
+  trigger = undefined,
+}) => {
+  const state = useStore().getState();
+  const userCommunitiesMemberships = state.deposit.config.user_communities_memberships;
+  const [localChosenCommunity, setLocalChosenCommunity] = useState(chosenCommunity);
+  const [warningOpen, setWarningOpen] = useState(false);
+  const [warningSeen, setWarningSeen] = useState(false);
+  const warningCancelButtonRef = useRef(null);
+  const warningAcceptButtonRef = useRef(null);
+  const searchInputRef = useRef(null);
 
-  getChosenCommunity = () => {
-    const { localChosenCommunity } = this.state;
+  const getChosenCommunity = () => {
     return localChosenCommunity;
   };
 
-  setCommunity = (community) => {
-    const { onCommunityChange } = this.props;
+  const setCommunity = (community) => {
     onCommunityChange(community);
-    this.setState({ localChosenCommunity: community });
+    setLocalChosenCommunity(community);
   };
 
-  modalTrigger = () => {
-    const { trigger, modalOpen } = this.props;
-    if (!_isEmpty(trigger)) {
-      return React.cloneElement(trigger, {
-        "aria-haspopup": "dialog",
-        "aria-expanded": modalOpen,
-      });
+  const contextValue = {
+    setLocalCommunity: setCommunity,
+    getChosenCommunity: getChosenCommunity,
+    userCommunitiesMemberships,
+    displaySelected,
+  };
+
+  // Button onClick sets modalOpen; Modal onOpen does not fire with Overridable as
+  // trigger root. Open the warning from controlled open state instead.
+  useEffect(() => {
+    if (modalOpen && showSubmissionWarning && !warningSeen) {
+      setWarningOpen(true);
     }
-  };
+  }, [modalOpen, showSubmissionWarning, warningSeen]);
 
-  handleModalOpen = () => {
-    const { chosenCommunity, onModalChange } = this.props;
-    this.setState({ localChosenCommunity: chosenCommunity });
+  useEffect(() => {
+    if (warningOpen) {
+      // Defer until the warning portal has mounted
+      window.setTimeout(() => {
+        warningCancelButtonRef.current?.focus?.();
+      }, 0);
+    }
+  }, [warningOpen]);
+
+  const handleModalOpen = () => {
+    setLocalChosenCommunity(chosenCommunity);
     onModalChange && onModalChange(true);
   };
 
-  render() {
-    const {
-      extraContentComponents,
-      modalHeader,
-      onModalChange,
-      modalOpen,
-      apiConfigs,
-      record,
-      isInitialSubmission,
-      permissionsPerField,
-    } = this.props;
+  const handleWarningCancel = () => {
+    setWarningSeen(true);
+    setWarningOpen(false);
+    onModalChange && onModalChange(false);
+    // Parent onModalChange(false) also calls focusAddButtonHandler; defer in case
+    // the warning portal is still releasing focus.
+    window.setTimeout(() => {
+      focusAddButtonHandler?.();
+    }, 50);
+  };
 
-    return (
-      <CommunityContext.Provider value={this.contextValue}>
+  const handleWarningAccept = () => {
+    setWarningSeen(true);
+    setWarningOpen(false);
+    onModalChange && onModalChange(true);
+    window.setTimeout(() => {
+      searchInputRef.current?.focus?.();
+    }, 50);
+  };
+
+  return (
+    <>
+      <CommunityContext.Provider value={contextValue}>
         <Modal
           role="dialog"
           aria-labelledby="community-modal-header"
@@ -86,8 +176,8 @@ export class CommunitySelectionModalComponent extends Component {
           onClose={() => {
             onModalChange && onModalChange(false);
           }}
-          onOpen={this.handleModalOpen}
-          trigger={this.modalTrigger()}
+          onOpen={handleModalOpen}
+          trigger={trigger}
         >
           <Modal.Header className="pb-15 pt-25">
             <Header as="h2" id="community-modal-header">
@@ -100,26 +190,33 @@ export class CommunitySelectionModalComponent extends Component {
             record={record}
             isInitialSubmission={isInitialSubmission}
             permissionsPerField={permissionsPerField}
+            searchInputRef={searchInputRef}
           />
-          {extraContentComponents && (
-            <Modal.Content>{extraContentComponents}</Modal.Content>
-          )}
+          {extraContentComponents && <Modal.Content>{extraContentComponents}</Modal.Content>}
 
           <Modal.Actions>
             <Button onClick={() => onModalChange(false)}>{i18next.t("Close")}</Button>
           </Modal.Actions>
         </Modal>
       </CommunityContext.Provider>
-    );
-  }
-}
+      <SubmissionWarningModal
+        open={warningOpen}
+        onCancel={handleWarningCancel}
+        onAccept={handleWarningAccept}
+        cancelButtonRef={warningCancelButtonRef}
+        acceptButtonRef={warningAcceptButtonRef}
+      />
+    </>
+  );
+};
 
-CommunitySelectionModalComponent.propTypes = {
+CommunitySelectionModal.propTypes = {
   chosenCommunity: PropTypes.object,
   onCommunityChange: PropTypes.func.isRequired,
   trigger: PropTypes.object,
   userCommunitiesMemberships: PropTypes.object.isRequired,
   extraContentComponents: PropTypes.node,
+  focusAddButtonHandler: PropTypes.func,
   modalHeader: PropTypes.string,
   onModalChange: PropTypes.func,
   displaySelected: PropTypes.bool,
@@ -129,26 +226,8 @@ CommunitySelectionModalComponent.propTypes = {
   record: PropTypes.object,
   isInitialSubmission: PropTypes.bool,
   permissionsPerField: PropTypes.object,
+  setModalOpen: PropTypes.func,
+  showSubmissionWarning: PropTypes.bool,
 };
 
-CommunitySelectionModalComponent.defaultProps = {
-  chosenCommunity: undefined,
-  extraContentComponents: undefined,
-  modalHeader: undefined,
-  onModalChange: undefined,
-  displaySelected: false,
-  modalOpen: false,
-  trigger: undefined,
-  apiConfigs: undefined,
-  isInitialSubmission: true,
-  permissionsPerField: undefined,
-};
-
-const mapStateToProps = (state) => ({
-  userCommunitiesMemberships: state.deposit.config.user_communities_memberships,
-});
-
-export const CommunitySelectionModal = connect(
-  mapStateToProps,
-  null
-)(CommunitySelectionModalComponent);
+export { CommunitySelectionModal };

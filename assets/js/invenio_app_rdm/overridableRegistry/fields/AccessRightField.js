@@ -1,17 +1,19 @@
-// This file is part of Invenio-RDM-Records
+// This file is part of Knowledge Commons Works
+// Adapted from the component in Invenio-RDM-Records
+// Copyright (C) 2026 MESH Research
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
 // Copyright (C)      2021 Graz University of Technology.
 //
-// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
+// Knowledge-Commons-Works and Invenio-RDM-Records are free software; you can
+// redistribute it and/or modify it under the terms of the MIT License; see
+// LICENSE file for more details.
 
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { Field } from "formik";
-import { FieldLabel } from "react-invenio-forms";
-import { Card, Divider, Form, Grid, Header, Segment } from "semantic-ui-react";
+import { useFormikContext, getIn } from "formik";
+import { Card, Divider, Form } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
 import {
   MetadataAccess,
@@ -20,107 +22,87 @@ import {
   AccessMessage,
 } from "./access_rights_components";
 
-const AccessRightFieldCmp = ({
+const AccessRightField = ({
   fieldPath,
-  formik, // this is our access to the shared current draft
+  allowRecordRestriction = true,
+  icon = undefined,
   label = i18next.t("Access Permissions"),
-  icon,
-  showMetadataAccess,
-  community,
+  record = {},
+  recordRestrictionGracePeriod = undefined,
+  showMetadataAccess = undefined,
 }) => {
   /** Top-level Access Right Component */
+  const community = useSelector((s) => s.deposit.editorState.selectedCommunity);
+
   const isGhostCommunity = community?.is_ghost === true;
   const communityAccess =
-    (community && !isGhostCommunity && community.access.visibility) ||
-    "public";
-  const isMetadataOnly = !formik.form.values.files.enabled;
+    (community && !isGhostCommunity && community.access.visibility) || "public";
+  const { values } = useFormikContext();
+  const isMetadataOnly = values.files.enabled;
 
   return (
     <>
-      <label
-        htmlFor={fieldPath}
-        className="field-label-class invenio-field-label"
+      <AccessMessage
+        access={getIn(values, fieldPath)}
+        accessCommunity={communityAccess}
+        metadataOnly={isMetadataOnly}
+      />
+      <Card
+        label={label}
+        id="visibility-section"
+        className="access-right pr-5 pl-5 bottom attached"
       >
-        {icon && <i className={`${icon} icon`} />}
-        {label}
-      </label>
-      <Grid>
-        <Grid.Row>
-          <Grid.Column width="8">
+        <Form.Field required>
+          {label ? (
+            <Card.Content>
+              <Card.Header>
+                <label htmlFor={fieldPath} className="field-label-class invenio-field-label">
+                  {icon && <i className={`${icon} icon`} />}
+                  {label}
+                </label>
+              </Card.Header>
+            </Card.Content>
+          ) : null}
+          <Card.Content>
             {showMetadataAccess && (
-              <MetadataAccess
-                recordAccess={formik.field.value.record}
-                communityAccess={communityAccess}
-              />
+              <>
+                <MetadataAccess
+                  recordAccess={getIn(values, `${fieldPath}.record`)}
+                  communityAccess={communityAccess}
+                  record={record}
+                  recordRestrictionGracePeriod={recordRestrictionGracePeriod}
+                  allowRecordRestriction={allowRecordRestriction}
+                />
+                <Divider hidden />
+              </>
             )}
+
             <FilesAccess
-              access={formik.field.value}
+              access={getIn(values, fieldPath)}
               accessCommunity={communityAccess}
               metadataOnly={isMetadataOnly}
             />
+            <Divider hidden />
             <EmbargoAccess
-              access={formik.field.value}
+              access={getIn(values, fieldPath)}
               accessCommunity={communityAccess}
               metadataOnly={isMetadataOnly}
             />
-          </Grid.Column>
-
-          <Grid.Column width="8">
-            <AccessMessage
-              access={formik.field.value}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+          </Card.Content>
+        </Form.Field>
+      </Card>
     </>
-  );
-}
-
-AccessRightFieldCmp.propTypes = {
-  fieldPath: PropTypes.string.isRequired,
-  formik: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  showMetadataAccess: PropTypes.bool,
-  community: PropTypes.object,
-};
-
-AccessRightFieldCmp.defaultProps = {
-  showMetadataAccess: true,
-  community: undefined,
-};
-
-const mapStateToPropsAccessRightFieldCmp = (state) => ({
-  community: state.deposit.editorState.selectedCommunity,
-});
-
-const AccessRightFieldComponent = connect(
-  mapStateToPropsAccessRightFieldCmp,
-  null
-)(AccessRightFieldCmp);
-
-const AccessRightField = ({ fieldPath, ...props }) => {
-  return (
-    <Field name={fieldPath}>
-      {(formik) => (
-        <AccessRightFieldComponent formik={formik} {...props} />
-      )}
-    </Field>
   );
 };
 
 AccessRightField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   icon: PropTypes.string,
-  isMetadataOnly: PropTypes.bool,
+  allowRecordRestriction: PropTypes.bool,
+  record: PropTypes.object,
+  recordRestrictionGracePeriod: PropTypes.number,
+  showMetadataAccess: PropTypes.bool,
 };
 
-AccessRightField.defaultProps = {
-  icon: undefined,
-  isMetadataOnly: undefined,
-};
-
-export { AccessRightField, AccessRightFieldComponent, AccessRightFieldCmp };
+export { AccessRightField };

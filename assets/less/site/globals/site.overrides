@@ -4,19 +4,19 @@
 // Responsive classes
 
 :not(.ui.grid).only {
-  &.large-monitor:not(.computer) {
+  &[class*="large screen"]:not(.computer) {
     @media all and (max-width: @largeMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.widescreen:not(.large-monitor):not(.computer) {
+  &.widescreen:not([class*="large screen"]):not(.computer) {
     @media all and (max-width: @widescreenMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.computer-strict:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+  &.computer-strict:not([class*="large screen"]):not(.widescreen):not(.tablet):not(.mobile) {
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }

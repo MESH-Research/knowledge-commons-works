@@ -33,9 +33,9 @@
 
 // @mobileBreakpoint: 320px;
 // @tabletBreakpoint: 768px;
-@computerBreakpoint: 992px;
-@largeMonitorBreakpoint: 1200px;
-@widescreenMonitorBreakpoint: 1920px;
+// @computerBreakpoint: 1024px; // 992px;  // stock 1280px
+// @largeMonitorBreakpoint: 1400px;  // stock 1680px
+// @widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------
       Spacing
@@ -181,9 +181,10 @@
 @warningColorDown: darken(@gold, 10%);
 
 @positiveColor: @green;
-@positiveTextColor: @green; // darken(@green, 10%);
+@positiveTextColor: @green; 
+@positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
-@positiveBorderColor: @seafoam;
+@positiveBorderColor: @ivy30;
 
 @negativeColor: @red;
 @negativeTextColor: @redDark;
@@ -208,13 +209,13 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @mint30; // #f9f9f9;
+@sidebarBackgroundColor: @ivory; // @mint30; // #f9f9f9;
 @sidebarHeaderColor: @ivy80;
-@sidebarBorderColor: @mint60; // @verdigris20;
+@sidebarBorderColor: #ddd5b9; // @gold40; // @mint60; // @verdigris20;
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
-@formInputBorderColor: @ivy20;
+@formInputBorderColor: @ivy40;
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
 

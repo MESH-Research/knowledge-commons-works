@@ -12,15 +12,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { http, withCancel } from "react-invenio-forms";
 import Overridable from "react-overridable";
-import {
-  Container,
-  Grid,
-  Header,
-  Icon,
-  Item,
-  Placeholder,
-  Transition,
-} from "semantic-ui-react";
+import { Container, Grid, Header, Icon, Item, Placeholder, Transition } from "semantic-ui-react";
 import CarouselItem from "./CarouselItem";
 
 class CommunitiesCarousel extends Component {
@@ -106,9 +98,9 @@ class CommunitiesCarousel extends Component {
         <Grid container className="carousel-header-container">
           <Grid.Column width="2" />
           <Grid.Column width="12">
-          <Header as="h2" className="rel-mb-1">
-            {title}
-          </Header>
+            <Header as="h2" className="rel-mb-1">
+              {title}
+            </Header>
           </Grid.Column>
           <Grid.Column width="2" />
         </Grid>
@@ -193,25 +185,24 @@ class CommunitiesCarousel extends Component {
           {isLoading && this.renderPlaceholder()}
 
           {!isLoading && !_isEmpty(data.hits) && (
-            <Container
-              fluid
-              className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile"
-            >
+            <Container fluid className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
               <Grid container className="rel-mb-0">
-                <Grid.Column width="2" className="tablet computer widescreen large-monitor only" />
-                <Grid.Column computer="12" tablet="12" mobile="16" widescreen="12" largeMonitor="12" className="twelve wide large-monitor mb-15">
-                <Header as="h2">{title}</Header>
+                <Grid.Column width="2" className="tablet computer widescreen large screen only" />
+                <Grid.Column
+                  computer="12"
+                  tablet="12"
+                  mobile="16"
+                  widescreen="12"
+                  largeMonitor="12"
+                  className="twelve wide large screen mb-15"
+                >
+                  <Header as="h2">{title}</Header>
                 </Grid.Column>
-                <Grid.Column width="2" className="tablet computer widescreen large-monitor only" />
+                <Grid.Column width="2" className="tablet computer widescreen large screen only" />
               </Grid>
 
               <Grid container onFocus={this.stopCarousel} onBlur={this.startCarousel}>
-                <Grid.Column
-                  width="2"
-                  className="pr-0"
-                  verticalAlign="middle"
-                  textAlign="left"
-                >
+                <Grid.Column width="2" className="pr-0" verticalAlign="middle" textAlign="left">
                   <Icon
                     className="carousel-arrow"
                     inverted
@@ -238,12 +229,7 @@ class CommunitiesCarousel extends Component {
                   </Transition.Group>
                 </Grid.Column>
 
-                <Grid.Column
-                  width="2"
-                  className="pl-0"
-                  verticalAlign="middle"
-                  textAlign="right"
-                >
+                <Grid.Column width="2" className="pl-0" verticalAlign="middle" textAlign="right">
                   <Icon
                     className="carousel-arrow"
                     inverted
@@ -281,7 +267,4 @@ CommunitiesCarousel.defaultProps = {
   showUploadBtn: true,
 };
 
-export default Overridable.component(
-  "InvenioCommunities.CommunitiesCarousel",
-  CommunitiesCarousel
-);
+export default Overridable.component("InvenioCommunities.CommunitiesCarousel", CommunitiesCarousel);

@@ -24,6 +24,7 @@ const kcValidationExtensions = yupObject().shape({
           ),
       }),
     }),
+    "kcr:publication_url": yupString().isURL().notRequired(),
   }),
 });
 

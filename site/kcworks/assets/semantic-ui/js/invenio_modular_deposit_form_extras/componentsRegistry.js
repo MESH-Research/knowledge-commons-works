@@ -19,6 +19,7 @@ import { ProjectTitleComponent } from "./components/ProjectTitleComponent";
 import { PublicationURLComponent } from "./components/PublicationURLComponent";
 import { SeriesComponent } from "./components/SeriesComponent";
 import { SponsoringInstitutionComponent } from "./components/SponsoringInstitutionComponent";
+import { TotalVolumesComponent } from "./components/TotalVolumesComponent";
 import { VolumeComponent } from "./components/VolumeComponent";
 
 const componentsRegistry = {
@@ -95,7 +96,11 @@ const componentsRegistry = {
     SponsoringInstitutionComponent,
     ["custom_fields.kcr:sponsoring_institution"],
   ],
-  VolumeComponent: [VolumeComponent, ["custom_fields.kcr:volumes"]],
+  TotalVolumesComponent: [
+    TotalVolumesComponent,
+    ["custom_fields.kcr:volumes.total_volumes"],
+  ],
+  VolumeComponent: [VolumeComponent, ["custom_fields.kcr:volumes.volume"]],
 };
 
 export { componentsRegistry };

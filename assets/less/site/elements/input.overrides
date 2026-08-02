@@ -148,3 +148,9 @@
     margin-left: 1rem;
   }
 }
+
+.files-field .uppy-Dashboard-inner {
+  background-color: @white;
+  border-radius: 0.25rem 0.25rem 0 0;
+  border-bottom: 0;
+}

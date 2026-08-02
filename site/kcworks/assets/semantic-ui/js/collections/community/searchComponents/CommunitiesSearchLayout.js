@@ -1,7 +1,4 @@
-import {
-  SearchAppFacets,
-  SearchAppResultsPane,
-} from "@js/invenio_search_ui/components";
+import { SearchAppFacets, SearchAppResultsPane } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/kcworks/i18next";
 import PropTypes from "prop-types";
 import React from "react";
@@ -20,23 +17,13 @@ export const CommunitiesSearchLayout = ({
       <Grid>
         {/* Mobile/tablet search header */}
         <Grid.Row className="mobile tablet only">
-          <Grid.Column
-            mobile={16}
-            tablet={16}
-            floated="right"
-            className="mt-10"
-          >
+          <Grid.Column mobile={16} tablet={16} floated="right" className="mt-10">
             <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
         </Grid.Row>
 
         <Grid.Row className="mobile tablet only">
-          <Grid.Column
-            mobile={2}
-            tablet={1}
-            verticalAlign="middle"
-            className=""
-          >
+          <Grid.Column mobile={2} tablet={1} verticalAlign="middle" className="">
             <Button
               basic
               icon="sliders"
@@ -62,14 +49,14 @@ export const CommunitiesSearchLayout = ({
         {/* End mobile/tablet search header */}
 
         {/* Desktop search header */}
-        <Grid.Row className="computer widescreen large-monitor only communities-search-bar">
+        <Grid.Row className="computer widescreen large screen only communities-search-bar">
           <Grid.Column width={12}>
             <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
           <Grid.Column width={4} />
         </Grid.Row>
         {config.sortOptions && (
-          <Grid.Row className="computer widescreen large-monitor only communities-search-options">
+          <Grid.Row className="computer widescreen large screen only communities-search-options">
             <Grid.Column width={12}>
               <Sort
                 values={config.sortOptions}
@@ -89,10 +76,7 @@ export const CommunitiesSearchLayout = ({
 
         <Grid.Row>
           <Grid.Column mobile={16} tablet={16} computer={12}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-            />
+            <SearchAppResultsPane layoutOptions={config.layoutOptions} appName={appName} />
           </Grid.Column>
           <GridResponsiveSidebarColumn
             width={4}

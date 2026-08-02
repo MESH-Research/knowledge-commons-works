@@ -1,10 +1,13 @@
-// This file is part of Invenio-RDM-Records
+// This file is part of Knowledge Commons Works
+// Based on a component in Invenio-RDM-Records
+// Copyright (C) 2026 MESH Research
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
 // Copyright (C) 2021 Graz University of Technology.
 //
-// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
+// Knowledge-Commons-Works and Invenio-RDM-Records are free software; you
+// can redistribute it and/or modify them under the terms of the MIT License;
+// see LICENSE file for more details.
 
 import React, { Component } from "react";
 import { Button } from "semantic-ui-react";
@@ -41,13 +44,13 @@ class ProtectionButtonsComponent extends Component {
   render() {
     const { active, disabled } = this.props;
 
-    const publicColor = "primary";
+    const publicColor = "positive";
     const restrictedColor = "negative";
 
     return (
       <Button.Group widths="2" role="group" aria-labelledby={this.props.ariaLabelledby}>
         <Button
-          className={`${publicColor} ${!active ? "basic" : ""}`}
+          className={`${publicColor} ${!active ? "basic" : ""} pr-5 pl-5`}
           data-testid="protection-buttons-component-public"
           disabled={disabled}
           onClick={this.handlePublicButtonClick}
@@ -56,7 +59,7 @@ class ProtectionButtonsComponent extends Component {
           {i18next.t("Public")}
         </Button>
         <Button
-          className={`${restrictedColor} ${active ? "basic" : ""}`}
+          className={`${restrictedColor} ${active ? "basic" : ""} pr-5 pl-5`}
           data-testid="protection-buttons-component-restricted"
           active={!active}
           onClick={this.handleRestrictionButtonClick}

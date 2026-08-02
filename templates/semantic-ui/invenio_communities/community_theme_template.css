@@ -18,7 +18,7 @@
 {# Header container #}
 {# ------------------------------------------------------------------------ #}
 {%- if theme.mainHeaderBackgroundColor %}
-  .invenio-page-body .ui.container.page-subheader-outer {
+  .invenio-page-body:has(#community-detail-header) .ui.container.page-subheader-outer {
   background-color: none;
   position: relative;
   min-height: calc(8rem + 2rem);
@@ -32,7 +32,7 @@
   {# ------------------------------------------------------------------------ #}
   {# Header background gradients #}
   {# ------------------------------------------------------------------------ #}
-  .page-subheader-outer::after {
+  .page-subheader-outer:has(#community-detail-header)::after {
   content: "";
   position: absolute;
   bottom: -7rem !important;
@@ -57,7 +57,7 @@
   {# Header background logo repeat #}
   {# ------------------------------------------------------------------------ #}
   {%- if theme.get("mainHeaderUseLogo") %}
-  .page-subheader-outer::before {
+  .page-subheader-outer:has(#community-detail-header)::before {
   content: "";
   position: absolute;
   bottom: -7rem !important;

@@ -3434,14 +3434,18 @@ provides-extras = ["dev", "docs", "tests"]
 
 [[package]]
 name = "invenio-subjects-fast"
-version = "2023.7.5"
+version = "2026.7.24"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
+    { name = "halo" },
+    { name = "jsonlines" },
+    { name = "requests" },
+    { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/8e/b50606bb6e7e5a715367479834b245de5da6cd11f731a8ab314c910e71e5/invenio-subjects-fast-2023.7.5.tar.gz", hash = "sha256:ae8e37e7138b13954b0236c17e148bac029425d4b4affe1a1e01277deeb0487d", size = 32152677, upload-time = "2023-07-05T13:47:28.961Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1f/58/205e03e98c45b36d45a32a4348e2fbaf51b685146f1e090afccc7d9a2928/invenio_subjects_fast-2026.7.24.tar.gz", hash = "sha256:22bd6c966332fc2e0bac09187d79becf3d7f3c927ab9b87d657db0599d87cc89", size = 32313390, upload-time = "2026-07-24T14:52:25.438Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/bb/61561fbfd8070d6783fa758e633e4c08a2ec4103e9d3fc53d3a7adaa1405/invenio_subjects_fast-2023.7.5-py2.py3-none-any.whl", hash = "sha256:b725cf430bcc806c4516be95e4c76b33385a1c1a8aa1d06c8fbf3feb43643be3", size = 33178841, upload-time = "2023-07-05T13:47:15.399Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/88/31825430348af452e22e4879b4733f9d4dc33fe419aa49b2a6eef7aa7c2b/invenio_subjects_fast-2026.7.24-py3-none-any.whl", hash = "sha256:7fa13b55eb07dd2365e454213e35d0b8ca090b1a11d3614e8f3038687570ccf2", size = 33296240, upload-time = "2026-07-24T14:52:21.494Z" },
 ]
 
 [[package]]
@@ -3506,7 +3510,7 @@ wheels = [
 [[package]]
 name = "invenio-vocabularies"
 version = "8.3.3"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "site/kcworks/dependencies/invenio-vocabularies" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-i18n" },
@@ -3518,10 +3522,33 @@ dependencies = [
     { name = "regex" },
     { name = "sparqlwrapper" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/ab/aa2f5a468679cea4f4eebebb4fe273f3645b61d013e10b89105e0c0e0afd/invenio_vocabularies-8.3.3.tar.gz", hash = "sha256:ac41bcf5c8da3d3268b9a82873fc04427396ac82782d4bc4f190fc61d6195904", size = 152318, upload-time = "2025-12-17T20:22:11.878Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/d9/b56a0e3e0f5b237f29eaf5489e70bbf8d0cd94df65ef312bc3f400553af5/invenio_vocabularies-8.3.3-py2.py3-none-any.whl", hash = "sha256:2a7bd2186a5e83f062b3f9352ae625b7d1edde9f3c07e640b07452422a2a847d", size = 354097, upload-time = "2025-12-17T20:22:10.498Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "invenio-administration", specifier = ">=4.0.0,<5.0.0" },
+    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
+    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
+    { name = "invenio-i18n", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-jobs", specifier = ">=4.0.0,<5.0.0" },
+    { name = "invenio-oaipmh-scythe", marker = "extra == 'oaipmh'", specifier = ">=0.13.0" },
+    { name = "invenio-records-resources", specifier = ">=8.0.0,<9.0.0" },
+    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "lxml", specifier = ">=4.5.0" },
+    { name = "pycountry", specifier = ">=24.0.0" },
+    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
+    { name = "pytest-httpserver", marker = "extra == 'tests'", specifier = ">=1.0.10" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "pyyaml", specifier = ">=5.4.1" },
+    { name = "rdflib", marker = "extra == 'rdf'", specifier = ">=7.0.0" },
+    { name = "regex", specifier = ">=2024.7.24" },
+    { name = "s3fs", marker = "extra == 's3fs'", specifier = ">=2024.6.1" },
+    { name = "sparqlwrapper", specifier = ">=2.0.0" },
+    { name = "sparqlwrapper", marker = "extra == 'sparql'", specifier = ">=2.0.0" },
+    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
 ]
+provides-extras = ["s3fs", "oaipmh", "rdf", "sparql", "tests", "elasticsearch7", "opensearch1", "opensearch2", "mysql", "postgresql", "sqlite"]
 
 [[package]]
 name = "invenio-webhooks"
@@ -3926,6 +3953,7 @@ dependencies = [
     { name = "invenio-stats-dashboard" },
     { name = "invenio-subjects-fast" },
     { name = "invenio-utilities-tuw" },
+    { name = "invenio-vocabularies" },
     { name = "langdetect" },
     { name = "lxml" },
     { name = "pandas" },
@@ -4017,8 +4045,9 @@ requires-dist = [
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-stats-dashboard", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
-    { name = "invenio-subjects-fast" },
+    { name = "invenio-subjects-fast", specifier = ">=2026.7.24" },
     { name = "invenio-utilities-tuw" },
+    { name = "invenio-vocabularies", editable = "site/kcworks/dependencies/invenio-vocabularies" },
     { name = "jsonlines", marker = "extra == 'dev'" },
     { name = "langdetect" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=2.0.3" },
@@ -5041,7 +5070,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "ptyprocess" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [

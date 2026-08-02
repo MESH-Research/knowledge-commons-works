@@ -260,7 +260,7 @@ invenio kcworks-records migrate_user \
 - **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/users/cli.py)
 
 #### `invenio kcworks-users name-parts`
-Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.
+Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata. Updates also queue an asynchronous Names vocabulary sync for the user.
 
 Positional arguments:
 - `user_id`: the ID of the user to read or update.
@@ -278,12 +278,33 @@ Named arguments:
 - `--nickname` (-k): the nickname of the user.
 
 #### `invenio kcworks-users read`
-Reads a KCWorks user's data from the database, including associated KC account and collection memberships.
+Reads a KCWorks user's data from the database, including associated KC account
+and collection memberships, Flask-Security roles, and `UserIdentity` rows
+(external auth links such as Knowledge Commons / CILogon).
 
 Named arguments:
 - `--email` (-e): the email address of the user to read.
 - `--user-id` (-u): the ID of the user to read.
 - `--kc-id` (-k): the username of the KC user to read.
+
+#### `invenio kcworks-users find-duplicates`
+Scans local user accounts for likely duplicates and prints match groups. Does
+not modify any data.
+
+Match reasons reported:
+
+- `duplicate_kc_username`: two or more users share the same non-empty
+  `user_profile.identifier_kc_username`.
+- `duplicate_orcid`: two or more users share the same non-empty
+  `user_profile.identifier_orcid`.
+- `kc_username_equals_username`: one user's `identifier_kc_username` equals
+  another user's `username`.
+- `kc_username_equals_prefixed_username`: one user's `identifier_kc_username`
+  equals another user's `username` after stripping a leading
+  `knowledgeCommons-` prefix from that username.
+
+Each match includes the shared value and a short summary of the involved users
+(id, email, username, KC username, ORCID).
 
 #### `invenio kcworks-users groups`
 Lists all the groups (flask-security roles) available in the KCWorks instance.

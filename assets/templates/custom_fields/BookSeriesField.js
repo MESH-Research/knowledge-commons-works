@@ -20,13 +20,16 @@ const BookSeriesField = ({
   fieldPath, // injected by the custom field loader via the `field` config property
   series_title,
   series_volume,
-  icon = "list",
+  icon,
+  labelIcon,
   description = "",
   required = false,
   label = "",
   showEmptyValue = true,
   addButtonLabel = "Add new series",
 }) => {
+  // FieldComponentWrapper remaps layout `icon` → `labelIcon`; prefer that, then `icon`.
+  const effectiveIcon = labelIcon || icon || "list";
   const { values, setFieldValue } = useFormikContext();
   const [seriesLength, setSeriesLength] = useState(0);
   const [haveChangedNumber, setHaveChangedNumber] = useState(false);
@@ -94,7 +97,7 @@ const BookSeriesField = ({
                         id={`${fieldPathPrefix}.series_title`}
                         label={
                           <label>
-                            <Icon name={icon} />
+                            <Icon name={effectiveIcon} />
                             {i18next.t(series_title.label)}
                           </label>
                         }
@@ -152,6 +155,7 @@ BookSeriesField.propTypes = {
   required: PropTypes.bool,
   showEmptyValue: PropTypes.bool,
   icon: PropTypes.string,
+  labelIcon: PropTypes.string,
   description: PropTypes.string,
   placeholder: PropTypes.string,
 };

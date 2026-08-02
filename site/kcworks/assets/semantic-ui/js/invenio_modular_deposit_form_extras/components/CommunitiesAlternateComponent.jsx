@@ -12,10 +12,7 @@ import { CommunityField } from "@js/kcworks/collections/selector/CommunityField"
  * Community selection (no fieldPath). Same Overridable slot as stock CommunitiesComponent;
  * default child is KCWorks CommunityField instead of CommunityHeader.
  */
-const CommunitiesAlternateComponent = ({
-  imagePlaceholderLink = "/static/images/square-placeholder.png",
-  ...extraProps
-}) => {
+const CommunitiesAlternateComponent = ({ ...extraProps }) => {
   const record = useStore().getState().deposit?.record;
   return (
     <Overridable
@@ -23,11 +20,7 @@ const CommunitiesAlternateComponent = ({
       record={record ?? {}}
       {...extraProps}
     >
-      <CommunityField
-        imagePlaceholderLink={imagePlaceholderLink}
-        record={record ?? {}}
-        {...extraProps}
-      />
+      <CommunityField record={record ?? {}} {...extraProps} />
     </Overridable>
   );
 };

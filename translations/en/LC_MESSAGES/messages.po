@@ -1960,9 +1960,8 @@ msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3020
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3086
-#, fuzzy
 msgid "Item counts"
-msgstr "View Collection"
+msgstr ""
 
 #: /Users/ianscott/Development/kcworks-next/build/lib/kcworks/config/deposit_form_layout.py:3031
 #: /Users/ianscott/Development/kcworks-next/site/kcworks/config/deposit_form_layout.py:3099

@@ -9,7 +9,7 @@ import { parametrize } from "react-overridable";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
 
-// import { AccessRightField } from "./fields/AccessRightField";
+import { AccessRightField } from "./fields/AccessRightField";
 import { ContribSearchAppFacets } from "@js/invenio_search_ui/components/common/facets";
 import { CommunityPrivilegesFormLayout } from "./collections/settings/privileges/CommunityPrivilegesFormLayout";
 import { CurationPolicyFormLayout } from "./collections/settings/curation_policy/CurationPolicyFormLayout";
@@ -89,7 +89,7 @@ export const overriddenComponents = {
   "InvenioAppRdm.DashboardUploads.SearchApp.layout": DashboardUploadsSearchLayout,
   "InvenioAppRdm.DashboardUploads.SearchBar.element": DashboardSearchBarElementWithConfig,
   "InvenioAppRdm.DashboardUploads.ResultsList.item": RecordResultsListItemDashboard,
-  // "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
+  "InvenioAppRdm.Deposit.AccessRightField.container": AccessRightField,
   // "InvenioAppRdm.Deposit.RelatedWorksField.container": RelatedWorksField,
   "InvenioAppRdm.Deposit.SubjectsField.container": SubjectsField,
   // "InvenioAppRdm.Deposit.TitlesField.container": TitlesField,

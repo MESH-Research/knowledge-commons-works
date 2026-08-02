@@ -7,6 +7,10 @@ kcr:volumes     Information on the total number of volumes and the current
                 the current item's volume). This is not used for the volume of
                 a journal in which a journalArticle appears. For that value,
                 see journal:journal.volume.
+
+The Python schema stays nested under ``kcr:volumes``. The UI config exposes
+separate entries for each subfield so the modular deposit form can place
+``VolumeComponent`` and ``TotalVolumesComponent`` independently in a FormRow.
 """
 
 from invenio_i18n import lazy_gettext as _
@@ -42,24 +46,25 @@ KCR_VOLUMES_FIELDS = [VolumesCF(name="kcr:volumes")]
 
 KCR_VOLUMES_FIELDS_UI = [
     {
-        "field": "kcr:volumes",
-        "ui_widget": "Volumes",
+        "field": "kcr:volumes.volume",
+        "ui_widget": "Input",
         "template": "kcworks/volumes.html",
         "props": {
-            "label": _("Volumes"),
-            "total_volumes": {
-                "label": _("Total volumes"),
-                "placeholder": "",
-                # "description": _("Total number of volumes in the work"),
-                "icon": "th",
-            },
-            "volume": {
-                "label": _("Volume"),
-                "placeholder": "",
-                # "description": _("The volume number or label containing this deposit")
-                "icon": "book",
-            },
+            "label": _("Volume"),
+            "placeholder": "",
+            "description": "",
+            "icon": "book",
         },
-        "icon": "book",
-    }
+    },
+    {
+        "field": "kcr:volumes.total_volumes",
+        "ui_widget": "Input",
+        "template": "kcworks/volumes.html",
+        "props": {
+            "label": _("Total volumes"),
+            "placeholder": "",
+            "description": "",
+            "icon": "th",
+        },
+    },
 ]

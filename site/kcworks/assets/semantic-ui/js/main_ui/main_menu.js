@@ -91,7 +91,7 @@ const UserMenu = ({ adminMenuItems, logoutURL, readableEmail, settingsMenuItems,
       <div
         role="menuitem"
         id="user-profile-dropdown"
-        className="ui item floating dropdown computer widescreen large-monitor only"
+        className="ui item floating dropdown computer widescreen large screen only"
       >
         <div
           as="a"
@@ -325,7 +325,7 @@ const MainMenu = ({
   }, [userId]);
 
   return (
-    <nav id="invenio-nav" className="ui menu borderless stackable p-0">
+    <nav id="invenio-nav" className="ui menu borderless stackable pr-0 pl-0">
       <div className="item logo p-0">
         <Brand themeLogoURL={themeLogoURL} themeSitename={themeSitename} />
       </div>

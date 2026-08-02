@@ -21,20 +21,16 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
 
   const filesButtonsDisplayed = !metadataOnly && publicCommunity && publicMetadata;
 
-  if (metadataOnly) {
-    return (null
-      // <Card.Meta data-testid="access-files">
-      // <em>{i18next.t("The record has no files.")}</em>
-      // </Card.Meta>
-    );
-  }
-
-  return (
+  return !!metadataOnly ? (
+    <Card.Meta data-testid="access-files">
+      <em>{i18next.t("The record has no files.")}</em>
+    </Card.Meta>
+  ) : (
     <>
       {filesButtonsDisplayed && (
         <Form.Field>
           <label htmlFor="access.files" className="invenio-field-label" id="access.files.label">
-            <Icon name="lock" />
+            <Icon name={!publicFiles ? "lock" : "lock open"} />
             {i18next.t("Files access")}
           </label>
           <ProtectionButtons
@@ -42,6 +38,7 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
             disable={!publicCommunity}
             fieldPath="access.files"
             aria-labelledby="access.files.label"
+            className="pr-5 pl-5"
           />
         </Form.Field>
       )}

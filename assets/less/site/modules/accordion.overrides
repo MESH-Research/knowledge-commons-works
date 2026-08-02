@@ -13,8 +13,16 @@
     background-color: transparent;
     text-align: left;
     width: 100%;
-    i.icon.dropdown {
-      float: right;
+    i.icon {
+      &.dropdown {
+        float: right;
+      }
+      &:not(.dropdown) {
+        float: unset;
+        transform: unset;
+        margin-right: 0.5em;
+        font-size: 1em;
+      }
     }
     @media screen and (max-width: @largestMobileScreen) {
       font-size: @large;
@@ -95,6 +103,32 @@
   }
 }
 
+
+  .invenio-form-section {
+    .title {
+      color: @primaryColor;
+      font-weight: bold;
+      font-size: 1.25em;
+    }
+  }
+
+  // .prominent-field-label {
+  //   > .invenio-field-wrapper > .field > label,
+  //   > .invenio-field-wrapper > .field > .ui.grid > .column > label,
+  //   > .invenio-field-wrapper > .fields.main-group-field > .field > label {
+  //     color: @primaryColor;
+  //     font-weight: bold;
+  //     font-size: 1.25em;
+  //     position: relative;
+  //     top: -1em;
+  //     margin-bottom: 0;
+  //
+  //     > i.icon {
+  //       margin-right: 0.5em;
+  //     }
+  //   }
+
+
 .communities-settings,
 .communities-members {
   .accordion.ui.inverted.invenio-accordion-field {
@@ -115,4 +149,5 @@
     }
   }
 }
+
 

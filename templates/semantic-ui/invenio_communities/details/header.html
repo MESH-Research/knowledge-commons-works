@@ -139,7 +139,7 @@
           <div class="row pl-5 pt-5 mobile only centered theme-secondary">{{ community_info("mobile", community_ui) }}</div>
         </div>
       </div>
-      <div class="one wide widescreen large-monitor only middle aligned column pr-0 pl-0">
+      <div class="one wide widescreen large screen only middle aligned column pr-0 pl-0">
         {# Button to request membership is fully disabled until feature completely merged in v14. #}
         {# {{ button_to_request_membership(community) }} #}
         {% if community_ui["access"]["visibility"] == 'restricted' %}
@@ -191,7 +191,7 @@
     {% endfor %}
   </select>
   {% set collapsing_menu_items = ["curation_policy", "members", "stats", "requests", "settings", "submit"] %}
-  <div class="ui container secondary pointing menu page-subheader community-header-menu pl-0 pr-0 theme-primary theme-primary-menu tablet computer widescreen large-monitor only">
+  <div class="ui container secondary pointing menu page-subheader community-header-menu pl-0 pr-0 theme-primary theme-primary-menu tablet computer widescreen large screen only">
     {% for item in community_menu_items %}
       {% set item_active_class = 'active' if active_community_header_menu_item == item.name else '' %}
       {% set item_disabled_class = 'disabled' if not item.url else '' %}
@@ -210,7 +210,7 @@
            data-tooltip="{{ item.text }}">
           <i aria-hidden="true" class="{{ item.icon }} fitted icon"></i>
         </a>
-        <a class="widescreen large-monitor only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
+        <a class="widescreen large screen only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
            href="{{ item.url }}"
            role="button">
           <i aria-hidden="true" class="{{ item.icon }} icon"></i>
