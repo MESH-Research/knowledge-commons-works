@@ -28,10 +28,13 @@
 # without having to rebuild the container.
 #
 # Bind mounts from this repo (not in docker-compose.yml alone):
-#   var/instance/ — invenio.cfg, app_data, templates, translations
-#   src/ — .env, .invenio, .invenio.private, static, assets, scripts,
-#     workflows, docs, pyproject/uv lock, README/LICENSE, git metadata,
-#     optional UI log file, and the JS/pnpm toolchain.
+#   var/instance/ — invenio.cfg, app_data, templates
+#   src/ — .env, .invenio, .invenio.private, static, assets, translations,
+#     scripts, workflows, docs, pyproject/uv lock, README/LICENSE, git
+#     metadata, optional UI log file, and the JS/pnpm toolchain.
+# Python instance overrides: repo ./translations mounts at src/translations;
+# build-assets.sh compiles that tree and symlinks instance/translations ->
+# src/translations (same as invenio-cli translations compile).
 # Repo ./static mounts to src/static only; served static uses static_data
 # (see docker-compose.yml header).
 # CI using docker-compose.yml alone relies on the image for those paths.
@@ -94,7 +97,7 @@ services:
       - ./logs/invenio.log:/opt/invenio/src/logs/invenio.log
       - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      - ./translations:/opt/invenio/src/translations
       - ./assets:/opt/invenio/src/assets
       - ./scripts:/opt/invenio/src/scripts
       - ./workflows:/opt/invenio/src/workflows
@@ -159,7 +162,7 @@ services:
       - ./babel.config.js:/opt/invenio/src/babel.config.js
       - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      - ./translations:/opt/invenio/src/translations
       - ./assets:/opt/invenio/src/assets
       - ./scripts:/opt/invenio/src/scripts
       - ./workflows:/opt/invenio/src/workflows
@@ -224,7 +227,7 @@ services:
       - ./babel.config.js:/opt/invenio/src/babel.config.js
       - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      - ./translations:/opt/invenio/src/translations
       - ./assets:/opt/invenio/src/assets
       - ./scripts:/opt/invenio/src/scripts
       - ./workflows:/opt/invenio/src/workflows
@@ -289,7 +292,7 @@ services:
       - ./babel.config.js:/opt/invenio/src/babel.config.js
       - ./static:/opt/invenio/src/static
       - ./templates:/opt/invenio/var/instance/templates
-      - ./translations:/opt/invenio/var/instance/translations
+      - ./translations:/opt/invenio/src/translations
       - ./assets:/opt/invenio/src/assets
       - ./scripts:/opt/invenio/src/scripts
       - ./workflows:/opt/invenio/src/workflows

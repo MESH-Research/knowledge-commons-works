@@ -34,8 +34,20 @@ echo -e "${yellow}Building assets for Knowledge Commons Works instance...${clear
 cd /opt/invenio/src
 
 echo -e "${yellow}Compiling Python translation catalogs...${clear}"
-pybabel compile -d /opt/invenio/src/translations --use-fuzzy
-pybabel compile -d /opt/invenio/src/site/kcworks/translations --use-fuzzy
+# Do not pass --use-fuzzy: fuzzy msgstr values are unverified msgmerge
+# guesses. Compiling them has shipped wrong English UI strings (e.g.
+# msgid "Item counts" mapped to msgstr "View Collection"). Without the
+# flag, fuzzy entries are omitted from the .mo and gettext falls back to
+# the msgid until a human clears the fuzzy marker and sets msgstr.
+#
+# Match invenio-cli translations compile: compile the project catalog
+# under src/, then point instance/translations at it. Package catalogs
+# (e.g. site/kcworks/translations) stay in-package via entry points and
+# are only compiled here, not symlinked into instance.
+pybabel compile -d /opt/invenio/src/translations
+pybabel compile -d /opt/invenio/src/site/kcworks/translations
+rm -rf /opt/invenio/var/instance/translations
+ln -sfn /opt/invenio/src/translations /opt/invenio/var/instance/translations
 
 echo -e "${yellow}Distributing JS translation overrides...${clear}"
 # Do this before `webpack clean create` so the assembled asset tree includes

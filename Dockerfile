@@ -73,13 +73,17 @@ RUN echo "[cli]" >> .invenio.private && \
     echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
 
 # Copy required files to instance path.
+# Translations: keep the project catalog under src/ and symlink instance ->
+# src (same as invenio-cli translations compile). Compile happens below with
+# the asset build so .mo files exist before the runtime stage COPY.
 RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && \
     cp ./docker/uwsgi/uwsgi_ui.ini ${INVENIO_INSTANCE_PATH}/uwsgi_ui.ini && \
     cp ./docker/startup_*.sh ${INVENIO_INSTANCE_PATH}/ && \
     chmod +x ${INVENIO_INSTANCE_PATH}/startup_*.sh && \
     cp ./invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg && \
     cp -r ./templates ${INVENIO_INSTANCE_PATH}/templates && \
-    cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+    cp -r ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data && \
+    ln -sfn /opt/invenio/src/translations ${INVENIO_INSTANCE_PATH}/translations
 
 # Build frontend assets. Node/pnpm are present here but won't be in the runtime image.
 # `invenio webpack ...` here routes through the rspack project + PNPMPackage that
@@ -87,6 +91,8 @@ RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && 
 # explanatory comment in scripts/build-assets.sh for details.
 RUN . .venv/bin/activate && \
     uv pip install -e ./site/kcworks/dependencies/invenio-stats-dashboard && \
+    pybabel compile -d /opt/invenio/src/translations && \
+    pybabel compile -d /opt/invenio/src/site/kcworks/translations && \
     invenio collect --verbose && \
     invenio webpack clean create && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \

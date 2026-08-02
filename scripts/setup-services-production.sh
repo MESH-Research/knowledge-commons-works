@@ -65,7 +65,10 @@ echo -e "${yellow}Setting up custom metadata fields...${clear}"
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
 echo -e "${yellow}Compiling translations...${clear}"
+# Project catalog under src/; instance/translations -> src (invenio-cli shape).
 pybabel compile -d /opt/invenio/src/translations
+rm -rf /opt/invenio/var/instance/translations
+ln -sfn /opt/invenio/src/translations /opt/invenio/var/instance/translations
 echo -e "${yellow}Setting up task queues...${clear}"
 invenio queues declare
 if [ "$fixtures" -eq 1 ]
