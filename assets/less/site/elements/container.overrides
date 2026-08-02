@@ -76,16 +76,19 @@
     padding-top: 0 !important;
   }
 
-  .file-uploader-container {
-    display: flex;
-    flex-direction: column;
-  }
+  .files-field .file-uploader {
+    margin-bottom: 0;
+    .file-uploader-container {
+      display: flex;
+      flex-direction: column;
+    }
 
-  .file-uploader-toolbar {
-    margin-top: -1px;
-    border-top: none;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: none;
+    .file-uploader-toolbar {
+      margin-top: -1px;
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      box-shadow: none;
+    }
   }
 }
