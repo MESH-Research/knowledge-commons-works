@@ -603,7 +603,7 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 <h4>Loading configuration from app config variables<a class="headerlink" href="#loading-configuration-from-app-config-variables" title="Link to this heading">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">FromConfig</span></code> class (defined in <code class="docutils literal notranslate"><span class="pre">invenio_records_resources.services.base.config</span></code>) is used to load configuration from app config variables. In the service’s config class, it is used like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyServiceConfig</span><span class="p">(</span><span class="n">ServiceConfig</span><span class="p">):</span>
-    <span class="n">foo</span> <span class="o">=</span> <span class="n">FromConfig</span><span class="p">(</span><span class="s2">&quot;FOO&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">FromConfig</span><span class="p">(</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In the app config, the config variable is defined like this:</p>
@@ -734,44 +734,44 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </ul>
 <p>Its <strong>dict</strong> has the following shape (these values are available by key and <em>also</em> as dot properties):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="s1">&#39;$schema&#39;</span><span class="p">:</span> <span class="s1">&#39;local://records/record-v6.0.0.json&#39;</span><span class="p">,</span>
-<span class="s1">&#39;pid&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;pk&#39;</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
-    <span class="s1">&#39;pid_type&#39;</span><span class="p">:</span> <span class="s1">&#39;recid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;obj_type&#39;</span><span class="p">:</span> <span class="s1">&#39;rec&#39;</span>
+<span class="s1">'$schema'</span><span class="p">:</span> <span class="s1">'local://records/record-v6.0.0.json'</span><span class="p">,</span>
+<span class="s1">'pid'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'pk'</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+    <span class="s1">'pid_type'</span><span class="p">:</span> <span class="s1">'recid'</span><span class="p">,</span>
+    <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'N'</span><span class="p">,</span>
+    <span class="s1">'obj_type'</span><span class="p">:</span> <span class="s1">'rec'</span>
 <span class="p">},</span>
-<span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;9f06s-7d583&#39;</span><span class="p">,</span>
-<span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="s1">'id'</span><span class="p">:</span> <span class="s1">'9f06s-7d583'</span><span class="p">,</span>
+<span class="s1">'files'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'enabled'</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">},</span>
-<span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="s1">'media_files'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'enabled'</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">},</span>
-<span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">},</span>
-    <span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">}</span>
+<span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'resource_type'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="s1">'image-photograph'</span><span class="p">},</span>
+    <span class="s1">'creators'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'personal'</span><span class="p">,</span>
+            <span class="s1">'given_name'</span><span class="p">:</span> <span class="s1">'Troy'</span><span class="p">,</span>
+            <span class="s1">'family_name'</span><span class="p">:</span> <span class="s1">'Brown'</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Brown, Troy'</span><span class="p">}</span>
         <span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'organizational'</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Troy Inc.'</span><span class="p">}</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span>
+    <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'A Romans story'</span><span class="p">,</span>
+    <span class="s1">'publisher'</span><span class="p">:</span> <span class="s1">'Acme Inc'</span><span class="p">,</span>
+    <span class="s1">'publication_date'</span><span class="p">:</span> <span class="s1">'2020-06-01'</span>
 <span class="p">},</span>
-<span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
-<span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span>
+<span class="s1">'custom_fields'</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">'access'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'record'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+    <span class="s1">'files'</span><span class="p">:</span> <span class="s1">'public'</span>
 <span class="p">},</span>
-<span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="s1">'pids'</span><span class="p">:</span> <span class="p">{}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -831,9 +831,9 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 <h5>Creating an RDMDraft object<a class="headerlink" href="#creating-an-rdmdraft-object" title="Link to this heading">¶</a></h5>
 <p>The <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object can be created by calling the <code class="docutils literal notranslate"><span class="pre">create</span></code> method on the <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> class. This method takes a dictionary of data to be used to create the record and returns an <code class="docutils literal notranslate"><span class="pre">RDMDraft</span></code> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draft</span> <span class="o">=</span> <span class="n">RDMDraft</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
-    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;My Title&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;My Description&quot;</span>
+    <span class="s2">"metadata"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"My Title"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"My Description"</span>
     <span class="p">}</span>
 <span class="p">})</span>
 </pre></div>
@@ -1208,122 +1208,122 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </table>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">RecordItem</span></code> object also has the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method, which returns a representation of the record as a dictionary. For a published record, the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method returns a dictionary with the following shape:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;embargo&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
-            <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;metadata-only&#39;</span><span class="p">},</span>
- <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:34.391191+00:00&#39;</span><span class="p">,</span>
- <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
- <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span><span class="p">},</span>
- <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-           <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-           <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">{},</span>
-           <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">[],</span>
-           <span class="s1">&#39;total_bytes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
- <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;q2cae-anf51&#39;</span><span class="p">,</span>
- <span class="s1">&#39;is_draft&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
- <span class="s1">&#39;is_published&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
- <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;access_grants&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/grants&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;access_groups&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/groups&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;access_links&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/links&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;access_request&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/request&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;access_users&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/access/users&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;archive&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/files-archive&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;archive_media&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/media-files-archive&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;communities&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/communities&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;communities-suggestions&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/communities-suggestions&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://handle.stage.datacite.org/10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;draft&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/draft&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/files&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;latest&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/versions/latest&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;latest_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/q2cae-anf51/latest&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/media-files&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/hkz47-g3q07&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;parent_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/doi/10.17613/hkz47-g3q07&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;parent_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/hkz47-g3q07&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/requests&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;reserve_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/draft/pids/doi&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;self&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;self_doi&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/doi/10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;self_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/records/q2cae-anf51&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;self_iiif_manifest&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/iiif/record:q2cae-anf51/manifest&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;self_iiif_sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/iiif/record:q2cae-anf51/sequence/default&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/records/q2cae-anf51/versions&#39;</span><span class="p">},</span>
- <span class="s1">&#39;media_files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                 <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                 <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">{},</span>
-                 <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                 <span class="s1">&#39;total_bytes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
- <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
-                                              <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
-                                              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">,</span>
-                                              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span><span class="p">}},</span>
-                           <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">,</span>
-                                              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span><span class="p">}}],</span>
-              <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;en&#39;</span><span class="p">:</span> <span class="s1">&#39;Photo&#39;</span><span class="p">}},</span>
-              <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span><span class="p">},</span>
- <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;grants&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                       <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                       <span class="s1">&#39;owned_by&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;settings&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;accept_conditions_text&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                                    <span class="s1">&#39;allow_guest_requests&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                    <span class="s1">&#39;allow_user_requests&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                    <span class="s1">&#39;secret_link_expiration&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
-            <span class="s1">&#39;communities&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;entries&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;member_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-                                                    <span class="s1">&#39;members_visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-                                                    <span class="s1">&#39;record_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-                                                    <span class="s1">&#39;review_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-                                                    <span class="s1">&#39;visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">},</span>
-                                         <span class="s1">&#39;children&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-                                         <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:33.284511+00:00&#39;</span><span class="p">,</span>
-                                         <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
-                                         <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                                             <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span><span class="p">},</span>
-                                         <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">,</span>
-                                         <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{},</span>
-                                         <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;curation_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;Curation &#39;</span>
-                                                                         <span class="s1">&#39;policy&#39;</span><span class="p">,</span>
-                                                      <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;A &#39;</span>
-                                                                     <span class="s1">&#39;description&#39;</span><span class="p">,</span>
-                                                      <span class="s1">&#39;organizations&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Organization &#39;</span>
-                                                                                 <span class="s1">&#39;1&#39;</span><span class="p">}],</span>
-                                                      <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="s1">&#39;Information for &#39;</span>
-                                                              <span class="s1">&#39;my community&#39;</span><span class="p">,</span>
-                                                      <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;My Community&#39;</span><span class="p">,</span>
-                                                      <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
-                                                      <span class="s1">&#39;website&#39;</span><span class="p">:</span> <span class="s1">&#39;https://my-community.com&#39;</span><span class="p">},</span>
-                                         <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                                         <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="s1">&#39;my-community&#39;</span><span class="p">,</span>
-                                         <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:33.452355+00:00&#39;</span><span class="p">}],</span>
-                            <span class="s1">&#39;ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;00c10e5a-cfb6-4c4d-ab7e-3894b5930181&#39;</span><span class="p">]},</span>
-            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;hkz47-g3q07&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;client&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;10.17613/hkz47-g3q07&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">}}},</span>
- <span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;doi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;client&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;10.17613/q2cae-anf51&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;datacite&#39;</span><span class="p">},</span>
-          <span class="s1">&#39;oai&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;oai:https://localhost:q2cae-anf51&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;provider&#39;</span><span class="p">:</span> <span class="s1">&#39;oai&#39;</span><span class="p">}},</span>
- <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
- <span class="s1">&#39;stats&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;all_versions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data_volume&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-                            <span class="s1">&#39;downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;unique_downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;unique_views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-           <span class="s1">&#39;this_version&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data_volume&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-                            <span class="s1">&#39;downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;unique_downloads&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;unique_views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                            <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
- <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;published&#39;</span><span class="p">,</span>
- <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T20:49:34.451290+00:00&#39;</span><span class="p">,</span>
- <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;is_latest&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;is_latest_draft&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">'access'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'embargo'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'active'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+            <span class="s1">'files'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+            <span class="s1">'record'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'metadata-only'</span><span class="p">},</span>
+ <span class="s1">'created'</span><span class="p">:</span> <span class="s1">'2025-03-19T20:49:34.391191+00:00'</span><span class="p">,</span>
+ <span class="s1">'custom_fields'</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">'deletion_status'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_deleted'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'P'</span><span class="p">},</span>
+ <span class="s1">'files'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'count'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+           <span class="s1">'enabled'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+           <span class="s1">'entries'</span><span class="p">:</span> <span class="p">{},</span>
+           <span class="s1">'order'</span><span class="p">:</span> <span class="p">[],</span>
+           <span class="s1">'total_bytes'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+ <span class="s1">'id'</span><span class="p">:</span> <span class="s1">'q2cae-anf51'</span><span class="p">,</span>
+ <span class="s1">'is_draft'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ <span class="s1">'is_published'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">'links'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'access'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access'</span><span class="p">,</span>
+           <span class="s1">'access_grants'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access/grants'</span><span class="p">,</span>
+           <span class="s1">'access_groups'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access/groups'</span><span class="p">,</span>
+           <span class="s1">'access_links'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access/links'</span><span class="p">,</span>
+           <span class="s1">'access_request'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access/request'</span><span class="p">,</span>
+           <span class="s1">'access_users'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/access/users'</span><span class="p">,</span>
+           <span class="s1">'archive'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/files-archive'</span><span class="p">,</span>
+           <span class="s1">'archive_media'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/media-files-archive'</span><span class="p">,</span>
+           <span class="s1">'communities'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/communities'</span><span class="p">,</span>
+           <span class="s1">'communities-suggestions'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/communities-suggestions'</span><span class="p">,</span>
+           <span class="s1">'doi'</span><span class="p">:</span> <span class="s1">'https://handle.stage.datacite.org/10.17613/q2cae-anf51'</span><span class="p">,</span>
+           <span class="s1">'draft'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/draft'</span><span class="p">,</span>
+           <span class="s1">'files'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/files'</span><span class="p">,</span>
+           <span class="s1">'latest'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/versions/latest'</span><span class="p">,</span>
+           <span class="s1">'latest_html'</span><span class="p">:</span> <span class="s1">'https://localhost/records/q2cae-anf51/latest'</span><span class="p">,</span>
+           <span class="s1">'media_files'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/media-files'</span><span class="p">,</span>
+           <span class="s1">'parent'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/hkz47-g3q07'</span><span class="p">,</span>
+           <span class="s1">'parent_doi'</span><span class="p">:</span> <span class="s1">'https://localhost/doi/10.17613/hkz47-g3q07'</span><span class="p">,</span>
+           <span class="s1">'parent_html'</span><span class="p">:</span> <span class="s1">'https://localhost/records/hkz47-g3q07'</span><span class="p">,</span>
+           <span class="s1">'requests'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/requests'</span><span class="p">,</span>
+           <span class="s1">'reserve_doi'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/draft/pids/doi'</span><span class="p">,</span>
+           <span class="s1">'self'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51'</span><span class="p">,</span>
+           <span class="s1">'self_doi'</span><span class="p">:</span> <span class="s1">'https://localhost/doi/10.17613/q2cae-anf51'</span><span class="p">,</span>
+           <span class="s1">'self_html'</span><span class="p">:</span> <span class="s1">'https://localhost/records/q2cae-anf51'</span><span class="p">,</span>
+           <span class="s1">'self_iiif_manifest'</span><span class="p">:</span> <span class="s1">'https://localhost/api/iiif/record:q2cae-anf51/manifest'</span><span class="p">,</span>
+           <span class="s1">'self_iiif_sequence'</span><span class="p">:</span> <span class="s1">'https://localhost/api/iiif/record:q2cae-anf51/sequence/default'</span><span class="p">,</span>
+           <span class="s1">'versions'</span><span class="p">:</span> <span class="s1">'https://localhost/api/records/q2cae-anf51/versions'</span><span class="p">},</span>
+ <span class="s1">'media_files'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'count'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="s1">'enabled'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="s1">'entries'</span><span class="p">:</span> <span class="p">{},</span>
+                 <span class="s1">'order'</span><span class="p">:</span> <span class="p">[],</span>
+                 <span class="s1">'total_bytes'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+ <span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'creators'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'family_name'</span><span class="p">:</span> <span class="s1">'Brown'</span><span class="p">,</span>
+                                              <span class="s1">'given_name'</span><span class="p">:</span> <span class="s1">'Troy'</span><span class="p">,</span>
+                                              <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Brown, Troy'</span><span class="p">,</span>
+                                              <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'personal'</span><span class="p">}},</span>
+                           <span class="p">{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Troy Inc.'</span><span class="p">,</span>
+                                              <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'organizational'</span><span class="p">}}],</span>
+              <span class="s1">'publication_date'</span><span class="p">:</span> <span class="s1">'2020-06-01'</span><span class="p">,</span>
+              <span class="s1">'publisher'</span><span class="p">:</span> <span class="s1">'Acme Inc'</span><span class="p">,</span>
+              <span class="s1">'resource_type'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="s1">'image-photograph'</span><span class="p">,</span>
+                                <span class="s1">'title'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'en'</span><span class="p">:</span> <span class="s1">'Photo'</span><span class="p">}},</span>
+              <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'A Romans story'</span><span class="p">},</span>
+ <span class="s1">'parent'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'access'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'grants'</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">'links'</span><span class="p">:</span> <span class="p">[],</span>
+                       <span class="s1">'owned_by'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'user'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">},</span>
+                       <span class="s1">'settings'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'accept_conditions_text'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                    <span class="s1">'allow_guest_requests'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                    <span class="s1">'allow_user_requests'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                    <span class="s1">'secret_link_expiration'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+            <span class="s1">'communities'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'default'</span><span class="p">:</span> <span class="s1">'00c10e5a-cfb6-4c4d-ab7e-3894b5930181'</span><span class="p">,</span>
+                            <span class="s1">'entries'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'access'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'member_policy'</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span>
+                                                    <span class="s1">'members_visibility'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+                                                    <span class="s1">'record_policy'</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span>
+                                                    <span class="s1">'review_policy'</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span>
+                                                    <span class="s1">'visibility'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">},</span>
+                                         <span class="s1">'children'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'allow'</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                                         <span class="s1">'created'</span><span class="p">:</span> <span class="s1">'2025-03-19T20:49:33.284511+00:00'</span><span class="p">,</span>
+                                         <span class="s1">'custom_fields'</span><span class="p">:</span> <span class="p">{},</span>
+                                         <span class="s1">'deletion_status'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_deleted'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                                             <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'P'</span><span class="p">},</span>
+                                         <span class="s1">'id'</span><span class="p">:</span> <span class="s1">'00c10e5a-cfb6-4c4d-ab7e-3894b5930181'</span><span class="p">,</span>
+                                         <span class="s1">'links'</span><span class="p">:</span> <span class="p">{},</span>
+                                         <span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'curation_policy'</span><span class="p">:</span> <span class="s1">'Curation '</span>
+                                                                         <span class="s1">'policy'</span><span class="p">,</span>
+                                                      <span class="s1">'description'</span><span class="p">:</span> <span class="s1">'A '</span>
+                                                                     <span class="s1">'description'</span><span class="p">,</span>
+                                                      <span class="s1">'organizations'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Organization '</span>
+                                                                                 <span class="s1">'1'</span><span class="p">}],</span>
+                                                      <span class="s1">'page'</span><span class="p">:</span> <span class="s1">'Information for '</span>
+                                                              <span class="s1">'my community'</span><span class="p">,</span>
+                                                      <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'My Community'</span><span class="p">,</span>
+                                                      <span class="s1">'type'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="s1">'event'</span><span class="p">},</span>
+                                                      <span class="s1">'website'</span><span class="p">:</span> <span class="s1">'https://my-community.com'</span><span class="p">},</span>
+                                         <span class="s1">'revision_id'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                                         <span class="s1">'slug'</span><span class="p">:</span> <span class="s1">'my-community'</span><span class="p">,</span>
+                                         <span class="s1">'updated'</span><span class="p">:</span> <span class="s1">'2025-03-19T20:49:33.452355+00:00'</span><span class="p">}],</span>
+                            <span class="s1">'ids'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'00c10e5a-cfb6-4c4d-ab7e-3894b5930181'</span><span class="p">]},</span>
+            <span class="s1">'id'</span><span class="p">:</span> <span class="s1">'hkz47-g3q07'</span><span class="p">,</span>
+            <span class="s1">'pids'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'doi'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'client'</span><span class="p">:</span> <span class="s1">'datacite'</span><span class="p">,</span>
+                             <span class="s1">'identifier'</span><span class="p">:</span> <span class="s1">'10.17613/hkz47-g3q07'</span><span class="p">,</span>
+                             <span class="s1">'provider'</span><span class="p">:</span> <span class="s1">'datacite'</span><span class="p">}}},</span>
+ <span class="s1">'pids'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'doi'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'client'</span><span class="p">:</span> <span class="s1">'datacite'</span><span class="p">,</span>
+                  <span class="s1">'identifier'</span><span class="p">:</span> <span class="s1">'10.17613/q2cae-anf51'</span><span class="p">,</span>
+                  <span class="s1">'provider'</span><span class="p">:</span> <span class="s1">'datacite'</span><span class="p">},</span>
+          <span class="s1">'oai'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'identifier'</span><span class="p">:</span> <span class="s1">'oai:https://localhost:q2cae-anf51'</span><span class="p">,</span>
+                  <span class="s1">'provider'</span><span class="p">:</span> <span class="s1">'oai'</span><span class="p">}},</span>
+ <span class="s1">'revision_id'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+ <span class="s1">'stats'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'all_versions'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'data_volume'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                            <span class="s1">'downloads'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'unique_downloads'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'unique_views'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'views'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+           <span class="s1">'this_version'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'data_volume'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                            <span class="s1">'downloads'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'unique_downloads'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'unique_views'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="s1">'views'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+ <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'published'</span><span class="p">,</span>
+ <span class="s1">'updated'</span><span class="p">:</span> <span class="s1">'2025-03-19T20:49:34.451290+00:00'</span><span class="p">,</span>
+ <span class="s1">'versions'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'index'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'is_latest'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'is_latest_draft'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}}</span>
 </pre></div>
 </div>
 </section>
@@ -1369,50 +1369,50 @@ This overridden <code class="docutils literal notranslate"><span class="pre">Rec
 </div>
 <p>Its <code class="docutils literal notranslate"><span class="pre">data</span></code> property is a dictionary identical to the <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> method’s return value. It has the following shape:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;6bcba8b1-f967-4175-9557-c71dea07c8e7&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T19:18:48.550894+00:00&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;updated&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-03-19T19:18:48.643023+00:00&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;featured&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/featured&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;self&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;self_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/collections/my-community&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;settings_html&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/collections/my-community/settings&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;logo&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/logo&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;rename&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/rename&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;public_members&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members/public&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;invitations&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/invitations&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/requests&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;records&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/records&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;membership_requests&#39;</span><span class="p">:</span> <span class="s1">&#39;https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/membership-requests&#39;</span>
+    <span class="s1">'id'</span><span class="p">:</span> <span class="s1">'6bcba8b1-f967-4175-9557-c71dea07c8e7'</span><span class="p">,</span>
+    <span class="s1">'created'</span><span class="p">:</span> <span class="s1">'2025-03-19T19:18:48.550894+00:00'</span><span class="p">,</span>
+    <span class="s1">'updated'</span><span class="p">:</span> <span class="s1">'2025-03-19T19:18:48.643023+00:00'</span><span class="p">,</span>
+    <span class="s1">'links'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'featured'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/featured'</span><span class="p">,</span>
+        <span class="s1">'self'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7'</span><span class="p">,</span>
+        <span class="s1">'self_html'</span><span class="p">:</span> <span class="s1">'https://localhost/collections/my-community'</span><span class="p">,</span>
+        <span class="s1">'settings_html'</span><span class="p">:</span> <span class="s1">'https://localhost/collections/my-community/settings'</span><span class="p">,</span>
+        <span class="s1">'logo'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/logo'</span><span class="p">,</span>
+        <span class="s1">'rename'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/rename'</span><span class="p">,</span>
+        <span class="s1">'members'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members'</span><span class="p">,</span>
+        <span class="s1">'public_members'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/members/public'</span><span class="p">,</span>
+        <span class="s1">'invitations'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/invitations'</span><span class="p">,</span>
+        <span class="s1">'requests'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/requests'</span><span class="p">,</span>
+        <span class="s1">'records'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/records'</span><span class="p">,</span>
+        <span class="s1">'membership_requests'</span><span class="p">:</span> <span class="s1">'https://localhost/api/communities/6bcba8b1-f967-4175-9557-c71dea07c8e7/membership-requests'</span>
     <span class="p">},</span>
-    <span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="s1">&#39;my-community&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;My Community&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;A description&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;curation_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;Curation policy&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="s1">&#39;Information for my community&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;en&#39;</span><span class="p">:</span> <span class="s1">&#39;Event&#39;</span><span class="p">}</span>
+    <span class="s1">'revision_id'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">'slug'</span><span class="p">:</span> <span class="s1">'my-community'</span><span class="p">,</span>
+    <span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'My Community'</span><span class="p">,</span>
+        <span class="s1">'description'</span><span class="p">:</span> <span class="s1">'A description'</span><span class="p">,</span>
+        <span class="s1">'curation_policy'</span><span class="p">:</span> <span class="s1">'Curation policy'</span><span class="p">,</span>
+        <span class="s1">'page'</span><span class="p">:</span> <span class="s1">'Information for my community'</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'id'</span><span class="p">:</span> <span class="s1">'event'</span><span class="p">,</span>
+            <span class="s1">'title'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'en'</span><span class="p">:</span> <span class="s1">'Event'</span><span class="p">}</span>
         <span class="p">},</span>
-        <span class="s1">&#39;website&#39;</span><span class="p">:</span> <span class="s1">&#39;https://my-community.com&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;organizations&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Organization 1&#39;</span><span class="p">}]</span>
+        <span class="s1">'website'</span><span class="p">:</span> <span class="s1">'https://my-community.com'</span><span class="p">,</span>
+        <span class="s1">'organizations'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Organization 1'</span><span class="p">}]</span>
     <span class="p">},</span>
-    <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;members_visibility&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;member_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;record_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;review_policy&#39;</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span>
+    <span class="s1">'access'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'visibility'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+        <span class="s1">'members_visibility'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+        <span class="s1">'member_policy'</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span>
+        <span class="s1">'record_policy'</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span>
+        <span class="s1">'review_policy'</span><span class="p">:</span> <span class="s1">'open'</span>
     <span class="p">},</span>
-    <span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s1">&#39;deletion_status&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;is_deleted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span>
+    <span class="s1">'custom_fields'</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">'deletion_status'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'is_deleted'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'P'</span>
     <span class="p">},</span>
-    <span class="s1">&#39;children&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+    <span class="s1">'children'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'allow'</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

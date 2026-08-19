@@ -382,7 +382,7 @@
 <section id="updating-user">
 <h4>updating user<a class="headerlink" href="#updating-user" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user_by_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;myusername&quot;</span>
+<span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">"myusername"</span>
 <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -392,7 +392,7 @@
 <section id="creating-user">
 <h4>creating user<a class="headerlink" href="#creating-user" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_accounts</span>
-<span class="n">new_user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">new_user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"email"</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">"password"</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
 </pre></div>
 </div>
 <p>This returns the User object</p>
@@ -421,7 +421,7 @@
 <h4>accessing user based on external auth info<a class="headerlink" href="#accessing-user-based-on-external-auth-info" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
-<span class="n">user</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">external_id</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">external_id</span><span class="p">[</span><span class="s2">"method"</span><span class="p">],</span> <span class="n">external_id</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -468,8 +468,8 @@ which represent the correlation of user ids with external auth sources and ident
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="n">my_user_identity</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
     <span class="n">id_user</span><span class="o">=</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;myIDP&quot;</span><span class="p">,</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myuser&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"myIDP"</span><span class="p">,</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">"myuser"</span><span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object has the following properties:</p>
@@ -501,8 +501,8 @@ which represent the correlation of user ids with external auth sources and ident
 <span class="n">record</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
 
 <span class="c1"># the refresh is required because the access system field takes precedence</span>
-<span class="c1"># over the record&#39;s data in &#39;record.commit()&#39;</span>
-<span class="n">record</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">refresh_from_dict</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;access&quot;</span><span class="p">])</span>
+<span class="c1"># over the record's data in 'record.commit()'</span>
+<span class="n">record</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">refresh_from_dict</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s2">"access"</span><span class="p">])</span>
 <span class="n">record</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 <span class="n">service</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
@@ -595,7 +595,7 @@ which represent the correlation of user ids with external auth sources and ident
 <h3>Soft-delete a published record<a class="headerlink" href="#soft-delete-a-published-record" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_rdm_records.proxies</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_rdm_records_service</span>
 
-<span class="n">tombstone_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;no specific reason, tbh&quot;</span><span class="p">}</span>
+<span class="n">tombstone_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"note"</span><span class="p">:</span> <span class="s2">"no specific reason, tbh"</span><span class="p">}</span>
 <span class="n">deleted_record</span> <span class="o">=</span> <span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">delete_record</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
                                                            <span class="n">tombstone_info</span><span class="p">)</span>
 </pre></div>
@@ -633,11 +633,11 @@ which represent the correlation of user ids with external auth sources and ident
 
 <span class="n">record_communities</span> <span class="o">=</span> <span class="n">current_rdm_records</span><span class="o">.</span><span class="n">record_communities_service</span>
 
-<span class="c1"># Try to create and submit a &#39;community-inclusion&#39; request</span>
+<span class="c1"># Try to create and submit a 'community-inclusion' request</span>
 <span class="n">requests</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">record_communities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
     <span class="n">system_identity</span><span class="p">,</span>  <span class="c1"># in place of system_identity, use the identity of the user who is adding the record to the community</span>
     <span class="n">draft_id</span><span class="p">,</span>
-    <span class="p">{</span><span class="s2">&quot;communities&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">community_id</span><span class="p">}]},</span>
+    <span class="p">{</span><span class="s2">"communities"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">community_id</span><span class="p">}]},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -645,9 +645,9 @@ which represent the correlation of user ids with external auth sources and ident
 <p>If the identity has permission to add the record without review, the request should be accepted without further action. Otherwise, the request can be accepted programmatically by calling the <code class="docutils literal notranslate"><span class="pre">include</span></code> method of the <code class="docutils literal notranslate"><span class="pre">CommunityInclusionService</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">submitted_request</span> <span class="o">=</span> <span class="n">requests</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># from above</span>
 <span class="n">request_id</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">submitted_request</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">submitted_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
-    <span class="k">else</span> <span class="n">submitted_request</span><span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="n">submitted_request</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">submitted_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
+    <span class="k">else</span> <span class="n">submitted_request</span><span class="p">[</span><span class="s2">"request"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span>
 <span class="p">)</span>
 <span class="n">request_obj</span> <span class="o">=</span> <span class="n">current_requests_service</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
     <span class="n">system_identity</span><span class="p">,</span> <span class="n">request_id</span>
@@ -677,7 +677,7 @@ which represent the correlation of user ids with external auth sources and ident
 <span class="n">record</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">communities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">community_id</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
 <span class="n">record</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;refresh&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">current_rdm_records_service</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="p">{</span><span class="s2">"refresh"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
 </section>
@@ -702,33 +702,33 @@ which represent the correlation of user ids with external auth sources and ident
 <p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> value is a simple <code class="docutils literal notranslate"><span class="pre">dict</span></code> holding the submitted data to be used to create the record. It is the first return value from service.schema.load().</p>
 <p>It has the shape of the InvenioRDM record schema, although it lacks several of the top-level keys that are present in a record object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="s1">&#39;access&#39;</span><span class="p">:</span>  <span class="p">{</span>
-    <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;record&#39;</span><span class="p">:</span> <span class="s1">&#39;public&#39;</span>
+<span class="s1">'access'</span><span class="p">:</span>  <span class="p">{</span>
+    <span class="s1">'files'</span><span class="p">:</span> <span class="s1">'public'</span><span class="p">,</span>
+    <span class="s1">'record'</span><span class="p">:</span> <span class="s1">'public'</span>
 <span class="p">},</span>
-<span class="s1">&#39;custom_fields&#39;</span><span class="p">:</span> <span class="p">{},</span>
-<span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-<span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;creators&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;family_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;given_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Brown, Troy&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;personal&#39;</span>
+<span class="s1">'custom_fields'</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">'files'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'enabled'</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+<span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'creators'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'family_name'</span><span class="p">:</span> <span class="s1">'Brown'</span><span class="p">,</span>
+            <span class="s1">'given_name'</span><span class="p">:</span> <span class="s1">'Troy'</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Brown, Troy'</span><span class="p">,</span>
+            <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'personal'</span>
             <span class="p">}</span>
         <span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;person_or_org&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Troy Inc.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;organizational&#39;</span>
+        <span class="p">{</span><span class="s1">'person_or_org'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Troy Inc.'</span><span class="p">,</span>
+            <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'organizational'</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s1">&#39;publication_date&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-06-01&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;publisher&#39;</span><span class="p">:</span> <span class="s1">&#39;Acme Inc&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;image-photograph&#39;</span><span class="p">},</span>
-    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;A Romans story&#39;</span>
+    <span class="s1">'publication_date'</span><span class="p">:</span> <span class="s1">'2020-06-01'</span><span class="p">,</span>
+    <span class="s1">'publisher'</span><span class="p">:</span> <span class="s1">'Acme Inc'</span><span class="p">,</span>
+    <span class="s1">'resource_type'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="s1">'image-photograph'</span><span class="p">},</span>
+    <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'A Romans story'</span>
 <span class="p">},</span>
-<span class="s1">&#39;pids&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="s1">'pids'</span><span class="p">:</span> <span class="p">{}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

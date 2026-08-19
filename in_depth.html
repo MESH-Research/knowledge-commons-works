@@ -371,11 +371,11 @@ from the command line with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INVENIO_INSTANCE_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">invenio</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">instance</span>
 <span class="n">INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR</span><span class="o">=/</span>
 <span class="n">INVENIO_RECORD_IMPORTER_DATA_DIR</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">invenio</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">import_data</span>
-<span class="n">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">&#39;search:9200&#39;</span>
-<span class="n">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost&quot;</span>
-<span class="n">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost/api&quot;</span>
-<span class="n">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">&#39;cache:6379&#39;</span>
-<span class="n">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:kcworks@db/kcworks&quot;</span>
+<span class="n">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">'search:9200'</span>
+<span class="n">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">"https://localhost"</span>
+<span class="n">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">"https://localhost/api"</span>
+<span class="n">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">'cache:6379'</span>
+<span class="n">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">"postgresql+psycopg2://kcworks:kcworks@db/kcworks"</span>
 <span class="n">POSTGRES_USER</span><span class="o">=</span><span class="n">kcworks</span>
 <span class="n">POSTGRES_DB</span><span class="o">=</span><span class="n">kcworks</span>
 </pre></div>
@@ -385,8 +385,8 @@ from the command line with</p>
 <section id="variables-for-local-credentials">
 <h3>Variables for local credentials<a class="headerlink" href="#variables-for-local-credentials" title="Link to this heading">¶</a></h3>
 <p>Several variables hold random values used to secure the application, or hold passwords and email addresses supplied by the local developer:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>INVENIO_CSRF_SECRET_SALT=&#39;..put a long random value here..&#39;
-INVENIO_SECURITY_LOGIN_SALT=&#39;..put a long random value here..&#39;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>INVENIO_CSRF_SECRET_SALT='..put a long random value here..'
+INVENIO_SECURITY_LOGIN_SALT='..put a long random value here..'
 INVENIO_SECRET_KEY=CHANGE_ME
 POSTGRES_PASSWORD=???
 PGADMIN_DEFAULT_EMAIL=???
@@ -394,7 +394,7 @@ PGADMIN_DEFAULT_PASSWORD=???
 </pre></div>
 </div>
 <p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -c &#39;import secrets; print(secrets.token_hex())&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -c 'import secrets; print(secrets.token_hex())'</span>
 </pre></div>
 </div>
 <section id="additional-environment-variables-with-sensitive-information">

@@ -321,21 +321,21 @@ These are collectively aliased to</p></li>
 <p>in agg_iter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dsl</span><span class="o">.</span><span class="n">Search</span><span class="p">(</span><span class="n">using</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">event_index</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
     <span class="c1"># Filter for the specific interval (hour, day, month)</span>
-    <span class="s2">&quot;term&quot;</span><span class="p">,</span>
+    <span class="s2">"term"</span><span class="p">,</span>
     <span class="n">timestamp</span><span class="o">=</span><span class="n">rounded_dt</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_partitions</span><span class="p">)</span>
     <span class="n">terms</span> <span class="o">=</span> <span class="n">agg_query</span><span class="o">.</span><span class="n">aggs</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span>
-    <span class="s2">&quot;terms&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;terms&quot;</span><span class="p">,</span>
+    <span class="s2">"terms"</span><span class="p">,</span>
+    <span class="s2">"terms"</span><span class="p">,</span>
     <span class="n">field</span><span class="o">=</span><span class="n">unique_id</span><span class="p">,</span>
-    <span class="n">include</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;partition&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span> <span class="s2">&quot;num_partitions&quot;</span><span class="p">:</span> <span class="n">num_partitions</span><span class="p">},</span>
+    <span class="n">include</span><span class="o">=</span><span class="p">{</span><span class="s2">"partition"</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span> <span class="s2">"num_partitions"</span><span class="p">:</span> <span class="n">num_partitions</span><span class="p">},</span>
     <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_bucket_size</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">terms</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span>
 
-    <span class="s2">&quot;top_hit&quot;</span><span class="p">,</span> <span class="s2">&quot;top_hits&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">}</span>
+    <span class="s2">"top_hit"</span><span class="p">,</span> <span class="s2">"top_hits"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="p">{</span><span class="s2">"timestamp"</span><span class="p">:</span> <span class="s2">"desc"</span><span class="p">}</span>
 
     <span class="p">)</span>
 
@@ -345,19 +345,19 @@ These are collectively aliased to</p></li>
 
 
 <span class="p">{</span>
- <span class="s2">&quot;aggs&quot;</span><span class="p">:</span> <span class="p">{</span>
-   <span class="s2">&quot;???&quot;</span><span class="p">:</span> <span class="p">{</span>
-     <span class="s2">&quot;terms&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="s2">&quot;terms&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;unique_session_id&quot;</span><span class="p">,</span>
-         <span class="s2">&quot;partition&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
-         <span class="s2">&quot;num_partitions&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
-         <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">y</span>
+ <span class="s2">"aggs"</span><span class="p">:</span> <span class="p">{</span>
+   <span class="s2">"???"</span><span class="p">:</span> <span class="p">{</span>
+     <span class="s2">"terms"</span><span class="p">:</span> <span class="p">{</span>
+       <span class="s2">"terms"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="s2">"field"</span><span class="p">:</span> <span class="s2">"unique_session_id"</span><span class="p">,</span>
+         <span class="s2">"partition"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
+         <span class="s2">"num_partitions"</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+         <span class="s2">"size"</span><span class="p">:</span> <span class="n">y</span>
        <span class="p">}</span>
      <span class="p">}</span>
-     <span class="s2">&quot;cardinality&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;unique_session_id&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;precision_threshold&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+     <span class="s2">"cardinality"</span><span class="p">:</span> <span class="p">{</span>
+       <span class="s2">"field"</span><span class="p">:</span> <span class="s2">"unique_session_id"</span><span class="p">,</span>
+       <span class="s2">"precision_threshold"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
      <span class="p">}</span>
    <span class="p">}</span>
  <span class="p">}</span>
@@ -373,68 +373,68 @@ These are collectively aliased to</p></li>
 </li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="s1">&#39;_shards&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;failed&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;skipped&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;successful&#39;</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span> <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="mi">69</span><span class="p">},</span>
-<span class="s1">&#39;aggregations&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;terms&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;buckets&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="s1">'_shards'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'failed'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'skipped'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'successful'</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span> <span class="s1">'total'</span><span class="p">:</span> <span class="mi">69</span><span class="p">},</span>
+<span class="s1">'aggregations'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'terms'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'buckets'</span><span class="p">:</span> <span class="p">[</span>
         <span class="o">...</span>
             <span class="p">{</span>
-                <span class="s1">&#39;doc_count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;ui_yv6k0-srr25&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">1726598317179.0</span><span class="p">,</span>
-                    <span class="s1">&#39;value_as_string&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-09-17T18:38:37.179Z&#39;</span>
+                <span class="s1">'doc_count'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s1">'key'</span><span class="p">:</span> <span class="s1">'ui_yv6k0-srr25'</span><span class="p">,</span>
+                <span class="s1">'last_update'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">'value'</span><span class="p">:</span> <span class="mf">1726598317179.0</span><span class="p">,</span>
+                    <span class="s1">'value_as_string'</span><span class="p">:</span> <span class="s1">'2024-09-17T18:38:37.179Z'</span>
                 <span class="p">},</span>
-                <span class="s1">&#39;top_hit&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;hits&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;hits&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s1">'top_hit'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">'hits'</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">'hits'</span><span class="p">:</span> <span class="p">[</span>
                             <span class="p">{</span>
-                            <span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-04-17T12:19:30-&#39;</span>
-                                   <span class="s1">&#39;d719203049c7b7ffa7bad3dfc97de87225549cf7&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;_index&#39;</span><span class="p">:</span> <span class="s1">&#39;events-stats-record-view-2024-04&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;_score&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="s1">&#39;_source&#39;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="s1">&#39;country&#39;</span><span class="p">:</span> <span class="s1">&#39;imported&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;is_robot&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                <span class="s1">&#39;parent_recid&#39;</span><span class="p">:</span> <span class="s1">&#39;q4wph-4hk75&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;recid&#39;</span><span class="p">:</span> <span class="s1">&#39;yv6k0-srr25&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-04-17T11:19:33&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;unique_id&#39;</span><span class="p">:</span> <span class="s1">&#39;ui_yv6k0-srr25&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;unique_session_id&#39;</span><span class="p">:</span>
-                                    <span class="s1">&#39;a6f9fcc160c3360209&#39;</span>
-                                    <span class="s1">&#39;d163fb95983caee3273e3fb1a4ba549765f75c&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;updated_timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-09-i&#39;</span>
-                                                     <span class="s1">&#39;17T18:38:37.179332&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;via_api&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                <span class="s1">&#39;visitor_id&#39;</span><span class="p">:</span>
-                                    <span class="s1">&#39;a6f9fcc160c3360209d163fb959&#39;</span>
-                                    <span class="s1">&#39;83caee3273e3fb1a4ba549765f75c&#39;</span>
+                            <span class="s1">'_id'</span><span class="p">:</span> <span class="s1">'2024-04-17T12:19:30-'</span>
+                                   <span class="s1">'d719203049c7b7ffa7bad3dfc97de87225549cf7'</span><span class="p">,</span>
+                            <span class="s1">'_index'</span><span class="p">:</span> <span class="s1">'events-stats-record-view-2024-04'</span><span class="p">,</span>
+                            <span class="s1">'_score'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="s1">'_source'</span><span class="p">:</span> <span class="p">{</span>
+                                <span class="s1">'country'</span><span class="p">:</span> <span class="s1">'imported'</span><span class="p">,</span>
+                                <span class="s1">'is_robot'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                <span class="s1">'parent_recid'</span><span class="p">:</span> <span class="s1">'q4wph-4hk75'</span><span class="p">,</span>
+                                <span class="s1">'recid'</span><span class="p">:</span> <span class="s1">'yv6k0-srr25'</span><span class="p">,</span>
+                                <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2024-04-17T11:19:33'</span><span class="p">,</span>
+                                <span class="s1">'unique_id'</span><span class="p">:</span> <span class="s1">'ui_yv6k0-srr25'</span><span class="p">,</span>
+                                <span class="s1">'unique_session_id'</span><span class="p">:</span>
+                                    <span class="s1">'a6f9fcc160c3360209'</span>
+                                    <span class="s1">'d163fb95983caee3273e3fb1a4ba549765f75c'</span><span class="p">,</span>
+                                <span class="s1">'updated_timestamp'</span><span class="p">:</span> <span class="s1">'2024-09-i'</span>
+                                                     <span class="s1">'17T18:38:37.179332'</span><span class="p">,</span>
+                                <span class="s1">'via_api'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                <span class="s1">'visitor_id'</span><span class="p">:</span>
+                                    <span class="s1">'a6f9fcc160c3360209d163fb959'</span>
+                                    <span class="s1">'83caee3273e3fb1a4ba549765f75c'</span>
                                 <span class="p">},</span>
-                            <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1713352773000</span><span class="p">]</span>
+                            <span class="s1">'sort'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1713352773000</span><span class="p">]</span>
                             <span class="p">}</span>
                         <span class="p">],</span>
-                        <span class="s1">&#39;max_score&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                        <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;relation&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">1</span>
+                        <span class="s1">'max_score'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s1">'total'</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s1">'relation'</span><span class="p">:</span> <span class="s1">'eq'</span><span class="p">,</span>
+                            <span class="s1">'value'</span><span class="p">:</span> <span class="mi">1</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
-                <span class="s1">&#39;unique_count&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">1</span>
+                <span class="s1">'unique_count'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">'value'</span><span class="p">:</span> <span class="mi">1</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">],</span>
-    <span class="s1">&#39;doc_count_error_upper_bound&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">&#39;sum_other_doc_count&#39;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="s1">'doc_count_error_upper_bound'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">'sum_other_doc_count'</span><span class="p">:</span> <span class="mi">0</span>
     <span class="p">}</span>
 <span class="p">},</span>
-<span class="s1">&#39;hits&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">&#39;hits&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;max_score&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;relation&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">174</span><span class="p">}},</span>
-    <span class="s1">&#39;timed_out&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s1">&#39;took&#39;</span><span class="p">:</span> <span class="mi">10</span>
+<span class="s1">'hits'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'hits'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'max_score'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">'total'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'relation'</span><span class="p">:</span> <span class="s1">'eq'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">:</span> <span class="mi">174</span><span class="p">}},</span>
+    <span class="s1">'timed_out'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">'took'</span><span class="p">:</span> <span class="mi">10</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -445,20 +445,20 @@ These are collectively aliased to</p></li>
 <section id="kcworks-events-stats-record-view">
 <h4>kcworks-events-stats-record-view<a class="headerlink" href="#kcworks-events-stats-record-view" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="nt">&quot;_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kcworks-events-stats-record-view-2019-01&quot;</span><span class="p">,</span>
-<span class="nt">&quot;_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00-8e31b4cd058701ecf5ce0dbdc057f3cc775d94ce&quot;</span><span class="p">,</span>
-<span class="nt">&quot;_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="nt">&quot;_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jnhz6-e2n32&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent_recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pbwf2-yty55&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ui_jnhz6-e2n32&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;is_robot&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;imported&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;via_api&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;visitor_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_session_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-07-16T22:58:10.107933&quot;</span>
+<span class="nt">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kcworks-events-stats-record-view-2019-01"</span><span class="p">,</span>
+<span class="nt">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00-8e31b4cd058701ecf5ce0dbdc057f3cc775d94ce"</span><span class="p">,</span>
+<span class="nt">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="nt">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jnhz6-e2n32"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent_recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pbwf2-yty55"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ui_jnhz6-e2n32"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"is_robot"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"imported"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"via_api"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"visitor_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-07-16T22:58:10.107933"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -467,24 +467,24 @@ These are collectively aliased to</p></li>
 <section id="kcworks-events-stats-file-download">
 <h4>kcworks-events-stats-file-download<a class="headerlink" href="#kcworks-events-stats-file-download" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kcworks-events-stats-file-download-2019-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00-0f6eaae908805134818089196c2855f8804781de&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;bucket_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019b4cd0-31f3-413c-bbc4-95047d1fde34&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;file_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;da479344-5585-4bf9-9c6d-23cadf51e7ee&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;file_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lrvol2019iss13fulltext.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">742774</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;k59an-48c77&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent_recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;19xa6-enq55&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;is_robot&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;imported&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019b4cd0-31f3-413c-bbc4-95047d1fde34_da479344-5585-4bf9-9c6d-23cadf51e7ee&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;via_api&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;visitor_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_session_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-07-17T18:34:13.204519&quot;</span>
+<span class="w">  </span><span class="nt">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kcworks-events-stats-file-download-2019-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00-0f6eaae908805134818089196c2855f8804781de"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"bucket_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019b4cd0-31f3-413c-bbc4-95047d1fde34"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"file_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"da479344-5585-4bf9-9c6d-23cadf51e7ee"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"file_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lrvol2019iss13fulltext.pdf"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">742774</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"k59an-48c77"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent_recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"19xa6-enq55"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"is_robot"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"imported"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019b4cd0-31f3-413c-bbc4-95047d1fde34_da479344-5585-4bf9-9c6d-23cadf51e7ee"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"via_api"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"visitor_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4c2caf11d9698e896a9b5990c43f60949578cc66deb98d2e31eddabd"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-07-17T18:34:13.204519"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -493,12 +493,12 @@ These are collectively aliased to</p></li>
 <section id="kcworks-stats-bookmarks">
 <h4>kcworks-stats-bookmarks<a class="headerlink" href="#kcworks-stats-bookmarks" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kcworks-stats-bookmarks&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9GFKe5ABGzTNItjdhxgL&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-07-04T01:10:00.181946&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;aggregation_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stats_reindex&quot;</span>
+<span class="w">  </span><span class="nt">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kcworks-stats-bookmarks"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9GFKe5ABGzTNItjdhxgL"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-07-04T01:10:00.181946"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"aggregation_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stats_reindex"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -507,18 +507,18 @@ These are collectively aliased to</p></li>
 <section id="kcworks-stats-record-view-aggregates">
 <h4>kcworks-stats-record-view (aggregates)<a class="headerlink" href="#kcworks-stats-record-view-aggregates" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kcworks-stats-record-view-2019-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ui_3bn84-vwr29-2019-01-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ui_3bn84-vwr29&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-09-04T21:05:28.568054&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3bn84-vwr29&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent_recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v51aw-69a63&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;via_api&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="nt">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kcworks-stats-record-view-2019-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ui_3bn84-vwr29-2019-01-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ui_3bn84-vwr29"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-09-04T21:05:28.568054"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3bn84-vwr29"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent_recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"v51aw-69a63"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"via_api"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -527,21 +527,21 @@ These are collectively aliased to</p></li>
 <section id="kcworks-stats-file-download-aggregates">
 <h4>kcworks-stats-file-download (aggregates)<a class="headerlink" href="#kcworks-stats-file-download-aggregates" title="Link to this heading">¶</a></h4>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kcworks-stats-file-download-2019-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1770b96d-04a2-42ff-8bd5-4369f4fceb3c_78785ea0-70a1-49cf-b082-960bf6deae9c-2019-01-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2019-01-01T00:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1770b96d-04a2-42ff-8bd5-4369f4fceb3c_78785ea0-70a1-49cf-b082-960bf6deae9c&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-09-04T20:56:41.105763&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unique_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">53651620.0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;file_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;78785ea0-70a1-49cf-b082-960bf6deae9c&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;file_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fair-use-in-the-visual-arts-lesson-plans-for-librarians.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;bucket_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1770b96d-04a2-42ff-8bd5-4369f4fceb3c&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c2gjs-86225&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent_recid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cqazz-qzj09&quot;</span>
+<span class="w">  </span><span class="nt">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kcworks-stats-file-download-2019-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1770b96d-04a2-42ff-8bd5-4369f4fceb3c_78785ea0-70a1-49cf-b082-960bf6deae9c-2019-01-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01T00:00:00"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1770b96d-04a2-42ff-8bd5-4369f4fceb3c_78785ea0-70a1-49cf-b082-960bf6deae9c"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-09-04T20:56:41.105763"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unique_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"volume"</span><span class="p">:</span><span class="w"> </span><span class="mf">53651620.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"file_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"78785ea0-70a1-49cf-b082-960bf6deae9c"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"file_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fair-use-in-the-visual-arts-lesson-plans-for-librarians.pdf"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"bucket_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1770b96d-04a2-42ff-8bd5-4369f4fceb3c"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c2gjs-86225"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent_recid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cqazz-qzj09"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -558,18 +558,18 @@ These are collectively aliased to</p></li>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;bool&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;must&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;term&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;is_robot&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}},</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;gte&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-11-15T00:00:00&quot;</span><span class="p">}}}</span>
+<span class="w">  </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"bool"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"must"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"is_robot"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"gte"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-11-15T00:00:00"</span><span class="p">}}}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;aggs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;unique_sessions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;cardinality&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unique_session_id&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"aggs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"unique_sessions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"cardinality"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique_session_id"</span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -612,42 +612,42 @@ These are collectively aliased to</p></li>
 <p>The configuration objects are shaped like this:</p>
 <p><code class="docutils literal notranslate"><span class="pre">STATS_EVENTS</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;file-download&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;templates&quot;</span><span class="p">:</span> <span class="s2">&quot;invenio_rdm_records.records.stats.templates.events.file_download&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;event_builders&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;invenio_rdm_records.resources.stats.file_download_event_builder&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;invenio_rdm_records.resources.stats.check_if_via_api&quot;</span><span class="p">,</span>
+    <span class="s2">"file-download"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"templates"</span><span class="p">:</span> <span class="s2">"invenio_rdm_records.records.stats.templates.events.file_download"</span><span class="p">,</span>
+        <span class="s2">"event_builders"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"invenio_rdm_records.resources.stats.file_download_event_builder"</span><span class="p">,</span>
+            <span class="s2">"invenio_rdm_records.resources.stats.check_if_via_api"</span><span class="p">,</span>
         <span class="p">],</span>
-    <span class="s2">&quot;cls&quot;</span><span class="p">:</span> <span class="n">EventsIndexer</span><span class="p">,</span>
-    <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;preprocessors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">flag_robots</span><span class="p">,</span> <span class="n">anonymize_user</span><span class="p">,</span> <span class="n">build_file_unique_id</span><span class="p">]</span>
+    <span class="s2">"cls"</span><span class="p">:</span> <span class="n">EventsIndexer</span><span class="p">,</span>
+    <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"preprocessors"</span><span class="p">:</span> <span class="p">[</span><span class="n">flag_robots</span><span class="p">,</span> <span class="n">anonymize_user</span><span class="p">,</span> <span class="n">build_file_unique_id</span><span class="p">]</span>
     <span class="p">},</span>
 <span class="p">},</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">STATS_AGGREGATIONS</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="s2">&quot;file-download-agg&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;templates&quot;</span><span class="p">:</span> <span class="s2">&quot;invenio_rdm_records.records.stats.templates.aggregations.aggr_file_download&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cls&quot;</span><span class="p">:</span> <span class="n">StatAggregator</span><span class="p">,</span>
-        <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="s2">&quot;file-download&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;unique_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;index_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;month&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;copy_fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="s2">&quot;file_id&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;file_key&quot;</span><span class="p">:</span> <span class="s2">&quot;file_key&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;bucket_id&quot;</span><span class="p">:</span> <span class="s2">&quot;bucket_id&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;recid&quot;</span><span class="p">:</span> <span class="s2">&quot;recid&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;parent_recid&quot;</span><span class="p">:</span> <span class="s2">&quot;parent_recid&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="s2">"file-download-agg"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"templates"</span><span class="p">:</span> <span class="s2">"invenio_rdm_records.records.stats.templates.aggregations.aggr_file_download"</span><span class="p">,</span>
+        <span class="s2">"cls"</span><span class="p">:</span> <span class="n">StatAggregator</span><span class="p">,</span>
+        <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"event"</span><span class="p">:</span> <span class="s2">"file-download"</span><span class="p">,</span>
+            <span class="s2">"field"</span><span class="p">:</span> <span class="s2">"unique_id"</span><span class="p">,</span>
+            <span class="s2">"interval"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
+            <span class="s2">"index_interval"</span><span class="p">:</span> <span class="s2">"month"</span><span class="p">,</span>
+            <span class="s2">"copy_fields"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"file_id"</span><span class="p">:</span> <span class="s2">"file_id"</span><span class="p">,</span>
+                <span class="s2">"file_key"</span><span class="p">:</span> <span class="s2">"file_key"</span><span class="p">,</span>
+                <span class="s2">"bucket_id"</span><span class="p">:</span> <span class="s2">"bucket_id"</span><span class="p">,</span>
+                <span class="s2">"recid"</span><span class="p">:</span> <span class="s2">"recid"</span><span class="p">,</span>
+                <span class="s2">"parent_recid"</span><span class="p">:</span> <span class="s2">"parent_recid"</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;metric_fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;unique_count&quot;</span><span class="p">:</span> <span class="p">(</span>
-                    <span class="s2">&quot;cardinality&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;unique_session_id&quot;</span><span class="p">,</span>
-                    <span class="p">{</span><span class="s2">&quot;precision_threshold&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">},</span>
+            <span class="s2">"metric_fields"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"unique_count"</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s2">"cardinality"</span><span class="p">,</span>
+                    <span class="s2">"unique_session_id"</span><span class="p">,</span>
+                    <span class="p">{</span><span class="s2">"precision_threshold"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">},</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;volume&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="s2">"volume"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"sum"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">},</span>
@@ -662,15 +662,15 @@ These are collectively aliased to</p></li>
 <h2>Stats task scheduling<a class="headerlink" href="#stats-task-scheduling" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CELERY_BEAT_SCHEDULE</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># indexing of statistics events &amp; aggregations</span>
-    <span class="s2">&quot;stats-process-events&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"stats-process-events"</span><span class="p">:</span> <span class="p">{</span>
         <span class="n">StatsEventTask</span><span class="p">,</span>
-        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="s2">&quot;25,55&quot;</span><span class="p">),</span>  <span class="c1"># Every hour at minute 25 and 55</span>
+        <span class="s2">"schedule"</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="s2">"25,55"</span><span class="p">),</span>  <span class="c1"># Every hour at minute 25 and 55</span>
     <span class="p">},</span>
-    <span class="s2">&quot;stats-aggregate-events&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"stats-aggregate-events"</span><span class="p">:</span> <span class="p">{</span>
         <span class="n">StatsAggregationTask</span><span class="p">,</span>
-        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># Every hour at minute 0</span>
+        <span class="s2">"schedule"</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># Every hour at minute 0</span>
     <span class="p">},</span>
-    <span class="s2">&quot;reindex-stats&quot;</span><span class="p">:</span> <span class="n">StatsRDMReindexTask</span><span class="p">,</span>  <span class="c1"># Every hour at minute 10</span>
+    <span class="s2">"reindex-stats"</span><span class="p">:</span> <span class="n">StatsRDMReindexTask</span><span class="p">,</span>  <span class="c1"># Every hour at minute 10</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -679,23 +679,23 @@ These are collectively aliased to</p></li>
 <h2>API query configuration<a class="headerlink" href="#api-query-configuration" title="Link to this heading">¶</a></h2>
 <p>STATS_QUERIES config variable defines allowed queries, params, permissions like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">STATS_QUERIES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;record-view&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;cls&quot;</span><span class="p">:</span> <span class="n">TermsQuery</span><span class="p">,</span>
-        <span class="s2">&quot;permission_factory&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="s2">&quot;stats-record-view&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;doc_type&quot;</span><span class="p">:</span> <span class="s2">&quot;record-view-day-aggregation&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;copy_fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;recid&quot;</span><span class="p">:</span> <span class="s2">&quot;recid&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;parent_recid&quot;</span><span class="p">:</span> <span class="s2">&quot;parent_recid&quot;</span><span class="p">,</span>
+    <span class="s2">"record-view"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"cls"</span><span class="p">:</span> <span class="n">TermsQuery</span><span class="p">,</span>
+        <span class="s2">"permission_factory"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"index"</span><span class="p">:</span> <span class="s2">"stats-record-view"</span><span class="p">,</span>
+            <span class="s2">"doc_type"</span><span class="p">:</span> <span class="s2">"record-view-day-aggregation"</span><span class="p">,</span>
+            <span class="s2">"copy_fields"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"recid"</span><span class="p">:</span> <span class="s2">"recid"</span><span class="p">,</span>
+                <span class="s2">"parent_recid"</span><span class="p">:</span> <span class="s2">"parent_recid"</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;query_modifiers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;required_filters&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;recid&quot;</span><span class="p">:</span> <span class="s2">&quot;recid&quot;</span><span class="p">,</span>
+            <span class="s2">"query_modifiers"</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">"required_filters"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"recid"</span><span class="p">:</span> <span class="s2">"recid"</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;metric_fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;views&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="p">{}),</span>
-                <span class="s2">&quot;unique_views&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;unique_count&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="s2">"metric_fields"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"views"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"sum"</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="s2">"unique_views"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"sum"</span><span class="p">,</span> <span class="s2">"unique_count"</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="p">},</span>
         <span class="p">},</span>
     <span class="p">}</span>
@@ -715,10 +715,10 @@ These are collectively aliased to</p></li>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;aggs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;languages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;terms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata.languages.id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aggs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"languages"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"terms"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"metadata.languages.id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>

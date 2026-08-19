@@ -323,8 +323,8 @@
 </ul>
 <p>The PerFieldPermissionsComponent runs during the RDMRecordService’s <code class="docutils literal notranslate"><span class="pre">update_draft</span></code> record operation. It only takes effect if the record has already been published and has a default community. The component looks at which fields have been modified from the last published version of the record and checks to see whether the current user has permission to edit the field in question. If not, it adds a message to the result’s list of errors that looks like this:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance.&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"custom_fields.kcr:commons_domain"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"messages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -333,8 +333,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">remove</span></code>: the community is not removed from the record, and a message is added to the result’s list of errors that looks like this:</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;parent.communities.default&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance.&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parent.communities.default"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"messages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"You do not have permission to edit this field because the record is included in the sample_community community. Please contact the community owner or manager for assistance."</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -345,25 +345,25 @@
 <h4>Per-field permissions configuration<a class="headerlink" href="#per-field-permissions-configuration" title="Link to this heading">¶</a></h4>
 <p>The permissions are configured in the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file using the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_PERMISSIONS_PER_FIELD</span></code> variable like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RDM_RECORDS_PERMISSIONS_PER_FIELD</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span> <span class="p">],</span>
-        <span class="s2">&quot;default_editors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">Administration</span><span class="p">,</span> <span class="n">SystemProcess</span><span class="p">],</span>
-        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"default"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"policy"</span><span class="p">:</span> <span class="p">[</span> <span class="s2">"custom_fields.kcr:commons_domain"</span> <span class="p">],</span>
+        <span class="s2">"default_editors"</span><span class="p">:</span> <span class="p">[</span><span class="n">Administration</span><span class="p">,</span> <span class="n">SystemProcess</span><span class="p">],</span>
+        <span class="s2">"notify_on_change"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">"grace_period"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="s2">&quot;sample_community&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;parent.communities.default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span> <span class="s2">&quot;owner&quot;</span><span class="p">],</span>
+    <span class="s2">"sample_community"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"policy"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"parent.communities.default"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"manager"</span><span class="p">,</span> <span class="s2">"owner"</span><span class="p">],</span>
         <span class="p">},</span>
-        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="s2">&quot;1 day&quot;</span><span class="p">,</span>
+        <span class="s2">"notify_on_change"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"grace_period"</span><span class="p">:</span> <span class="s2">"1 day"</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="s2">&quot;sample_community_2&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;custom_fields.kcr:commons_domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">CommunityManagers</span><span class="p">,</span> <span class="n">CommunityCurators</span><span class="p">,</span> <span class="n">CommunityOwners</span><span class="p">],</span>
+    <span class="s2">"sample_community_2"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"policy"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"custom_fields.kcr:commons_domain"</span><span class="p">:</span> <span class="p">[</span><span class="n">CommunityManagers</span><span class="p">,</span> <span class="n">CommunityCurators</span><span class="p">,</span> <span class="n">CommunityOwners</span><span class="p">],</span>
         <span class="p">},</span>
-        <span class="s2">&quot;notify_on_change&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;grace_period&quot;</span><span class="p">:</span> <span class="s2">&quot;1 day&quot;</span><span class="p">,</span>
+        <span class="s2">"notify_on_change"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"grace_period"</span><span class="p">:</span> <span class="s2">"1 day"</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -429,7 +429,7 @@
 <p>In order to enable per-field permissions, the <code class="docutils literal notranslate"><span class="pre">PerFieldPermissionsComponent</span></code> must be added to the <code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_SERVICE_COMPONENTS</span></code> config variable.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RDM_RECORDS_SERVICE_COMPONENTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">RDM_RECORDS_SERVICE_COMPONENTS</span><span class="o">*</span><span class="p">,</span>
-    <span class="s2">&quot;kcworks.services.records.components.PerFieldPermissionsComponent&quot;</span><span class="p">,</span>
+    <span class="s2">"kcworks.services.records.components.PerFieldPermissionsComponent"</span><span class="p">,</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -486,9 +486,9 @@
 <h3>Notifications for import API record owners<a class="headerlink" href="#notifications-for-import-api-record-owners" title="Link to this heading">¶</a></h3>
 <p>The streamlined import API sends notifications to the owners of the records being imported. These notifications are implemented by the <code class="docutils literal notranslate"><span class="pre">invenio-record-importer-kcworks</span></code> package. They are configured using the <code class="docutils literal notranslate"><span class="pre">RECORD_IMPORTER_COMMUNITIES</span></code> config variable, like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RECORD_IMPORTER_COMMUNITIES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;sample_community&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;email_subject_register&quot;</span><span class="p">:</span> <span class="s2">&quot;Your KCWorks Record is Ready&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;email_template_register&quot;</span><span class="p">:</span> <span class="s2">&quot;welcome_sample_community&quot;</span><span class="p">,</span>
+    <span class="s2">"sample_community"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"email_subject_register"</span><span class="p">:</span> <span class="s2">"Your KCWorks Record is Ready"</span><span class="p">,</span>
+        <span class="s2">"email_template_register"</span><span class="p">:</span> <span class="s2">"welcome_sample_community"</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -547,16 +547,16 @@
 <p>Subject from the Homosaurus vocabulary must similarly include the complete homosaurus.org url as the <code class="docutils literal notranslate"><span class="pre">id</span></code>, the standard human-readable label as the <code class="docutils literal notranslate"><span class="pre">subject</span></code>, and a <code class="docutils literal notranslate"><span class="pre">scheme</span></code> with the value “Homosaurus”. The Homosaurus subject headings can be searched <a class="reference external" href="https://homosaurus.org/search/v3">here</a>.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;subjects&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"subjects"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://id.worldcat.org/fast/123456&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Art History&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAST-topical&quot;</span>
+<span class="w">            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://id.worldcat.org/fast/123456"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"subject"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Art History"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"scheme"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAST-topical"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://homosaurus.org/v3/homoit0000669&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intersex variations&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Homosaurus&quot;</span>
+<span class="w">            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://homosaurus.org/v3/homoit0000669"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"subject"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Intersex variations"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"scheme"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Homosaurus"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
@@ -573,15 +573,15 @@
 </div>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;person_or_org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;identifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"person_or_org"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kc_username&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span>
+<span class="w">                </span><span class="nt">"scheme"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kc_username"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jdoe"</span>
 <span class="w">            </span><span class="p">},</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;scheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orcid&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0000-0000-0000-0000&quot;</span>
+<span class="w">                </span><span class="nt">"scheme"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orcid"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0000-0000-0000-0000"</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
@@ -598,9 +598,9 @@
 <p>This field stores data about any use of generative AI in the production of the record.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:ai_usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;ai_used&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ai_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This paper was edited using generative AI editing software.&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:ai_usage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"ai_used"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"ai_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This paper was edited using generative AI editing software."</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -612,7 +612,7 @@
 <p>This field stores a list of media or materials involved in the creation of the record. This field is used to store free-form user-defined descriptors of the media or materials and does not impose any controlled vocabulary.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:media&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;watercolor&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;found objects&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;audio recordings&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"kcr:media"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"watercolor"</span><span class="p">,</span><span class="w"> </span><span class="s2">"found objects"</span><span class="p">,</span><span class="w"> </span><span class="s2">"audio recordings"</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -623,7 +623,7 @@
 <p>This field stores the KC organizational (Commons) domain associated with the KCWorks record, if any. The record should also be placed in the KCWorks collection associated with this organization.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:commons_domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arlisna.hcommons.org&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:commons_domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arlisna.hcommons.org"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -634,7 +634,7 @@
 <p>This field stores the label of the chapter associated with the KCWorks record, if any. This allows us to differentiate between a simple chapter label (e.g. “Chapter 1”) and a more substantive title for the same chapter (e.g., “The Role of AI in Modern Art”).</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:chapter_label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Chapter 1&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:chapter_label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Chapter 1"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -645,7 +645,7 @@
 <p>This field stores an optional content warning for the KCWorks record. This is used to flag the record for KCWorks users so that they can be aware of potentially problematic content in the record. <strong>This field is not to be used for content moderation by KCWorks moderators or admins. It is only to be used voluntarily and as desired by the record submitter.</strong></p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:content_warning&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This work contains detailed accounts of abuse that may be distressing to some readers.&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:content_warning"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This work contains detailed accounts of abuse that may be distressing to some readers."</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -656,7 +656,7 @@
 <p>This field stores the title of the course associated with the KCWorks record. It is intended primarily for use with syllabi and instructional materials.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:course_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Introduction to Modern Art&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:course_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Introduction to Modern Art"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -667,7 +667,7 @@
 <p>This field stores the educational degree (e.g., PhD, DPhil, MA, etc.) associated with the KCWorks record. It is intended primarily for use with theses and dissertations.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:degree&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PhD&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:degree"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PhD"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -680,7 +680,7 @@
 <p>This field is not constrained by any controlled vocabulary.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:discipline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Latin American Literature&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:discipline"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Latin American Literature"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -691,7 +691,7 @@
 <p>This field stores a descriptor for the edition of the KCWorks record, if any.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:edition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Second Edition&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:edition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Second Edition"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -702,7 +702,7 @@
 <p>This field stores the name of the organization associated with the meeting or conference associated with the KCWorks record. It is intended primarily for use with conference papers, presentations, proceedings, etc.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:meeting_organization&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;American Association of Art Historians&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:meeting_organization"</span><span class="p">:</span><span class="w"> </span><span class="s2">"American Association of Art Historians"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -713,7 +713,7 @@
 <p>This field stores the title of a project for which the KCWorks record was created. It can be used flexibly for, e.g., grant-funded projects, research projects, artistic projects, etc.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:project_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kingston Poetry Residency, 2024&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:project_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kingston Poetry Residency, 2024"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -725,7 +725,7 @@
 <p>This string must be a valid URL.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:publication_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.example.com/publication/123456&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:publication_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.example.com/publication/123456"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -737,7 +737,7 @@
 <p>Note that this field is not intended for the degree-granting institution associated with a thesis or dissertation. That institution’s title should be stored in the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:sponsoring_institution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;University of Toronto&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:sponsoring_institution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"University of Toronto"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -748,7 +748,7 @@
 <p>This field stores the email address of the submitter of the KCWorks record. It must be a valid email address.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:submitter_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;john.doe@example.com&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:submitter_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john.doe@example.com"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -759,7 +759,7 @@
 <p>This field stores the KC username of the submitter of the KCWorks record. This should be used even if the submitter is also a contributor to the KCWorks record and has included the same username in the <code class="docutils literal notranslate"><span class="pre">metadata.creators.person_or_org.identifiers</span></code> array.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:submitter_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:submitter_username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jdoe"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -770,7 +770,7 @@
 <p>This field stores the institutional department in which a thesis, dissertation, or other educational artifact was produced. It is intended to complement the <code class="docutils literal notranslate"><span class="pre">thesis:university</span></code> field, which stores the degree-granting institution.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:institution_department&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Art History&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:institution_department"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Art History"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -781,9 +781,9 @@
 <p>This field stores the title of a series that contains the KCWorks record, along with the optional volume number of the work within the series.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:book_series&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;series_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The Complete Works of Jane Austen&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;series_volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Volume 1&quot;</span>
+<span class="w">    </span><span class="nt">"kcr:book_series"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"series_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Complete Works of Jane Austen"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"series_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Volume 1"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -799,7 +799,7 @@
 </div>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;kcr:user_defined_tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Ukranian refugees&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Migrants in Europe&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"kcr:user_defined_tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Ukranian refugees"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Migrants in Europe"</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -831,10 +831,10 @@
 <p>This field is used to store the groups to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks collections during migration.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:groups_for_deposit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"hclegacy:groups_for_deposit"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Group Name&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;group_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Group Identifier&quot;</span>
+<span class="w">            </span><span class="nt">"group_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Group Name"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"group_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Group Identifier"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
@@ -847,7 +847,7 @@
 <p>This field is used to store the org collection to which a legacy CORE record belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:collection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Collection Name&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Collection Name"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -858,7 +858,7 @@
 <p>This field is used to store the committee deposit number for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:committee_deposit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="w">    </span><span class="nt">"hclegacy:committee_deposit"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -869,7 +869,7 @@
 <p>This field is used to store the relative path the the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:file_location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/file.pdf&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:file_location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/file.pdf"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -880,7 +880,7 @@
 <p>This field is used to store the persistent identifier for the file for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:file_pid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hc:123456&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:file_pid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hc:123456"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -891,7 +891,7 @@
 <p>This field is used to store the previously published status for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:previously_published&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:previously_published"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -902,7 +902,7 @@
 <p>This field is used to store the publication type for a legacy CORE record. It was used during migration to help determine the KCWorks resource type of the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:publication_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Journal Article&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:publication_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Journal Article"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -913,7 +913,7 @@
 <p>This field is used to store the date of the last change to a legacy CORE record. It was not used during migration to KCWorks and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:record_change_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:record_change_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -924,7 +924,7 @@
 <p>This field is used to store the date of the creation of a legacy CORE record. It was not used during migration because InvenioRDM does not allow overriding of the record creation date. It is only preserved for historical purposes and should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:record_creation_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:record_creation_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00Z"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -935,7 +935,7 @@
 <p>This field is used to store the internal system identifier for a legacy CORE record. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:record_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1001634-1263&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:record_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1001634-1263"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -946,7 +946,7 @@
 <p>This field is used to store the organizations to which a legacy CORE record’s submitter belonged before import into KCWorks. It was used to create corresponding KCWorks org collections during migration and assign the work to those org collections.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_org_memberships&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;arlisna&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mla&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"hclegacy:submitter_org_memberships"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"arlisna"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mla"</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -957,7 +957,7 @@
 <p>This field is used to store the organizational affiliation of a legacy CORE record’s submitter at the time of import into KCWorks. It was not used during migration and is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_affiliation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;University of Toronto&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:submitter_affiliation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"University of Toronto"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -968,7 +968,7 @@
 <p>This field is used to store the internal KC system user id of a legacy CORE record’s submitter. It was used during migration to assign ownership of the newly created record, and is preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:submitter_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123456&quot;</span>
+<span class="w">    </span><span class="nt">"hclegacy:submitter_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -979,7 +979,7 @@
 <p>This field is used to store the total number of views for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:total_views&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="w">    </span><span class="nt">"hclegacy:total_views"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -990,7 +990,7 @@
 <p>This field is used to store the total number of downloads for a legacy CORE record prior to import into KCWorks. It was used during migration to create KCWorks usage stats aggregations for the record. It is only preserved for historical purposes. It should not be used for new data.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;hclegacy:total_downloads&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
+<span class="w">    </span><span class="nt">"hclegacy:total_downloads"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span>
 <span class="p">}</span>
 </pre></div>
 </div>

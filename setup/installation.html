@@ -322,11 +322,30 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 <p>The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
 </div>
 <ul class="simple">
-<li><p>run the script to set up the instance services and build static assets <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span></code></p></li>
+<li><p>run the script to set up the instance services, load fixtures, and build
+static assets: <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span> <span class="pre">-f</span></code>. The <code class="docutils literal notranslate"><span class="pre">-f</span></code> flag is
+required on a fresh install (see flag reference below). The script accepts two
+optional flags, which can be combined freely (e.g. <code class="docutils literal notranslate"><span class="pre">-fd</span></code>):</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span></code> — also load fixtures. Runs <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm</span> <span class="pre">fixtures</span></code> and
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (vocabularies such as resource types that the
+deposit form needs, in Celery eager mode). Required on a fresh install. If
+omitted, the script still initializes services but loads no vocabulary data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-d</span></code> — destructive reset <em>before</em> anything else:
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">db</span> <span class="pre">destroy</span> <span class="pre">--yes-i-know</span></code>,
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">destroy</span> <span class="pre">--force</span> <span class="pre">--yes-i-know</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">queue</span> <span class="pre">init</span> <span class="pre">purge</span></code>. <strong>Wipes the database and search index.</strong>
+Use only when you want to start over from a clean slate (e.g. re-running the
+installer against an instance that already has data).</p></li>
+</ul>
+</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Some of the commands in this script may take a while to run. Patience is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command in particular may take up to an hour to complete during which time it provides no feedback. Don’t despair! It is working.</p>
+<p>Some of the commands in this script may take a while to run. Patience is
+required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command (run only with <code class="docutils literal notranslate"><span class="pre">-f</span></code>) in
+particular may take up to an hour to complete during which time it provides no
+feedback. Don’t despair! It is working.</p>
 </div>
 </section>
 <section id="create-your-own-admin-user">
@@ -408,14 +427,14 @@ This will mount a variety of local package folders as bind mounts in your runnin
 </pre></div>
 </div>
 <p>On MacOS machines with Apple Silicon chips (all modern macs now) the python library may still not be able to <em>find</em> your Homebrew-installed packages. The workaround for this is to add your homebrew binary directory to your system path. In your <code class="docutils literal notranslate"><span class="pre">.zshrc</span></code> (or other shell environment file) add this line:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:</span><span class="nv">$DYLD_FALLBACK_LIBRARY_PATH</span><span class="s2">&quot;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:</span><span class="nv">$DYLD_FALLBACK_LIBRARY_PATH</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p>This will allow your terminal system to find any binary files in the <code class="docutils literal notranslate"><span class="pre">/opt/homebrew/lib</span></code> folder, the standard installation location on Apple Silicon Macs.</p>
 <p>If that doesn’t work, you can add these lines to your <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> testing environment file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH&quot;</span>
-<span class="n">DYLD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_PATH&quot;</span>
-<span class="n">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"</span>
+<span class="n">DYLD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_PATH"</span>
+<span class="n">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"</span>
 </pre></div>
 </div>
 </section>
@@ -481,17 +500,17 @@ INVENIO_INSTANCE_PATH</p>
 <span class="nv">INVENIO_LOGGING_CONSOLE_LEVEL</span><span class="o">=</span>DEBUG
 <span class="nv">INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR</span><span class="o">=</span>/
 <span class="nv">INVENIO_RECORD_IMPORTER_DATA_DIR</span><span class="o">=</span>/opt/invenio/var/import_data
-<span class="nv">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">&#39;search:9200&#39;</span>
-<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost&quot;</span>
-<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://localhost/api&quot;</span>
-<span class="nv">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">&#39;cache:6379&#39;</span>
-<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks&quot;</span><span class="w"> </span><span class="c1"># THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW</span>
+<span class="nv">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">'search:9200'</span>
+<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">"https://localhost"</span>
+<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">"https://localhost/api"</span>
+<span class="nv">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">'cache:6379'</span>
+<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">"postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks"</span><span class="w"> </span><span class="c1"># THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW</span>
 <span class="nv">POSTGRES_USER</span><span class="o">=</span>kcworks
 <span class="nv">POSTGRES_DB</span><span class="o">=</span>kcworks
 <span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>PASSWORDHERE
-<span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
-<span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">&#39;GENERATE_IT_AS_PER_INSTRUCTIONS&#39;</span>
-<span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">&#39;SECRET_KEY_VERY_SECRET&#39;</span>
+<span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
+<span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
+<span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">'SECRET_KEY_VERY_SECRET'</span>
 <span class="nv">COMMONS_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
 <span class="nv">COMMONS_SEARCH_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
 <span class="nv">INVENIO_DATACITE_PASSWORD</span><span class="o">=</span>myinveniodatacitepassword<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
@@ -520,7 +539,7 @@ INVENIO_INSTANCE_PATH</p>
 <section id="generating-random-secrets">
 <h4>Generating random secrets<a class="headerlink" href="#generating-random-secrets" title="Link to this heading">¶</a></h4>
 <p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex())&#39;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import secrets; print(secrets.token_hex())'</span>
 </pre></div>
 </div>
 </section>
