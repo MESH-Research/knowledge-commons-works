@@ -47,10 +47,26 @@ instance_path = /opt/invenio/var/instance
 The container name may be different depending on your local docker setup. You can find the correct name by running `docker ps`
 ```
 
-- run the script to set up the instance services and build static assets `bash ./scripts/setup-services.sh`
+- run the script to set up the instance services, load fixtures, and build
+  static assets: `bash ./scripts/setup-services.sh -f`. The `-f` flag is
+  required on a fresh install (see flag reference below). The script accepts two
+  optional flags, which can be combined freely (e.g. `-fd`):
+  - `-f` — also load fixtures. Runs `invenio rdm fixtures` and
+    `invenio rdm-records fixtures` (vocabularies such as resource types that the
+    deposit form needs, in Celery eager mode). Required on a fresh install. If
+    omitted, the script still initializes services but loads no vocabulary data.
+  - `-d` — destructive reset _before_ anything else:
+    `invenio db destroy --yes-i-know`,
+    `invenio index destroy --force --yes-i-know`, and
+    `invenio index queue init purge`. **Wipes the database and search index.**
+    Use only when you want to start over from a clean slate (e.g. re-running the
+    installer against an instance that already has data).
 
 ```{note}
-Some of the commands in this script may take a while to run. Patience is required! The `invenio rdm-records fixtures` command in particular may take up to an hour to complete during which time it provides no feedback. Don't despair! It is working.
+Some of the commands in this script may take a while to run. Patience is
+required! The `invenio rdm-records fixtures` command (run only with `-f`) in
+particular may take up to an hour to complete during which time it provides no
+feedback. Don't despair! It is working.
 ```
 
 ### 5. Create your own admin user
