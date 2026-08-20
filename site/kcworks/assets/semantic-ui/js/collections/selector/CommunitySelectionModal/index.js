@@ -1,1 +1,4 @@
-export { CommunitySelectionModal } from "./CommunitySelectionModal";
+export {
+  CommunitySelectionModal,
+  CommunitySelectionModalFromDeposit,
+} from "./CommunitySelectionModal";

@@ -21,7 +21,7 @@ import { Button, Icon, Form, Grid, Header, Message } from "semantic-ui-react";
 
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/FormUIStateManager";
 import { getReadableFields } from "@js/invenio_modular_deposit_form/utils";
-import { CommunitySelectionModal } from "./CommunitySelectionModal/CommunitySelectionModal";
+import { CommunitySelectionModalFromDeposit } from "./CommunitySelectionModal/CommunitySelectionModal";
 
 export const changeSelectedCommunity = (community) => {
   return async (dispatch) => {
@@ -73,7 +73,7 @@ const AddEditCommunityButton = ({
   const showSubmissionWarning = !isInReview && !community && !isPublished && !isNewVersion;
 
   return (
-    <CommunitySelectionModal
+    <CommunitySelectionModalFromDeposit
       permissionsPerField={permissionsPerField}
       modalHeader={i18next.t("Select a collection")}
       onCommunityChange={(community) => {
