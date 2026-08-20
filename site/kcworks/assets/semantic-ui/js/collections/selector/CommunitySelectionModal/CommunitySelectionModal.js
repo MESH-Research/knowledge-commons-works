@@ -84,7 +84,6 @@ const CommunitySelectionModal = ({
   displaySelected = false,
   extraContentComponents = undefined,
   focusAddButtonHandler = undefined,
-  handleOnClose = undefined,
   isInitialSubmission = true,
   modalHeader = undefined,
   modalOpen = false,
@@ -175,7 +174,6 @@ const CommunitySelectionModal = ({
           open={modalOpen}
           onClose={() => {
             onModalChange && onModalChange(false);
-            handleOnClose && handleOnClose();
           }}
           onOpen={handleModalOpen}
           trigger={trigger}
