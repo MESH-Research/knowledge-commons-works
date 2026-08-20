@@ -12,7 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
 import { Trans } from "react-i18next";
 import PropTypes from "prop-types";
-import { useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button, Header, Modal } from "semantic-ui-react";
 import { CommunityContext } from "@js/invenio_rdm_records/src/deposit/components/CommunitySelectionModal/CommunityContext";
 import { CommunitySelectionSearch } from "./CommunitySelectionSearch";
@@ -94,9 +94,8 @@ const CommunitySelectionModal = ({
   setModalOpen = undefined,
   showSubmissionWarning = false,
   trigger = undefined,
+  userCommunitiesMemberships,
 }) => {
-  const state = useStore().getState();
-  const userCommunitiesMemberships = state.deposit.config.user_communities_memberships;
   const [localChosenCommunity, setLocalChosenCommunity] = useState(chosenCommunity);
   const [warningOpen, setWarningOpen] = useState(false);
   const [warningSeen, setWarningSeen] = useState(false);
@@ -230,4 +229,18 @@ CommunitySelectionModal.propTypes = {
   showSubmissionWarning: PropTypes.bool,
 };
 
-export { CommunitySelectionModal };
+/**
+ * Deposit-form wrapper: reads memberships from the Redux deposit store.
+ * Use this instead of CommunitySelectionModal on surfaces that have a Provider.
+ * Other callers (e.g. the record detail page) should pass memberships as a prop.
+ */
+const CommunitySelectionModalFromDeposit = (props) => {
+  const userCommunitiesMemberships = useSelector(
+    (state) => state.deposit.config.user_communities_memberships
+  );
+  return (
+    <CommunitySelectionModal {...props} userCommunitiesMemberships={userCommunitiesMemberships} />
+  );
+};
+
+export { CommunitySelectionModal, CommunitySelectionModalFromDeposit };
