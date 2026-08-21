@@ -33,28 +33,58 @@ into it (see [Merging](#when-are-records-merged)).
 
 ## What runs automatically vs what you run by hand?
 
-There is **no scheduled Celery beat / `invenio-jobs` cron** for Names
-deduplication or bulk refresh today (unlike ROR funders/affiliations). Names
-maintenance is either **event-driven** or **operator-invoked CLI**.
+Names maintenance is a mix of **event-driven** side effects, **scheduled
+invenio-jobs**, and **operator CLI** for one-offs and triage.
 
-| Activity | Mode | When it runs |
-| -------- | ---- | ------------ |
-| USER create/update from local profile | **Automatic (event)** | After local account create/update/association (Profiles webhook, login refresh, `users update`, name-parts change, etc.) via `sync_user_to_names` |
-| CITED create/update from draft metadata | **Automatic (event)** | On deposit draft create/update (`CitedNamesUpsertComponent`) |
-| Merge CITED → USER for a shared ORCID | **Automatic (event)** | As a side effect of the two paths above when `resolve(orcid)` finds a USER (and auto-merge is enabled) |
-| Bulk USER backfill / refresh (`sync-now --all`) | **Manual** | Operator CLI (optionally `--background`) |
-| Bulk CITED backfill from published records | **Manual** | Operator CLI |
-| Sweep ORCID-sharing duplicates (`merge-orcid-duplicates`) | **Manual** | Operator CLI — not on a schedule |
-| Soft-duplicate scan (`find-duplicates`) | **Manual** | Operator CLI (or one-shot Celery via `--background` on that command) — **not** on a schedule |
-| Review / dismiss flagged pairs | **Manual** | `list-duplicates`, `dismiss-duplicate`, etc. |
+### Event-driven (no schedule)
 
-```{note}
-Service docstrings sometimes mention a periodic `KCWorksNamesSyncJob`. That job
-is **not** registered in the current deploy path. Until it is, treat
-`merge-orcid-duplicates` and `find-duplicates` as something an administrator
-must run when needed.
+| Activity | When it runs |
+| -------- | ------------ |
+| USER create/update from local profile | After local account create/update/association (Profiles webhook, login refresh, `users update`, name-parts change, etc.) via `sync_user_to_names` |
+| CITED create/update from draft metadata | On deposit draft create/update (`CitedNamesUpsertComponent`) |
+| Merge CITED → USER for a shared ORCID | As a side effect of the two paths above when `resolve(orcid)` finds a USER (and auto-merge is enabled) |
+
+### Scheduled jobs (invenio-jobs)
+
+Registered by `setup-services.sh` / `setup-services-production.sh` (idempotent
+`kcworks-jobs upsert`). The `scheduler` compose service must be running. Default
+schedule is **Sundays UTC**, after the ROR/awards window:
+
+| Job task id | Default schedule (UTC) | What it does |
+| ----------- | ---------------------- | ------------ |
+| `merge_names_orcid_duplicates` | Sunday 07:00 | Auto-merge ORCID-sharing Names pairs (CITED → USER where safe) |
+| `find_names_duplicates` | Sunday 08:00 | Soft-duplicate scan; persists candidates for review |
+| `sync_names_missing_users` | Sunday 09:00 | Bulk USER backfill with `missing_only=True` |
+
+Re-register or change a schedule (same pattern as ROR jobs):
+
+```shell
+invenio kcworks-jobs upsert merge_names_orcid_duplicates \
+    --title "Merge Names ORCID duplicates" \
+    --schedule "crontab:minute=0,hour=7,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert find_names_duplicates \
+    --title "Find Names duplicate candidates" \
+    --schedule "crontab:minute=0,hour=8,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert sync_names_missing_users \
+    --title "Sync missing Names USER records" \
+    --schedule "crontab:minute=0,hour=9,day_of_week=0" \
+    --queue celery
 ```
 
+Add `--run-now` to dispatch one immediate run in addition to the schedule.
+Existing deploys that predate these jobs need the upsert commands once (or a
+re-run of the setup-services schedule section).
+
+### Manual CLI only
+
+| Activity | Command / notes |
+| -------- | --------------- |
+| Refresh specific USERs / full `--all` refresh (not missing-only) | `user-data names sync-now` |
+| Bulk CITED backfill from published records | `backfill-cited-from-records` |
+| Review / dismiss soft-duplicate pairs | `list-duplicates`, `dismiss-duplicate`, `undismiss-duplicate`, … |
+| One-shot CLI equivalents of the jobs | `merge-orcid-duplicates`, `find-duplicates`, `sync-now --all --missing-only` |
 ## When are USER records created or updated?
 
 USER records are written by `NamesSyncService.upsert_name_for_user` (also
@@ -149,23 +179,22 @@ that case is treated as a duplicate-user anomaly for review.
 ## When are pairs flagged for review?
 
 Not every near-duplicate can be auto-merged (especially similar names **without**
-a shared ORCID). Flagging is **not** continuous background work:
+a shared ORCID). Soft-duplicate flagging is driven by the scheduled
+`find_names_duplicates` job (or an operator running `find-duplicates`):
 
-1. An operator runs `invenio user-data names find-duplicates` (optionally
-   `--background`). That scores candidate pairs and persists
-   cross-references for triage.
+1. The job/CLI scores candidate pairs and persists cross-references for triage.
 2. `list-duplicates` shows open candidates.
 3. `dismiss-duplicate` / `undismiss-duplicate` /
    `list-dismissed-duplicates` manage false positives via
    `props.dismissed_duplicates` on the Names records.
 
-Recommended order: run `merge-orcid-duplicates` first so ORCID-identical pairs
-that can be folded safely are handled by merge, then `find-duplicates` for what
-remains.
+Recommended order (also the default Sunday schedule): ORCID merge first
+(`merge_names_orcid_duplicates`), then soft-duplicate scan
+(`find_names_duplicates`).
 
 ORCID-identical pairs that *can* be folded during normal USER/CITED upserts are
-merged opportunistically (see [Merging](#when-are-records-merged)); they do not
-wait for a scheduled job.
+still merged opportunistically (see [Merging](#when-are-records-merged)); they do
+not wait for the weekly job.
 
 ## How do I inspect or force a refresh?
 
@@ -200,5 +229,6 @@ Draft / published creatibutor with ORCID          │
               ├─ USER found by ORCID? ── merge ───┘
               └─ else ── create/update CITED (PID = orcid)
 
-Similar names, no safe ORCID merge ──► find-duplicates (manual) ──► review / dismiss
+Similar names, no safe ORCID merge ──► find_names_duplicates (scheduled / CLI)
+                                              └──► list-duplicates / dismiss
 ```

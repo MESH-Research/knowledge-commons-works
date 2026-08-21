@@ -546,10 +546,12 @@ using different forms of one's name. These situations can lead to duplicate
 index entries for the same person.
 
 ```{important}
-There is **no scheduled** Names deduplication job in the current deploy.
-Opportunistic ORCID merges happen during normal USER/CITED upserts; corpus-wide
-ORCID merge and soft-duplicate scanning are **manual** CLI operations. See
-[Names Vocabulary Lifecycle — automatic vs manual](names_vocabulary.md#what-runs-automatically-vs-what-you-run-by-hand).
+Corpus-wide ORCID merge and soft-duplicate scanning run on a **weekly
+schedule** once the Names jobs are registered (see
+[Names Vocabulary Lifecycle — scheduled jobs](names_vocabulary.md#scheduled-jobs-invenio-jobs)).
+Opportunistic ORCID merges also happen during normal USER/CITED upserts.
+Reviewing and dismissing soft-duplicate pairs remains a **manual** admin step
+(`list-duplicates`, `dismiss-duplicate`, …).
 ```
 
 If multiple Names records share the same ORCID, merge them with this command
