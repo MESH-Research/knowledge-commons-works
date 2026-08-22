@@ -32,4 +32,9 @@ const mapStateToProps = (state) => {
   return { extraCheckboxes };
 };
 
-export const KcworksSubmitReviewModal = connect(mapStateToProps)(SubmitReviewModal);
+// Connect the stock modal class, not the Overridable wrapper. Wrapping
+// SubmitReviewModal itself and registering it under the same override id
+// recurses (wrapper → override → wrapper → …) and freezes the tab.
+export const KcworksSubmitReviewModal = connect(mapStateToProps)(
+  SubmitReviewModal.originalComponent
+);
