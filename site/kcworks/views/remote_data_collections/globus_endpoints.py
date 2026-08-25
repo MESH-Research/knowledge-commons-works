@@ -34,6 +34,7 @@ class GlobusEndpointInfo(View):
                 raise Exception("globus user ID not found in current user.")
             
             globus_user_id = remote_account.extra_data['globus_id']
+            netid = remote_account.extra_data.get('username', '')
             
             #constructing request url
             endpoint_search_url = (
@@ -85,7 +86,8 @@ class GlobusEndpointInfo(View):
                 
                 return jsonify({
                     "endpoints": endpoint_data,
-                    "has_token": True
+                    "has_token": True,
+                    "netid": netid
                 }), 200
         except Exception as e:
             current_app.logger.error("Exception occurred: %s", str(e))
@@ -129,6 +131,11 @@ class GlobusFolderLS(View):
             ls_res = requests.get(ls_url, headers=headers)
 
             if ls_res.status_code == 200:
+                data = ls_res.json().get('DATA', [])
+                
+                current_app.logger.info("--- ROOT FOLDER METADATA ---")
+                current_app.logger.info(json.dumps(data, indent=2)) 
+
                 resp = jsonify(ls_res.json().get('DATA', []))
                 resp.headers['X-CSRFToken'] = generate_csrf()
                 return resp
@@ -211,6 +218,71 @@ class GlobusGuestCollectionProvision(View):
             tb = traceback.format_exc()
             current_app.logger.error("Unhandled exception in GlobusGuestCollectionProvision: %s\n%s", str(e), tb)
             resp = jsonify({"error": "Internal server error during provisioning", "traceback": tb})
+            resp.status_code = 500
+            resp.headers['X-CSRFToken'] = generate_csrf()
+            return resp
+
+class GlobusGuestCollectionCheck(View):
+    """API view to fetch all existing guest collections for a given mapped endpoint."""
+    decorators = [login_required]
+
+    def dispatch_request(self):
+        endpoint_id = request.args.get("endpoint_id")
+
+        if not endpoint_id:
+            return jsonify({"error": "Missing endpoint_id parameter"}), 400
+
+        try:
+            remote_account = RemoteAccount.query.filter_by(user_id=current_user.get_id()).first()
+            if not remote_account or 'globus_id' not in remote_account.extra_data:
+                resp = jsonify({"error": "Globus account not linked or missing Globus ID"})
+                resp.status_code = 401
+                resp.headers['X-CSRFToken'] = generate_csrf()
+                return resp
+
+            transfer_token = RemoteToken.get(
+                user_id=current_user.get_id(),
+                client_id=remote_account.client_id,
+                token_type="transfer",
+            )
+
+            if not transfer_token:
+                resp = jsonify({"error": "Missing required Globus token. Please log out and re-authorize."})
+                resp.status_code = 401
+                resp.headers['X-CSRFToken'] = generate_csrf()
+                return resp
+
+            transfer_headers = {"Authorization": f"Bearer {transfer_token.access_token}"}
+
+            search_url = "https://transfer.api.globus.org/v0.10/endpoint_search?filter_scope=shared-by-me"
+            search_res = requests.get(search_url, headers=transfer_headers)
+
+            if search_res.status_code == 200:
+                data = search_res.json().get('DATA', [])
+                matched_collections = []
+            
+                for ep in data:
+                    # Filter down to only those on the selected mapped collection (e.g., MSU Data Hub)
+                    if ep.get('mapped_collection_id') == endpoint_id:
+                        matched_collections.append({
+                            "id": ep.get('id'),
+                            "display_name": ep.get('display_name')
+                        })
+
+                resp = jsonify({"matches": matched_collections})
+                resp.headers['X-CSRFToken'] = generate_csrf()
+                return resp
+
+            current_app.logger.error("Globus API returned error during check: %s", search_res.text)
+            resp = jsonify({"error": "Globus API search failed"})
+            resp.status_code = search_res.status_code
+            resp.headers['X-CSRFToken'] = generate_csrf()
+            return resp
+
+        except Exception as e:
+            tb = traceback.format_exc()
+            current_app.logger.error("Unhandled exception in GlobusGuestCollectionCheck: %s\n%s", str(e), tb)
+            resp = jsonify({"error": str(e)})
             resp.status_code = 500
             resp.headers['X-CSRFToken'] = generate_csrf()
             return resp

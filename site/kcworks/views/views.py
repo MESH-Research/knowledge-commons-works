@@ -10,7 +10,7 @@ from kcworks.views.task_results.task_results import TaskResults
 
 from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
 from kcworks.views.remote_data_collections.globus_callback import GlobusCallback
-from kcworks.views.remote_data_collections.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS, GlobusGuestCollectionProvision
+from kcworks.views.remote_data_collections.globus_endpoints import GlobusEndpointInfo, GlobusFolderLS, GlobusGuestCollectionProvision, GlobusGuestCollectionCheck
 
 
 def create_blueprint(app):
@@ -95,6 +95,11 @@ def create_api_blueprint(app):
             "/globus/provision",
             view_func=GlobusGuestCollectionProvision.as_view("globus_guest_collection_provision"),
             methods=["POST"],
+        )
+
+        blueprint.add_url_rule(
+            "/globus/collections/check",
+            view_func=GlobusGuestCollectionCheck.as_view("globus_guest_collection_check"),
         )
 
         # Register error handlers
