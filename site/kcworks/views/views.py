@@ -11,6 +11,7 @@ from kcworks.views.remote_data_collections.globus_callback import GlobusCallback
 from kcworks.views.remote_data_collections.globus_endpoints import (
     GlobusEndpointInfo,
     GlobusFolderLS,
+    GlobusGuestCollectionCheck,
     GlobusGuestCollectionProvision,
 )
 from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
@@ -107,6 +108,13 @@ def create_api_blueprint(app):
                 "globus_guest_collection_provision"
             ),
             methods=["POST"],
+        )
+
+        blueprint.add_url_rule(
+            "/globus/collections/check",
+            view_func=GlobusGuestCollectionCheck.as_view(
+                "globus_guest_collection_check"
+            ),
         )
 
         # Register error handlers

@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import apiClient from "@js/kcworks/utils/apiClient";
-import { Accordion, AccordionTitle, AccordionContent, Icon, Popup, Menu, Segment, Input, Button, Dropdown, Message } from "semantic-ui-react";
+import { Accordion, AccordionTitle, AccordionContent, Icon, Popup, Menu, Segment, Input, Button, Dropdown, Message, Grid } from "semantic-ui-react";
 import { FieldLabel } from "react-invenio-forms";
 import { useFormikContext, getIn } from "formik";
 
-export const TreeItem = ({ item, endpointId, path = "/", depth = 0, autoOpen = false }) => {
+export const TreeItem = ({ item, endpointId, path = "/", depth = 0, autoOpen = false, autoCheckAccess = false, selectedFolder, onSelectFolder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [accessStatus, setAccessStatus] = useState('unknown'); 
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (autoCheckAccess && isDirectory && accessStatus === 'unknown') {
+      const checkAccess = async () => {
+        try {
+          await apiClient.get(`/api/globus/ls/${endpointId}`, { params: { path: currentItemPath } });
+          if (isMounted) setAccessStatus('allowed');
+        } catch (err) {
+          if (isMounted && (err.response?.status === 403 || err.response?.status === 401)) {
+            setAccessStatus('denied');
+          }
+        }
+      };
+      checkAccess();
+    }
+    return () => { isMounted = false; };
+  }, [autoCheckAccess, isDirectory, endpointId, currentItemPath, accessStatus]);
 
   const isDirectory = item.type === 'dir';
   const currentItemPath = path === "/" ? `/${item.name}` : `${path}/${item.name}`;
@@ -100,6 +120,29 @@ export const TreeItem = ({ item, endpointId, path = "/", depth = 0, autoOpen = f
     }
   };
 
+  const handleSelectClick = async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (accessStatus === 'allowed') {
+      onSelectFolder(currentItemPath);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await apiClient.get(`/api/globus/ls/${endpointId}`, { params: { path: currentItemPath } });
+      setAccessStatus('allowed');
+      onSelectFolder(currentItemPath);
+    } catch (err) {
+      if (err.response?.status === 403 || err.response?.status === 401) {
+        setAccessStatus('denied');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
 if (!isDirectory) {
     return (
       <div style={{ padding: '5px 0', marginLeft: `${depth > 0 ? 25 : 0}px`, display: 'flex', alignItems: 'center' }}>
@@ -117,33 +160,65 @@ if (!isDirectory) {
     );
   }
 
+  const showSelect = isHovered || selectedFolder === currentItemPath || loading || accessStatus === 'denied';
+
   return (
     <Accordion style={{ marginLeft: `${depth > 0 ? 15 : 0}px`, marginTop: '0' }}>
       <AccordionTitle
-        as="button"
-        type="button"
+        as="div"
         active={isOpen}
         onClick={handleToggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className="ui fluid transparent button file-tree-btn"
-        style={{ padding: "5px 0", display: "flex", alignItems: "center" }}
+        style={{ padding: "5px 0", display: "flex", alignItems: "center", cursor: accessStatus === 'denied' ? "not-allowed" : "pointer" }}
       >
         <Icon 
           name={isOpen ? "angle down" : "angle right"} 
           style={{ minWidth: '20px', textAlign: 'center' }} 
         />
         <Icon name={isOpen ? "folder open" : "folder"} color="yellow" style={{ marginLeft: '4px', marginRight: '8px' }} />
-        <span style={{ flexGrow: 1 }}>{item.name}</span>
+        
+        <span style={{ 
+          flexGrow: 1, 
+          textAlign: "left",
+          fontWeight: selectedFolder === currentItemPath ? "bold" : "normal",
+          color: selectedFolder === currentItemPath ? "#2185d0" : "inherit"
+        }}>
+          {item.name}
+        </span>
+        
         {isOpen && !loading && children.length === 0 && (
           <span style={{ fontSize: '0.8em', color: 'gray', marginLeft: '10px' }}>(Empty)</span>
         )}
-        <Popup
-          content="Open in Globus"
-          trigger={
-            <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
-              <Icon name="external alternate" style={{ marginLeft: '12px', color: '#2185d0' }} />
-            </a>
-          }
-        />
+
+        <div style={{ marginLeft: '15px', minWidth: '70px', textAlign: 'right', visibility: showSelect ? 'visible' : 'hidden' }}>
+          {loading ? (
+            <Icon name="spinner" loading color="blue" />
+          ) : accessStatus === 'denied' ? (
+            <span style={{ color: 'red', fontSize: '0.85em', fontWeight: 'bold' }}>Denied</span>
+          ) : (
+            <Button 
+              size="mini" 
+              compact 
+              color={selectedFolder === currentItemPath ? "blue" : null}
+              onClick={handleSelectClick}
+            >
+              {selectedFolder === currentItemPath ? "Selected" : "Select"}
+            </Button>
+          )}
+        </div>
+
+        {selectedFolder === currentItemPath && (
+          <Popup
+            content="Open in Globus"
+            trigger={
+              <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
+                <Icon name="external alternate" style={{ marginLeft: '12px', color: '#2185d0' }} />
+              </a>
+            }
+          />
+        )}
       </AccordionTitle>
       
       <AccordionContent active={isOpen} style={{ paddingTop: '0', paddingBottom: '0' }}>
@@ -160,6 +235,9 @@ if (!isDirectory) {
               path={currentItemPath} 
               depth={depth + 1} 
               autoOpen={false}
+              autoCheckAccess={false} 
+              selectedFolder={selectedFolder}
+              onSelectFolder={onSelectFolder}
             />
           ))
         )}
@@ -168,7 +246,29 @@ if (!isDirectory) {
   );
 };
 
-export const FileTree = ({ initialFiles, endpointId, fieldPath }) => {
+export const FileTree = ({ initialFiles, endpointId, fieldPath, selectedFolder, onSelectFolder, netid, searchQuery }) => {
+  let filteredFiles = initialFiles || [];
+  if (searchQuery) {
+    filteredFiles = filteredFiles.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+
+  const suggestedFiles = [];
+  const otherFiles = [];
+
+  if (netid) {
+    filteredFiles.forEach(f => {
+      if (f.name.toLowerCase().startsWith(netid.toLowerCase())) {
+        suggestedFiles.push(f);
+      } else {
+        otherFiles.push(f);
+      }
+    });
+  } else {
+    otherFiles.push(...filteredFiles);
+  }
+
+  const autoCheck = (initialFiles && initialFiles.length < 15);
+  
   return (
     <div className="field">
       <div 
@@ -179,13 +279,46 @@ export const FileTree = ({ initialFiles, endpointId, fieldPath }) => {
         <Icon name="sitemap" /> Collection File Tree
       </div>
       <div style={{ marginTop: '10px' }}>
-        {initialFiles && initialFiles.length > 0 ? (
-          initialFiles.map((item, index) => (
-            <TreeItem key={index} item={item} endpointId={endpointId} autoOpen={true} />
-          ))
-        ) : (
-          <div className="ui message info">No files found in the root directory.</div>
+        {/* Suggested Buckets */}
+        {suggestedFiles.length > 0 && (
+          <div style={{ marginBottom: '15px' }}>
+            <h5 className="ui dividing header" style={{ color: "#2185d0" }}>Suggested Buckets (Your NetID)</h5>
+            {suggestedFiles.map((item, index) => (
+              <TreeItem 
+                key={`suggested-${index}`} 
+                item={item} 
+                endpointId={endpointId} 
+                autoOpen={false} 
+                autoCheckAccess={autoCheck}
+                selectedFolder={selectedFolder}
+                onSelectFolder={onSelectFolder}
+              />
+            ))}
+          </div>
         )}
+
+        {/* All Other Buckets */}
+        {otherFiles.length > 0 && (
+          <div>
+            {suggestedFiles.length > 0 && <h5 className="ui dividing header">All Other Buckets</h5>}
+            {otherFiles.map((item, index) => (
+              <TreeItem 
+                key={`other-${index}`} 
+                item={item} 
+                endpointId={endpointId} 
+                autoOpen={false}
+                autoCheckAccess={autoCheck}
+                selectedFolder={selectedFolder}
+                onSelectFolder={onSelectFolder}
+              />
+            ))}
+          </div>
+        )}
+
+        {filteredFiles.length === 0 && (
+          <div className="ui message info">No files found matching your search.</div>
+        )}
+
       </div>
     </div>
   );
@@ -198,13 +331,25 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
   const [hasToken, setHasToken] = useState(false);
   const [loadingInitial, setLoadingInitial] = useState(true);
 
+  const [netid, setNetid] = useState("");
+
   const [rootFiles, setRootFiles] = useState([]);
   const [loadingTree, setLoadingTree] = useState(false);
   const [treeError, setTreeError] = useState(null);
 
-  const [activeTab, setActiveTab] = useState("existing");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // creating guest collection - tab 2
+  const [activeTab, setActiveTab] = useState("existing");
+  const [isEditingMappedCollection, setIsEditingMappedCollection] = useState(true);
+
+  const [selectedFolder, setSelectedFolder] = useState(null);
+
+  const [matchedCollections, setMatchedCollections] = useState(null);
+  const [checkingCollections, setCheckingCollections] = useState(false);
+  const [checkError, setCheckError] = useState(null);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  // creating bucket - tab 2
   const [bucketName, setBucketName] = useState("");
   const [mappedCollection, setMappedCollection] = useState("");
   const [isProvisioning, setIsProvisioning] = useState(false);
@@ -215,6 +360,7 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
   useEffect(() => {
     const initialFormikValue = getIn(values, fieldPath, null);
     if (initialFormikValue) {
+      setIsEditingMappedCollection(false);
       try {
         setGlobusState(JSON.parse(initialFormikValue));
       } catch (e) {
@@ -245,6 +391,7 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
         }
         setHasToken(true);
         setEndpoints(response.data.endpoints || []);
+        setNetid(response.data.netid || "");
       })
       .catch((err) => {
         setHasToken(false);
@@ -259,6 +406,8 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
 
       setLoadingTree(true);
       setTreeError(null);
+      setSelectedFolder(null);
+      setSearchQuery("");
 
       apiClient.get(`/api/globus/ls/${selectedCollection}`, { params: { path: "/" } })
       .then((response) => {
@@ -271,6 +420,30 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
       .finally(() => {
           setLoadingTree(false);
       });
+  }, [selectedCollection]);
+
+  useEffect(() => {
+    if (!selectedCollection) {
+      setMatchedCollections(null);
+      return;
+    }
+
+    setCheckingCollections(true);
+    setCheckError(null);
+
+    apiClient.get('/api/globus/collections/check', {
+      params: { endpoint_id: selectedCollection }
+    })
+    .then((response) => {
+      setMatchedCollections(response.data.matches || []);
+    })
+    .catch((err) => {
+      console.error("Failed to fetch guest collections:", err);
+      setCheckError("Failed to getch your guest collections");
+    })
+    .finally(() => {
+      setCheckingCollections(false);
+    });
   }, [selectedCollection]);
 
   const handleProvision = async () => {
@@ -346,81 +519,205 @@ const RemoteDataCollectionField = ({ fieldPath }) => {
       <FieldLabel htmlFor={fieldPath} icon="cloud download" label="Globus Transfer Configuration" />
       <p style={{ color: "#666", marginBottom: "1em" }}>Link an existing Data Hub Guest Collection or provision a new bucket.</p>
 
-      {/* THE TABS */}
-      <Menu pointing secondary color="blue">
-        <Menu.Item name="Select Existing Guest Collection" active={activeTab === "existing"} onClick={() => setActiveTab("existing")} />
-        <Menu.Item name="Provision New Bucket" active={activeTab === "new"} onClick={() => setActiveTab("new")} />
-      </Menu>
-
-      <Segment attached="bottom">
-        {/* TAB 1: EXISTING FILE TREE */}
-        {activeTab === "existing" && (
-          <div className="ui form">
-            <div className="grouped fields" style={{ maxHeight: "200px", overflowY: "auto", paddingRight: "10px" }}>
-              {endpoints.length > 0 ? endpoints.map((ep) => (
-                <div className="field" key={ep.id}>
-                  <div className="ui radio checkbox">
-                    <input
-                      id={`radio-${ep.id}`}
-                      type="radio"
-                      checked={selectedCollection === ep.id}
-                      onChange={() => updateGlobusState({ guest_collection_id: ep.id })}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <label htmlFor={`radio-${ep.id}`} style={{ cursor: "pointer" }}>
-                      {ep.display_name || ep.id}
-                    </label>
-                  </div>
+      {/* 1. MAPPED COLLECTION SELECTOR (COLLAPSIBLE) */}
+      {(!selectedCollection || isEditingMappedCollection) ? (
+        <Segment style={{ backgroundColor: "#f8f8f9" }}>
+          <h5 className="ui header">Select Mapped Collection</h5>
+          <div className="grouped fields" style={{ maxHeight: "150px", overflowY: "auto" }}>
+            {endpoints.length > 0 ? endpoints.map((ep) => (
+              <div className="field" key={ep.id}>
+                <div className="ui radio checkbox">
+                  <input
+                    id={`radio-${ep.id}`}
+                    type="radio"
+                    checked={selectedCollection === ep.id}
+                    onChange={() => {
+                      updateGlobusState({ guest_collection_id: ep.id });
+                      setSelectedFolder(null);
+                      setIsEditingMappedCollection(false); // NEW: Auto-collapse on selection
+                    }}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <label 
+                    htmlFor={`radio-${ep.id}`} 
+                    onClick={() => {
+                      if (selectedCollection === ep.id) {
+                        setIsEditingMappedCollection(false);
+                      }
+                    }}
+                    style={{ cursor: "pointer", fontWeight: selectedCollection === ep.id ? "bold" : "normal" }}
+                  >
+                    {ep.display_name || ep.id}
+                  </label>
                 </div>
-              )) : <Message info>No collections found on your account.</Message>}
-            </div>
+              </div>
+            )) : <Message info>No collections found on your account.</Message>}
+          </div>
+        </Segment>
+      ) : (
+        <Segment style={{ backgroundColor: "#f8f8f9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <strong>Selected Mapped Collection: </strong> 
+            {endpoints.find(ep => ep.id === selectedCollection)?.display_name || selectedCollection}
+          </div>
+          <Button size="small" basic onClick={() => setIsEditingMappedCollection(true)}>
+            Change
+          </Button>
+        </Segment>
+      )}
 
-            {selectedCollection && (
-              <div style={{ marginTop: "15px", padding: "15px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px" }}>
-                <div style={{ marginBottom: "15px" }}><strong>Active Collection:</strong> <code>{selectedCollection}</code></div>
-                {loadingTree ? <div className="ui active centered inline loader"></div> 
-                 : treeError ? <Message negative>{treeError}</Message> 
-                 : <FileTree initialFiles={rootFiles} endpointId={selectedCollection} fieldPath={fieldPath} />}
+      {selectedCollection && !isEditingMappedCollection && (
+        <>
+          <Menu pointing secondary color="blue" style={{ marginTop: "20px" }}>
+            <Menu.Item name="Select Existing Bucket" active={activeTab === "existing"} onClick={() => setActiveTab("existing")} />
+            <Menu.Item name="Provision New Bucket" active={activeTab === "new"} onClick={() => setActiveTab("new")} />
+          </Menu>
+
+          <Segment attached="bottom">
+            {/* TAB 1: SIDE-BY-SIDE PANELS */}
+            {activeTab === "existing" && (
+              <>
+                {/* NEW: Full-width alert message moved above the grid */}
+                <Message info icon>
+                  <Icon name="info circle" />
+                  <Message.Content>
+                    Select a folder to create a new Guest Collection on it, or select an existing Guest Collection below.
+                  </Message.Content>
+                </Message>
+
+                <Grid divided>
+                  <Grid.Row>
+                    {/* LEFT COLUMN: FILE TREE */}
+                    <Grid.Column width={8}>
+                      {loadingTree ? (
+                        <div className="ui active centered inline loader"></div> 
+                      ) : treeError ? (
+                        <Message negative>{treeError}</Message> 
+                      ) : (
+                        <>
+                          <Input 
+                            icon="search" 
+                            placeholder="Search buckets..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            fluid
+                            style={{ marginBottom: "15px" }}
+                          />
+                          <div style={{ maxHeight: "400px", overflowY: "auto", paddingRight: "10px" }}>
+                            <FileTree 
+                              initialFiles={rootFiles} 
+                              endpointId={selectedCollection} 
+                              fieldPath={fieldPath} 
+                              selectedFolder={selectedFolder} 
+                              onSelectFolder={setSelectedFolder} 
+                              netid={netid}
+                              searchQuery={searchQuery}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </Grid.Column>
+                    
+                    {/* RIGHT COLUMN: GUEST COLLECTIONS & CREATION */}
+                    <Grid.Column width={8}>
+                      {/* List Existing Collections */}
+                      <h5 className="ui dividing header">Your Guest Collections</h5>
+                      {checkingCollections ? (
+                        <div className="ui active centered inline loader" style={{ margin: "20px" }}></div>
+                      ) : checkError ? (
+                        <Message negative>{checkError}</Message>
+                      ) : matchedCollections && matchedCollections.length > 0 ? (
+                        <div className="grouped fields" style={{ maxHeight: "250px", overflowY: "auto", marginBottom: "20px" }}>
+                          {matchedCollections.map((mc) => (
+                            <div className="field" key={mc.id}>
+                              <div className="ui radio checkbox">
+                                <input
+                                  id={`radio-mc-${mc.id}`}
+                                  type="radio"
+                                  name="matched_guest_collection"
+                                  checked={globusState.guest_collection_id === mc.id}
+                                  onChange={() => updateGlobusState({ 
+                                    guest_collection_id: mc.id
+                                  })}
+                                  style={{ cursor: "pointer" }}
+                                />
+                                <label htmlFor={`radio-mc-${mc.id}`} style={{ cursor: "pointer" }}>
+                                  <strong>{mc.display_name || "Unnamed Collection"}</strong>
+                                  <br /><span style={{ fontSize: "0.85em", color: "gray" }}>{mc.id}</span>
+                                </label>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <Message warning>No guest collections found on this mapped endpoint.</Message>
+                      )}
+
+                      {/* Create New Collection Form */}
+                      {selectedFolder && (
+                        <div style={{ marginTop: "25px", padding: "15px", backgroundColor: "#f8f8f9", border: "1px solid #d4d4d5", borderRadius: "4px" }}>
+                          <h5 className="ui header">Create a New Guest Collection</h5>
+                          <div style={{ marginBottom: "15px" }}>
+                            <strong>Target Folder:</strong> <code style={{ color: "#2185d0" }}>{selectedFolder}</code>
+                          </div>
+                          <div className="field">
+                            <label htmlFor="newGuestCollectionName">Guest Collection Name</label>
+                            <Input
+                              id="newGuestCollectionName"
+                              placeholder="e.g., My Research Data" 
+                              value={bucketName}
+                              onChange={(e) => setBucketName(e.target.value)}
+                              fluid
+                            />
+                          </div>
+                          <Button primary disabled={!bucketName}>
+                            Create & Link Collection
+                          </Button>
+                        </div>
+                      )}
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </>
+            )}
+
+            {/* TAB 2: PROVISION NEW BUCKET */}
+            {activeTab === "new" && (
+              <div className="ui form">
+                <div className="field">
+                  <label htmlFor="mappedCollectionDropdown">Parent Mapped Collection</label>
+                  <Dropdown
+                    id="mappedCollectionDropdown"
+                    selection
+                    fluid
+                    options={dropdownOptions}
+                    value={mappedCollection}
+                    onChange={(e, { value }) => setMappedCollection(value)}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="bucketNameInput">New Bucket / Folder Name</label>
+                  <Input
+                    id="bucketNameInput"
+                    placeholder="e.g., my-research-dataset"
+                    value={bucketName}
+                    onChange={(e) => setBucketName(e.target.value)}
+                  />
+                </div>
+                {provisionError && <Message negative>{provisionError}</Message>}
+                <Button 
+                  primary 
+                  loading={isProvisioning} 
+                  disabled={isProvisioning || !bucketName}
+                  onClick={handleProvision}
+                >
+                  Provision Bucket
+                </Button>
               </div>
             )}
-          </div>
-        )}
-
-        {/* TAB 2: PROVISION NEW BUCKET */}
-        {activeTab === "new" && (
-          <div className="ui form">
-            <div className="field">
-              <label htmlFor="mappedCollectionDropdown">Parent Mapped Collection</label>
-              <Dropdown
-                id="mappedCollectionDropdown"
-                selection
-                fluid
-                options={dropdownOptions}
-                value={mappedCollection}
-                onChange={(e, { value }) => setMappedCollection(value)}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="bucketNameInput">New Bucket / Folder Name</label>
-              <Input
-                id="bucketNameInput"
-                placeholder="e.g., my-research-dataset"
-                value={bucketName}
-                onChange={(e) => setBucketName(e.target.value)}
-              />
-            </div>
-            {provisionError && <Message negative>{provisionError}</Message>}
-            <Button 
-              primary 
-              loading={isProvisioning} 
-              disabled={isProvisioning || !bucketName}
-              onClick={handleProvision}
-            >
-              Provision Bucket
-            </Button>
-          </div>
-        )}
-      </Segment>
+          </Segment>
+        </>
+      )}
     </div>
   );
 };

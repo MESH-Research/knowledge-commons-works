@@ -1,0 +1,39 @@
+final commit of globus integration work
+
+# Conflicts:
+#	assets/templates/custom_fields/RemoteDataCollectionField.js
+#	site/kcworks/assets/semantic-ui/js/kcworks/utils/apiClient.js
+#	site/kcworks/views/remote_data_collections/globus_endpoints.py
+#	site/kcworks/views/remote_data_collections/globus_login.py
+#
+# It looks like you may be committing a cherry-pick.
+# If this is not correct, please run
+#	git update-ref -d CHERRY_PICK_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Author:    Aditya Aggarwal <adityagg22@gmail.com>
+# Date:      Thu Apr 30 14:33:20 2026 -0400
+#
+# On branch dev/adi-updated
+# You are currently cherry-picking commit 931d1cfa.
+#
+# Changes to be committed:
+#	modified:   assets/less/site/elements/button.overrides
+#	new file:   assets/templates/custom_fields/RemoteDataCollectionField.js
+#	modified:   invenio.cfg
+#	new file:   site/kcworks/assets/semantic-ui/js/invenio_modular_deposit_form_extras/components/RemoteDataCollectionComponent.jsx
+#	modified:   site/kcworks/assets/semantic-ui/js/invenio_modular_deposit_form_extras/componentsMap.js
+#	new file:   site/kcworks/assets/semantic-ui/js/kcworks/utils/apiClient.js
+#	modified:   site/kcworks/dependencies/invenio-modular-detail-page
+#	modified:   site/kcworks/metadata_fields/kcr_metadata_fields.py
+#	new file:   site/kcworks/views/remote_data_collections/globus_endpoints.py
+#	new file:   site/kcworks/views/remote_data_collections/globus_login.py
+#	modified:   site/kcworks/webpack.py
+#
+# Changes not staged for commit:
+#	modified:   site/kcworks/dependencies/invenio-modular-detail-page (new commits)
+#

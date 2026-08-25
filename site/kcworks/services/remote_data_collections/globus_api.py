@@ -22,7 +22,11 @@ class GlobusAPIOAuthSettingsHelper(OAuthSettingsHelper):
             base_url="https://auth.globus.org/v2/",
             app_key="GLOBUS_API_CREDENTIALS",
             request_token_params={
-                "scope": "urn:globus:auth:scope:transfer.api.globus.org:all openid profile email"
+                "scope": (
+                    "urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/5fc63b76-751c-4399-b9f5-5d76c6d34c45/data_access] "
+                    "openid profile email "
+                    "urn:globus:auth:scope:9d3c28f4-dff5-40a8-ac0b-d4a0414ab86b:manage_collections[*https://auth.globus.org/scopes/5fc63b76-751c-4399-b9f5-5d76c6d34c45/data_access]"
+                )
             },
             # request_token_params={"scope": "openid"},
         )
@@ -187,11 +191,14 @@ def api_authorized_handler(resp, remote):
     
     try:
         transfer_token_data = None
+        gcs_token_data = None
         if "other_tokens" in resp:
             for t in resp["other_tokens"]:
+                resource_server = t.get("resource_server")
                 if t.get("resource_server") == "transfer.api.globus.org":
                     transfer_token_data = t
-                    break
+                elif resource_server == "9d3c28f4-dff5-40a8-ac0b-d4a0414ab86b":
+                    gcs_token_data = t
 
         if transfer_token_data:
             token_setter(
@@ -204,6 +211,17 @@ def api_authorized_handler(resp, remote):
             current_app.logger.info("Successfully saved Globus Transfer Token.")
         else:
             current_app.logger.warning("Globus response did not contain a Transfer Token.")
+        if gcs_token_data:
+            token_setter(
+                remote,
+                token=gcs_token_data["access_token"],
+                secret="",
+                token_type="gcs_datahub",
+                user=current_user,
+            )
+            current_app.logger.info("Successfully saved Globus GCS Data Hub Token.")
+        else:
+            current_app.logger.warning("Globus response did not contain a GCS Data Hub Token.")
     except Exception as e:
         current_app.logger.error(f"Error saving Globus Transfer Token: {e}")
 
