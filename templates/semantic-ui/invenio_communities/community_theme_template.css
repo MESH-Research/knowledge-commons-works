@@ -32,7 +32,7 @@
   {# ------------------------------------------------------------------------ #}
   {# Header background gradients #}
   {# ------------------------------------------------------------------------ #}
-  .page-subheader-outer:has(#community-detail-header)::after {
+  #community-detail-header.page-subheader-outer::after {
   content: "";
   position: absolute;
   bottom: -7rem !important;
@@ -57,7 +57,7 @@
   {# Header background logo repeat #}
   {# ------------------------------------------------------------------------ #}
   {%- if theme.get("mainHeaderUseLogo") %}
-  .page-subheader-outer:has(#community-detail-header)::before {
+  #community-detail-header.page-subheader-outer::before {
   content: "";
   position: absolute;
   bottom: -7rem !important;

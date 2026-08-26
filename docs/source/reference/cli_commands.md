@@ -335,7 +335,9 @@ Creates or updates a single `invenio-jobs` `Job` row for a registered task. The 
 
 Arguments:
 
-- `TASK` (positional, required): the registered task id, e.g. `process_ror_funders`. Must match a task registered via the `invenio_jobs.jobs` entry point.
+- `TASK` (positional, required): the registered task id, e.g. `process_ror_funders`
+  or `merge_names_orcid_duplicates`. Must match a task registered via the
+  `invenio_jobs.jobs` entry point.
 
 Named options:
 
@@ -355,6 +357,16 @@ Example — create or update the recurring ROR funders refresh:
 invenio kcworks-jobs upsert process_ror_funders \
     --title "Load ROR funders" \
     --schedule "crontab:minute=0,hour=3,day_of_week=0" \
+    --queue celery
+```
+
+Example — register the weekly Names ORCID-merge job (see
+[Names Vocabulary Lifecycle](../admin_guide/names_vocabulary.md#scheduled-jobs-invenio-jobs)):
+
+```shell
+invenio kcworks-jobs upsert merge_names_orcid_duplicates \
+    --title "Merge Names ORCID duplicates" \
+    --schedule "crontab:minute=0,hour=7,day_of_week=0" \
     --queue celery
 ```
 

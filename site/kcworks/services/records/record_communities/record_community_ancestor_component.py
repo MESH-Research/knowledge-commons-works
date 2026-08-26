@@ -8,8 +8,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from flask_principal import Identity
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.records.api import RDMRecord
@@ -20,12 +18,11 @@ from kcworks.services.records.record_communities.ancestors import (
 
 
 class RecordCommunityAncestorComponent(ServiceComponent):
-    """Add ancestor collections when records are linked to nested communities.
+    """Add ancestor collections when records are bulk-linked to nested communities.
 
-    `RecordCommunitiesService` runs this component before it adds the target
-    community. Upstream only adds the immediate parent in that loop; this mutates
-    `record.parent.communities` in place so the full ancestor chain is present
-    before the service adds the target collection.
+    Implements ``bulk_add`` only. ``RecordCommunitiesService.add()`` creates an
+    inclusion request; ancestor membership is applied on accept
+    (``CommunityInclusionAcceptAction``), same as deposit submission.
     """
 
     def _add_ancestors_for_community(
@@ -65,24 +62,6 @@ class RecordCommunityAncestorComponent(ServiceComponent):
             request=None,
             skip_immediate_parent=skip_immediate_parent,
         )
-
-    def add_community(
-        self,
-        identity: Identity,
-        record: RDMRecord,
-        communities: list[dict[str, Any]],
-        **kwargs,
-    ) -> None:
-        """Add missing ancestor communities before a single-record community add.
-
-        Args:
-            identity: Identity performing the add.
-            record: Record being linked to communities.
-            communities: Community payloads from the add request.
-            kwargs: Other arguments potentially including an active unit of work.
-        """
-        for community in communities:
-            self._add_ancestors_for_community(record, community["id"])
 
     def bulk_add(
         self,

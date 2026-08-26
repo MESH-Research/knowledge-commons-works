@@ -154,5 +154,20 @@ invenio kcworks-jobs upsert update_awards_cordis \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
 
+# Names vocabulary maintenance (see docs/source/admin_guide/names_vocabulary.md).
+echo -e "${yellow}Registering scheduled Names vocabulary jobs...${clear}"
+invenio kcworks-jobs upsert merge_names_orcid_duplicates \
+    --title "Merge Names ORCID duplicates" \
+    --schedule "crontab:minute=0,hour=7,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert find_names_duplicates \
+    --title "Find Names duplicate candidates" \
+    --schedule "crontab:minute=0,hour=8,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert sync_names_missing_users \
+    --title "Sync missing Names USER records" \
+    --schedule "crontab:minute=0,hour=9,day_of_week=0" \
+    --queue celery
+
 echo -e "${green}All done setting up services."
 echo -e "${green}Your instance is now ready to use.${clear}"

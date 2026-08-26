@@ -4,7 +4,8 @@ KCWorks stores user profile data locally and keeps it in sync with the Knowledge
 Commons Profiles service. Administrators can provision users in bulk, inspect
 accounts, merge duplicate local accounts, correct how a user's name is divided
 into parts, and maintain the Names vocabulary that powers creator lookup in the
-upload form.
+upload form. For how and when Names index entries are created, updated, merged,
+or flagged, see [Names Vocabulary Lifecycle](names_vocabulary.md).
 
 All of the operations below are run from the KCWorks UI app container. See
 [Starting an interactive shell](running_commands.md#starting-interactive-shell)
@@ -154,6 +155,11 @@ CLI reference:
 [`invenio user-data users update`](../reference/cli_commands.md#invenio-user-data-users-update).
 
 ## How do I update a KCWorks user's Names index entry with new data?
+
+```{seealso}
+Lifecycle overview (USER vs CITED, draft-save stubs, merge rules):
+[Names Vocabulary Lifecycle](names_vocabulary.md).
+```
 
 KCWorks maintains a search index (or "vocabulary") of names--along with the
 individual's affiliations and identifiers--for quickly populating the names
@@ -444,6 +450,11 @@ CLI reference:
 
 ## How do I backfill or refresh the Names vocabulary?
 
+```{seealso}
+[Names Vocabulary Lifecycle](names_vocabulary.md) for when automatic sync,
+draft-save CITED stubs, and ORCID merge apply versus these bulk commands.
+```
+
 The Names vocabulary is an index of user identities used for user name searches,
 as in the "contributor" fields on the upload form. It includes names and
 metadata for every KCWorks user, along with the people listed in the
@@ -524,29 +535,37 @@ CLI reference:
 
 ## How do I check for duplicate Names index entries?
 
+```{seealso}
+[Names Vocabulary Lifecycle — When are pairs flagged for review?](names_vocabulary.md#when-are-pairs-flagged-for-review).
+```
+
 Names index entries may be drawn from two different sources: KC user accounts
 and ORCID data, usually gathered when an ORCID-supplied name is selected as a
 contributor to a work. Alternately, someone might be included as a contributor
 using different forms of one's name. These situations can lead to duplicate
 index entries for the same person.
 
-A background task regularly searches the index for such duplicates and either
-merges them (where possible) or flags them for manual review. A set of CLI
-commands also facilitate manual deduplication.
+```{important}
+Corpus-wide ORCID merge and soft-duplicate scanning run on a **weekly
+schedule** once the Names jobs are registered (see
+[Names Vocabulary Lifecycle — scheduled jobs](names_vocabulary.md#scheduled-jobs-invenio-jobs)).
+Opportunistic ORCID merges also happen during normal USER/CITED upserts.
+Reviewing and dismissing soft-duplicate pairs remains a **manual** admin step
+(`list-duplicates`, `dismiss-duplicate`, …).
+```
 
-If multiple Names records share the same ORCID, they may be automatically merged
-using this command (running inside the app `ui` container):
+If multiple Names records share the same ORCID, merge them with this command
+(running inside the app `ui` container):
 
 ```shell
 invenio user-data names merge-orcid-duplicates
 ```
 
-We can also scan for Names index entries with names that are similar, even
-though they lack a common ORCID, marking them for manual review. First run
+To scan for Names index entries with similar names even without a shared ORCID
+(and mark them for manual review), run
 `invenio user-data names find-duplicates` and then
-`invenio user-data names list-duplicates` to view the results afterwards. The
-`list-duplicates` command may also be run at any time to view pairs flagged by
-the regular maintenance deduplication task.
+`invenio user-data names list-duplicates`. Re-run `list-duplicates` any time to
+see currently open candidates.
 
 CLI reference:
 [`invenio user-data names`](../reference/cli_commands.md#invenio-user-data-names)
