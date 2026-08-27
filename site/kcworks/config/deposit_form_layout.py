@@ -966,6 +966,7 @@ _FORM_PAGES = {
                     "section": "files",
                     "label": _("File Upload"),
                     "component": "FileUploadComponent",
+                    "required": True,
                     "classnames": "basic prominent-field-label mb-0 pb-0",
                 },
                 {
@@ -1021,6 +1022,7 @@ _FORM_PAGES = {
                     "section": "titles",
                     "label": _("Title"),
                     "component": "TitlesComponent",
+                    "required": True,
                     "icon": "book",
                     "classnames": "basic prominent-field-label",
                 },
@@ -1028,6 +1030,7 @@ _FORM_PAGES = {
                     "section": "dates",
                     "label": _("Publication Dates"),
                     "component": "CombinedDatesComponent",
+                    "required": True,
                     "classnames": "basic prominent-field-label",
                     "helpText": "",
                 },
@@ -1062,6 +1065,7 @@ _FORM_PAGES = {
                     "section": "creators",
                     "label": _("Primary Contributors"),
                     "component": "CreatorsComponentFlat",
+                    "required": True,
                     "classnames": "basic prominent-field-label",
                     "addButtonLabel": _("Add Contributor"),
                     "modal": {
