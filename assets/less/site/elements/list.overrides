@@ -1,4 +1,12 @@
 /* List theme overrides */
+.ui.list > .deposit-drag-listitem {
+  i.icon.drag-anchor {
+    padding-top: 0.35em;
+  }
+  .header {
+    line-height: 1.8em;
+  }
+}
 
 #licenses ul.details-list li.has-popup {
     background-color: transparent;

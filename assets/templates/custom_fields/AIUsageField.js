@@ -27,7 +27,7 @@ const AIUsageField = ({
   return (
     <Form.Field id={fieldPath} {...restProps}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
-      <Form.Group role="radiogroup" aria-labelledby="ai-usage-toggle" className="inline">
+      <Form.Group role="radiogroup" aria-labelledby="ai-usage-toggle" className="inline mt-10">
         <label id="ai-usage-toggle" className="invenio-field-label ai-usage-toggle-label">
           {i18next.t(ai_used.description)}
         </label>
