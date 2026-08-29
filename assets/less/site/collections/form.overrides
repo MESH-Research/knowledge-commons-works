@@ -54,10 +54,56 @@ textarea {
   }
 }
 
+/*
+ * Remap Invenio-theme's 5px-step spacing helpers onto the 16px / 8px rem grid.
+ * Upstream generates .mt-5 { margin-top: 5px !important; } etc.; here we snap
+ * those class names to nearby rem sizes so deposit-form layout aligns with
+ * @emSize: 16px. Scoped to #rdm-deposit-form only (experiment).
+ *
+ *   5  → 0.25rem (4px)   10 → 0.5rem (8px)   12 → 0.75rem (12px)  [new]
+ *   15 → 1rem (16px)     20 → 1.5rem (24px)   25 → 1.5rem (24px)
+ *   30 → 2rem (32px)
+ *
+ * Step 12 is KC-only (upstream never emitted *-12); use it in deposit-form
+ * markup when you need a half-rem between 8px and 16px.
+ */
+.remap-invenio-spacing-helpers(@n, @value) {
+  .m-@{n} {
+    margin: @value !important;
+  }
+  .mt-@{n} {
+    margin-top: @value !important;
+  }
+  .mb-@{n} {
+    margin-bottom: @value !important;
+  }
+  .ml-@{n} {
+    margin-left: @value !important;
+  }
+  .mr-@{n} {
+    margin-right: @value !important;
+  }
+  .p-@{n} {
+    padding: @value !important;
+  }
+  .pt-@{n} {
+    padding-top: @value !important;
+  }
+  .pb-@{n} {
+    padding-bottom: @value !important;
+  }
+  .pl-@{n} {
+    padding-left: @value !important;
+  }
+  .pr-@{n} {
+    padding-right: @value !important;
+  }
+}
+
 #rdm-deposit-form {
   #rdm-deposit-form-footer {
     > div {
-      width: 100%; 
+      width: 100%;
     }
 
     .sticky-footer-fixed,
@@ -70,6 +116,14 @@ textarea {
       }
     }
   }
+
+  .remap-invenio-spacing-helpers(5, 0.25rem);
+  .remap-invenio-spacing-helpers(10, 0.5rem);
+  .remap-invenio-spacing-helpers(12, 0.75rem);
+  .remap-invenio-spacing-helpers(15, 1rem);
+  .remap-invenio-spacing-helpers(20, 1.5rem);
+  .remap-invenio-spacing-helpers(25, 1.5rem);
+  .remap-invenio-spacing-helpers(30, 2rem);
 }
 
 // Fade + height collapse for ephemeral sidebar toasts (FadeCollapse / FadeCollapseStack).
