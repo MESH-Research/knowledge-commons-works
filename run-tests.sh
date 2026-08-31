@@ -30,19 +30,121 @@ function cleanup() {
   fi
 }
 
-# Check if any docker-compose projects are running
+# Resolve docker-services-cli compose YAML (same package ``up`` uses).
+function docker_services_cli_yml_path() {
+  local resolved candidate
+  if resolved="$(
+    uv run python -c \
+      "from pathlib import Path; import docker_services_cli; \
+print(Path(docker_services_cli.__file__).parent / 'docker-services.yml')" \
+      2>/dev/null
+  )" && [ -n "${resolved}" ] && [ -f "${resolved}" ]; then
+    echo "${resolved}"
+    return 0
+  fi
+  # Fallback when uv/import fails or Python minor version differs from a
+  # hardcoded --filepath in older scripts.
+  for candidate in .venv/lib/python*/site-packages/docker_services_cli/docker-services.yml; do
+    if [ -f "${candidate}" ]; then
+      echo "${candidate}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Host ports for services this runner will start (from compose YAML, not hardcoded).
+function docker_services_cli_expected_host_ports() {
+  local yml ports_str script_dir helper
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  helper="${script_dir}/scripts/docker_services_cli_host_ports.py"
+  # Match the service kinds passed to ``docker-services-cli up`` below.
+  local services="${DB:-postgresql},${CACHE:-redis},${SEARCH:-opensearch},${MQ:-rabbitmq}"
+
+  if ! yml="$(docker_services_cli_yml_path 2>/dev/null)"; then
+    echo "Warning: could not locate docker-services-cli compose file; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if [ ! -f "$helper" ]; then
+    echo "Warning: missing ${helper}; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if ! ports_str="$(uv run python "$helper" "$yml" "$services" 2>/dev/null)"; then
+    echo "Warning: failed to parse host ports from ${yml}; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if [ -z "${ports_str// /}" ]; then
+    echo "Warning: no host ports found for services (${services}); using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  echo "$ports_str"
+}
+
+# Check for containers that would collide with docker-services-cli host ports.
+# Name/image matches alone are not enough: local stacks (e.g. kcworks-next) often
+# publish the same services on different host ports and can coexist.
 function check_docker_compose_running() {
-  echo "Checking for running docker-compose projects..."
+  echo "Checking for containers that conflict with docker-services-cli ports..."
 
-  # Get list of running containers that might be from docker-compose
-  running_containers=$(docker ps --format "table {{.Names}}\t{{.Image}}" | grep -E "(postgres|redis|opensearch|rabbitmq|elasticsearch)" || true)
+  local expected_ports
+  # shellcheck disable=SC2207
+  expected_ports=($(docker_services_cli_expected_host_ports))
+  echo "Expected docker-services-cli host ports: ${expected_ports[*]}"
 
-  if [ -n "$running_containers" ]; then
-    echo "Warning: Found potentially conflicting containers running:"
-    echo "$running_containers"
+  local candidates
+  candidates=$(
+    docker ps --format '{{.Names}}\t{{.Image}}\t{{.Ports}}' \
+      | grep -E '(postgres|redis|opensearch|rabbitmq|elasticsearch)' || true
+  )
+
+  if [ -z "$candidates" ]; then
+    echo "No related service containers detected."
+    return 0
+  fi
+
+  local conflicts=""
+  local ok_related=""
+
+  while IFS=$'\t' read -r name image ports; do
+    [ -z "${name:-}" ] && continue
+
+    # Already the docker-services-cli project — reuse, do not treat as conflict.
+    if [[ "$name" == docker_services_cli-* ]]; then
+      ok_related+="  ${name} (docker-services-cli; OK to reuse)"$'\n'
+      continue
+    fi
+
+    local hit_ports=()
+    local p
+    for p in "${expected_ports[@]}"; do
+      # Host publish form is host:HOSTPORT->containerport/...
+      if echo "$ports" | grep -Eq ":${p}->"; then
+        hit_ports+=("$p")
+      fi
+    done
+
+    if [ ${#hit_ports[@]} -gt 0 ]; then
+      conflicts+="  ${name}	${image}	host ports: ${hit_ports[*]}"$'\n'
+    else
+      ok_related+="  ${name} (related name/image, different host ports; OK)"$'\n'
+    fi
+  done <<< "$candidates"
+
+  if [ -n "$ok_related" ]; then
+    echo "Related containers without docker-services-cli port conflicts:"
+    printf "%s" "$ok_related"
+  fi
+
+  if [ -n "$conflicts" ]; then
+    echo "Warning: Found containers publishing ports docker-services-cli needs:"
+    printf "%s" "$conflicts"
     echo ""
-    echo "This might cause port conflicts with docker-services-cli."
-    echo "Consider stopping any running docker-compose projects before continuing."
+    echo "This will cause port conflicts with docker-services-cli."
+    echo "Consider stopping those containers before continuing."
     echo ""
     read -p "Do you want to continue anyway? (y/N): " -n 1 -r
     echo
@@ -51,7 +153,7 @@ function check_docker_compose_running() {
       exit 1
     fi
   else
-    echo "No conflicting containers detected."
+    echo "No port conflicts with docker-services-cli detected."
   fi
 }
 
