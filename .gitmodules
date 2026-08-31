@@ -45,3 +45,7 @@
 	path = site/kcworks/dependencies/invenio-rdm-records
 	url = https://github.com/MESH-Research/invenio-rdm-records.git
 	branch = local-working
+[submodule "site/kcworks/dependencies/kcworks-import-client"]
+  path = site/kcworks/dependencies/kcworks-import-client
+  url = https://github.com/MESH-Research/kcworks-import-client.git
+  branch = main
