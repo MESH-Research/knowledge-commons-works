@@ -143,6 +143,19 @@ function create_test_symlinks() {
       echo "Created symlink: tests/ui/remote_user_data -> $submodule_tests_dir/ui"
     fi
   fi
+
+  # kcworks-import-client
+  submodule_tests_dir="site/kcworks/dependencies/kcworks-import-client/tests"
+
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -L "tests/user_scripts/import_client" ] || [ -e "tests/user_scripts/import_client" ]; then
+      rm -f "tests/user_scripts/import_client"
+    fi
+    ln -s "../../$submodule_tests_dir" "tests/user_scripts/import_client"
+    echo "Created symlink: tests/user_scripts/import_client -> $submodule_tests_dir"
+  fi
 }
 
 # Check for arguments
