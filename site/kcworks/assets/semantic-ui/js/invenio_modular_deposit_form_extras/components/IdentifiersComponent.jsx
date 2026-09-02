@@ -16,9 +16,9 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "react-redux";
 import { FieldArray, useFormikContext } from "formik";
 import { Button, Form, Icon } from "semantic-ui-react";
-import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/i18next";
 import { FieldComponentWrapper } from "@js/invenio_modular_deposit_form/field_components/FieldComponentWrapper";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
 import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/SelectField";
 import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextField";
 
@@ -26,8 +26,7 @@ const emptyIdentifier = { scheme: "", identifier: "" };
 const emptyURL = { scheme: "url", identifier: "" };
 
 /** Resolve a dot-separated path against an object. */
-const getIn = (obj, path) =>
-  path.split(".").reduce((o, key) => o?.[key], obj);
+const getIn = (obj, path) => path.split(".").reduce((o, key) => o?.[key], obj);
 
 /**
  * Inner identifiers array field.
@@ -59,9 +58,7 @@ const IdentifiersField = ({
     if (identifiersLength < 0) {
       document.getElementById(`${fieldPath}.add-url-button`)?.focus();
     } else {
-      document
-        .getElementById(`${fieldPath}.${identifiersLength}.identifier`)
-        ?.focus();
+      document.getElementById(`${fieldPath}.${identifiersLength}.identifier`)?.focus();
     }
   }, [identifiersLength, haveChangedNumber, fieldPath]);
 
@@ -84,16 +81,13 @@ const IdentifiersField = ({
    */
   const filterEmptyIdentifiers = (e) => {
     const parentElement = e.target.closest(".fields");
-    const siblingElements = parentElement
-      ? Array.from(parentElement.querySelectorAll("*"))
-      : [];
+    const siblingElements = parentElement ? Array.from(parentElement.querySelectorAll("*")) : [];
 
     setTimeout(() => {
       const siblingHasFocus = siblingElements.some(
         (el) =>
           el.firstElementChild === document.activeElement ||
-          (document.activeElement.id &&
-            el.id.includes(document.activeElement.id))
+          (document.activeElement.id && el.id.includes(document.activeElement.id))
       );
       const current = getIn(values, fieldPath) ?? [];
       if (current.length && !siblingHasFocus) {
@@ -211,8 +205,7 @@ const IdentifiersField = ({
  * `FieldComponentWrapper` via `React.cloneElement`.
  */
 const IdentifiersComponent = ({ ...extraProps }) => {
-  const vocabularies =
-    useStore().getState().deposit?.config?.vocabularies ?? { metadata: {} };
+  const vocabularies = useStore().getState().deposit?.config?.vocabularies ?? { metadata: {} };
 
   return (
     <FieldComponentWrapper

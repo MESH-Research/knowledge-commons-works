@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
-import { Button, Icon, Form, Grid, Header, Message } from "semantic-ui-react";
+import { Button, Icon, Form, Grid, Header, Item, Message } from "semantic-ui-react";
 
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/FormUIStateManager";
 import { getReadableFields } from "@js/invenio_modular_deposit_form/utils";
@@ -35,21 +35,56 @@ export const changeSelectedCommunity = (community) => {
   };
 };
 
-const CommunityListItem = ({ community }) => {
+const CommunityListItem = ({
+  community,
+  changeSelectedCommunity,
+  isInReview,
+  isPublished,
+  isNewVersion,
+  focusAddButtonHandler,
+  setModalOpen,
+  modalOpen,
+  selectionButtonDisabled,
+  permissionsPerField,
+  triggerButtonRef,
+}) => {
   return (
-    <>
-      <Grid.Column width={2}>
-        <Image
-          size="tiny"
-          className="community-header-logo"
-          src={community.links?.logo || "/static/images/square-placeholder.png"}
-          fallbackSrc="/static/images/square-placeholder.png"
+    <Item>
+      <Item.Image
+        size="tiny"
+        className="community-image mini"
+        src={community.links?.logo || `/api/communities/${community.id}/logo`}
+        fallbackSrc="/static/images/square-placeholder.png"
+      />
+      <Item.Content verticalAlign="middle">
+        <span>{community.metadata.title}</span>
+      </Item.Content>
+
+      <Item.Extra>
+        <AddEditCommunityButton
+          classnames={""}
+          community={community}
+          changeSelectedCommunity={changeSelectedCommunity}
+          isInReview={isInReview}
+          isPublished={isPublished}
+          isNewVersion={isNewVersion}
+          focusAddButtonHandler={focusAddButtonHandler}
+          setModalOpen={setModalOpen}
+          modalOpen={modalOpen}
+          selectionButtonDisabled={selectionButtonDisabled}
+          permissionsPerField={permissionsPerField}
+          triggerButtonRef={triggerButtonRef}
         />
-      </Grid.Column>
-      <Grid.Column width={14}>
-        <Header size="small">{community.metadata.title}</Header>
-      </Grid.Column>
-    </>
+        {community && (
+          <RemoveCommunityButton
+            clasnames="ml-10"
+            community={community}
+            changeSelectedCommunity={changeSelectedCommunity}
+            selectionButtonDisabled={selectionButtonDisabled}
+          />
+        )}
+      </Item.Extra>
+    </Item>
   );
 };
 
@@ -58,6 +93,7 @@ CommunityListItem.propTypes = {
 };
 
 const AddEditCommunityButton = ({
+  classnames,
   community,
   changeSelectedCommunity,
   focusAddButtonHandler,
@@ -94,7 +130,7 @@ const AddEditCommunityButton = ({
             ref={triggerButtonRef}
             aria-haspopup="dialog"
             aria-expanded={modalOpen}
-            className="community-field-button add-button"
+            className={`community-field-button add-button ${classnames}`}
             disabled={selectionButtonDisabled}
             onClick={() => setModalOpen(true)}
             name="setting"
@@ -128,7 +164,12 @@ AddEditCommunityButton.defaultProps = {
   permissionsPerField: undefined,
 };
 
-const RemoveCommunityButton = ({ community, changeSelectedCommunity, selectionButtonDisabled }) => {
+const RemoveCommunityButton = ({
+  community,
+  changeSelectedCommunity,
+  classnames,
+  selectionButtonDisabled,
+}) => {
   return (
     <Overridable
       id="InvenioRdmRecords.CommunityHeader.RemoveCommunityButton.Container"
@@ -136,7 +177,7 @@ const RemoveCommunityButton = ({ community, changeSelectedCommunity, selectionBu
     >
       <Button
         aria-label={i18next.t("Remove item")}
-        className="close-btn mt-0"
+        className={`close-btn mt-0 ml-12 ${classnames ?? ""}`}
         icon
         onClick={() => changeSelectedCommunity(null)}
         disabled={selectionButtonDisabled}
@@ -363,61 +404,63 @@ const CommunityFieldComponent = ({
     />
   );
 
+  const buttonArgs = {
+    community,
+    changeSelectedCommunity,
+    isInReview,
+    isPublished,
+    isNewVersion,
+    focusAddButtonHandler,
+    setModalOpen,
+    modalOpen,
+    selectionButtonDisabled,
+    permissionsPerField,
+    triggerButtonRef,
+  };
+
   return (
     <div className={`invenio-field-wrapper community-field ${classnames}`}>
       <Form.Field>
         <label htmlFor="community-selector" className="field-label-class invenio-field-label">
-          <Icon name="users" />
           {label}
+          <Icon name="ml-12 mr-0 users" />
         </label>
-      </Form.Field>
-      <Form.Group>
-        {community && (
-          <Form.Field width={12}>
-            <Grid fluid className="mt-0 mb-0">
-              <CommunityListItem community={community} />
-              {otherCommunities.map((c) => (
-                <CommunityListItem key={c.id} community={c} />
-              ))}
-            </Grid>
-          </Form.Field>
+        {community && !selectionButtonShown && (
+          <div className="description">{changeOnDetailPageMessage}</div>
         )}
-        <Form.Field width={community ? 4 : 6} className="right-btn-column">
-          {community && !selectionButtonShown ? (
-            <p>{changeOnDetailPageMessage}</p>
-          ) : (
-            <>
-              <AddEditCommunityButton
-                community={community}
-                changeSelectedCommunity={changeSelectedCommunity}
-                isInReview={isInReview}
-                isPublished={isPublished}
-                isNewVersion={isNewVersion}
-                focusAddButtonHandler={focusAddButtonHandler}
-                setModalOpen={setModalOpen}
-                modalOpen={modalOpen}
-                selectionButtonDisabled={selectionButtonDisabled}
-                permissionsPerField={permissionsPerField}
-                triggerButtonRef={triggerButtonRef}
-              />
-              {community && (
-                <RemoveCommunityButton
-                  community={community}
-                  changeSelectedCommunity={changeSelectedCommunity}
-                  selectionButtonDisabled={selectionButtonDisabled}
-                />
-              )}
-            </>
-          )}
-        </Form.Field>
-        {!community && (
-          <Form.Field width={11} className="communities-helptext-wrapper">
-            <label htmlFor="community-selector" className="helptext">
-              {selectionButtonShown
-                ? i18next.t("Do you want to submit this deposit for publication by a collection?")
-                : changeOnDetailPageMessage}
-            </label>
+        {community && !isInReview && (
+          <div className="description">
+            {i18next.t(
+              "This work will be submitted for review to the collection below. (Not yet submitted.)"
+            )}
+          </div>
+        )}
+      </Form.Field>
+      <Form.Group className="mb-0">
+        {community ? (
+          <Form.Field width={16}>
+            <Item.Group divided>
+              <CommunityListItem {...buttonArgs} />
+              {otherCommunities.map((c) => (
+                <CommunityListItem key={c.id} {...{ ...buttonArgs, community: c }} />
+              ))}
+            </Item.Group>
           </Form.Field>
+        ) : (
+          <>
+            <Form.Field width={6} className="right-btn-column">
+              {community && !selectionButtonShown ? null : (
+                <AddEditCommunityButton classnames="" {...buttonArgs} />
+              )}
+            </Form.Field>
+            <Form.Field width={11} className="communities-helptext-wrapper">
+              <label htmlFor="community-selector" className="helptext">
+                {selectionButtonShown
+                  ? i18next.t("Do you want to submit this deposit for publication by a collection?")
+                  : changeOnDetailPageMessage}
+              </label>
+            </Form.Field>
+          </>
         )}
       </Form.Group>
 

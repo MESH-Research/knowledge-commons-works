@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
 import { Form } from "semantic-ui-react";
-import { RadioField, FieldLabel } from "react-invenio-forms";
+import { RadioField } from "react-invenio-forms";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextArea";
 import PropTypes from "prop-types";
 

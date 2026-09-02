@@ -11,10 +11,10 @@
   margin-top: 0;
   img {
     object-fit: cover;
-    min-height: 80px;
-    min-width: 80px;
-    max-height: 80px;
-    max-width: 80px;
+    min-height: 5rem;
+    min-width: 5rem;
+    max-height: 5rem;
+    max-width: 5rem;
     border-radius: @defaultBorderRadius;
     box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
     border: 1px solid @sidebarBorderColor;
@@ -22,11 +22,21 @@
 
   &.mini {
     img {
-      min-height: 45px;
-      min-width: 45px;
-      max-height: 45px;
-      max-width: 45px;
+      object-fit: cover;
+      min-height: 3rem;
+      min-width: 3rem;
+      max-height: 3rem;
+      max-width: 3rem;
     }
+  }
+
+  &.micro {
+      img {
+        min-height: 2.5rem;
+        min-width: 2.5rem;
+        max-width: 2.5rem;  
+        max-height: 2.5rem;
+      }
   }
 }
 .community-header .ui.image.community-image.community-header-logo {
@@ -49,12 +59,6 @@
 .form.communities-profile .ui.image.community-logo img {
   height: auto !important;
   object-fit: fill;
-}
-// also used elsewhere
-img.community-header-logo { 
-  border-radius: @defaultBorderRadius;
-  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
-  border: 1px solid @sidebarBorderColor;
 }
 .communities-frontpage {
   .ui.icon.message > .icon:not(.close) {
