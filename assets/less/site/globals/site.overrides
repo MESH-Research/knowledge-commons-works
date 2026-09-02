@@ -80,6 +80,25 @@
   color: @negativeTextColor;
 }
 
+.rich-input-content.description-clamped {
+  overflow: hidden;
+  max-height: 6.5em; /* ~4 lines at 1.6 line-height; fallback for old engines */
+}
+
+@supports (-webkit-line-clamp: 4) or (line-clamp: 4) {
+  .rich-input-content.description-clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    max-height: none; /* let line-clamp own the height when available */
+  }
+}
+
+/* Measured-height expand/collapse; transition duration is set inline from JS. */
+.rich-input-content.description-height-animating {
+  overflow: hidden;
+}
 #community-detail-header {
   .breadcrumb-wrap {
     min-width: 0;
