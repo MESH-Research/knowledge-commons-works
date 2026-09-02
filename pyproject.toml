@@ -59,6 +59,7 @@ optional-dependencies.docs = [
 ]
 optional-dependencies.tests = [
   "coverage",
+  "kcworks-import-client[tests]",
   "pytest",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=3.3,<4",
@@ -120,6 +121,7 @@ docs = [
   "sphinx-copybutton>=0.5.2",
 ]
 tests = [
+  "kcworks-import-client[tests]",
   "pytest-cov>=6.2.1",
   "pytest-invenio>=3.3,<4",
   "pytest-isort>=4",
@@ -154,6 +156,7 @@ sources.invenio-stats-dashboard = { path = "site/kcworks/dependencies/invenio-st
 sources.invenio-vocabularies = { path = "./site/kcworks/dependencies/invenio-vocabularies", editable = true }
 sources.kc-knowledge-base-sync = { path = "./site/kcworks/dependencies/kc-knowledge-base-sync", editable = true }
 sources.kcworks = { path = "./site", editable = true }
+sources.kcworks-import-client = { path = "./site/kcworks/dependencies/kcworks-import-client", editable = true }
 
 [tool.ruff]
 target-version = "py312"
@@ -175,6 +178,7 @@ exclude = [
   "site/kcworks/dependencies/invenio-stats-dashboard",
   "site/kcworks/dependencies/invenio-vocabularies",
   "site/kcworks/dependencies/kc-knowledge-base-sync",
+  "site/kcworks/dependencies/kcworks-import-client",
   "site/kcworks/services/search/index_templates",
   "tests/helpers",
 ]
@@ -195,6 +199,7 @@ lint.isort.known-first-party = [
   "invenio_stats_dashboard",
   "invenio_record_importer_kcworks",
   "invenio_remote_user_data_kcworks",
+  "kcworks_import_client",
   "tests",
 ]
 lint.pydocstyle.convention = "google"
@@ -268,6 +273,7 @@ ini_options.addopts = """
 --ignore=site/kcworks/dependencies/invenio-vocabularies
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
 --ignore=site/kcworks/dependencies/kc-knowledge-base-sync
+--ignore=site/kcworks/dependencies/kcworks-import-client
 --ignore=site/kcworks/services/search/index_templates
 --ignore=tests/helpers
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing

@@ -82,15 +82,12 @@ class TestDraftCreation:
         u = user_factory(
             email=user_data_set["user1"]["email"],
         )
-        user_id = u.user.id
         login_user(u.user)
 
-        metadata = record_metadata(metadata_in=self.metadata_source, owner_id=user_id)
+        metadata = record_metadata(metadata_in=self.metadata_source, owner_id=None)
         result = minimal_draft_record_factory(metadata=metadata.metadata_in)
         actual_draft = result.to_dict()
-        assert metadata.compare_draft(
-            actual_draft, by_api=False, skip_fields=self.skip_fields
-        )
+        assert metadata.compare_draft(actual_draft, skip_fields=self.skip_fields)
         if "errors" in actual_draft.keys() or self.errors:
             assert actual_draft["errors"] == self.errors
 
@@ -143,8 +140,8 @@ class TestDraftCreationApi(TestDraftCreation):
 
             if self.errors or "errors" in actual_draft.keys():
                 assert actual_draft["errors"] == self.errors
-            assert metadata.compare_draft(
-                actual_draft, by_api=True, skip_fields=self.skip_fields
+            assert metadata.compare_draft_rest(
+                actual_draft, skip_fields=self.skip_fields
             )
 
             # TODO: UI field only present in object sent to jinja template
@@ -604,9 +601,7 @@ def test_record_file_upload_api(
     identity = get_identity(user)
     identity.provides.add(authenticated_user)
 
-    file_path = (
-        Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
-    )
+    file_path = Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
     file_list = [{"key": "sample.pdf"}]
 
     metadata = TestRecordMetadataWithFiles(
@@ -874,9 +869,7 @@ def test_record_file_upload_api_sanitizes_filename(
     identity = get_identity(user)
     identity.provides.add(authenticated_user)
 
-    file_path = (
-        Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
-    )
+    file_path = Path(__file__).resolve().parents[2] / "helpers/sample_files/sample.pdf"
     raw_key = "sa?mple.pdf"
     sanitized_key = "sa_mple.pdf"
 
@@ -1041,12 +1034,14 @@ def test_record_view_api(
         record = record_response.json
 
         # Add title to resource type (updated by system after draft creation)
-        metadata.update_metadata({
-            "metadata|resource_type": {
-                "id": "image-photograph",
-                "title": {"en": "Photo"},
-            },
-        })
+        metadata.update_metadata(
+            {
+                "metadata|resource_type": {
+                    "id": "image-photograph",
+                    "title": {"en": "Photo"},
+                },
+            }
+        )
         metadata.compare_published(actual=record, by_api=True)
         assert record["revision_id"] == 4
 
@@ -1067,11 +1062,14 @@ def test_records_api_bare_endpoint(running_app):
     app = running_app.app
     with app.test_client() as client:
         response = client.get("/api/records/")
-        assert response.json.items() >= {
-            "message": (
-                "The requested URL was not found on the server. If you "
-                "entered the URL manually please check your spelling and "
-                "try again."
-            ),
-            "status": 404,
-        }.items()
+        assert (
+            response.json.items()
+            >= {
+                "message": (
+                    "The requested URL was not found on the server. If you "
+                    "entered the URL manually please check your spelling and "
+                    "try again."
+                ),
+                "status": 404,
+            }.items()
+        )

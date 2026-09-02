@@ -622,7 +622,7 @@ rec16079 = {
                 },
                 {
                     "id": "http://id.worldcat.org/fast/883762",
-                    "subject": "Criticism, textual",
+                    "subject": "Criticism, Textual",
                     "scheme": "FAST-topical",
                 },
             ],

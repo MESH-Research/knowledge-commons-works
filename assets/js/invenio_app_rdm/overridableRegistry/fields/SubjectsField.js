@@ -8,7 +8,8 @@
 
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { FieldLabel, GroupField } from "react-invenio-forms";
+import { GroupField } from "react-invenio-forms";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
 import { RemoteSelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/RemoteSelectField";
 import { Form } from "semantic-ui-react";
 import { Field, getIn } from "formik";
@@ -97,11 +98,11 @@ const SubjectsField = ({
       <Form.Field className="subjects-field-inner" width={16}>
         {showLabel && label ? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} /> : null}
         {!!description && (
-          <div id={`${fieldPath}-helpt-text`} className="description">
+          <div id={`${fieldPath}-helpt-text`} className="description mb-10">
             {description}
           </div>
         )}
-        <GroupField fluid>
+        <GroupField fluid className="mb-0">
           {/* <Form.Field
             width={4}
             style={{ marginBottom: "auto", marginTop: "auto" }}

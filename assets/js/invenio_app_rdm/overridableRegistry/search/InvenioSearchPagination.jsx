@@ -15,9 +15,11 @@ export const InvenioSearchPagination = ({ paginationOptions, total, perPageId })
   const { maxTotalResults, resultsPerPage } = paginationOptions;
   return (
     <Grid.Row verticalAlign="middle">
-      <Grid.Column className="computer tablet large screen only" width={3}></Grid.Column>
+      {/* "computer tablet only" — do not append "large screen"; SUI's
+          [class*="large screen only"] would hide these at computer/tablet. */}
+      <Grid.Column className="computer tablet only" width={3}></Grid.Column>
       <Grid.Column
-        className="computer tablet large screen only pl-0 pr-0"
+        className="computer tablet only pl-0 pr-0"
         width={10}
         textAlign="center"
       >
@@ -39,7 +41,7 @@ export const InvenioSearchPagination = ({ paginationOptions, total, perPageId })
           }}
         />
       </Grid.Column>
-      <Grid.Column className="computer tablet large screen only pl-0" textAlign="right" width={3}>
+      <Grid.Column className="computer tablet only pl-0" textAlign="right" width={3}>
         <ResultsPerPage values={resultsPerPage} perPageId={perPageId} />
       </Grid.Column>
       <Grid.Column className="mobile only rel-mt-2" textAlign="center" width={16}>

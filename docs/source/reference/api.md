@@ -108,7 +108,7 @@ In order to streamline the process of uploading works to KCWorks, particularly f
 Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file's content was successful.
 
 ```{note}
-KCWorks provides a standalone Python script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
+KCWorks provides a standalone Python package [`kcworks-import-client`](https://github.com/MESH-Research/kcworks-import-client) that simplifies using the import API (library classes and CLI). Package documentation: [kcworks-import-client docs](https://mesh-research.github.io/kcworks-import-client/). The single-collection importer handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for a summary. For importing into multiple collections (creating collections and parent links as needed), see {ref}`the multi-collection importer <api:kcworks-multi-collection-importer-script>`.
 ```
 
 ### Who can use the import API?
@@ -156,7 +156,10 @@ This request must be made with a `multipart/form-data` request. The request body
 | `review_required`      | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true")                                                                                                                                                                   |
 | `strict_validation`    | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true")                                                         |
 | `all_or_none`          | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true")                                 |
-| `notify_record_owners` | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: "true")                                                                                                                                                                                                                                                                                                                                                                           |
+| `notify_record_owners` | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: `"false"`)                                                                                                                                                                                                                                                                                                                                                                       |
+| `id_scheme`            | no       | `text/plain`               | Identifier scheme used to match existing works for idempotent re-import (looked up in each work's `metadata.identifiers`). Default: `import-recid`. The scheme must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import. Built-in import-oriented schemes include `import-recid` and `neh-recid`.                                                                                                                                                                         |
+| `alternate_id_scheme`  | no       | `text/plain`               | Optional secondary identifier scheme checked after `id_scheme` when looking up existing works. Same constraint as `id_scheme`. (Default: empty / unused)                                                                                                                                                                                                                                                                                                                                                                                                |
+| `no_updates`           | no       | `text/plain`               | When `"true"`, refuse to change an existing matched work if its **metadata** differs from the import payload (soft skip; file handling is not reached in that case). When `"false"` (default), differing metadata is applied to the existing draft/record, and files are reconciled as described below under {ref}`api:import-existing-record-files`. Matching uses DOI / `id_scheme` so identical re-imports do not create duplicates. |
 
 #### Identifying the owners of the work
 
@@ -210,7 +213,7 @@ If an owner does not already belong to the collection to which the records are b
 
 #### Email notifications for work owners
 
-When a work is imported into a collection, the work owners will receive an email notification unless the `notify_record_owners` parameter is set to "false". This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
+When a work is imported into a collection, the work owners will receive an email notification only if the `notify_record_owners` parameter is set to `"true"`. (The default is `"false"`.) This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
 
 For KCWorks developers: The configuration for this email is found in the config variable `RECORD_IMPORTER_COMMUNITIES` in the KCWorks instance's `invenio.cfg` file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:
 
@@ -228,7 +231,7 @@ The template will receive the following variables:
 
 It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.
 
-The identifier may be provided in the `metadata` object as an `identifiers` array with the scheme `import-recid`. E.g.,
+By default, the identifier is provided in the `metadata` object as an `identifiers` array with the scheme `import-recid`. E.g.,
 
 ```json
 {
@@ -241,6 +244,23 @@ The identifier may be provided in the `metadata` object as an `identifiers` arra
   ]
 }
 ```
+
+To use a different scheme for deduplication, set the request form field `id_scheme` (and optionally `alternate_id_scheme`) to that scheme name, and use the same scheme in each work's `metadata.identifiers`. The scheme must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import. Built-in import-oriented schemes include `import-recid` and `neh-recid`. DOI values in `pids.doi` are also used for matching when present.
+
+(import-existing-record-files)=
+
+#### Files when re-importing an existing work (`no_updates` is `"false"`)
+
+When an import matches an existing draft or published work and `no_updates` is `"false"` (the default), or when `no_updates` is `"true"` but metadata is unchanged so the load continues, KCWorks reconciles files against the existing record as follows:
+
+- Same filename (key) and same size → leave the existing file; no re-upload.
+- Same filename but different size, or a file still marked pending → delete the existing object and upload the new file.
+- Filename present only in the import payload → upload as a new file.
+- Filename present only on the existing record → delete it from the record.
+
+Comparison is by **filename and size**, not by checksum or byte content. Two different files with the same name and size are treated as unchanged.
+
+When `no_updates` is `"true"` and metadata **differs**, the import stops before this file step; existing files are not modified.
 
 ### Example import request
 
@@ -349,11 +369,40 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python package that simplifies the process of importing works via the import API. The package ([`kcworks-import-client`](https://github.com/MESH-Research/kcworks-import-client), module `kcworks_import_client`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages. Full client documentation: [kcworks-import-client docs](https://mesh-research.github.io/kcworks-import-client/).
 
 #### Requirements
 
-The script requires Python 3.9 or later and the `requests` library. It can be run standalone from the KCWorks project directory or copied to any location where Python 3.9+ is available.
+The client requires Python 3.12 or later and the `requests` library. Install from the monorepo package directory:
+
+```bash
+pip install -e site/kcworks/dependencies/kcworks-import-client
+# or with uv:
+uv pip install -e site/kcworks/dependencies/kcworks-import-client
+```
+
+This installs the `kcworks-api-importer` and `kcworks-multi-collection-importer` console commands.
+
+#### Library API
+
+Applications can import service classes instead of shelling out to the CLI:
+
+```python
+from kcworks_import_client import ImportClient, MultiCollectionImporter
+
+client = ImportClient(api_key="...")
+result = client.import_works(
+    "my-collection",
+    metadata=[{"metadata": {"title": "Example"}}],  # path, JSON str, list, or dict
+    files=["paper.pdf"],  # paths or (filename, fileobj[, mime]) tuples
+)
+# result.ok, result.status_code, result.data, result.errors
+
+importer = MultiCollectionImporter(api_key="...")
+multi = importer.run_manifest("manifest.json", assign_parents=True)
+```
+
+`ImportResult` / `MultiCollectionImportResult` are returned for HTTP outcomes; transport failures raise `ImportRequestError`. Prefer these classes over the CLI-oriented `import_works(...)` helper (which prints status and returns an exit code).
 
 #### Command-Line Arguments
 
@@ -366,6 +415,11 @@ The script accepts the following command-line arguments:
 | `--metadata PATH`         | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively.                   |
 | `--files PATH [PATH ...]` | One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks `KCWORKS_IMPORT_FILES_PATH` environment variable (comma or space-separated), or prompts interactively. |
 | `--output PATH`           | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter).                                                            |
+| `--testing`               | Use a local testing instance (`https://localhost`).                                                                                                                                                                                                |
+| `--notify-record-owners`  | Send email notifications to users listed as record owners in metadata. Default: off.                                                                                                                                                               |
+| `--id-scheme SCHEME`      | Identifier scheme for import deduplication (default: `import-recid`). Must be defined in KCWorks or pre-arranged for addition.                                                                                                                     |
+| `--alternate-id-scheme`   | Optional secondary identifier scheme for deduplication. Same constraint as `--id-scheme`.                                                                                                                                                          |
+| `--no-updates`            | Refuse to change an existing matched record when **metadata** differs (skips file reconciliation in that case). Default: allow metadata updates; files then follow the key/size rules under {ref}`api:import-existing-record-files`. |
 
 #### Environment Variables
 
@@ -382,7 +436,7 @@ All command-line arguments can also be provided via environment variables:
 **Basic usage with all arguments:**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py \
+kcworks-api-importer \
   --api-key "your-api-key" \
   --collection-id "my-collection" \
   --metadata "metadata.json" \
@@ -397,19 +451,19 @@ export KCWORKS_IMPORT_API_KEY="your-api-key"
 export KCWORKS_IMPORT_COLLECTION_ID="my-collection"
 export KCWORKS_IMPORT_METADATA_PATH="metadata.json"
 export KCWORKS_IMPORT_FILES_PATH="file1.pdf file2.docx"
-python scripts/user_resources/kcworks_api_importer.py --output "response.json"
+python -m kcworks_import_client.api_importer --output "response.json"
 ```
 
 **Interactive mode (will prompt for missing values):**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py
+python -m kcworks_import_client.api_importer
 ```
 
 **Single file upload:**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py \
+python -m kcworks_import_client.api_importer \
   --api-key "your-api-key" \
   --collection-id "my-collection" \
   --metadata "metadata.json" \
@@ -430,6 +484,103 @@ If an output path is provided, the full API response is also saved to that file 
 
 - `0` - Success
 - `1` - Error (invalid input, file not found, API error, etc.)
+
+### Using the Multi-Collection Importer Script
+
+(kcworks-multi-collection-importer-script)=
+
+For bulk imports that span multiple collections, use [`kcworks-multi-collection-importer`](https://github.com/MESH-Research/knowledge-commons-works/tree/main/site/kcworks/dependencies/kcworks-import-client) (`kcworks_import_client.multi_collection_importer`). Install with the `yaml` extra if you use YAML manifests (`pip install -e "site/kcworks/dependencies/kcworks-import-client[yaml]"`). It reads a JSON or YAML **manifest**, creates any missing collections via the communities API, optionally links parent/child collections, and then calls the same import logic as the single-collection importer for each entry.
+
+The single-collection importer remains usable on its own. The multi-collection wrapper is for when you want one command driven by a manifest.
+
+#### Manifest format
+
+YAML example:
+
+```yaml
+collections:
+  - slug: my-university
+    name: My University
+    metadata: ./university/metadata.json
+    files: ./university/files.zip
+    output: ./university/response.json
+
+  - slug: dept-history
+    name: Department of History
+    parent_slug: my-university
+    metadata: ./history/metadata.json
+    files:
+      - ./history/a.pdf
+      - ./history/b.pdf
+    id_scheme: neh-recid
+    notify_record_owners: true
+```
+
+Equivalent JSON:
+
+```json
+{
+  "collections": [
+    {
+      "slug": "my-university",
+      "name": "My University",
+      "metadata": "./university/metadata.json",
+      "files": "./university/files.zip",
+      "output": "./university/response.json"
+    },
+    {
+      "slug": "dept-history",
+      "name": "Department of History",
+      "parent_slug": "my-university",
+      "metadata": "./history/metadata.json",
+      "files": ["./history/a.pdf", "./history/b.pdf"],
+      "id_scheme": "neh-recid",
+      "notify_record_owners": true
+    }
+  ]
+}
+```
+
+Relative paths in the manifest are resolved against the manifest file's directory. YAML manifests require [PyYAML](https://pyyaml.org/).
+
+Each collection **slug** may appear only once in a given manifest. The importer treats that as a single create/link/import batch for that collection. Duplicate slugs are not supported as multiple batches (later rows silently override earlier ones for the same slug). To import more records into a collection later, use another manifest run or the single-collection importer.
+
+Optional per-entry fields:
+
+- `id_scheme` / `alternate_id_scheme` — override the CLI defaults for that collection. Schemes must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import.
+- `notify_record_owners` — `true`/`false` for that collection; overrides `--notify-record-owners` for the entry.
+- `no_updates` — `true`/`false` for that collection; overrides `--no-updates` for the entry. Default is to allow metadata updates on existing matches (with file reconciliation as in {ref}`api:import-existing-record-files`).
+
+#### Parent / child links
+
+With `--assign-parents`, entries that list `parent_slug` are linked under that parent. The script:
+
+1. Ensures the parent has `children.allow=true` (collection owners can set this on KCWorks).
+2. Submits a subcommunity **join-request**. When the OAuth user owns both collections, the request is **auto-accepted** and the link is created immediately.
+
+See [Collection hierarchy and subcollection requests](../admin_guide/collection_hierarchy.md) for the full operator documentation on collection hierarchy.
+
+#### Command-Line Arguments
+
+| Argument                 | Description                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `--api-key KEY`          | API key (or `KCWORKS_IMPORT_API_KEY`, or interactive prompt).                                                            |
+| `--manifest PATH`        | Path to the JSON/YAML manifest (or `KCWORKS_IMPORT_MANIFEST_PATH`, or interactive prompt).                               |
+| `--assign-parents`       | Create parent/child links for entries that list `parent_slug`.                                                           |
+| `--testing`              | Use a local testing instance (`https://localhost`).                                                                      |
+| `--notify-record-owners` | Default notify flag for entries that do not set `notify_record_owners`.                                                  |
+| `--id-scheme SCHEME`     | Default import dedupe scheme (default: `import-recid`); overridable per entry.                                           |
+| `--alternate-id-scheme`  | Default secondary dedupe scheme; overridable per entry.                                                                  |
+| `--no-updates`           | Default block on metadata updates for existing matches; overridable per entry. Default: allow updates (see {ref}`api:import-existing-record-files` for files). |
+
+#### Usage Example
+
+```bash
+kcworks-multi-collection-importer \
+  --api-key "your-api-key" \
+  --manifest "import_manifest.yaml" \
+  --assign-parents
+```
 
 ### A successful import response
 
