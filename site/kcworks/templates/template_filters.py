@@ -11,6 +11,8 @@
 This module contains custom Jinja2 template filters for KCWorks.
 """
 
+import json
+
 from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities as communities
@@ -18,6 +20,7 @@ from invenio_communities.proxies import current_communities as communities
 from invenio_remote_user_data_kcworks.utils.names import (
     get_full_name,
     get_full_name_inverted,
+    get_given_name,
 )
 
 
@@ -134,6 +137,19 @@ def user_profile_dict(user_profile):
     name_parts = profile_data.get("name_parts_local") or profile_data.get("name_parts")
 
     if name_parts:
+        try:
+            parts = (
+                json.loads(name_parts) if isinstance(name_parts, str) else name_parts
+            )
+        except (TypeError, ValueError, json.JSONDecodeError):
+            parts = {}
+        if isinstance(parts, dict):
+            # Remote sync uses "first"; local name parts use "given".
+            # Never fall back to full_name here — callers use email instead.
+            given = get_given_name(parts).strip()
+            if given:
+                profile_dict["first_name"] = given
+
         full_name = get_full_name(name_parts, json_input=True)
         full_name_inverted = get_full_name_inverted(name_parts, json_input=True)
         profile_dict["full_name_alt"] = full_name_inverted
