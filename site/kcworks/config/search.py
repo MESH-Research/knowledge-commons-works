@@ -254,7 +254,52 @@ RECORD_SEARCH_FIELD_ALIASES = {
     ),
 }
 
+DEFAULT_SEARCH_FIELDS = [
+    # Upstream defaults from record-v7.0.0.json mapping
+    "id",
+    "metadata.title^5",
+    "metadata.title.original^5",
+    "metadata.contact",
+    "metadata.contributors.affiliations.name",
+    "metadata.contributors.person_or_org.name^5",
+    "metadata.contributors.person_or_org.family_name^5",
+    "metadata.contributors.person_or_org.given_name^3",
+    "metadata.creators.affiliations.name^1",
+    "metadata.creators.person_or_org.name^5",
+    "metadata.creators.person_or_org.family_name^5",
+    "metadata.creators.person_or_org.given_name^3",
+    "metadata.description",
+    "metadata.formats",
+    "metadata.funding.award.identifiers.identifier^1",
+    "metadata.funding.award.acronym.text",
+    "metadata.funding.award.number^1",
+    "metadata.funding.funder.name^1",
+    "metadata.identifiers.identifier^1",
+    "metadata.locations.features.place",
+    "metadata.locations.features.description",
+    "metadata.publication_date",
+    "metadata.publisher",
+    "metadata.subjects.subject^1",
+    "metadata.version",
+    "metadata.dates.description",
+    "metadata.additional_descriptions.description",
+    "metadata.references.reference",
+    "metadata.additional_titles.title^3",
+    # Added by us to the default fields
+    "custom_fields.kcr:sponsoring_institution",
+    "custom_fields.kcr:meeting_organization",
+    "custom_fields.kcr:project_title",
+    "custom_fields.kcr:course_title",
+    "custom_fields.kcr:user_defined_tags^1",
+    "custom_fields.imprint:imprint.title^3",
+    "custom_fields.journal:journal.title",
+    "custom_fields.meeting:meeting.title",
+    "pids.doi.identifier",
+]
+
+
 RECORD_SEARCH_QUERY_PARSER = QueryParser.factory(
     mapping=RECORD_SEARCH_FIELD_ALIASES,
     tree_transformer_cls=MultiFieldSearchTransformer,
+    fields=DEFAULT_SEARCH_FIELDS,
 )
