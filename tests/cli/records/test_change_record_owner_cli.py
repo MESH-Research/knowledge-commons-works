@@ -261,7 +261,7 @@ def test_change_record_owner_nonexistent_user_by_id(
 
     # Should exit with error code
     assert result.exit_code != 0
-    assert "Something went wrong updating ownership:" in result.output
+    assert "No user found for id 99999" in result.output
 
 
 def test_change_record_owner_nonexistent_user_by_email(
@@ -322,7 +322,7 @@ def test_change_record_owner_nonexistent_user_by_email(
 
     # Should exit with error code
     assert result.exit_code != 0
-    assert "Something went wrong updating ownership:" in result.output
+    assert "No user found for email 'nonexistent@example.com'" in result.output
 
 
 def test_change_record_owner_same_owner(
