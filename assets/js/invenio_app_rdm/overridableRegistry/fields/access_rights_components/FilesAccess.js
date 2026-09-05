@@ -22,13 +22,13 @@ export const FilesAccess = ({ access, accessCommunity, metadataOnly }) => {
   const filesButtonsDisplayed = !metadataOnly && publicCommunity && publicMetadata;
 
   return !!metadataOnly ? (
-    <Card.Meta data-testid="access-files">
+    <Card.Meta data-testid="access-files" className="rel-mt-1">
       <em>{i18next.t("The record has no files.")}</em>
     </Card.Meta>
   ) : (
     <>
       {filesButtonsDisplayed && (
-        <Form.Field>
+        <Form.Field className="rel-mt-1">
           <label htmlFor="access.files" className="invenio-field-label" id="access.files.label">
             <Icon name={!publicFiles ? "lock" : "lock open"} />
             {i18next.t("Files access")}

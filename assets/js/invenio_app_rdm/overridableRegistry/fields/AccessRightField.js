@@ -33,12 +33,13 @@ const AccessRightField = ({
 }) => {
   /** Top-level Access Right Component */
   const community = useSelector((s) => s.deposit.editorState.selectedCommunity);
+  const files = useSelector((s) => s.files);
 
   const isGhostCommunity = community?.is_ghost === true;
   const communityAccess =
     (community && !isGhostCommunity && community.access.visibility) || "public";
   const { values } = useFormikContext();
-  const isMetadataOnly = values.files.enabled;
+  const isMetadataOnly = !record.files.enabled || Object.entries(files.entries).length < 1;
 
   return (
     <>
@@ -47,23 +48,19 @@ const AccessRightField = ({
         accessCommunity={communityAccess}
         metadataOnly={isMetadataOnly}
       />
-      <Card
-        label={label}
-        id="visibility-section"
-        className="access-right pr-5 pl-5 bottom attached"
-      >
+      <Card label={label} id="visibility-section" className="access-right pr-5 pl-5">
         <Form.Field required>
           {label ? (
-            <Card.Content>
+            <Card.Content className="p-0">
               <Card.Header>
                 <label htmlFor={fieldPath} className="field-label-class invenio-field-label">
-                  {icon && <i className={`${icon} icon`} />}
                   {label}
+                  {icon && <i className={`${icon} icon`} />}
                 </label>
               </Card.Header>
             </Card.Content>
           ) : null}
-          <Card.Content>
+          <Card.Content className="p-0">
             {showMetadataAccess && (
               <>
                 <MetadataAccess
@@ -73,7 +70,6 @@ const AccessRightField = ({
                   recordRestrictionGracePeriod={recordRestrictionGracePeriod}
                   allowRecordRestriction={allowRecordRestriction}
                 />
-                <Divider hidden />
               </>
             )}
 
@@ -82,7 +78,6 @@ const AccessRightField = ({
               accessCommunity={communityAccess}
               metadataOnly={isMetadataOnly}
             />
-            <Divider hidden />
             <EmbargoAccess
               access={getIn(values, fieldPath)}
               accessCommunity={communityAccess}
