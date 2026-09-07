@@ -1,17 +1,17 @@
 
 .ui.table {
   thead th {
-      background-color: @cream;  // @seafoam50;
+      background-color: @ivory;  // @seafoam50;
       color: @ivy80;
       line-height: 1.15rem;
   }
   tr.active,
   tr td.active {
-      background-color: darken(@cream, 2.0%) !important;
+      background-color: darken(@ivory, 2.0%) !important;
       color: @ivy;
   }
   &.striped tbody tr:nth-child(even) {
-      background-color: @cream;
+      background-color: @ivory;
   }
   &.definition {
       // thead:not(.full-width) th:nth-child(2) {
@@ -44,7 +44,7 @@
     .ui.table {
         border-color: @infoBorderColor;
         thead th {
-            background-color: #edfdfd;
+            background-color: @ivory;
             color: @infoTextColor;
             border-color: @infoBorderColor;
         }

@@ -2,6 +2,9 @@
   &.fluid.labeled.centered {
     padding-right: 3.25em !important;
   }
+  &.right.labeled {
+    padding-right: @labeledIconWidth + @horizontalPadding !important
+  }
 }
 
 .ui.buttons.basic,
