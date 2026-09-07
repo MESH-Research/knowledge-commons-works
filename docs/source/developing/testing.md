@@ -19,6 +19,14 @@ Note that you will need to have your local docker service running for these test
 Ensure that you have **stopped** the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.
 ```
 
+### Local development vs CI mode
+
+The test runner detects whether it is running in a CI environment (GitHub Actions) or locally:
+- **Local dev**: Runs pytest inside a container connected to docker-services-cli services for security (prevents malicious dependency code from accessing host credentials)
+- **CI**: Uses the current behavior (pytest runs directly; GitHub Actions provides isolation via ephemeral containers)
+
+The detection is done by checking if the `$CI` environment variable is set. This variable is automatically set by GitHub Actions and can be manually set for local testing of CI mode.
+
 ### Running specific tests
 
 To run a specific test file, simply add the relative file path to the command, e.g.,
@@ -83,7 +91,7 @@ The top-level `conftest.py` file is used to configure the test environment. Most
 The test environment does not use the top-level `.env` file that is used in the development environment. Instead, `run-tests.sh` layers two environment files into the `uv run` invocation that launches pytest:
 
 1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
-2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed on exit) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
+2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
 
 The secret file is produced by `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
 
@@ -104,6 +112,19 @@ Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper
 ```{note}
 On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys via the `Run tests` step's `env:` block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.
 ```
+
+### Containerized test runner for local development
+
+In local dev mode, pytest runs inside a container (`test-runner`) that:
+- Connects to the docker-services-cli network (`docker_services_cli_default`)
+- Has the same file mounts as the dev containers (all read-only for security)
+- Inherits environment variables from the shell via Docker Compose
+
+The temp file containing AWS secrets is:
+1. Created by `kcworks_test_secrets.sh`
+2. Sourced into shell environment when container starts
+3. Immediately deleted after container inherits the env vars
+4. Cleanup trap handles any edge cases
 
 ### Pytest fixtures
 

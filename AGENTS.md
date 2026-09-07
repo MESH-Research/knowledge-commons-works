@@ -16,7 +16,10 @@ This file is the **canonical** reference for tooling and agent workflows. Cursor
 ## Build/Lint/Test Commands
 - **Build**: Python/build artifacts are produced during `uv install` of the local package (do not use `make` for building).
 - **Lint Python**: Run ruff via uv: `uv run ruff check` (or `uv run ruff check .` to target the current directory). Config in pyproject.toml.
-- **Python tests**: Run using `./run-tests.sh`. Before running Python tests, always ask the user whether they want to run them (do not run automatically).
+- **Python tests**:
+  - **Local dev**: Run using `./run-tests.sh`. This starts docker-services-cli test databases and runs pytest inside a container for security (prevents malicious dependency code from accessing host credentials). CI mode is detected via `$CI` environment variable.
+  - **CI**: Tests run directly via the existing workflow; no additional container needed as GitHub Actions provides isolation.
+  Before running Python tests, always ask the user whether they want to run them (do not run automatically).
 
 ## JavaScript (root project)
 Use **[pnpm](https://pnpm.io/)** for the repository root `package.json` (not `npm install`). The root **`packageManager`** field pins the pnpm version; **`preinstall`** rejects other package managers; Use *only* the Node/pnpm versions in root **`package.json`** `engines`.

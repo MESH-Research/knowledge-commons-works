@@ -1,0 +1,59 @@
+# Testing infrastructure for Knowledge Commons Works
+#
+# This compose file is used to run tests in a container instead of on the host
+# during local development. It connects to docker-services-cli services.
+#
+# Usage (local dev):
+#   # Start test databases via docker-services-cli
+#   eval "$(uv run docker-services-cli up --db postgresql --cache redis --search opensearch --mq rabbitmq --env)"
+#
+#   # Run tests in container against the test databases
+#   docker compose -f docker-compose.test.yml run --rm test-runner
+#
+#   # Clean up
+#   uv run docker-services-cli down
+#
+# Usage (CI): Skip this file entirely; pytest runs directly via current run-tests.sh
+
+services:
+  test-runner:
+    build:
+      context: .
+      target: builder
+    command: ["python", "-m", "pytest", "-vv", "-s", "--disable-warnings"]
+    
+    networks:
+      - test-network
+    
+    environment:
+      # Environment variables from docker-services-cli (set in shell by --env flag)
+      # These are passed from the shell when run-tests.sh executes
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - CACHE_TYPE_REDIS_URL=${CACHE_TYPE_REDIS_URL}
+      - BROKER_URL=${BROKER_URL}
+      - SEARCH_HOSTS=${SEARCH_HOSTS}
+      # Invenio config
+      - INVENIO_SITE_UI_URL=${INVENIO_SITE_UI_URL:-https://localhost}
+      - INVENIO_SITE_API_URL=${INVENIO_SITE_API_URL:-https://localhost/api}
+      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}
+      
+    volumes:
+      # Read-only source for security (prevents container malware from writing to .git)
+      - ./.git:/opt/invenio/src/.git:ro
+      - ./.gitmodules:/opt/invenio/src/.gitmodules:ro
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
+      # Test secrets file (created by run-tests.sh via AWS Secrets Manager)
+      - ${TEST_SECRET_FILE}:/opt/invenio/src/.env.test:ro
+      # Local development files (only when running locally, not CI)
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site:ro
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security:ro
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_app_rdm:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_app_rdm:ro
+      - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/invenio_accounts:/opt/invenio/src/.venv/lib/python3.12/site-packages/invenio_accounts:ro
+      # ... add other editable installs as needed ...
+      
+    working_dir: /opt/invenio/src
+
+networks:
+  test-network:
+    name: docker_services_cli_default
+    external: true
