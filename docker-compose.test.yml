@@ -43,7 +43,7 @@ services:
       - ./.gitmodules:/opt/invenio/src/.gitmodules:ro
       - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
       # Test secrets file (created by run-tests.sh via AWS Secrets Manager)
-      - ${TEST_SECRET_FILE}:/opt/invenio/src/.env.test:ro
+      ${TEST_SECRET_FILE:+      - ${TEST_SECRET_FILE}:/opt/invenio/src/.env.test:ro}
       # Local development files (only when running locally, not CI)
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site:ro
       - ${PYTHON_LOCAL_SITE_PACKAGES_PATH}/flask_security:/opt/invenio/src/.venv/lib/python3.12/site-packages/flask_security:ro

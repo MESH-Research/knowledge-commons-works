@@ -25,6 +25,11 @@ function cleanup() {
   if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
     rm -f "$TEST_SECRET_FILE"
   fi
+  # Only bring down docker-compose.test.yml container in local dev mode
+  if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
+    docker compose -f docker-compose.test.yml down --remove-orphans || true
+  fi
+  # Always bring down docker-services-cli services unless keep_services is set
   if [[ ${keep_services:-0} -eq 0 ]]; then
     eval "$(uv run docker-services-cli down --env)"
   fi
@@ -290,6 +295,15 @@ trap cleanup EXIT
 # Create symlinks to submodule tests
 create_test_symlinks
 
+# Detect CI context (GitHub Actions sets CI=true)
+if [ -z "${CI:-}" ]; then
+  is_ci=false
+  echo "Running in local development mode"
+else
+  is_ci=true
+  echo "Running in CI mode"
+fi
+
 # Extract and compile translations from python files
 if [[ ${skip_translations} -eq 0 ]]; then
   echo "Extracting translations from python files"
@@ -306,8 +320,10 @@ fi
 echo "Building the documentation"
 uv run sphinx-build -b html docs/source/ docs/build/
 
-# Check for running docker-compose projects before starting services
-check_docker_compose_running
+# Check for running docker-compose projects before starting services (only in CI mode)
+if [[ "$is_ci" == "true" ]]; then
+  check_docker_compose_running
+fi
 
 # Resolve env files for the test run. Order matters: AWS-fetched secrets are
 # loaded second so they override matching keys in tests/.env (which holds
@@ -336,22 +352,67 @@ else
   exit 1
 fi
 
-# Start the services and get their environment variables
-echo "Starting the services"
-eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
-
-# Run mypy
-echo "Running ty on the site directory"
-uv run ty check site/
-
-# Note: expansion of pytest_args looks like below to not cause an unbound
-# variable error when 1) "nounset" and 2) the array is empty.
-if [ ${#pytest_args[@]} -eq 0 ]; then
-  echo "Running pytest"
-  uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest -vv -s --disable-warnings
+if [[ "$is_ci" == "true" ]]; then
+  # CI mode: run ty checks and pytest directly from cwd
+  
+  # Start the services and get their environment variables (needed for CI pytest)
+  echo "Starting the services"
+  eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+  
+  # Run ty checks
+  echo "Running ty on the site directory"
+  uv run ty check site/
+  
+  # Note: expansion of pytest_args looks like below to not cause an unbound
+  # variable error when 1) "nounset" and 2) the array is empty.
+  if [ ${#pytest_args[@]} -eq 0 ]; then
+    echo "Running pytest"
+    uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest -vv -s --disable-warnings
+  else
+    echo "Running pytest with additional arguments"
+    uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest ${pytest_args[@]} -s --disable-warnings
+  fi
 else
-  echo "Running pytest with additional arguments"
-  uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest ${pytest_args[@]} -s --disable-warnings
+  # Local dev mode: spin up test-runner container to run tests
+  
+  echo "Starting docker-services-cli services..."
+  eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+  
+  echo "Building and starting test-runner container..."
+  
+  # Set environment for docker-compose to pass through the service env vars
+  export SQLALCHEMY_DATABASE_URI="${SQLALCHEMY_DATABASE_URI:-}"
+  export CACHE_TYPE_REDIS_URL="${CACHE_TYPE_REDIS_URL:-}"
+  export BROKER_URL="${BROKER_URL:-}"
+  export SEARCH_HOSTS="${SEARCH_HOSTS:-}"
+  export INVENIO_SITE_UI_URL="${INVENIO_SITE_UI_URL:-https://localhost}"
+  export INVENIO_SITE_API_URL="${INVENIO_SITE_API_URL:-https://localhost/api}"
+  export INVENIO_INSTANCE_PATH="${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}"
+  
+  # Export test secret file path for docker compose volume mount (only if set and non-empty)
+  if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
+    export TEST_SECRET_FILE
+  fi
+  
+  # Set paths for volume mounts
+  export INVENIO_LOCAL_SITE_PATH="${INVENIO_LOCAL_SITE_PATH:-./site}"
+  export PYTHON_LOCAL_SITE_PACKAGES_PATH="${PYTHON_LOCAL_SITE_PACKAGES_PATH:-.venv/lib/python3.12/site-packages}"
+  
+  # Build and run the test-runner container
+  if [ ${#pytest_args[@]} -eq 0 ]; then
+    if [[ ${keep_services:-0} -eq 1 ]]; then
+      docker compose -f docker-compose.test.yml run test-runner
+    else
+      docker compose -f docker-compose.test.yml run --rm test-runner
+    fi
+  else
+    # Pass pytest args by overriding the command in docker compose
+    if [[ ${keep_services:-0} -eq 1 ]]; then
+      docker compose -f docker-compose.test.yml run test-runner python -m pytest "${pytest_args[@]}" -s --disable-warnings
+    else
+      docker compose -f docker-compose.test.yml run --rm test-runner python -m pytest "${pytest_args[@]}" -s --disable-warnings
+    fi
+  fi
 fi
 
 tests_exit_code=$?
