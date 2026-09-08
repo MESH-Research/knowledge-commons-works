@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
-# Fetch a slice of test secrets from AWS Secrets Manager into a dotenv file.
+# Fetch a slice of test secrets from AWS Secrets Manager as dotenv material.
 #
 # Test-suite analog of kcworks-startup.sh: pulls a defined set of keys from a
-# JSON secret in AWS Secrets Manager and writes them to a temporary dotenv
-# file (mode 600) at OUT_FILE. The caller (run-tests.sh) loads that file via
-# `uv run --env-file` so values populate os.environ before tests/conftest.py
-# is imported.
+# JSON secret in AWS Secrets Manager. Two output modes:
 #
-# Layered with tests/.env, which holds non-secret defaults; this file is
+#   Default (file): write a temporary dotenv file (mode 600) at OUT_FILE and
+#   print that path on stdout. Callers such as run-tests.sh (host/CI via
+#   `uv run --env-file`) keep this path-based contract. Local startup
+#   (kcworks-startup.sh) remains on its own file-writing flow.
+#
+#   --stdout: print dotenv lines on stdout (no OUT_FILE). Intended for piping
+#   into a Compose/Docker runtime secret (e.g. service secret from /dev/stdin)
+#   so the test-runner container can mount /run/secrets/... without a durable
+#   host secrets file.
+#
+# Layered with tests/.env, which holds non-secret defaults; the file mode is
 # intended to be loaded second so its values override tests/.env for the
 # secret-bearing keys.
 #
@@ -23,10 +30,12 @@
 #   --keys A,B,C         Override key list
 #   --region REGION      Passed to aws (e.g. us-east-1)
 #   --allow-missing      Warn instead of failing if a listed key is absent
-#   --out PATH           Override output file path (default below)
+#   --out PATH           Override output file path (default below; file mode)
+#   --stdout             Print dotenv to stdout instead of writing OUT_FILE
 #
-# On success: prints the absolute path of the generated env file on stdout;
-# all status output goes to stderr.
+# On success (file mode): prints the absolute path of the generated env file
+# on stdout. On success (--stdout): prints dotenv lines on stdout. All status
+# output goes to stderr.
 #
 # Requires: aws CLI configured on host, project venv at .venv/bin/python.
 
@@ -46,6 +55,8 @@ SECRET_ID=""
 KEYS=""
 REGION=()
 ALLOW_MISSING=0
+TO_STDOUT=0
+OUT_FLAG_SET=0
 
 usage() {
   # Print the leading comment block (after the shebang) up to the first
@@ -74,7 +85,12 @@ while [[ $# -gt 0 ]]; do
     ;;
   --out)
     OUT_FILE="${2:-}"
+    OUT_FLAG_SET=1
     shift 2 || usage
+    ;;
+  --stdout)
+    TO_STDOUT=1
+    shift
     ;;
   --help | -h)
     usage
@@ -85,6 +101,11 @@ while [[ $# -gt 0 ]]; do
     ;;
   esac
 done
+
+if [[ "$TO_STDOUT" -eq 1 && "$OUT_FLAG_SET" -eq 1 ]]; then
+  echo "Error: --stdout and --out are mutually exclusive." >&2
+  exit 1
+fi
 
 if [[ "${KCWORKS_TEST_SM_DISABLE:-0}" == "1" ]]; then
   echo "KCWORKS_TEST_SM_DISABLE=1; skipping AWS Secrets Manager lookup." >&2
@@ -118,13 +139,9 @@ fi
 
 RAWFILE=$(mktemp /tmp/kcworks-tests-sm-raw.XXXXXX)
 chmod 600 "$RAWFILE"
-# Always remove the raw SecretString file; OUT_FILE is the caller's responsibility.
+# Always remove the raw SecretString file; OUT_FILE (file mode) is the
+# caller's responsibility.
 trap 'rm -f "$RAWFILE"' EXIT
-
-rm -f "$OUT_FILE"
-umask 077
-: >"$OUT_FILE"
-chmod 600 "$OUT_FILE"
 
 if ! aws secretsmanager get-secret-value \
   ${REGION[@]+"${REGION[@]}"} \
@@ -141,11 +158,24 @@ else
   STRICT_FLAG=1
 fi
 
-# Filter writes warnings to stderr; redirect any incidental stdout to stderr too
-# so our own stdout stays clean for the OUT_FILE path the caller captures.
-if ! "$VENV_PY" "$FILTER_SCRIPT" "$RAWFILE" "$OUT_FILE" "$KEYS" "$STRICT_FLAG" >&2; then
-  echo "Error: failed to parse secret or write env file." >&2
-  exit 1
-fi
+if [[ "$TO_STDOUT" -eq 1 ]]; then
+  # Warnings from the filter go to stderr; dotenv lines go to stdout for the pipe.
+  if ! "$VENV_PY" "$FILTER_SCRIPT" "$RAWFILE" /dev/stdout "$KEYS" "$STRICT_FLAG"; then
+    echo "Error: failed to parse secret or write dotenv to stdout." >&2
+    exit 1
+  fi
+else
+  rm -f "$OUT_FILE"
+  umask 077
+  : >"$OUT_FILE"
+  chmod 600 "$OUT_FILE"
 
-echo "$OUT_FILE"
+  # Filter writes warnings to stderr; redirect any incidental stdout to stderr
+  # so our own stdout stays clean for the OUT_FILE path the caller captures.
+  if ! "$VENV_PY" "$FILTER_SCRIPT" "$RAWFILE" "$OUT_FILE" "$KEYS" "$STRICT_FLAG" >&2; then
+    echo "Error: failed to parse secret or write env file." >&2
+    exit 1
+  fi
+
+  echo "$OUT_FILE"
+fi

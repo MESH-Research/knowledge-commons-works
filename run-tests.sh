@@ -20,14 +20,16 @@ set -o errexit
 # Quit on unbound symbols
 set -o nounset
 
-# Always bring down docker services and remove any AWS-fetched test secrets
+# Always bring down docker services and cleanup temp files
 function cleanup() {
   if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
     rm -f "$TEST_SECRET_FILE"
   fi
+  rm -f /tmp/kcworks-test-connections.env
+  rm -f /tmp/kcworks-test-services.env  # legacy name from earlier iterations
   # Only bring down docker-compose.test.yml container in local dev mode
   if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
-    docker compose -f docker-compose.test.yml down --remove-orphans || true
+    docker compose -p kcworks-test -f docker-compose.test.yml down --remove-orphans || true
   fi
   # Always bring down docker-services-cli services unless keep_services is set
   if [[ ${keep_services:-0} -eq 0 ]]; then
@@ -102,8 +104,8 @@ function check_docker_compose_running() {
 
   local candidates
   candidates=$(
-    docker ps --format '{{.Names}}\t{{.Image}}\t{{.Ports}}' \
-      | grep -E '(postgres|redis|opensearch|rabbitmq|elasticsearch)' || true
+    docker ps --format '{{.Names}}\t{{.Image}}\t{{.Ports}}' |
+      grep -E '(postgres|redis|opensearch|rabbitmq|elasticsearch)' || true
   )
 
   if [ -z "$candidates" ]; then
@@ -137,7 +139,7 @@ function check_docker_compose_running() {
     else
       ok_related+="  ${name} (related name/image, different host ports; OK)"$'\n'
     fi
-  done <<< "$candidates"
+  done <<<"$candidates"
 
   if [ -n "$ok_related" ]; then
     echo "Related containers without docker-services-cli port conflicts:"
@@ -269,6 +271,7 @@ function create_test_symlinks() {
 # Note: "-k" would clash with "pytest"
 keep_services=0
 skip_translations=0
+build_image=0
 pytest_args=()
 for arg in $@; do
   # from the CLI args, filter out some known values and forward the rest to "pytest"
@@ -279,7 +282,11 @@ for arg in $@; do
     keep_services=1
     ;;
   -S | --skip-translations)
+    # Also skips the Sphinx docs build (same flag for both slow prep steps).
     skip_translations=1
+    ;;
+  -B | --build)
+    build_image=1
     ;;
   *)
     pytest_args+=(${arg})
@@ -304,26 +311,34 @@ else
   echo "Running in CI mode"
 fi
 
-# Extract and compile translations from python files
-if [[ ${skip_translations} -eq 0 ]]; then
-  echo "Extracting translations from python files"
-  uv run invenio-cli translations extract
-  echo "Updating translations"
-  uv run invenio-cli translations update
-  echo "Compiling translations"
-  uv run invenio-cli translations compile
-else
-  echo "Skipping translations compilation"
-fi
-
-# Build the documentation
-echo "Building the documentation"
-uv run sphinx-build -b html docs/source/ docs/build/
-
-# Check for running docker-compose projects before starting services (only in CI mode)
+# Extract/compile translations and Sphinx docs.
+# Local container path: done inside the test-runner (see docker/run-tests-wrapper.sh).
+# CI (host pytest): still done here on the host.
 if [[ "$is_ci" == "true" ]]; then
-  check_docker_compose_running
+  if [[ ${skip_translations} -eq 0 ]]; then
+    echo "Extracting translations from python files"
+    uv run invenio-cli translations extract
+    echo "Updating translations"
+    uv run invenio-cli translations update
+    echo "Compiling translations"
+    uv run invenio-cli translations compile
+
+    echo "Building the documentation"
+    uv run sphinx-build -b html docs/source/ docs/build/
+  else
+    echo "Skipping translations compilation and documentation build"
+  fi
+else
+  export KCWORKS_TEST_SKIP_TRANSLATIONS="${skip_translations}"
+  if [[ ${skip_translations} -eq 1 ]]; then
+    echo "Translations/docs will be skipped inside the test-runner (-S)"
+  else
+    echo "Translations/docs will run inside the test-runner container"
+  fi
 fi
+
+# Check for running docker-compose projects before starting services
+check_docker_compose_running
 
 # Resolve env files for the test run. Order matters: AWS-fetched secrets are
 # loaded second so they override matching keys in tests/.env (which holds
@@ -336,6 +351,11 @@ if [ -f "tests/.env" ]; then
 else
   echo "No tests/.env file found"
 fi
+
+# Connection details: plain dotenv for the test-runner (uv --env-file).
+CONNECTIONS_ENV_FILE="/tmp/kcworks-test-connections.env"
+rm -f "$CONNECTIONS_ENV_FILE"
+rm -f /tmp/kcworks-test-services.env  # legacy name
 
 TEST_SECRET_FILE=""
 if test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
@@ -354,15 +374,15 @@ fi
 
 if [[ "$is_ci" == "true" ]]; then
   # CI mode: run ty checks and pytest directly from cwd
-  
+
   # Start the services and get their environment variables (needed for CI pytest)
   echo "Starting the services"
   eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
-  
+
   # Run ty checks
   echo "Running ty on the site directory"
   uv run ty check site/
-  
+
   # Note: expansion of pytest_args looks like below to not cause an unbound
   # variable error when 1) "nounset" and 2) the array is empty.
   if [ ${#pytest_args[@]} -eq 0 ]; then
@@ -374,46 +394,146 @@ if [[ "$is_ci" == "true" ]]; then
   fi
 else
   # Local dev mode: spin up test-runner container to run tests
-  
+
   echo "Starting docker-services-cli services..."
   eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
-  
-  echo "Building and starting test-runner container..."
-  
-  # Set environment for docker-compose to pass through the service env vars
-  export SQLALCHEMY_DATABASE_URI="${SQLALCHEMY_DATABASE_URI:-}"
-  export CACHE_TYPE_REDIS_URL="${CACHE_TYPE_REDIS_URL:-}"
-  export BROKER_URL="${BROKER_URL:-}"
-  export SEARCH_HOSTS="${SEARCH_HOSTS:-}"
-  export INVENIO_SITE_UI_URL="${INVENIO_SITE_UI_URL:-https://localhost}"
-  export INVENIO_SITE_API_URL="${INVENIO_SITE_API_URL:-https://localhost/api}"
-  export INVENIO_INSTANCE_PATH="${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}"
-  
-  # Export test secret file path for docker compose volume mount (only if set and non-empty)
-  if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
-    export TEST_SECRET_FILE
+
+  # Write connection details for the test-runner container.
+  # docker-services-cli --env uses localhost (host ports). Inside the compose
+  # network the service DNS names are postgresql / redis / opensearch / rabbitmq.
+  # Use the same defaults as docker-services-cli when --env did not export a var
+  # (otherwise SEARCH_HOSTS can be empty and pytest-invenio falls back to localhost).
+  #
+  # NOTE: defaults that contain "}" must NOT be inlined in ${VAR:-...} — bash
+  # treats the first "}" as the end of the expansion.
+  container_sqlalchemy_uri="${SQLALCHEMY_DATABASE_URI:-postgresql+psycopg2://invenio:invenio@localhost:5432/invenio}"
+  container_sqlalchemy_uri="${container_sqlalchemy_uri//localhost/postgresql}"
+
+  container_broker_url="${BROKER_URL:-amqp://guest:guest@localhost:5672//}"
+  if [[ "${container_broker_url}" == amqp://* ]]; then
+    container_broker_url="${container_broker_url//localhost/rabbitmq}"
+  elif [[ "${container_broker_url}" == redis://* ]]; then
+    container_broker_url="${container_broker_url//localhost/redis}"
   fi
-  
-  # Set paths for volume mounts
+
+  # pytest-invenio does ast.literal_eval(SEARCH_HOSTS); value must be a list repr.
+  _default_search_hosts='[{"host": "localhost", "port": 9200}]'
+  container_search_hosts="${SEARCH_HOSTS:-${_default_search_hosts}}"
+  container_search_hosts="${container_search_hosts#\"}"
+  container_search_hosts="${container_search_hosts%\"}"
+  container_search_hosts="${container_search_hosts//localhost/opensearch}"
+
+  container_cache_redis_url="${CACHE_REDIS_URL:-${REDIS_URL:-redis://localhost:6379/0}}"
+  container_cache_redis_url="${container_cache_redis_url//localhost/redis}"
+  # Same DB layout as docker-services.yml (host rewritten to redis service DNS).
+  container_accounts_session_redis_url="${ACCOUNTS_SESSION_REDIS_URL:-redis://localhost:6379/1}"
+  container_accounts_session_redis_url="${container_accounts_session_redis_url//localhost/redis}"
+  container_celery_result_backend="${CELERY_RESULT_BACKEND:-redis://localhost:6379/2}"
+  container_celery_result_backend="${container_celery_result_backend//localhost/redis}"
+  container_ratelimit_storage_uri="${RATELIMIT_STORAGE_URI:-redis://localhost:6379/3}"
+  container_ratelimit_storage_uri="${container_ratelimit_storage_uri//localhost/redis}"
+  container_communities_identities_cache_redis_url="${COMMUNITIES_IDENTITIES_CACHE_REDIS_URL:-redis://localhost:6379/4}"
+  container_communities_identities_cache_redis_url="${container_communities_identities_cache_redis_url//localhost/redis}"
+
+  # Plain dotenv for ``uv run --env-file`` (not bash ``printf %q`` / ``source``).
+  dotenv_quote() {
+    local v="$1"
+    v="${v//\\/\\\\}"
+    v="${v//\"/\\\"}"
+    v="${v//$'\n'/\\n}"
+    v="${v//$'\r'/\\r}"
+    printf '"%s"' "$v"
+  }
+  {
+    printf 'SQLALCHEMY_DATABASE_URI=%s\n' "$(dotenv_quote "${container_sqlalchemy_uri}")"
+    printf 'BROKER_URL=%s\n' "$(dotenv_quote "${container_broker_url}")"
+    printf 'SEARCH_HOSTS=%s\n' "$(dotenv_quote "${container_search_hosts}")"
+    printf 'CACHE_REDIS_URL=%s\n' "$(dotenv_quote "${container_cache_redis_url}")"
+    printf 'REDIS_URL=%s\n' "$(dotenv_quote "${container_cache_redis_url}")"
+    printf 'ACCOUNTS_SESSION_REDIS_URL=%s\n' "$(dotenv_quote "${container_accounts_session_redis_url}")"
+    printf 'CELERY_RESULT_BACKEND=%s\n' "$(dotenv_quote "${container_celery_result_backend}")"
+    printf 'RATELIMIT_STORAGE_URI=%s\n' "$(dotenv_quote "${container_ratelimit_storage_uri}")"
+    printf 'COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=%s\n' "$(dotenv_quote "${container_communities_identities_cache_redis_url}")"
+  } >"$CONNECTIONS_ENV_FILE"
+
+  # Local container runner requires the file-mode AWS fetch above. Compose
+  # mounts TEST_SECRET_FILE as the service secret (Docker Desktop cannot use
+  # /dev/stdin). CI uses KCWORKS_TEST_SM_DISABLE=1 and does not take this path.
+  if [[ -z "${TEST_SECRET_FILE}" || ! -f "${TEST_SECRET_FILE}" ]]; then
+    echo "Error: local test-runner requires a secrets file from kcworks_test_secrets.sh." >&2
+    echo "       Do not set KCWORKS_TEST_SM_DISABLE=1 for local containerized runs." >&2
+    exit 1
+  fi
+  export TEST_SECRET_FILE
+
   export INVENIO_LOCAL_SITE_PATH="${INVENIO_LOCAL_SITE_PATH:-./site}"
-  export PYTHON_LOCAL_SITE_PACKAGES_PATH="${PYTHON_LOCAL_SITE_PACKAGES_PATH:-.venv/lib/python3.12/site-packages}"
-  
-  # Build and run the test-runner container
+  export INVENIO_LOCAL_DEPENDENCIES_PATH="${INVENIO_LOCAL_DEPENDENCIES_PATH:-./site/kcworks/dependencies}"
+
+  echo "Starting test-runner container..."
+  # Drop any leftover named container from a previous interrupted run.
+  docker rm -f kcworks-test-runner >/dev/null 2>&1 || true
+
+  if [[ ${build_image:-0} -eq 1 ]]; then
+    echo "Rebuilding test-runner image (-B/--build)..."
+    progress_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/docker_build_progress.py"
+    set +e
+    # Compose on this Docker Desktop build has no --progress flag; BuildKit
+    # still honors BUILDKIT_PROGRESS=rawjson. Pipe both streams into the
+    # renderer; keep the compose exit code via PIPESTATUS.
+    BUILDKIT_PROGRESS=rawjson \
+      docker compose -p kcworks-test -f docker-compose.test.yml build test-runner \
+      2>&1 | uv run python "$progress_script"
+    build_pipe=("${PIPESTATUS[@]}")
+    set -e
+    build_exit="${build_pipe[0]:-1}"
+    if [[ "$build_exit" -ne 0 ]]; then
+      echo "Error: test-runner image build failed (exit ${build_exit})" >&2
+      exit "$build_exit"
+    fi
+  fi
+
+  compose_run=(docker compose -p kcworks-test -f docker-compose.test.yml run -d -T --name kcworks-test-runner)
+  if [[ ${keep_services:-0} -eq 0 ]]; then
+    compose_run+=(--rm)
+  fi
+  # Do not capture compose stdout as the container id: build logs on older
+  # flows broke `docker logs` / `docker wait` (daemon 404). Use --name.
   if [ ${#pytest_args[@]} -eq 0 ]; then
-    if [[ ${keep_services:-0} -eq 1 ]]; then
-      docker compose -f docker-compose.test.yml run test-runner
-    else
-      docker compose -f docker-compose.test.yml run --rm test-runner
-    fi
+    "${compose_run[@]}" test-runner >/dev/null
   else
-    # Pass pytest args by overriding the command in docker compose
-    if [[ ${keep_services:-0} -eq 1 ]]; then
-      docker compose -f docker-compose.test.yml run test-runner python -m pytest "${pytest_args[@]}" -s --disable-warnings
-    else
-      docker compose -f docker-compose.test.yml run --rm test-runner python -m pytest "${pytest_args[@]}" -s --disable-warnings
-    fi
+    "${compose_run[@]}" test-runner "${pytest_args[@]}" >/dev/null
+  fi
+  cid="kcworks-test-runner"
+
+  # Stream test output while waiting for the container to finish.
+  docker logs -f "$cid" &
+  logs_pid=$!
+  # docker wait prints the container exit code on stdout and returns 0 itself
+  # when wait succeeds; disable errexit around it so a failed suite does not
+  # abort the script before we can exit with that code.
+  set +e
+  tests_exit_code=$(docker wait "$cid")
+  wait_status=$?
+  set -e
+  if [[ $wait_status -ne 0 ]]; then
+    tests_exit_code=$wait_status
+  fi
+  wait "$logs_pid" 2>/dev/null || true
+
+  # Compose delivers service secrets by binding the host secret file into
+  # /run/secrets/... for the container lifetime. Deleting that host file
+  # earlier makes the secret unreadable inside the container (uv then errors
+  # with "No environment file found"). Remove it only after tests finish;
+  # cleanup() also removes it on interrupt.
+  if [[ -n "${TEST_SECRET_FILE}" && -f "${TEST_SECRET_FILE}" ]]; then
+    echo "Removing host secrets file (tests finished)..."
+    rm -f "$TEST_SECRET_FILE"
+    TEST_SECRET_FILE=""
+  fi
+
+  if [[ ${keep_services:-0} -eq 1 ]]; then
+    echo "Keeping test-runner container ${cid} (--keep-services)."
   fi
 fi
 
-tests_exit_code=$?
-exit "$tests_exit_code"
+exit "${tests_exit_code:-0}"

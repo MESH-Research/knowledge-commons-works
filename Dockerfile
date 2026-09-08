@@ -1,10 +1,12 @@
 # Dockerfile that builds a fully functional image of Knowledge Commons Works.
 #
-# Uses a two-stage build:
-#   builder  – full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
-#              Python extensions and build webpack assets.
-#   runtime  – minimal Debian Bookworm image with only shared runtime libs;
-#              no compilers, no Node, no pnpm, no uv in the final image.
+# Uses a multi-stage build:
+#   builder     – full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
+#                 Python extensions and build webpack assets. No test extras.
+#   test-runner – builder + optional-dependencies.tests (pytest, requests-mock,
+#                 etc.) for local containerized test runs. Not copied into runtime.
+#   runtime     – minimal Debian Bookworm image with only shared runtime libs;
+#                 no compilers, no Node, no pnpm, no uv, no test extras.
 #
 # Note: Keep commands in sync with ./scripts/bootstrap.
 
@@ -101,6 +103,17 @@ RUN . .venv/bin/activate && \
     invenio webpack install && \
     invenio shell /opt/invenio/src/scripts/symlink_assets.py && \
     invenio webpack build
+
+
+# ── Stage 1b: test-runner ─────────────────────────────────────────────────
+# Extends builder with test extras only. docker-compose.test.yml targets this
+# stage. Runtime still COPY --from=builder, so these packages never ship in
+# the deployed image.
+FROM builder AS test-runner
+
+RUN . .venv/bin/activate && \
+    uv sync --frozen --extra tests --compile-bytecode && \
+    uv clean
 
 
 # ── Stage 2: runtime ──────────────────────────────────────────────────────
