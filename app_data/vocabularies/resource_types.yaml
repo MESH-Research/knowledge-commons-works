@@ -974,30 +974,6 @@
   tags:
     - depositable
     - linkable
-- id: textDocument-proceedingsPaper
-  icon: file alternate
-  props:
-    coar: conference paper
-    coar_type: c_5794
-    csl: paper-conference
-    datacite_general: ConferencePaper
-    datacite_type: ''
-    openaire_resourceType: '0004'
-    openaire_type: publication
-    eurepo: 'info:eu-repo/semantics/conferencePaper'
-    schema.org: 'https://schema.org/ScholarlyArticle'
-    subtype: textDocument-proceedingsPaper
-    type: textDocument
-    marc21_type: publication
-    marc21_subtype: conferencepaper
-  title:
-    en: Conference proceedings paper
-    sv: Konferensbidrag
-    de: Konferenzbeitrag
-    cs: Konferenční příspěvek
-  tags:
-    - depositable
-    - linkable
 - id: textDocument-dataManagementPlan
   icon: hdd outline
   props:
@@ -1248,6 +1224,27 @@
   tags:
     - depositable
     - linkable
+- id: textDocument-musicalNotation
+  icon: music
+  props:
+    coar: musical notation
+    coar_type: c_18cw
+    csl: musical_score
+    datacite_general: Text
+    datacite_type: Musical notation
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SheetMusic'
+    subtype: textDocument-musicalNotation
+    type: textDocument
+    marc21_type: publication
+    marc21_subtype: musicalnotation
+  title:
+    en: Musical notation
+  tags:
+    - depositable
+    - linkable
 - id: textDocument-newspaperArticle
   icon: newspaper outline
   props:
@@ -1335,6 +1332,30 @@
     sv: Preprint
     de: Preprint
     cs: Preprint
+  tags:
+    - depositable
+    - linkable
+- id: textDocument-proceedingsPaper
+  icon: file alternate
+  props:
+    coar: conference paper
+    coar_type: c_5794
+    csl: paper-conference
+    datacite_general: ConferencePaper
+    datacite_type: ''
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/conferencePaper'
+    schema.org: 'https://schema.org/ScholarlyArticle'
+    subtype: textDocument-proceedingsPaper
+    type: textDocument
+    marc21_type: publication
+    marc21_subtype: conferencepaper
+  title:
+    en: Conference proceedings paper
+    sv: Konferensbidrag
+    de: Konferenzbeitrag
+    cs: Konferenční příspěvek
   tags:
     - depositable
     - linkable
