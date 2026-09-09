@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithFormik, setupFormMocks } from '@custom-test-utils/formik_test_utils';
-import { AccessRightFieldCmp } from './AccessRightField';
+import { AccessRightField } from './AccessRightField';
 import { setupStore } from '@custom-test-utils/redux_store';
 import { Provider } from 'react-redux';
 
@@ -56,7 +56,7 @@ const renderComponent = (props = {}) => {
 
   return renderWithFormik(
     <Provider store={store}>
-      <AccessRightFieldCmp {...defaultProps} {...props} />
+      <AccessRightField {...defaultProps} {...props} />
     </Provider>,
     {
       initialValues: formMocks.values,
