@@ -2,14 +2,18 @@
   icon: film
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    openaire_resourceType: '0033'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VideoObject'
     subtype: ''
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: ''
   title:
     en: Audiovisual
     de: Video/Audio
@@ -20,14 +24,18 @@
   icon: film
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: Documentary
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Movie
+    openaire_resourceType: '0024'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Movie'
     subtype: audiovisual-documentary
     type: audiovisual
+    marc21_type: video
+    marc21_subtype: documentary
   title:
     en: Documentary
     de: Dokumentarfilm
@@ -38,14 +46,18 @@
   icon: conversation
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: interview
     datacite_general: Audiovisual
     datacite_type: Interview Recording
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    openaire_resourceType: '0033'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VideoObject'
     subtype: audiovisual-interviewRecording
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: interviewrecording
   title:
     en: Interview recording
     de: Interviewaufzeichnung
@@ -60,10 +72,14 @@
     csl: song
     datacite_general: Audiovisual
     datacite_type: Musical Recording
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MusicRecording
+    openaire_resourceType: '0030'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/MusicRecording'
     subtype: audiovisual-musicalRecording
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: musicalrecording
   title:
     en: Musical recording
     de: Musikaufnahmen
@@ -74,14 +90,18 @@
   icon: film
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    openaire_resourceType: '0033'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VideoObject'
     subtype: audiovisual-other
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: other
   title:
     en: Other audiovisual material
     de: anderes audiovisuelles Material
@@ -92,14 +112,18 @@
   icon: ticket alternate
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: performance
     datacite_general: Audiovisual
     datacite_type: Performance
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    openaire_resourceType: '0033'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VideoObject'
     subtype: audiovisual-performance
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: performance
   title:
     en: Performance
     de: Performance
@@ -114,10 +138,14 @@
     csl: podcast
     datacite_general: Audiovisual
     datacite_type: Podcast episode
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/PodcastEpisode
+    openaire_resourceType: '0030'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/PodcastEpisode'
     subtype: audiovisual-podcastEpisode
     type: audiovisual
+    marc21_type: audiovisual
+    marc21_subtype: podcastepisode
   title:
     en: Podcast episode
     de: Podcast
@@ -130,15 +158,21 @@
     coar: sound
     coar_type: c_18cc
     csl: song
-    datacite_general: Audiovisual
-    datacite_type: Sound Recording
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/AudioObject
+    datacite_general: Sound
+    datacite_type: ''
+    openaire_resourceType: '0030'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/AudioObject'
     subtype: audiovisual-audioRecording
     type: audiovisual
+    marc21_type: audio
+    marc21_subtype: ''
   title:
     en: Audio recording
+    sv: Audio
     de: Audio Aufnahme
+    cs: Audio
   tags:
     - depositable
     - linkable
@@ -146,19 +180,23 @@
   icon: film
   props:
     coar: Video
-    coar_type: c_12_ce
+    coar_type: c_12ce
     csl: motion_picture
     datacite_general: Audiovisual
     datacite_type: ''
-    openaire_resourceType: '33'
+    openaire_resourceType: '0024'
     openaire_type: dataset
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/VideoObject
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VideoObject'
     subtype: audiovisual-videoRecording
     type: audiovisual
+    marc21_type: video
+    marc21_subtype: ''
   title:
     en: Video recording
+    sv: Video
     de: Video
+    cs: Video
   tags:
     - depositable
     - linkable
@@ -170,13 +208,19 @@
     csl: dataset
     datacite_general: Dataset
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Dataset
+    openaire_resourceType: '0021'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Dataset'
     subtype: ''
     type: dataset
+    marc21_type: dataset
+    marc21_subtype: ''
   title:
     en: Dataset
+    sv: Dataset
     de: Datensatz
+    cs: Datová sada
   tags:
     - depositable
     - linkable
@@ -188,13 +232,19 @@
     csl: graphic
     datacite_general: Image
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/ImageObject'
     subtype: ''
     type: image
+    marc21_type: image
+    marc21_subtype: ''
   title:
     en: Image
+    sv: Bild
     de: Bild
+    cs: Obrázek
   tags:
     - depositable
     - linkable
@@ -206,10 +256,14 @@
     csl: figure
     datacite_general: Image
     datacite_type: Chart
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/ImageObject'
     subtype: image-chart
     type: image
+    marc21_type: image
+    marc21_subtype: chart
   title:
     en: Chart or graph
     de: Schaubild
@@ -219,16 +273,24 @@
 - id: image-diagram
   icon: sitemap
   props:
+    coar: still image
+    coar_type: c_ecc8
     csl: figure
     datacite_general: Image
     datacite_type: Diagram
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/ImageObject'
     subtype: image-diagram
     type: image
+    marc21_type: image
+    marc21_subtype: diagram
   title:
     en: Diagram
+    sv: Diagram
     de: Diagramm
+    cs: Diagram
   tags:
     - depositable
     - linkable
@@ -240,13 +302,19 @@
     csl: figure
     datacite_general: Image
     datacite_type: Figure
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/ImageObject'
     subtype: image-figure
     type: image
+    marc21_type: image
+    marc21_subtype: figure
   title:
     en: Figure
+    sv: Figur
     de: Abbildung
+    cs: Schéma
   tags:
     - depositable
     - linkable
@@ -254,14 +322,18 @@
   icon: map outline
   props:
     coar: map
-    coar_type: c_12_cd
+    coar_type: c_12cd
     csl: map
     datacite_general: Image
     datacite_type: Map
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Map
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Map'
     subtype: image-map
     type: image
+    marc21_type: image
+    marc21_subtype: map
   title:
     en: Map
     de: Karte
@@ -276,10 +348,14 @@
     csl: graphic
     datacite_general: Image
     datacite_type: Visual Art
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/VisualArtwork
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/VisualArtwork'
     subtype: image-visualArt
     type: image
+    marc21_type: image
+    marc21_subtype: visualart
   title:
     en: Visual art
     de: visuelle Kunst
@@ -294,13 +370,19 @@
     csl: graphic
     datacite_general: Image
     datacite_type: Photograph
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Photograph
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Photograph'
     subtype: image-photograph
     type: image
+    marc21_type: image
+    marc21_subtype: photograph
   title:
     en: Photograph
+    sv: Foto
     de: Foto
+    cs: Fotografie
   tags:
     - depositable
     - linkable
@@ -312,28 +394,38 @@
     csl: graphic
     datacite_general: Image
     datacite_type: Other
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/ImageObject
+    openaire_resourceType: '0025'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/ImageObject'
     subtype: image-other
     type: image
+    marc21_type: image
+    marc21_subtype: other
   title:
     en: Other image
+    sv: Övrig
     de: sonstiges Bild
+    cs: Jiné
   tags:
     - depositable
     - linkable
 - id: instructionalResource
   icon: graduation
   props:
-    coar: learning object
+    coar: 'learning object'
     coar_type: c_e059
     csl: document
     datacite_general: Other
     datacite_type: Instructional resource
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/LearningResource
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/LearningResource'
     subtype: ''
     type: instructionalResource
+    marc21_type: instructionalresource
+    marc21_subtype: ''
   title:
     en: Instructional resource
     de: Lehrmittel
@@ -343,15 +435,19 @@
 - id: instructionalResource-curriculum
   icon: graduation
   props:
-    coar: other
-    coar_type: c_1843
+    coar: 'learning object'
+    coar_type: c_e059
     csl: document
     datacite_general: Other
     datacite_type: Educational Curriculum
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Course
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Course'
     subtype: instructionalResource-curriculum
     type: instructionalResource
+    marc21_type: instructionalresource
+    marc21_subtype: curriculum
   title:
     en: Curriculum
     de: Studienplan
@@ -361,33 +457,43 @@
 - id: instructionalResource-lessonPlan
   icon: graduation
   props:
-    coar: other
-    coar_type: c_1843
+    coar: 'learning object'
+    coar_type: c_e059
     csl: document
     datacite_general: Other
     datacite_type: Lesson Plan
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/LearningResource
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/LearningResource'
     subtype: instructionalResource-lessonPlan
     type: instructionalResource
+    marc21_type: lesson
+    marc21_subtype: ''
   title:
     en: Lesson plan
+    sv: Lektion
     de: Unterrichtsplan
+    cs: Lekce
   tags:
     - depositable
     - linkable
 - id: instructionalResource-syllabus
   icon: graduation
   props:
-    coar: other
-    coar_type: c_1843
+    coar: 'learning object'
+    coar_type: c_e059
     csl: document
     datacite_general: Other
     datacite_type: Syllabus
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Syllabus
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Syllabus'
     subtype: instructionalResource-syllabus
     type: instructionalResource
+    marc21_type: instructionalresource
+    marc21_subtype: syllabus
   title:
     en: Syllabus
     de: Lehrplan
@@ -397,15 +503,19 @@
 - id: instructionalResource-other
   icon: graduation
   props:
-    coar: learning object
+    coar: 'learning object'
     coar_type: c_e059
     csl: document
     datacite_general: Other
     datacite_type: Instructional Resource
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/LearningResource
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/LearningResource'
     subtype: instructionalResource-other
     type: instructionalResource
+    marc21_type: instructionalresource
+    marc21_subtype: other
   title:
     en: Other instructional resource
     de: Sonstige Lehrmittel
@@ -420,15 +530,19 @@
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
-    openaire_resourceType: '4'
+    openaire_resourceType: '0004'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/lecture
-    schema.org: https://schema.org/PresentationDigitalDocument
+    eurepo: 'info:eu-repo/semantics/lecture'
+    schema.org: 'https://schema.org/PresentationDigitalDocument'
     subtype: ''
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: ''
   title:
     en: Presentation
+    sv: Presentation
     de: Präsentation
+    cs: Prezentace
   tags:
     - depositable
     - linkable
@@ -440,29 +554,43 @@
     csl: speech
     datacite_general: ConferencePaper
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/conferencePaper
-    schema.org: https://schema.org/PresentationDigitalDocument
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/conferencePaper'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: presentation-conferencePaper
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: conferencepaper
   title:
     en: Conference paper
+    sv: Konferensbidrag
     de: Konferenzbeitrag
+    cs: Konferenční příspěvek
   tags:
     - depositable
     - linkable
 - id: presentation-conferencePoster
   icon: columns
   props:
+    coar: conference poster not in proceedings
+    coar_type: c_18co
     csl: graphic
     datacite_general: Text
     datacite_type: Poster
-    eurepo: info:eu-repo/semantics/conferencePoster
-    schema.org: https://schema.org/Poster
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/conferencePoster'
+    schema.org: 'https://schema.org/Poster'
     subtype: presentation-conferencePoster
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: conferenceposter
   title:
     en: Conference poster
+    sv: Poster
     de: Konferenzposter
+    cs: Poster
   tags:
     - depositable
     - linkable
@@ -472,12 +600,14 @@
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
-    openaire_resourceType: '4'
+    openaire_resourceType: '0004'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/lecture
-    schema.org: https://schema.org/PresentationDigitalDocument
+    eurepo: 'info:eu-repo/semantics/lecture'
+    schema.org: 'https://schema.org/PresentationDigitalDocument'
     subtype: presentation-presentationText
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: presentationtext
   title:
     en: Presentation text
     de: Präsentationstext
@@ -492,10 +622,14 @@
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/PresentationDigitalDocument
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/PresentationDigitalDocument'
     subtype: presentation-slides
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: slides
   title:
     en: Slides
     de: Präsentationsfolien
@@ -510,10 +644,14 @@
     csl: speech
     datacite_general: Text
     datacite_type: Presentation
-    eurepo: info:eu-repo/semantics/lecture
-    schema.org: https://schema.org/PresentationDigitalDocument
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/lecture'
+    schema.org: 'https://schema.org/PresentationDigitalDocument'
     subtype: presentation-other
     type: presentation
+    marc21_type: presentation
+    marc21_subtype: other
   title:
     en: Other presentation material
     de: sonstige Präsentationsmaterialien
@@ -528,28 +666,38 @@
     csl: software
     datacite_general: Software
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode
+    openaire_resourceType: '0029'
+    openaire_type: software
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareSourceCode'
     subtype: ''
     type: software
+    marc21_type: software
+    marc21_subtype: ''
   title:
     en: Software
+    sv: Mjukvara
     de: Software
+    cs: Software
   tags:
     - depositable
     - linkable
 - id: software-3DModel
   icon: cube
   props:
-    coar: source code
-    coar_type: QH80-2R4E
+    coar: software
+    coar_type: c_5ce6
     csl: software
     datacite_general: Software
     datacite_type: 3D Model
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/3DModel
+    openaire_resourceType: '0027'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/3DModel'
     subtype: software-3DModel
     type: software
+    marc21_type: software
+    marc21_subtype: 3dmodel
   title:
     en: 3D Model
     de: 3D-Modell
@@ -564,12 +712,14 @@
     csl: software
     datacite_general: Software
     datacite_type: Application
-    openaire_resourceType: '29'
+    openaire_resourceType: '0029'
     openaire_type: software
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareApplication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareApplication'
     subtype: software-application
     type: software
+    marc21_type: software
+    marc21_subtype: application
   title:
     en: Application
     de: Computerprogramm
@@ -579,18 +729,24 @@
 - id: software-computationalModel
   icon: calculator
   props:
-    coar: source code
-    coar_type: QH80-2R4E
+    coar: 'research software'
+    coar_type: c_c950
     csl: software
     datacite_general: Software
     datacite_type: Computational Model
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode
+    openaire_resourceType: '0027'
+    openaire_type: dataset
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareSourceCode'
     subtype: software-computationalModel
     type: software
+    marc21_type: software
+    marc21_subtype: computationalmodel
   title:
     en: Computational model
+    sv: Modell
     de: Rechenmodell
+    cs: Model
   tags:
     - depositable
     - linkable
@@ -602,13 +758,19 @@
     csl: software
     datacite_general: ComputationalNotebook
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode
+    openaire_resourceType: '0040'
+    openaire_type: software
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareSourceCode'
     subtype: software-computationalNotebook
     type: software
+    marc21_type: software
+    marc21_subtype: computationalnotebook
   title:
     en: Computational notebook
+    sv: Computational notebook
     de: Rechennotizbuch
+    cs: Výpočetní notebook
   tags:
     - depositable
     - linkable
@@ -620,10 +782,14 @@
     csl: software
     datacite_general: Software
     datacite_type: Software Service
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareApplication
+    openaire_resourceType: '0029'
+    openaire_type: software
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareApplication'
     subtype: software-service
     type: software
+    marc21_type: software
+    marc21_subtype: service
   title:
     en: Software service
     de: Softwaredienst
@@ -638,10 +804,14 @@
     csl: software
     datacite_general: Software
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/SoftwareSourceCode
+    openaire_resourceType: '0040'
+    openaire_type: software
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/SoftwareSourceCode'
     subtype: software-other
     type: software
+    marc21_type: software
+    marc21_subtype: other
   title:
     en: Other software resource
     de: stonstige Software
@@ -654,10 +824,14 @@
     csl: document
     datacite_general: Text
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: ''
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: ''
   title:
     en: Text Document
     de: Text Dokument
@@ -670,10 +844,14 @@
     csl: article
     datacite_general: Text
     datacite_type: Abstract
-    eurepo: info:eu-repo/semantics/article
-    schema.org: https://schema.org/Article
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/article'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-abstract
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: abstract
   title:
     en: Abstract
     de: Zusammenfassung
@@ -688,10 +866,14 @@
     csl: document
     datacite_general: Text
     datacite_type: Bibliography
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-bibliography
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: bibliography
   title:
     en: Bibliography
     de: Literaturverzeichnis
@@ -706,10 +888,14 @@
     csl: post-weblog
     datacite_general: Text
     datacite_type: Blog Post
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/BlogPosting
+    openaire_resourceType: '0001'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/BlogPosting'
     subtype: textDocument-blogPost
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: blogpost
   title:
     en: Blog post
     de: Blogeintrag
@@ -724,31 +910,43 @@
     csl: book
     datacite_general: Book
     datacite_type: Book
-    eurepo: info:eu-repo/semantics/book
-    schema.org: https://schema.org/Book
+    openaire_resourceType: '0002'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/book'
+    schema.org: 'https://schema.org/Book'
     subtype: textDocument-book
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: book
   title:
     en: Book
+    sv: Bok
     de: Buch
+    cs: Kniha
   tags:
     - depositable
     - linkable
 - id: textDocument-bookSection
   icon: file alternate
   props:
+    coar: book part
+    coar_type: c_3248
     csl: chapter
-    datacite_general: Text
-    datacite_type: Book section
-    openaire_resourceType: '13'
+    datacite_general: BookChapter
+    datacite_type: ''
+    openaire_resourceType: '0013'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/bookPart
-    schema.org: https://schema.org/Chapter
+    eurepo: 'info:eu-repo/semantics/bookPart'
+    schema.org: 'https://schema.org/Chapter'
     subtype: textDocument-bookSection
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: section
   title:
     en: Book section
+    sv: Bokkapitel
     de: Buchabteilung
+    cs: Kapitola v knize
   tags:
     - depositable
     - linkable
@@ -757,16 +955,46 @@
   props:
     coar: conference proceedings
     coar_type: c_f744
-    csl: paper-conference
+    csl: book
     datacite_general: ConferenceProceeding
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/conferencePaper
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/conferenceProceedings'
+    schema.org: 'https://schema.org/Book'
     subtype: textDocument-conferenceProceeding
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: conferenceproceeding
   title:
     en: Conference proceeding
+    sv: Konferenshandling
+    de: Tagungsband
+    cs: Sborník konference
+  tags:
+    - depositable
+    - linkable
+- id: textDocument-proceedingsPaper
+  icon: file alternate
+  props:
+    coar: conference paper
+    coar_type: c_5794
+    csl: paper-conference
+    datacite_general: ConferencePaper
+    datacite_type: ''
+    openaire_resourceType: '0004'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/conferencePaper'
+    schema.org: 'https://schema.org/ScholarlyArticle'
+    subtype: textDocument-proceedingsPaper
+    type: textDocument
+    marc21_type: publication
+    marc21_subtype: conferencepaper
+  title:
+    en: Conference proceedings paper
+    sv: Konferensbidrag
     de: Konferenzbeitrag
+    cs: Konferenční příspěvek
   tags:
     - depositable
     - linkable
@@ -776,15 +1004,21 @@
     coar: data management plan
     coar_type: c_ab20
     csl: report
-    datacite_general: Report
-    datacite_type: Data management plan
-    eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/CreativeWork
+    datacite_general: OutputManagementPlan
+    datacite_type: ''
+    openaire_resourceType: '0045'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/technicalDocumentation'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-dataManagementPlan
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: datamanagementplan
   title:
     en: Data management plan
+    sv: Outputhanteringsplan
     de: Datenmanagementplan
+    cs: Plán správy dat
   tags:
     - depositable
     - linkable
@@ -796,13 +1030,19 @@
     csl: report
     datacite_general: Text
     datacite_type: Technical documentation
-    eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/technicalDocumentation'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-documentation
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: documentation
   title:
     en: Technical documentation
+    sv: Mjukvarudokumentation
     de: technische Dokumantation
+    cs: Dokumentace softwaru
   tags:
     - depositable
     - linkable
@@ -814,10 +1054,14 @@
     csl: article
     datacite_general: Text
     datacite_type: Editorial article
-    eurepo: info:eu-repo/semantics/article
-    schema.org: https://schema.org/Article
+    openaire_resourceType: '0001'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/article'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-editorial
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: editorial
   title:
     en: Editorial
     de: Leitartikel
@@ -827,15 +1071,19 @@
 - id: textDocument-essay
   icon: file alternate
   props:
-    coar: other periodical
-    coar_type: QX5C-AR31
+    coar: text
+    coar_type: c_18cf
     csl: article
     datacite_general: Text
     datacite_type: Essay
-    eurepo: info:eu-repo/semantics/article
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0001'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/article'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-essay
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: essay
   title:
     en: Essay
     de: Essay
@@ -845,16 +1093,46 @@
 - id: textDocument-interviewTranscript
   icon: conversation
   props:
+    coar: transcription
+    coar_type: 6NC7-GK9S
     csl: interview
     datacite_general: Text
     datacite_type: Interview Transcript
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-interviewTranscript
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: interviewtranscript
   title:
     en: Interview transcript
     de: Gesprächsprotokoll
+  tags:
+    - depositable
+    - linkable
+- id: textDocument-journal
+  icon: file alternate
+  props:
+    coar: journal
+    coar_type: c_0640
+    csl: journal
+    datacite_general: Journal
+    datacite_type: ''
+    openaire_resourceType: '0043'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/article'
+    schema.org: 'https://schema.org/Periodical'
+    subtype: textDocument-journal
+    type: textDocument
+    marc21_type: publication
+    marc21_subtype: journal
+  title:
+    en: Journal
+    sv: Tidskrift
+    de: Zeitschrift
+    cs: Časopis
   tags:
     - depositable
     - linkable
@@ -866,28 +1144,38 @@
     csl: article-journal
     datacite_general: JournalArticle
     datacite_type: Journal article
-    eurepo: info:eu-repo/semantics/article
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0001'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/article'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-journalArticle
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: article
   title:
     en: Journal article
+    sv: Tidskriftsartikel
     de: Zeitschriftenartikel
+    cs: Článek v časopise
   tags:
     - depositable
     - linkable
 - id: textDocument-legalComment
   icon: law
   props:
-    coar: annotation
-    coar_type: c_1162
+    coar: other
+    coar_type: c_1843
     csl: legal-case
     datacite_general: Text
     datacite_type: Legal Comment
-    eurepo: info:eu-repo/semantics/annotation
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/annotation'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-legalComment
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: legalcomment
   title:
     en: Legal comment
     de: rechtliche Stellungnahme
@@ -897,15 +1185,19 @@
 - id: textDocument-legalResponse
   icon: law
   props:
-    coar: annotation
-    coar_type: c_1162
+    coar: other
+    coar_type: c_1843
     csl: legal-case
     datacite_general: Text
     datacite_type: Legal Response
-    eurepo: info:eu-repo/semantics/annotation
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/annotation'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-legalResponse
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: legalresponse
   title:
     en: Legal response
     de: rechtliche Antwort
@@ -915,15 +1207,19 @@
 - id: textDocument-magazineArticle
   icon: file alternate
   props:
-    coar: Magazine
-    coar_type: c_2cd9
+    coar: magazine article
+    coar_type: 43KC-T6DC
     csl: article-magazine
     datacite_general: Text
     datacite_type: Magazine article
-    eurepo: info:eu-repo/semantics/contributionToPeriodical
-    schema.org: https://schema.org/Article
+    openaire_resourceType: '0005'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/contributionToPeriodical'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-magazineArticle
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: magazinearticle
   title:
     en: Magazine article
     de: Magazin Artikel
@@ -938,10 +1234,14 @@
     csl: book
     datacite_general: Book
     datacite_type: Book
-    eurepo: info:eu-repo/semantics/book
-    schema.org: https://schema.org/Book
+    openaire_resourceType: '0002'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/book'
+    schema.org: 'https://schema.org/Book'
     subtype: textDocument-monograph
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: monograph
   title:
     en: Monograph
     de: Monographie
@@ -956,10 +1256,14 @@
     csl: article-newspaper
     datacite_general: Text
     datacite_type: Newspaper article
-    eurepo: info:eu-repo/semantics/contributionToPeriodical
-    schema.org: https://schema.org/NewsArticle
+    openaire_resourceType: '0005'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/contributionToPeriodical'
+    schema.org: 'https://schema.org/NewsArticle'
     subtype: textDocument-newspaperArticle
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: newspaperarticle
   title:
     en: Newspaper article
     de: Zeitungsartikel
@@ -974,10 +1278,14 @@
     csl: webpage
     datacite_general: Text
     datacite_type: Online publication
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/WebContent
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/WebContent'
     subtype: textDocument-onlinePublication
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: onlinepublication
   title:
     en: Online publication
     de: Online-Publikation
@@ -987,15 +1295,19 @@
 - id: textDocument-poeticWork
   icon: paragraph
   props:
-    coar: other
-    coar_type: c_1843
+    coar: 'artistic work'
+    coar_type: F8RT-TJK0
     csl: article
     datacite_general: Text
     datacite_type: Poetic work
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-poeticWork
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: poeticwork
   title:
     en: Poetic work
     de: poetisches Werk
@@ -1005,18 +1317,48 @@
 - id: textDocument-preprint
   icon: eraser
   props:
+    coar: preprint
+    coar_type: c_816b
     csl: article
-    datacite_general: Text
-    datacite_type: Preprint
-    openaire_resourceType: '16'
+    datacite_general: Preprint
+    datacite_type: ''
+    openaire_resourceType: '0016'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/preprint
-    schema.org: https://schema.org/ScholarlyArticle
+    eurepo: 'info:eu-repo/semantics/preprint'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-preprint
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: preprint
   title:
     en: Preprint
+    sv: Preprint
     de: Preprint
+    cs: Preprint
+  tags:
+    - depositable
+    - linkable
+- id: textDocument-proposal
+  icon: file alternate
+  props:
+    coar: research proposal
+    coar_type: c_baaf
+    csl: article
+    datacite_general: Text
+    datacite_type: Proposal
+    openaire_resourceType: '0036'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/researchProposal'
+    schema.org: 'https://schema.org/CreativeWork'
+    subtype: textDocument-proposal
+    type: textDocument
+    marc21_type: publication
+    marc21_subtype: proposal
+  title:
+    en: Proposal
+    sv: Förslag
+    de: Antrag
+    cs: Návrh
   tags:
     - depositable
     - linkable
@@ -1028,31 +1370,43 @@
     csl: report
     datacite_general: Report
     datacite_type: Report
-    openaire_resourceType: '17'
+    openaire_resourceType: '0017'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/report
-    schema.org: https://schema.org/Article
+    eurepo: 'info:eu-repo/semantics/report'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-report
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: report
   title:
     en: Report
+    sv: Rapport
     de: Bericht
+    cs: Zpráva
   tags:
     - depositable
     - linkable
 - id: textDocument-workingPaper
   icon: edit
   props:
+    coar: working paper
+    coar_type: c_8042
     csl: article
     datacite_general: Text
     datacite_type: Working paper
-    eurepo: info:eu-repo/semantics/workingPaper
-    schema.org: https://schema.org/ScholarlyArticle
+    openaire_resourceType: '0014'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/workingPaper'
+    schema.org: 'https://schema.org/ScholarlyArticle'
     subtype: textDocument-workingPaper
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: workingpaper
   title:
     en: Working paper
+    sv: Arbetsdokument
     de: Arbeitspapier
+    cs: Pracovní dokument
   tags:
     - depositable
     - linkable
@@ -1064,10 +1418,14 @@
     csl: review
     datacite_general: JournalArticle
     datacite_type: Review
-    eurepo: info:eu-repo/semantics/review
-    schema.org: https://schema.org/Review
+    openaire_resourceType: '0015'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/review'
+    schema.org: 'https://schema.org/Review'
     subtype: textDocument-review
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: review
   title:
     en: Review
     de: Rezension
@@ -1080,15 +1438,21 @@
     coar: technical documentation
     coar_type: c_71bd
     csl: standard
-    datacite_general: Text
-    datacite_type: Technical standard
-    eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/Article
+    datacite_general: Standard
+    datacite_type: ''
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/technicalDocumentation'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-technicalStandard
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: standard
   title:
     en: Technical standard
+    sv: Standard
     de: technischer Standard
+    cs: Standard
   tags:
     - depositable
     - linkable
@@ -1100,15 +1464,19 @@
     csl: thesis
     datacite_general: Text
     datacite_type: Thesis
-    openaire_resourceType: '6'
+    openaire_resourceType: '0006'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/doctoralThesis
-    schema.org: https://schema.org/Book
+    eurepo: 'info:eu-repo/semantics/doctoralThesis'
+    schema.org: 'https://schema.org/Thesis'
     subtype: textDocument-thesis
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: thesis
   title:
     en: Thesis or dissertation
+    sv: Avhandling
     de: Abschlussarbeit
+    cs: Závěrečná práce
   tags:
     - depositable
     - linkable
@@ -1120,10 +1488,14 @@
     csl: report
     datacite_general: Report
     datacite_type: White paper
-    eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/Article
+    openaire_resourceType: '0017'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/technicalDocumentation'
+    schema.org: 'https://schema.org/Article'
     subtype: textDocument-whitePaper
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: whitepaper
   title:
     en: White paper
     de: weißes Papier
@@ -1138,13 +1510,19 @@
     csl: document
     datacite_general: Text
     datacite_type: Other
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0038'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: textDocument-other
     type: textDocument
+    marc21_type: publication
+    marc21_subtype: other
   title:
     en: Other text document
+    sv: Övrig
     de: Sonstiges Textdokument
+    cs: Jiné
   tags:
     - depositable
     - linkable
@@ -1156,28 +1534,38 @@
     csl: document
     datacite_general: Other
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: ''
     type: other
+    marc21_type: other
+    marc21_subtype: ''
   title:
     en: Other
+    sv: Övrig
     de: Sonstige
+    cs: Jiné
   tags:
     - depositable
     - linkable
 - id: other-catalog
   icon: ordered list
   props:
-    coar: other
-    coar_type: c_1843
+    coar: 'archival collection'
+    coar_type: YC9F-HGCF
     csl: collection
     datacite_general: Collection
     datacite_type: Catalog
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Collection
+    openaire_resourceType: '0022'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Collection'
     subtype: other-catalog
     type: other
+    marc21_type: other
+    marc21_subtype: catalog
   title:
     en: Catalog
     de: Katalog
@@ -1187,15 +1575,19 @@
 - id: other-collection
   icon: archive
   props:
-    coar: other
-    coar_type: c_1843
+    coar: collection
+    coar_type: RMP5-3GQ6
     csl: collection
     datacite_general: Collection
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Collection
+    openaire_resourceType: '0022'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Collection'
     subtype: other-collection
     type: other
+    marc21_type: other
+    marc21_subtype: collection
   title:
     en: Collection
     de: Sammlung
@@ -1210,13 +1602,19 @@
     csl: event
     datacite_general: Event
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/Event
+    openaire_resourceType: '0023'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/Event'
     subtype: other-event
     type: other
+    marc21_type: event
+    marc21_subtype: ''
   title:
     en: Event
+    sv: Evenemang
     de: Veranstaltung
+    cs: Událost
   tags:
     - depositable
     - linkable
@@ -1228,10 +1626,14 @@
     csl: software
     datacite_general: InteractiveResource
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/MediaObject
+    openaire_resourceType: '0026'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/MediaObject'
     subtype: other-interactiveResource
     type: other
+    marc21_type: other
+    marc21_subtype: interactiveresource
   title:
     en: Interactive resource
     de: interaktive Ressource
@@ -1246,10 +1648,14 @@
     csl: document
     datacite_general: Text
     datacite_type: Notes
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: other-notes
     type: other
+    marc21_type: other
+    marc21_subtype: notes
   title:
     en: Notes
     de: Notizen
@@ -1264,15 +1670,19 @@
     csl: patent
     datacite_general: Text
     datacite_type: Patent
-    openaire_resourceType: '19'
+    openaire_resourceType: '0019'
     openaire_type: publication
-    eurepo: info:eu-repo/semantics/patent
-    schema.org: https://schema.org/CreativeWork
+    eurepo: 'info:eu-repo/semantics/patent'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: other-patent
     type: other
+    marc21_type: publication
+    marc21_subtype: patent
   title:
     en: Patent
+    sv: Patent
     de: Patent
+    cs: Patent
   tags:
     - depositable
     - linkable
@@ -1284,13 +1694,19 @@
     csl: review
     datacite_general: PeerReview
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/review
-    schema.org: https://schema.org/Review
+    openaire_resourceType: '0015'
+    openaire_type: publication
+    eurepo: 'info:eu-repo/semantics/review'
+    schema.org: 'https://schema.org/Review'
     subtype: other-peerReview
     type: other
+    marc21_type: publication
+    marc21_subtype: peerreview
   title:
     en: Peer review
-    de: Gutachten
+    sv: Peer review
+    de: Peer Review
+    cs: Recenze
   tags:
     - depositable
     - linkable
@@ -1302,13 +1718,19 @@
     csl: entry
     datacite_general: PhysicalObject
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/other
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0028'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/other'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: other-physicalObject
     type: other
+    marc21_type: physicalobject
+    marc21_subtype: ''
   title:
     en: Physical object
+    sv: Fysiskt objekt
     de: physikalisches Objekt
+    cs: Fyzický objekt
   tags:
     - depositable
     - linkable
@@ -1320,13 +1742,19 @@
     csl: report
     datacite_general: Workflow
     datacite_type: ''
-    eurepo: info:eu-repo/semantics/technicalDocumentation
-    schema.org: https://schema.org/CreativeWork
+    openaire_resourceType: '0020'
+    openaire_type: other
+    eurepo: 'info:eu-repo/semantics/technicalDocumentation'
+    schema.org: 'https://schema.org/CreativeWork'
     subtype: other-workflow
     type: other
+    marc21_type: workflow
+    marc21_subtype: ''
   title:
     en: Workflow
+    sv: Workflow
     de: Workflow
+    cs: Workflow
   tags:
     - depositable
     - linkable
