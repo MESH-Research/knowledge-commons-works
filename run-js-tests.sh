@@ -1,4 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Root + dependency JS suites (see scripts/run-js-suites.sh).
+#
+# CI: runs on the Actions runner (already isolated).
+# Local: defer to ./run-tests.sh --js-only (test-runner container).
 
-# Root Jest suite — use pnpm (see package.json packageManager / preinstall).
-pnpm run test
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ -n "${CI:-}" ]]; then
+  exec "${ROOT}/scripts/run-js-suites.sh" "$@"
+fi
+
+echo "Local JS tests run in the test-runner container via ./run-tests.sh --js-only"
+exec "${ROOT}/run-tests.sh" --js-only "$@"

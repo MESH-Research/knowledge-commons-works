@@ -18,14 +18,18 @@
 # test-runner as .env.test_connections for ``uv run --env-file``.
 #
 # Bind mounts: local site/editable deps + minimal instance/test harness.
-# Not a full mirror of docker-compose.dev.yml — no frontend asset tree,
-# workflows, git metadata, or host site-packages overlays (image venv is used).
+# Not a full mirror of docker-compose.dev.yml — no webpack workflows, git
+# metadata, or host site-packages overlays (image venv + root node_modules
+# from the test-runner image are used).
 # Intentional differences from a naive host bind of the whole tree:
 #   - harness / config mounts stay :ro
 #   - editable dependency packages are RW (egg-info, translations, docs, logs
 #     write through; anticipates a shared workspace volume / editor container)
 #   - translations/ and docs/ (plus site/.../translations) are RW for
 #     in-container extract/compile/sphinx
+#   - assets/ + Jest config (package.json, jest.*, babel, __mocks__) for
+#     in-container ``pnpm test`` when -J / --js-only; node_modules and
+#     pnpm-lock.yaml stay baked into the test-runner image
 #   - no uv.lock / pnpm-lock.yaml (use locks baked into the test-runner image)
 #   - no .env / .invenio.private (test secrets + .env.test_connections)
 #   - tmpfs overlay for tests/fixtures/test_logs (parent ./tests is :ro)
@@ -55,6 +59,10 @@ services:
       - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}
       # 1 when run-tests.sh was passed -S/--skip-translations
       - KCWORKS_TEST_SKIP_TRANSLATIONS=${KCWORKS_TEST_SKIP_TRANSLATIONS:-0}
+      # 1 when run-tests.sh was passed -J/--js (or --js-only)
+      - KCWORKS_TEST_RUN_JS=${KCWORKS_TEST_RUN_JS:-0}
+      # 1 when run-tests.sh was passed --js-only (Jest only; no pytest)
+      - KCWORKS_TEST_JS_ONLY=${KCWORKS_TEST_JS_ONLY:-0}
 
     volumes:
       # Test harness (not in docker-compose.dev.yml)
@@ -92,6 +100,14 @@ services:
       - ./static:/opt/invenio/src/static:ro
       - ./scripts:/opt/invenio/src/scripts:ro
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml:ro
+      # Root Jest suite (node_modules stay in the image; lockfile matches package.json)
+      - ./assets:/opt/invenio/src/assets:ro
+      - ./package.json:/opt/invenio/src/package.json:ro
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml:ro
+      - ./jest.config.js:/opt/invenio/src/jest.config.js:ro
+      - ./jest.setup.js:/opt/invenio/src/jest.setup.js:ro
+      - ./babel.config.js:/opt/invenio/src/babel.config.js:ro
+      - ./__mocks__:/opt/invenio/src/__mocks__:ro
       # RW so extract/update/compile and sphinx write through to the host.
       # Site translations overlay the RO ./site bind with a RW bind of that subdir.
       - ./translations:/opt/invenio/src/translations

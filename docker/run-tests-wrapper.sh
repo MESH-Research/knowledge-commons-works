@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Wrapper for test-runner: load env files + Compose runtime secrets, then pytest.
+# Wrapper for test-runner: load env files + Compose runtime secrets, then
+# optional Jest (``pnpm test``) and/or pytest.
 #
-# Same injection path as CI/host: ``uv run --env-file … python -m pytest``.
+# Same injection path as CI/host for pytest: ``uv run --env-file … python -m pytest``.
 # Order (later file overrides earlier for shared keys):
 #   1. tests/.env — developer non-secret defaults (from the ./tests bind mount)
 #   2. .env.test_connections — DB/broker/search/redis hosts for this container
@@ -11,7 +12,12 @@
 # in those files (uv keeps already-set environment variables).
 #
 # Translations/docs: host trees are mounted RW; extract/update/compile and
-# sphinx run here unless KCWORKS_TEST_SKIP_TRANSLATIONS=1.
+# sphinx run here unless KCWORKS_TEST_SKIP_TRANSLATIONS=1 (or JS-only mode).
+#
+# Env flags from run-tests.sh / compose:
+#   KCWORKS_TEST_JS_ONLY=1  — only JS suites (no secrets/DB/translations/pytest)
+#   KCWORKS_TEST_RUN_JS=1   — run JS suites before pytest
+#   KCWORKS_TEST_SKIP_TRANSLATIONS=1 — skip extract/update/compile and sphinx
 
 set -euo pipefail
 
@@ -19,6 +25,24 @@ TESTS_ENV_FILE="/opt/invenio/src/tests/.env"
 CONNECTIONS_ENV_FILE="/opt/invenio/src/.env.test_connections"
 SECRET_FILE="/run/secrets/aws_secrets"
 TRANSLATIONS_DIR="/opt/invenio/src/translations"
+
+run_js_suites() {
+  local suites_script="/opt/invenio/src/scripts/run-js-suites.sh"
+  if [[ ! -x "$suites_script" ]]; then
+    echo "Error: missing ${suites_script} (is ./scripts mounted?)" >&2
+    exit 1
+  fi
+  echo "test-runner: running JS suites via scripts/run-js-suites.sh..." >&2
+  # Install into suite trees on the RW dep mounts (pnpm runs in-container).
+  KCWORKS_JS_SUITE_INSTALL="${KCWORKS_JS_SUITE_INSTALL:-1}" \
+    "$suites_script" "$@"
+}
+
+# --js-only: Jest suites only. No AWS secrets, connections, translations, or pytest.
+if [[ "${KCWORKS_TEST_JS_ONLY:-0}" == "1" ]]; then
+  run_js_suites "$@"
+  exit 0
+fi
 
 if [[ ! -f "$CONNECTIONS_ENV_FILE" || ! -r "$CONNECTIONS_ENV_FILE" ]]; then
   echo "Error: missing or unreadable connections env file: ${CONNECTIONS_ENV_FILE}" >&2
@@ -65,6 +89,11 @@ if [[ "${KCWORKS_TEST_SKIP_TRANSLATIONS:-0}" != "1" ]]; then
   fi
 else
   echo "test-runner: skipping translations extract/update/compile and sphinx (-S)" >&2
+fi
+
+if [[ "${KCWORKS_TEST_RUN_JS:-0}" == "1" ]]; then
+  # Extra args are for pytest; JS suites get none on a combined -J run.
+  run_js_suites
 fi
 
 # Container-network connection hosts (override any localhost values from env files).
