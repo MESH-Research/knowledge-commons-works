@@ -37,12 +37,17 @@ module.exports = {
       "<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/js/invenio_modular_deposit_form",
     "^@js/invenio_modular_deposit_form/(.*)$":
       "<rootDir>/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/assets/semantic-ui/js/invenio_modular_deposit_form/$1",
+    // Webpack alias from deposit-form extras entry point (instance transformations).
+    "^@js/invenio_modular_deposit_form_transformations$":
+      "<rootDir>/site/kcworks/assets/semantic-ui/js/invenio_modular_deposit_form_extras/transformations.js",
     "^@js/invenio_vocabularies$":
       "<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/js/invenio_vocabularies",
     "^@js/invenio_vocabularies/(.*)$":
       "<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/$1/invenio_vocabularies/$2",
     "^@js/kcworks/(.*)$": "<rootDir>/site/kcworks/assets/semantic-ui/js/$1",
     // Prefer root installs over broken/incomplete nested trees under editable deps.
+    // Duplicate formik (root vs deposit-form nested) breaks Formik context in Field.
+    "^formik$": "<rootDir>/node_modules/formik",
     "^i18next$": "<rootDir>/node_modules/i18next",
     "^i18next-browser-languagedetector$":
       "<rootDir>/node_modules/i18next-browser-languagedetector",
