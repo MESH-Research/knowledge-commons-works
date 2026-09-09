@@ -5,7 +5,7 @@ import { AccessRightField } from './AccessRightField';
 import { setupStore } from '@custom-test-utils/redux_store';
 import { Provider } from 'react-redux';
 
-const renderComponent = (props = {}) => {
+const renderComponent = (props = {}, storeOverrides = {}) => {
   const defaultProps = {
     fieldPath: "access",
     label: "Access",
@@ -15,25 +15,16 @@ const renderComponent = (props = {}) => {
       access: {
         record: "public",
         files: "public"
+      },
+      // Component reads record.files.enabled for metadata-only detection.
+      files: {
+        enabled: true
       }
     },
     recordRestrictionGracePeriod: 30,
     allowRecordRestriction: true,
-    formik: {
-      field: {
-        value: {
-          record: "public",
-          files: "public"
-        }
-      },
-      form: {
-        values: {
-          files: {
-            enabled: true
-          }
-        }
-      }
-    }
+    // Metadata access section is gated on this prop.
+    showMetadataAccess: true,
   };
 
   const store = setupStore({
@@ -41,7 +32,16 @@ const renderComponent = (props = {}) => {
       editorState: {
         selectedCommunity: null
       }
-    }
+    },
+    // Component reads files.entries from Redux (upload state).
+    // Empty entries => metadata-only UI ("The record has no files.").
+    // Seed one entry so "Files access" is shown by default.
+    files: {
+      entries: {
+        "file-1": { name: "test.pdf", size: 1024 },
+      },
+    },
+    ...storeOverrides,
   });
 
   const formMocks = setupFormMocks({
@@ -100,9 +100,11 @@ describe('AccessRightField', () => {
   //       visibility: 'restricted'
   //     }
   //   };
-
-  //   renderComponent({ community });
-
+  //
+  //   renderComponent({}, {
+  //     deposit: { editorState: { selectedCommunity: community } },
+  //   });
+  //
   //   // Check that the record access is restricted when community access is restricted
   //   const recordAccess = screen.getByLabelText('Record access');
   //   expect(recordAccess).toHaveClass('disabled');
@@ -119,7 +121,15 @@ describe('AccessRightField', () => {
       }
     };
 
-    renderComponent({ community });
+    // Community comes from Redux deposit.editorState.selectedCommunity, not props.
+    // Leave default files.entries so Files access (not metadata-only) is shown.
+    renderComponent({}, {
+      deposit: {
+        editorState: {
+          selectedCommunity: community
+        }
+      },
+    });
 
     // Check that the component renders with public access (default for ghost communities)
     expect(screen.getByText('Files access')).toBeInTheDocument();

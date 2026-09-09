@@ -39,7 +39,10 @@ const AccessRightField = ({
   const communityAccess =
     (community && !isGhostCommunity && community.access.visibility) || "public";
   const { values } = useFormikContext();
-  const isMetadataOnly = !record.files.enabled || Object.entries(files.entries).length < 1;
+  // New drafts / incomplete fixtures may omit files; treat as metadata-only.
+  const isMetadataOnly =
+    !record.files?.enabled ||
+    Object.entries(files?.entries ?? {}).length < 1;
 
   return (
     <>
