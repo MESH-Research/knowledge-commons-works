@@ -60,7 +60,7 @@ const CommunityListItem = ({
         <span>{community.metadata.title}</span>
       </Item.Content>
 
-      <Item.Extra>
+      <div className="community-item-actions">
         <AddEditCommunityButton
           classnames={""}
           community={community}
@@ -83,7 +83,7 @@ const CommunityListItem = ({
             selectionButtonDisabled={selectionButtonDisabled}
           />
         )}
-      </Item.Extra>
+      </div>
     </Item>
   );
 };

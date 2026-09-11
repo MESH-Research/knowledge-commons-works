@@ -79,6 +79,8 @@
     "Record communities": "Record collections"
   },
   "invenio_rdm_records": {
+    "{{length}} out of {{maxfiles}} files": "{{length}} of {{maxfiles}} files",
+    "out of": "of",
     "Before publishing to the community, please read and check the following:": "Before publishing to the collection, please read and check the following:",
     "Before submitting to community, please read and check the following:": "Before submitting to collection, please read and check the following:",
     "Change community": "Change collection",

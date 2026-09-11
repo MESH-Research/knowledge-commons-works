@@ -1,0 +1,94 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2015-2024 CERN.
+  Copyright (C) 2021 New York University.
+  Copyright (C) 2022 TU Wien.
+  Copyright (C) 2023 Graz University of Technology.
+
+  Modifications for Knowledge Commons Works
+  Copyright (C) 2026 Mesh
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+
+  Modifications for Knowledge Commons Works:
+  - Restrict the settings side nav to Security and Applications for
+    non-admin users
+  - Retitle the page to "Security settings" for non-admin users
+  - Admins keep the full upstream settings menu and "My account" heading
+#}
+
+{%- extends config.THEME_BASE_TEMPLATE %}
+
+{%- set is_settings_admin = current_user.is_authenticated and (current_user.roles | selectattr("name", "equalto", "administration") | list) %}
+{%- set exposed_settings_menu_items = ("security", "applications") %}
+{%- set page_heading = _("My account") if is_settings_admin else _("Security settings") %}
+{%- set title = _("Settings") if is_settings_admin else _("Security settings") %}
+
+{%- block page_body scoped %}
+
+<div class="ui container fluid page-subheader-outer compact ml-0-mobile mr-0-mobile">
+  <div class="ui container page-subheader">
+    <h1 class="ui large header">{{ page_heading }}</h1>
+  </div>
+</div>
+
+<div class="ui grid container stackable">
+  <nav class="five wide tablet four wide computer column" aria-label="{{ _('Account settings') if is_settings_admin else _('Security settings') }}">
+
+    {%- block settings_menu scoped %}
+      <div class="ui vertical menu fluid">
+        <strong class="header item">{{ _('Settings') if is_settings_admin else _('Security settings') }}</strong>
+        {%- for item in current_menu.submenu('settings').children
+             if item.visible and (is_settings_admin or item.name in exposed_settings_menu_items) %}
+
+          {%- block settings_menu_item scoped %}
+            <a
+              href="{{ item.url }}"
+              class="brand item {% if item.active %}active{% endif %}"
+              {% if item.active %} aria-current="page" {% endif %}
+            >
+              {{ item.text|safe }}
+            </a>
+          {%- endblock %}
+
+        {%- endfor %}
+      </div>
+    {%- endblock %}
+
+  </nav>
+
+  <article class="eleven wide tablet twelve wide computer column">
+
+    {%- block settings_content scoped %}
+      <section aria-label="{{ _(panel_title|default('')) }}" class="ui segments">
+        <div class="ui segment secondary">
+
+          {%- block settings_content_title scoped %}
+            {%- if panel_icon %}
+
+              {%- block settings_content_title_icon scoped %}
+                <i class="{{ panel_icon }}" aria-hidden="true"></i>
+              {%- endblock %}
+
+            {%- endif %}
+            <h2 class="ui tiny header inline-block m-0">{{ panel_title|default("") }}</h2>
+          {%- endblock %}
+
+        </div>
+
+        {%- block settings_body scoped %}
+          <div class="ui segment">
+            {%- block settings_form scoped %}
+            {%- endblock settings_form %}
+          </div>
+        {%- endblock settings_body %}
+
+        </section>
+    {%- endblock %}
+
+  </article>
+</div>
+
+{%- endblock %}

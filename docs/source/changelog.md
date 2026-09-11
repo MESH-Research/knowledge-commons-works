@@ -5,7 +5,22 @@
 
 ## Unreleased
 
+- Resource types vocabulary
+  - Expanded and realigned the KCWorks resource-type fixture
+    (`app_data/vocabularies/resource_types.yaml`), filling out and correcting
+    OpenAIRE mappings (4-digit `openaire_resourceType` codes paired with
+    `openaire_type` from OpenAIRE’s publication/dataset/software/other
+    typologies), and tightening COAR and schema.org equivalents across existing
+    types—for example conference proceedings vs proceedings papers, instructional
+    and collection COAR terms, and finer audiovisual schema.org types. **New
+    types added:** journal (`textDocument-journal`), conference proceedings
+    paper (`textDocument-proceedingsPaper`), and proposal
+    (`textDocument-proposal`).
 - Docs
+  - Vocabulary management: new admin guide section on resource-type fixtures
+    (`add-to-fixture`, YAML layout, fixtures vs live updates), and the metadata
+    reference hierarchy updated for the new textDocument subtypes (including
+    journal, proceedings paper, and proposal).
   - Documentation for admins on executing cli commands via ssh and s3 bucket
     commands.
   - Documentation on required and recommended metadata fields in the KCWorks

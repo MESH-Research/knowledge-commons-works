@@ -1,4 +1,6 @@
-// This file is part of Invenio-RDM-Records
+// This file is part of Knowledge Commons Works
+//
+// Based on a file in Invenio-RDM-Records
 // Copyright (C) 2020-2023 CERN.
 // Copyright (C) 2020-2022 Northwestern University.
 //
@@ -10,7 +12,7 @@ import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 import React from "react";
 import { TextAreaField } from "react-invenio-forms";
-import { Button, Divider, Form, Icon, List } from "semantic-ui-react";
+import { Button, Card, Divider, Form, Icon, List } from "semantic-ui-react";
 import { EmbargoCheckboxField } from "./EmbargoCheckboxField.js";
 import { EmbargoDateField } from "./EmbargoDateField";
 import { i18next } from "@translations/i18next";
@@ -35,26 +37,26 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
     ? DateTime.fromISO(embargoUntil).toLocaleString(DateTime.DATE_FULL)
     : "???";
 
-  const publicColor = !embargoActive ? "primary" : "primary";
-  const restrictedColor = embargoActive ? "negative" : "negative";
-
-  const handlePublicButtonClick = () => {
-    setFieldValue("access.files", "public");
-    setFieldValue("access.embargo", {
-      active: false,
-    });
-  };
-
-  const handleRestrictedButtonClick = () => {
-    setFieldValue("access.files", "restricted");
-    setFieldValue("access.embargo", {
-      active: true,
-    });
-  };
+  // const publicColor = !embargoActive ? "primary" : "primary";
+  // const restrictedColor = embargoActive ? "negative" : "negative";
+  //
+  // const handlePublicButtonClick = () => {
+  //   setFieldValue("access.files", "public");
+  //   setFieldValue("access.embargo", {
+  //     active: false,
+  //   });
+  // };
+  //
+  // const handleRestrictedButtonClick = () => {
+  //   setFieldValue("access.files", "restricted");
+  //   setFieldValue("access.embargo", {
+  //     active: true,
+  //   });
+  // };
 
   return (
     <>
-      <Form.Field className="mb-0">
+      <Form.Field className="mb-0 rel-mt-1">
         <EmbargoCheckboxField
           fieldPath="access.embargo.active"
           disabled={!embargoEnabled}
@@ -81,47 +83,54 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
       </Button.Group>*/}
       </Form.Field>
 
-      <Divider className="mt-15 mb-15" />
+      {!metadataOnly && filesPublic && !embargoActive && (
+        <Card className="transparent rel-pt-1 p-15">
+          <List divided relaxed>
+            <List.Content>
+              <List.Header as="label" htmlFor="access.embargo.active"></List.Header>
 
-      <List divided relaxed>
-        <List.Content>
-          <List.Header as="label" htmlFor="access.embargo.active"></List.Header>
+              <List.Description className="rel-mt-1">
+                <Trans>
+                  Record or files access must be <b>restricted</b> to apply an embargo.
+                </Trans>
+              </List.Description>
+            </List.Content>
+          </List>
+        </Card>
+      )}
 
-          {!metadataOnly && filesPublic && !embargoActive && (
-            <List.Description>
-              <Trans>
-                Record or files access must be <b>restricted</b> to apply an embargo.
-              </Trans>
-            </List.Description>
-          )}
+      {embargoActive && (
+        <Card className="transparent rel-pt-1 p-15">
+          <List divided relaxed>
+            <List.Content>
+              <List.Header as="label" htmlFor="access.embargo.active"></List.Header>
 
-          {embargoActive && (
-            <>
-              <EmbargoDateField fieldPath="access.embargo.until" required />
+              <EmbargoDateField fieldPath="access.embargo.until" required classnames="rel-mt-1" />
               <TextAreaField
                 label={i18next.t("Embargo reason")}
                 fieldPath="access.embargo.reason"
                 placeholder={i18next.t("Optionally, describe the reason for the embargo.")}
                 optimized="true"
+                className="rel-mt-1"
               />
-            </>
-          )}
-          {embargoWasLifted && (
-            <>
-              <p>
-                {i18next.t(`Embargo was lifted on {{fmtDate}}.`, {
-                  fmtDate: fmtDate,
-                })}
-              </p>
-              {embargoReason && (
-                <p>
-                  <b>{i18next.t("Reason")}</b>: {embargoReason}.
-                </p>
+              {embargoWasLifted && (
+                <>
+                  <p>
+                    {i18next.t(`Embargo was lifted on {{fmtDate}}.`, {
+                      fmtDate: fmtDate,
+                    })}
+                  </p>
+                  {embargoReason && (
+                    <p>
+                      <b>{i18next.t("Reason")}</b>: {embargoReason}.
+                    </p>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </List.Content>
-      </List>
+            </List.Content>
+          </List>
+        </Card>
+      )}
     </>
   );
 };

@@ -1,16 +1,18 @@
 # Vocabulary Management
 
 KCWorks loads funders, affiliations, and awards from live external datasets (not
-from `app_data` fixtures). Subjects (FAST and Homosaurus) are loaded from
-package/fixture JSONL at install time. Deposit-form autocomplete depends on
-these vocabularies being seeded and kept current.
+from `app_data` fixtures). Subjects (FAST and Homosaurus) and **resource types**
+are loaded from package/fixture data at install time. Deposit-form autocomplete
+and the resource-type dropdown depend on these vocabularies being seeded and
+kept current.
 
 The **Names** vocabulary (people for creator/contributor lookup) is maintained
 separately — see [Names Vocabulary Lifecycle](names_vocabulary.md).
 
 Install-time seeding and default job registration are covered in
 [Installation — step 5](../setup/installation.md). This page is for ongoing
-operation: seed, schedule updates, and run one-off imports.
+operation: seed, schedule updates, run one-off imports, and add fixture-backed
+entries (especially resource types).
 
 Run commands from the KCWorks UI app container unless noted otherwise. See
 [Starting an interactive shell](running_commands.md#starting-interactive-shell).
@@ -39,11 +41,14 @@ imported from OpenAIRE.
 Default schedules (UTC, Sundays): funders 03:00 → affiliations 04:00 → OpenAIRE
 awards 05:00 → CORDIS 06:00.
 
-**Subjects** (FAST via `invenio-subjects-fast`, plus Homosaurus) are **not** on
-that weekly schedule. They are seeded with `invenio rdm-records fixtures` (see
-[Installation](../setup/installation.md)) and refreshed with
-`invenio vocabularies update` when the package source changes—see
-[Subjects](#subjects-fast--homosaurus).
+**Subjects** (FAST via `invenio-subjects-fast`, plus Homosaurus) and **resource
+types** are **not** on that weekly schedule. They are seeded with
+`invenio rdm-records fixtures` from entries declared in
+`app_data/vocabularies.yaml` (see [Installation](../setup/installation.md)).
+Subjects are refreshed with `invenio vocabularies update` when the package
+source changes—see [Subjects](#subjects-fast--homosaurus). Resource types are
+edited in YAML and applied with `invenio rdm-records add-to-fixture`—see
+[Resource types](#resource-types).
 
 ## How do I import vocabulary data from a local file?
 
@@ -308,6 +313,81 @@ Needs egress to `cordis.europa.eu`.
 
 ---
 
+## Resource types
+
+Deposit and related-works resource types for KCWorks. Source of truth is the
+fixture YAML (not an external dump):
+
+- Registry: `app_data/vocabularies.yaml` → `resourcetypes` (`pid-type: rsrct`)
+- Data: `app_data/vocabularies/resource_types.yaml`
+
+Initial load is via `invenio rdm-records fixtures` (install with
+`setup-services.sh -f`). Re-running `fixtures` alone does **not** reliably
+rewrite terms that already exist; use `add-to-fixture` for live instances.
+
+The human-readable hierarchy is documented under
+[Resource types](../reference/metadata.md#resource-types). Upstream shape and
+props conventions:
+[InvenioRDM — resource types](https://inveniordm.docs.cern.ch/operate/customize/vocabularies/resource_types/).
+
+### How do I add a new resource type (as a fixture)?
+
+1. **Edit** `app_data/vocabularies/resource_types.yaml`. Add a new list entry
+   (or update an existing one). For a subtype under an existing top-level type:
+
+   - `id`: `{parentId}-{subtypeCamelCase}` (e.g. `textDocument-proceedingsPaper`)
+   - `props.type`: the parent id (e.g. `textDocument`)
+   - `props.subtype`: the same as this entry’s `id`
+   - `title`: at least `en` (and usually `de`)
+   - `tags`: include `depositable` and/or `linkable` if it should appear in the
+     deposit or related-works dropdowns
+   - `props` equivalencies used on export / interoperability, typically:
+     `coar`, `coar_type`, `csl`, `datacite_general`, `datacite_type`, `eurepo`,
+     `schema.org`
+
+   Parent (top-level) entries use `props.type` equal to their own `id` and an
+   empty `props.subtype`. Only two levels are supported.
+
+2. **Apply** the fixture on a running instance (UI app container):
+
+   ```shell
+   invenio rdm-records add-to-fixture resourcetypes
+   ```
+
+   That command **adds new** resource-type ids and **updates** existing ones
+   from the YAML. It does not delete removed ids. Work is queued to Celery;
+   ensure a worker is running.
+
+3. **Verify** via the vocabularies API / admin UI, e.g. search
+   `/api/vocabularies/resourcetypes?q=proceedingsPaper`, and confirm the new
+   type appears in the deposit form Resource type dropdown (if `depositable`).
+
+4. **Document** the subtype under
+   [Resource types](../reference/metadata.md#resource-types) in
+   `docs/source/reference/metadata.md`.
+
+5. **Optional — deposit form layout.** If the type needs custom field groups
+   (meeting details, publication details, etc.), add a matching key under
+   `site/kcworks/config/deposit_form_layout.py` (see nearby entries such as
+   `textDocument-conferenceProceeding`). Layout changes need a web restart /
+   asset rebuild as usual for config and frontend.
+
+### How do I update an existing resource type fixture entry?
+
+Change the entry in `app_data/vocabularies/resource_types.yaml`, then run the
+same `add-to-fixture` command. Props, titles, icons, and tags on that id are
+refreshed from YAML. If you rename an `id`, treat it as a new term (old id
+remains unless you remove it separately).
+
+### When do I use `fixtures` vs `add-to-fixture` for resource types?
+
+| Command | Use when |
+| ------- | -------- |
+| `invenio rdm-records fixtures` | Fresh install / empty instance (`setup-services.sh -f`). Loads all vocabularies declared in `app_data/vocabularies.yaml`. |
+| `invenio rdm-records add-to-fixture resourcetypes` | Live instance: add or update resource-type rows from `app_data/vocabularies/resource_types.yaml`. |
+
+---
+
 ## Subjects (FAST / Homosaurus)
 
 Controlled subject terms for deposit autocomplete and record metadata. FAST is
@@ -403,11 +483,13 @@ on a large instance.
 
 - [Installation — step 5](../setup/installation.md)
 - [`invenio kcworks-jobs`](../reference/cli_commands.md#invenio-kcworks-jobs)
+- [Resource types](../reference/metadata.md#resource-types) (KCWorks hierarchy)
 - [metadata.subjects](../reference/metadata.md#metadata-subjects) (FAST scheme
   ids, including `FAST-formgenre`)
 - [Metadata customizations — subjects](../customizations.md#metadata-subjects)
 - Upstream:
   [InvenioRDM vocabularies](https://inveniordm.docs.cern.ch/operate/customize/vocabularies/),
+  [Resource types](https://inveniordm.docs.cern.ch/operate/customize/vocabularies/resource_types/),
   [Funding](https://inveniordm.docs.cern.ch/operate/customize/vocabularies/funding/)
 - OpenAIRE project ids:
   [OpenAIRE Graph — Projects](https://graph.openaire.eu/docs/data-model/entities/project)

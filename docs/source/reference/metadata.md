@@ -385,11 +385,13 @@ subtypes. This list may be expanded in the future.
   - book
   - bookSection
   - conferenceProceeding
+  - proceedingsPaper
   - dataManagementPlan
   - documentation
   - editorial
   - essay
   - interviewTranscript
+  - journal
   - journalArticle
   - legalComment
   - legalResponse
@@ -399,6 +401,7 @@ subtypes. This list may be expanded in the future.
   - onlinePublication
   - poeticWork
   - preprint
+  - proposal
   - report
   - workingPaper
   - review

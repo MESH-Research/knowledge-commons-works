@@ -65,48 +65,66 @@
       }
     }
 
-    &.active {
-      h2.header {
-        @media all and (max-width: @largestTabletScreen) {
-          margin-top: 0;
-          color: @primaryColor;
-        }
-      }
+    &.active {  // mobile menu when open
+
       #invenio-menu.ui.menu {
         @media all and (max-width: @largestTabletScreen) {
-          z-index: 1000;
+          background-color: @sidebarBackgroundColor;
+          padding-left: 0;
+          padding-right: 0;
+          padding-top: 1.5rem;
+          z-index: 1010 !important;
           top: 0;
           overflow-y: auto;
           overflow-x: hidden;
+          h2.header {
+              margin-top: 1rem;
+              margin-bottom: 0.5rem;
+              color: @ivy;
+          }
+          .item:not(.logo) {
+              padding: 0;
+          }
+
+          a:not(.ui.button),
+          a[role="menuitem"],
+          div[role="menuitem"] {
+            padding: 1rem 1.5rem;
+            width: 100%;
+            border-left: 2px solid transparent;
+          }
+
+          .right.menu.item {
+            a:not(.ui.button),
+            a[role="menuitem"],
+            div[role="menuitem"] {
+              height: auto;
+
+              &.restricted {
+                background-color: @ivy80 !important;
+                color: @white !important;
+              }
+
+              &:hover,
+              &:focus,
+              &:active {
+                background-color: @mint80 !important;
+              }
+            }
+          }
+          #rdm-close-burger-menu-icon {
+              margin-right: 1rem;
+              margin-bottom: 0;
+          }
         }
         @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
           max-width: 40vw;
         }
-        .item {
-          @media screen and (max-width: @largestTabletScreen) {
-            padding: 0;
-          }
-        }
-        #rdm-close-burger-menu-icon {
-          @media screen and (max-width: @largestTabletScreen) {
-            margin-right: 1rem;
-            margin-bottom: 0;
-          }
-        }
       }
     }
     #invenio-menu.ui.menu {
-      @media screen and (max-width: @largestTabletScreen) {
-        background-color: @sidebarBackgroundColor;
-        padding-left: 0;
-        padding-right: 0;
-        padding-top: 1.5rem;
-      }
       > .item:not(.logo) {
         line-height: 1.3rem;
-        @media screen and (max-width: @largestTabletScreen) {
-          padding: 0;
-        }
         &:hover,
         &:focus,
         &:active {
@@ -148,7 +166,7 @@
           padding: 1.7rem 1rem;
           color: @ivy80;
           @media screen and (max-width: @largestTabletScreen) {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.5rem;
             width: 100%;
             border-left: 2px solid transparent;
           }
@@ -192,16 +210,10 @@
         a.ui.button.basic {
           box-shadow: none;
         }
-        &.right.menu {
+        &.right.menu.item {
           border-right: 0.5rem solid @mint;
           border-left: 0.5rem solid @mint;
           background-color: @mint;
-          @media screen and (max-width: @largestTabletScreen) {
-            border-right: 0;
-            border-left: 0;
-            margin-top: 1.5rem;
-            padding: 1.5rem 0;
-          }
           &.logged-out:hover,
           &.logged-out:focus,
           &.logged-out:active {
@@ -210,9 +222,6 @@
           }
           &> .item {
             height: 100%;
-            @media screen and (max-width: @largestTabletScreen) {
-              height: unset;
-            }
           }
           a,
           div[role="menuitem"] {

@@ -1,0 +1,127 @@
+# Testing infrastructure for Knowledge Commons Works
+#
+# Project name is fixed to ``kcworks-test`` so ``compose down --remove-orphans``
+# cannot treat the local dev stack (same directory → default project
+# ``kcworks-next``) as orphans. run-tests.sh also passes ``-p kcworks-test`` so
+# a host COMPOSE_PROJECT_NAME does not override this.
+#
+# Runs pytest in a container against docker-services-cli databases.
+#
+# Secrets: Compose service secret ``aws_secrets`` (from host file path in
+# TEST_SECRET_FILE at create time). Inside the container it appears at
+# /run/secrets/aws_secrets for the container lifetime; the host file must
+# remain until tests finish (Compose binds that path). run-tests.sh deletes
+# the host file after docker wait / on cleanup.
+#
+# Connection details (non-secret DB/broker/search/redis URLs) are written as
+# plain dotenv to /tmp/kcworks-test-connections.env and mounted into the
+# test-runner as .env.test_connections for ``uv run --env-file``.
+#
+# Bind mounts: local site/editable deps + minimal instance/test harness.
+# Not a full mirror of docker-compose.dev.yml — no webpack workflows, git
+# metadata, or host site-packages overlays (image venv + root node_modules
+# from the test-runner image are used).
+# Intentional differences from a naive host bind of the whole tree:
+#   - harness / config mounts stay :ro
+#   - editable dependency packages are RW (egg-info, translations, docs, logs
+#     write through; anticipates a shared workspace volume / editor container)
+#   - translations/ and docs/ (plus site/.../translations) are RW for
+#     in-container extract/compile/sphinx
+#   - assets/ + Jest config (package.json, jest.*, babel, __mocks__) for
+#     in-container ``pnpm test`` when -J / --js-only; node_modules and
+#     pnpm-lock.yaml stay baked into the test-runner image
+#   - no uv.lock / pnpm-lock.yaml (use locks baked into the test-runner image)
+#   - no .env / .invenio.private (test secrets + .env.test_connections)
+#   - tmpfs overlay for tests/fixtures/test_logs (parent ./tests is :ro)
+#   - tmpfs for site/kcworks.egg-info while ./site remains :ro
+
+name: kcworks-test
+
+services:
+  test-runner:
+    build:
+      context: .
+      target: test-runner
+    # entrypoint (not command) so `compose run test-runner ARGS` appends to the
+    # wrapper instead of replacing it — e.g. ./run-tests.sh tests/ui
+    entrypoint: ["/opt/invenio/src/docker/run-tests-wrapper.sh"]
+    secrets:
+      - aws_secrets
+
+    networks:
+      - test-network
+
+    environment:
+      # Pin to Flask test-client defaults (http://localhost). Do not inherit
+      # host INVENIO_SITE_* (often https://localhost:8443 from local .env).
+      - INVENIO_SITE_UI_URL=http://localhost
+      - INVENIO_SITE_API_URL=http://localhost/api
+      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}
+      # 1 when run-tests.sh was passed -S/--skip-translations
+      - KCWORKS_TEST_SKIP_TRANSLATIONS=${KCWORKS_TEST_SKIP_TRANSLATIONS:-0}
+      # 1 when run-tests.sh was passed -J/--js (or --js-only)
+      - KCWORKS_TEST_RUN_JS=${KCWORKS_TEST_RUN_JS:-0}
+      # 1 when run-tests.sh was passed --js-only (Jest only; no pytest)
+      - KCWORKS_TEST_JS_ONLY=${KCWORKS_TEST_JS_ONLY:-0}
+
+    volumes:
+      # Test harness (not in docker-compose.dev.yml)
+      - /tmp/kcworks-test-connections.env:/opt/invenio/src/.env.test_connections:ro
+      - ./docker/run-tests-wrapper.sh:/opt/invenio/src/docker/run-tests-wrapper.sh:ro
+      - ./tests:/opt/invenio/src/tests:ro
+      # conftest writes fixtures/test_logs at import; parent mount is :ro.
+      - type: tmpfs
+        target: /opt/invenio/src/tests/fixtures/test_logs
+      # Instance / project paths (same as dev web-ui)
+      - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg:ro
+      - ./app_data:/opt/invenio/var/instance/app_data:ro
+      - ./.invenio:/opt/invenio/src/.invenio:ro
+      - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site:ro
+      # uv/setuptools may touch *.egg-info under RO site; overlay writable tmpfs.
+      - type: tmpfs
+        target: /opt/invenio/src/site/kcworks.egg-info
+      # Editable deps: RW so egg-info / translations / docs / logs write through.
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-deposit-form:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-modular-detail-page:/opt/invenio/src/site/kcworks/dependencies/invenio-modular-detail-page
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-record-importer-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-record-importer-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-rdm-records:/opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-records-resources:/opt/invenio/src/site/kcworks/dependencies/invenio-records-resources
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-api-provisioner:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-api-provisioner
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-remote-user-data-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-remote-user-data-kcworks
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-requests:/opt/invenio/src/site/kcworks/dependencies/invenio-requests
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-stats-dashboard:/opt/invenio/src/site/kcworks/dependencies/invenio-stats-dashboard
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-vocabularies:/opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kc-knowledge-base-sync:/opt/invenio/src/site/kcworks/dependencies/kc-knowledge-base-sync
+      - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/kcworks-import-client:/opt/invenio/src/site/kcworks/dependencies/kcworks-import-client
+      # Instance / project files pytest actually needs (not full frontend tree)
+      - ./templates:/opt/invenio/var/instance/templates:ro
+      - ./static:/opt/invenio/src/static:ro
+      - ./scripts:/opt/invenio/src/scripts:ro
+      - ./pyproject.toml:/opt/invenio/src/pyproject.toml:ro
+      # Root Jest suite (node_modules stay in the image; lockfile matches package.json)
+      - ./assets:/opt/invenio/src/assets:ro
+      - ./package.json:/opt/invenio/src/package.json:ro
+      - ./pnpm-lock.yaml:/opt/invenio/src/pnpm-lock.yaml:ro
+      - ./jest.config.js:/opt/invenio/src/jest.config.js:ro
+      - ./jest.setup.js:/opt/invenio/src/jest.setup.js:ro
+      - ./babel.config.js:/opt/invenio/src/babel.config.js:ro
+      - ./__mocks__:/opt/invenio/src/__mocks__:ro
+      # RW so extract/update/compile and sphinx write through to the host.
+      # Site translations overlay the RO ./site bind with a RW bind of that subdir.
+      - ./translations:/opt/invenio/src/translations
+      - ${INVENIO_LOCAL_SITE_PATH}/kcworks/translations:/opt/invenio/src/site/kcworks/translations
+      - ./docs:/opt/invenio/src/docs
+
+secrets:
+  aws_secrets:
+    # Host path set by run-tests.sh (TEST_SECRET_FILE). Compose exposes this
+    # to the service as the aws_secrets secret at /run/secrets/aws_secrets.
+    # Keep the host file until the container finishes (see run-tests.sh).
+    file: ${TEST_SECRET_FILE}
+
+networks:
+  test-network:
+    name: docker_services_cli_default
+    external: true

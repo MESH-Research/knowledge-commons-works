@@ -149,6 +149,8 @@ _FORM_RIGHT_SIDEBAR = {
             "section": "access",
             "label": None,  # "Visibility",
             "component": "AccessRightsComponent",
+            "wrapped": True,
+            "classnames": "basic",
         },
     ],
 }
@@ -978,7 +980,7 @@ _FORM_PAGES = {
                 {
                     "section": "rights",
                     "label": _("Rights and Permissions"),
-                    "icon": "copyright",
+                    "icon": "copyright outline",
                     "component": "FormSection",
                     "classnames": "basic",
                     "show_heading": True,
@@ -988,7 +990,7 @@ _FORM_PAGES = {
                             "label": _("Copyright"),
                             "icon": None,
                             "component": "CopyrightsComponent",
-                            "classnames": "basic rel-mb-2",
+                            "classnames": "basic",
                             "description": _(
                                 "A copyright statement describing the ownership of "
                                 "the uploaded resource."

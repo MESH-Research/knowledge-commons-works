@@ -19,6 +19,7 @@ export function EmbargoDateField({
   placeholder,
   required,
   helpText,
+  classnames,
 }) {
   return (
     <TextField
@@ -26,7 +27,8 @@ export function EmbargoDateField({
       label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       placeholder={placeholder}
       required={required}
-      helpText={helpText}
+      description={helpText}
+      classname={classnames}
     />
   );
 }

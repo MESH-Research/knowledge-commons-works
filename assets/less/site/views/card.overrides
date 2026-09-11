@@ -21,6 +21,9 @@
       margin-top: -2px;
     }
   }
+  &.transparent {
+    background-color: transparent;
+  }
 }
 
 #Contributors-tab-section {
@@ -52,7 +55,7 @@
   }
 }
 
-.deposit-right-sidebar .ui.card,
+.deposit-right-sidebar .ui.card:not(.transparent),
 .ui.card.borderless.facet {
   background-color: @sidebarBackgroundColor;
   padding: 1rem;

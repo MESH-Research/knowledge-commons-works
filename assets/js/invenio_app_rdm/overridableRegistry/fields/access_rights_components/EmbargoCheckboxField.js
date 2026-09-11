@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 
 class EmbargoCheckboxComponent extends Component {
   render() {
-    const { fieldPath, formik, checked, disabled, label, ...restProps } = this.props;
+    const { fieldPath, formik, checked, classnames, disabled, label, ...restProps } = this.props;
     return (
       <Checkbox
         id={fieldPath}
@@ -33,6 +33,7 @@ class EmbargoCheckboxComponent extends Component {
           }
         }}
         {...restProps}
+        className={`mb-12 ${classnames}`}
       />
     );
   }

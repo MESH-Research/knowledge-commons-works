@@ -11,6 +11,7 @@ const ContentWarningField = ({
   icon,
   description = undefined,
   helpText = undefined,
+  editorConfig = {},
   ...restProps
 }) => {
   const { values, setFieldValue } = useFormikContext();

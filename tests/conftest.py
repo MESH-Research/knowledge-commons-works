@@ -6,6 +6,7 @@
 
 """Top-level pytest configuration for KCWorks tests."""
 
+import ast
 import importlib.util
 import os
 from collections import namedtuple
@@ -19,9 +20,13 @@ from invenio_queues import current_queues
 
 # Imports after logging setup (E402 suppressed - logging must be set up first)
 from .fixtures.custom_fields import test_config_fields  # noqa: E402
+from .fixtures.env_defaults import set_default_os_env
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
 from .fixtures.logging import log_folder_path, test_config_logging
+
+
+set_default_os_env()
 
 
 def load_config():
@@ -106,9 +111,12 @@ test_config = {
     **test_config_fields,
     **test_config_logging,
     # **test_config_stats,  # Now getting directly from invenio.cfg
-    # NOTE: Postgres values set by docker-services-cli
-    "SQLALCHEMY_DATABASE_URI": (
-        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
+    # NOTE: Postgres/broker values — prefer env from docker-services-cli (host)
+    # or the container .env.test_connections rewrite (service hostnames on the compose
+    # network). Fall back to localhost for plain host runs without --env.
+    "SQLALCHEMY_DATABASE_URI": os.environ.get(
+        "SQLALCHEMY_DATABASE_URI",
+        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
     ),
     "POSTGRES_USER": "invenio",
     "POSTGRES_PASSWORD": "invenio",
@@ -121,7 +129,10 @@ test_config = {
         "content_security_policy": {"default-src": []},
         "force_https": False,
     },
-    "BROKER_URL": "amqp://guest:guest@localhost:5672//",
+    "BROKER_URL": os.environ.get(
+        "BROKER_URL",
+        "amqp://guest:guest@localhost:5672//",
+    ),
     # "CELERY_CACHE_BACKEND": "memory",
     # "CELERY_RESULT_BACKEND": "cache",
     "CELERY_TASK_ALWAYS_EAGER": False,
@@ -366,6 +377,21 @@ def app(
 
 
 @pytest.fixture(scope="module")
+def search_hosts():
+    """Search hosts for pytest-invenio (OpenSearch).
+
+    Prefer ``SEARCH_HOSTS`` from the environment (docker-services-cli on the
+    host → localhost; container ``.env.test_connections`` → ``opensearch`` service name).
+    Falls back to localhost for plain host runs without that env var.
+    """
+    raw = os.environ.get("SEARCH_HOSTS", "").strip()
+    if raw:
+        yield ast.literal_eval(raw)
+    else:
+        yield [{"host": "localhost", "port": 9200}]
+
+
+@pytest.fixture(scope="module")
 def app_config(app_config) -> dict:
     """App config fixture for KCWorks.
 
@@ -374,6 +400,41 @@ def app_config(app_config) -> dict:
     """
     for k, v in test_config.items():
         app_config[k] = v
+
+    # Connection env wins over fixture defaults (CI/host localhost via
+    # docker-services-cli --env; local container via wrapper / .env.test_connections).
+    if os.environ.get("SQLALCHEMY_DATABASE_URI"):
+        app_config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
+    if os.environ.get("BROKER_URL"):
+        app_config["BROKER_URL"] = os.environ["BROKER_URL"]
+        app_config["CELERY_BROKER_URL"] = os.environ["BROKER_URL"]
+        app_config["QUEUES_BROKER_URL"] = os.environ["BROKER_URL"]
+    if os.environ.get("CACHE_REDIS_URL"):
+        app_config["CACHE_REDIS_URL"] = os.environ["CACHE_REDIS_URL"]
+        app_config["CACHE_TYPE"] = "redis"
+    if os.environ.get("ACCOUNTS_SESSION_REDIS_URL"):
+        app_config["ACCOUNTS_SESSION_REDIS_URL"] = os.environ[
+            "ACCOUNTS_SESSION_REDIS_URL"
+        ]
+    if os.environ.get("CELERY_RESULT_BACKEND"):
+        app_config["CELERY_RESULT_BACKEND"] = os.environ["CELERY_RESULT_BACKEND"]
+    if os.environ.get("RATELIMIT_STORAGE_URI"):
+        app_config["RATELIMIT_STORAGE_URI"] = os.environ["RATELIMIT_STORAGE_URI"]
+        app_config["RATELIMIT_STORAGE_URL"] = os.environ["RATELIMIT_STORAGE_URI"]
+    if os.environ.get("COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"):
+        app_config["COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"] = os.environ[
+            "COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"
+        ]
+
+    # invenio-search: if SEARCH_CLIENT_CONFIG contains ``hosts``, SEARCH_HOSTS
+    # is ignored. Always set both from env when present.
+    raw_hosts = os.environ.get("SEARCH_HOSTS", "").strip()
+    if raw_hosts:
+        hosts = ast.literal_eval(raw_hosts)
+        app_config["SEARCH_HOSTS"] = hosts
+        client_cfg = dict(app_config.get("SEARCH_CLIENT_CONFIG") or {})
+        client_cfg["hosts"] = hosts
+        app_config["SEARCH_CLIENT_CONFIG"] = client_cfg
 
     return app_config
 

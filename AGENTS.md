@@ -16,7 +16,10 @@ This file is the **canonical** reference for tooling and agent workflows. Cursor
 ## Build/Lint/Test Commands
 - **Build**: Python/build artifacts are produced during `uv install` of the local package (do not use `make` for building).
 - **Lint Python**: Run ruff via uv: `uv run ruff check` (or `uv run ruff check .` to target the current directory). Config in pyproject.toml.
-- **Python tests**: Run using `./run-tests.sh`. Before running Python tests, always ask the user whether they want to run them (do not run automatically).
+- **Python tests**:
+  - **Local**: Run using `./run-tests.sh`. This starts docker-services-cli test databases and runs pytest inside the `test-runner` container for security (prevents malicious dependency code from accessing host credentials). CI mode is detected via `$CI`.
+  - **CI**: Tests run directly on the Actions runner via the existing workflow; no additional test-runner container (GitHub Actions provides isolation).
+  Before running Python tests, always ask the user whether they want to run them (do not run automatically).
 
 ## JavaScript (root project)
 Use **[pnpm](https://pnpm.io/)** for the repository root `package.json` (not `npm install`). The root **`packageManager`** field pins the pnpm version; **`preinstall`** rejects other package managers; Use *only* the Node/pnpm versions in root **`package.json`** `engines`.
@@ -32,7 +35,11 @@ Then from the repo root:
 - **Install deps:** `pnpm install` (CI uses `pnpm install --frozen-lockfile` with `pnpm-lock.yaml`).
 - **Build frontend (when applicable):** `pnpm run build`
 - **Lint JS:** `pnpm run lint`
-- **JS tests:** `./run-js-tests.sh` (runs `pnpm test`), or `pnpm test -- <pattern>`, e.g. `pnpm test -- test_utils.js`
+- **JS tests**:
+  - **Local**: `./run-tests.sh --js-only` (or `./run-js-tests.sh`, which forwards). Runs each suite in `scripts/run-js-suites.sh` inside the `test-runner` container (root Jest, then package Jest where listed). Pass `-J` with a normal `./run-tests.sh` to run those suites before pytest.
+  - **CI**: `./run-js-tests.sh` → `scripts/run-js-suites.sh` on the Actions runner.
+  - Add a dependency package to the suite list in `scripts/run-js-suites.sh` once it has its own `jest.config.js` + `package.json` test script. Root Jest ignores `site/kcworks/dependencies/`.
+  - Example: `./run-tests.sh --js-only -- test_utils.js` (args forwarded to every suite)
 
 ## Code Style Guidelines
 - **Python**: PEP8, type hints required. Put all imports at the top of the file unless that would cause major unnecessary overhead or circular dependencies. Imports sorted: stdlib → third-party → local.
