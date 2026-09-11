@@ -40,7 +40,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Public")}
-            <Icon name="lock open mr-5" />
+            <Icon name="lock open ml-10" />
           </Message.Header>
 
           {metadataOnly
@@ -57,7 +57,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Embargoed access")}
-            <Icon name="lock mb-5" />
+            <Icon name="lock ml-10" />
           </Message.Header>
           <Trans
             defaults="On <bold>{{fmtDate}}</bold> the record will automatically be made publicly accessible. Until then, the record can <bold>only</bold> be accessed by <bold>users specified</bold> in the permissions."
@@ -75,7 +75,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Access Restricted")}
-            <Icon name="lock mb-5" />
+            <Icon name="lock ml-10" />
           </Message.Header>
           <Trans>
             The record can <b>only</b> be accessed by <b>users specified</b> in the permissions.
@@ -91,7 +91,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Files restricted")}
-            <Icon name="lock mb-5" />
+            <Icon name="lock ml-10" />
           </Message.Header>
           <Trans>
             The record is publicly accessible. The files can <b>only</b> be accessed by{" "}
@@ -108,7 +108,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Files embargoed")}
-            <Icon name="lock mb-5" />
+            <Icon name="lock ml-10" />
           </Message.Header>
           <Trans
             defaults="The record is publicly accessible. On <bold>{{ date }}</bold> the files will automatically be made publicly accessible. Until then, the files can <bold>only</bold> be accessed by <bold>users specified</bold> in the permissions."
