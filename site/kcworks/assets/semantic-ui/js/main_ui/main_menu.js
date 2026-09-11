@@ -34,105 +34,37 @@ const SubMenu = ({ item, index }) => {
   );
 };
 
-const PlusMenu = ({ plusMenuItems, baseTabIndex }) => {
-  return (
-    //   {# {%- if plus_menu_items %}
-    //     <div role="menuitem" class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown floating pr-15 computer only" aria-label="{{ _("Quick create") }}">
-    //         <i class="fitted plus icon"></i>
-    //         <i class="fitted dropdown icon"></i>
-    //         <div class="menu">
-    //             {%- for item in plus_menu_items if item.visible %}
-    //             {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administration") | list) %}
-    //               <a class="item" href="{{ item.url }}">{{ item.text|safe }} </a>
-    //             {%- endif %}
-    //             {%- endfor %}
-    //         </div>
-    //     </div>
-    // )
-
-    //     <div class="sub-menu mobile tablet only">
-    //       <h2 class="ui small header">{{ _("Actions") }}</h2>
-
-    //       {%- for item in plus_menu_items if item.visible %}
-    //       {%- if item.text != "New community" or (current_user.roles | selectattr("name", "equalto", "administration") | list) %}
-    //         <a role="menuitem" class="item" href="{{ item.url }}">
-    //           <i class="plus icon"></i>
-    //           {{ item.text|safe }}
-    //         </a>
-    //       {%- endif %}
-    //       {%- endfor %}
-    //     </div>
-    //   {% endif %} #}
-
-    <div className="item plus">
-      <a
-        role="menuitem"
-        aria-label={i18next.t("Quick create")}
-        href={plusMenuItems[0].url}
-        tabIndex={baseTabIndex}
-      >
-        <i className="fitted upload icon"></i>
-        <span className="inline">{i18next.t("Add a work")}</span>
-      </a>
-    </div>
-  );
-};
-
 const NON_ADMIN_SETTINGS_MENU_NAMES = ["security", "applications"];
 
 const stripHtml = (text) => (text || "").replace(/<[^>]*>/g, "");
 
 const UserMenu = ({
   adminMenuItems,
-  logoutURL,
-  profileURL,
+  profilesURL,
   settingsMenuItems,
   tabIndex,
   userAdministrator,
   userDisplayName,
 }) => {
-  const settingsItems = settingsMenuItems
+  const nonAdminSettingsItems = settingsMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((item) => item.visible === true)
-    .filter(
-      (item) =>
-        userAdministrator || NON_ADMIN_SETTINGS_MENU_NAMES.includes(item.name)
-    );
-  const adminItems = userAdministrator
-    ? adminMenuItems
-        .sort((a, b) => a.order - b.order)
-        .filter((item) => item.visible === true)
-    : [];
+    .filter((item) => NON_ADMIN_SETTINGS_MENU_NAMES.includes(item.name));
 
-  const settingsLinks = (
-    <>
-      {profileURL && (
-        <a role="menuitem" className="item" href={profileURL} tabIndex={-1}>
-          {i18next.t("KC profile")}
-        </a>
-      )}
-      {settingsItems.map((item, index) => (
-        <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
-          {stripHtml(item.text)}
-        </a>
-      ))}
-    </>
-  );
-
-  const mobileSettingsLinks = (
-    <>
-      {profileURL && (
-        <a role="menuitem" className="item" href={profileURL} tabIndex={0}>
-          {i18next.t("KC profile")}
-        </a>
-      )}
-      {settingsItems.map((item, index) => (
-        <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
-          {stripHtml(item.text)}
-        </a>
-      ))}
-    </>
-  );
+  const adminSettingsItems = settingsMenuItems
+    .sort((a, b) => a.order - b.order)
+    .filter((item) => item.visible === true)
+    .filter((item) => !NON_ADMIN_SETTINGS_MENU_NAMES.includes(item.name));
+  const adminItems = adminMenuItems
+    .sort((a, b) => a.order - b.order)
+    .filter((item) => item.visible === true);
+  const userDisplayName =
+    userDisplayName && userDisplayName.length >= 31
+      ? `${userDisplayName.slice(0, 31)}...`
+      : userDisplayName;
+  const profileURL = externalIdentifiers.external_id
+    ? `${profilesURL}${externalIdentifiers.external_id}`
+    : undefined;
 
   return (
     <>
@@ -162,96 +94,100 @@ const UserMenu = ({
           role="menu"
           aria-labelledby="user-profile-dropdown-btn"
         >
-          {settingsLinks}
-
-          {adminItems.length > 0 && (
-            <>
-              <div className="ui divider"></div>
-              {adminItems.map((item, index) => (
-                <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
+          {profileURL && (
+            <a role="menuitem" className="item" href={profileURL} tabIndex={-1}>
+              {i18next.t("KC profile")}
+            </a>
+          )}
+          {nonAdminSettingsItems.map((item, index) => (
+            <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
+              {stripHtml(item.text)}
+            </a>
+          ))}
+          {userAdministrator
+            ? adminSettingsItems?.map((item, index) => (
+                <a
+                  role="menuitem"
+                  className="item restricted"
+                  href={item.url}
+                  tabIndex={-1}
+                  key={index}
+                >
                   {stripHtml(item.text)}
                 </a>
-              ))}
-            </>
-          )}
+              ))
+            : null}
+          {userAdministrator
+            ? adminItems?.map((item, index) => (
+                <a
+                  role="menuitem"
+                  className="item restricted"
+                  href={item.url}
+                  tabIndex={-1}
+                  key={index}
+                >
+                  {stripHtml(item.text)}
+                </a>
+              ))
+            : null}
         </div>
       </div>
 
-      <div className="sub-menu mobile tablet only" role="menu">
-        <h2 className="ui small header">{userDisplayName || i18next.t("My account")}</h2>
+      <h2 className="ui small header mobile tablet only ml-25">
+        {userDisplayName || i18next.t("My account")}
+      </h2>
 
-        {mobileSettingsLinks}
-
-        {adminItems.length > 0 && (
-          <>
-            <div className="ui divider"></div>
-            {adminItems.map((item, index) => (
-              <a role="menuitem" className="item" href={item.url} key={index} tabIndex={0}>
-                {stripHtml(item.text)}
-              </a>
-            ))}
-          </>
-        )}
-        {(adminItems.length > 0 || settingsItems.length > 0 || profileURL) && (
-          <div className="ui divider"></div>
-        )}
-
-        <a role="menuitem" className="item" href={logoutURL} tabIndex={0}>
-          <i className="fitted sign-out icon"></i>
-          {i18next.t("Log out")}
+      {profileURL && (
+        <a role="menuitem" className="item mobile tablet only" href={profileURL} tabIndex={0}>
+          {i18next.t("KC profile")}
         </a>
-      </div>
+      )}
+      {nonAdminSettingsItems.map((item, index) => (
+        <a
+          role="menuitem"
+          className="item mobile tablet only"
+          href={item.url}
+          key={index}
+          tabIndex={0}
+        >
+          {stripHtml(item.text)}
+        </a>
+      ))}
+
+      {adminSettingsItems.map((item, index) => (
+        <a
+          role="menuitem"
+          className="item mobile tablet only restricted"
+          href={item.url}
+          key={index}
+          tabIndex={0}
+        >
+          {stripHtml(item.text)}
+        </a>
+      ))}
+      {adminItems?.map((item, index) => (
+        <a
+          role="menuitem"
+          className="item mobile tablet only restricted"
+          href={item.url}
+          key={index}
+          tabIndex={0}
+        >
+          {stripHtml(item.text)}
+        </a>
+      ))}
     </>
   );
 };
 
-const LoginMenu = ({
-  accountsEnabled,
-  adminMenuItems,
-  externalIdentifiers,
-  loginURL,
-  logoutURL,
-  profilesURL,
-  settingsMenuItems,
-  userAdministrator,
-  userAuthenticated,
-  userDisplayName,
-  tabIndex,
-}) => {
-  const truncatedDisplayName =
-    userDisplayName && userDisplayName.length >= 31
-      ? `${userDisplayName.slice(0, 31)}...`
-      : userDisplayName;
-  const profileURL = externalIdentifiers.external_id
-    ? `${profilesURL}${externalIdentifiers.external_id}`
-    : undefined;
-
+const LoginForm = ({ loginURL, tabIndex }) => {
   return (
-    !!accountsEnabled &&
-    (!userAuthenticated ? (
-      <form className="mt-0">
-        <a href={loginURL} className="ui basic button" tabIndex={tabIndex}>
-          <i className="fitted sign-in icon"></i>
-          {i18next.t("Log in")}
-        </a>
-        {/* // {% if security.registerable %}
-            //     <a href="{{ url_for_security('register') }}" class="ui button signup">
-            //         <i class="edit outline icon"></i>
-            //         {{ _('Sign up') }}
-            //     </a>
-            // {% endif %} */}
-      </form>
-    ) : (
-      <UserMenu
-        adminMenuItems={adminMenuItems}
-        logoutURL={logoutURL}
-        profileURL={profileURL}
-        settingsMenuItems={settingsMenuItems}
-        tabIndex={tabIndex}
-        userAdministrator={userAdministrator}
-        userDisplayName={truncatedDisplayName}
-      />
-    ))
+    <form className="mt-0">
+      <a href={loginURL} className="ui basic button" tabIndex={tabIndex}>
+        <i className="fitted sign-in icon"></i>
+        {i18next.t("Log in")}
+      </a>
+    </form>
   );
 };
 
@@ -288,7 +224,6 @@ const MainMenu = ({
   actionsMenuItems,
   adminMenuItems,
   externalIdentifiers,
-  kcFaqUrl,
   kcWorksHelpUrl,
   kcWordpressDomain,
   loginURL,
@@ -306,9 +241,17 @@ const MainMenu = ({
   userId,
   userAdministrator,
 }) => {
-  const mainItems = mainMenuItems
-    .sort((a, b) => a.order - b.order)
-    .filter((i) => i.visible === true);
+  let mainItems = mainMenuItems.sort((a, b) => a.order - b.order).filter((i) => i.visible === true);
+  mainItems.unshift({
+    url: "/search",
+    text: "Search",
+    icon: "search",
+    active: true,
+  });
+  const plusItems = plusMenuItems
+    .filter((plusItem) => plusItem.url === "/uploads/new")
+    .map((item) => ({ ...item, icon: "upload", text: i18next.t("Add a work") }));
+  mainItems = mainItems.concat(plusItems);
   const actionsItems = actionsMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((i) => i.visible === true);
@@ -386,18 +329,14 @@ const MainMenu = ({
                 {%- include "invenio_app_rdm/searchbar.html" %}
             )} */}
 
-        <div className={`item`}>
-          <MenuItem text={i18next.t("Search")} url={"/search"} icon="search" tabIndex="0" />
-        </div>
-
-        {/* "Main" menu, including collections */}
+        {/* "Main" menu, including search and collections */}
         {mainItems.map((item, index) =>
           item.children ? (
             <div className="item" key={index}>
               <SubMenu item={item} index={0} />
             </div>
           ) : (
-            <div className={`${item.active ? "item active" : " item"}`} key={index}>
+            <div className={`item`} key={index}>
               <MenuItem
                 url={item.url}
                 text={item.text}
@@ -410,9 +349,9 @@ const MainMenu = ({
         )}
 
         {/* "Plus" menu including adding a record */}
-        <PlusMenu plusMenuItems={plusMenuItems} baseTabIndex={0} />
+        {/*<PlusMenu plusMenuItems={plusMenuItems} baseTabIndex={0} />*/}
 
-        <div className="menu item spacer mobile tablet only"></div>
+        <div className="item spacer mobile tablet only"></div>
 
         <div className={`item`} role="menuitem">
           <IconMenuItem
@@ -443,57 +382,56 @@ const MainMenu = ({
 
         {/* Right-aligned menu items */}
         <div className={`right menu item ${userAuthenticated ? "" : "logged-out"}`} role="group">
-          <div className="menu item spacer mobile tablet only"></div>
-          <LoginMenu
-            accountsEnabled={accountsEnabled}
-            adminMenuItems={adminMenuItems}
-            externalIdentifiers={externalIdentifiers}
-            loginURL={loginURL}
-            logoutURL={logoutURL}
-            userAuthenticated={userAuthenticated}
-            profilesURL={profilesURL}
-            settingsMenuItems={settingsMenuItems}
-            userAdministrator={userAdministrator}
-            userDisplayName={userDisplayName}
-            tabIndex={0}
-          />
+          {!!accountsEnabled &&
+            (!userAuthenticated ? <LoginForm loginURL={loginURL} tabIndex={0} /> : null)}
+
+          {!!accountsEnabled &&
+            (!!userAuthenticated ? (
+              <UserMenu
+                adminMenuItems={adminMenuItems}
+                profilesURL={profilesURL}
+                settingsMenuItems={settingsMenuItems}
+                userAdministrator={userAdministrator}
+                userDisplayName={userDisplayName}
+                tabIndex={0}
+              />
+            ) : null)}
 
           {!!accountsEnabled &&
             !!userAuthenticated &&
             actionsItems.map((item, index) => (
-              <div className={`item ${item.text}`} key={index}>
-                <IconMenuItem
-                  text={item.text}
-                  url={item.url}
-                  icon={item.text === "My dashboard" ? "user" : item.icon}
-                  tabIndex={0}
-                />
-              </div>
+              <IconMenuItem
+                className={`item ${item.text}`}
+                key={index}
+                text={item.text}
+                url={item.url}
+                icon={item.text === "My dashboard" ? "user" : item.icon}
+                tabIndex={0}
+              />
             ))}
 
           {!!accountsEnabled &&
             !!userAuthenticated &&
             notificationsItems.map((item, index) => (
-              <div className="item inbox" key={index}>
-                <IconMenuItem
-                  text={item.text === "requests" ? i18next.t("My requests") : item.text}
-                  url={item.url}
-                  icon={item.text === "requests" ? "inbox" : item.icon}
-                  badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
-                  tabIndex={0}
-                />
-              </div>
+              <IconMenuItem
+                className="item inbox"
+                key={index}
+                text={item.text === "requests" ? i18next.t("My requests") : item.text}
+                url={item.url}
+                icon={item.text === "requests" ? "inbox" : item.icon}
+                badge={unreadNotifications?.length > 0 ? unreadNotifications?.length : undefined}
+                tabIndex={0}
+              />
             ))}
 
           {!!accountsEnabled && !!userAuthenticated && (
-            <div className="item">
-              <IconMenuItem
-                text={i18next.t("Log out")}
-                url={logoutURL}
-                icon="sign-out"
-                tabIndex={0}
-              />
-            </div>
+            <IconMenuItem
+              className="item logout"
+              text={i18next.t("Log out")}
+              url={logoutURL}
+              icon="sign-out"
+              tabIndex={0}
+            />
           )}
         </div>
       </div>

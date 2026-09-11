@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 const MenuItem = ({ text, icon, url, tabIndex }) => {
   return (
-    <a role="button" href={url} className="ui " tabIndex={tabIndex}>
+    <a role="menuitem" href={url} className="ui " tabIndex={tabIndex}>
       <i className={`${icon} icon fitted`}></i>
       <span className="inline">{text}</span>
     </a>
@@ -26,7 +26,7 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
         content={text}
         trigger={
           <a
-            role="button"
+            role="menuitem"
             href={url}
             className="ui computer widescreen large screen only"
             tabIndex={tabIndex}
@@ -43,7 +43,7 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
       />
 
       <a
-        role="button"
+        role="menuitem"
         href={url}
         className="ui tablet mobile only"
         tabIndex={tabIndex}
