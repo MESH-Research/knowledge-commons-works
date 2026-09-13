@@ -143,6 +143,10 @@ textarea {
   .remap-invenio-spacing-helpers(20, 1.5rem);
   .remap-invenio-spacing-helpers(25, 1.75rem);
   .remap-invenio-spacing-helpers(30, 2rem);
+
+  .uppy-Root {
+    font-family: @fontName;
+  }
 }
 
 // Fade + height collapse for ephemeral sidebar toasts (FadeCollapse / FadeCollapseStack).
