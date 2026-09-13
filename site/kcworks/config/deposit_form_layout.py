@@ -23,6 +23,7 @@ PRIORITY_TYPES_CONFIG = [
     "textDocument-book",
     "textDocument-bookSection",
     "instructionalResource-syllabus",
+    "presentation-slides",
 ]
 
 _FORM_TITLE = {
