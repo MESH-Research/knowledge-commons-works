@@ -14,10 +14,10 @@
     text-align: left;
     width: 100%;
     i.icon {
-      &.dropdown {
+      &.dropdown, &.caret {
         float: right;
       }
-      &:not(.dropdown) {
+      &:not(.dropdown):not(.caret) {
         float: unset;
         transform: unset;
         margin-right: 0.5em;
