@@ -12,4 +12,5 @@ user_data_management.md
 organization_management.md
 collection_hierarchy.md
 record_search.md
+export_formats.md
 ```
