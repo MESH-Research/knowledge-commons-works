@@ -353,8 +353,42 @@
     border: 1px solid transparent;
     box-shadow: none;
 
+    // Structural horizontal chrome when SUI flips this menu to tablet/mobile.
+    // Per-community colors are overridden in community_theme_template.css.
+    @media all and (max-width: @largestTabletScreen) {
+      border-radius: 0.5em !important;
+      border-width: 2px;
+      border-style: solid;
+      border-color: @sidebarBorderColor;
+      background-color: @sidebarBackgroundColor !important;
+      box-shadow: 0 0 10px 0 @sidebarBorderColor;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .item {
       border-left: 2px solid @sidebarBorderColor;
+
+      @media all and (max-width: @largestTabletScreen) {
+        border-left-width: 0 !important;
+        border-left-color: transparent !important;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: @sidebarBorderColor !important;
+        background-color: @sidebarBackgroundColor !important;
+        margin-bottom: -2px;
+
+        &:first-child,
+        &.active:first-child {
+          border-radius: 0.5em 0 0 0.5em;
+        }
+
+        &:last-child,
+        &.active:last-child {
+          border-radius: 0 0.5em 0.5em 0;
+        }
+      }
+
       &.active {
         background-color: transparent;
         border-left: 2px solid @primaryColor;
@@ -363,9 +397,10 @@
         &:last-child {
           border-radius: 0;
         }
-        @media all and (max-width: @largestMobileScreen) {
-          border-left: none;
-          border-bottom: 2px solid @secondaryColor;
+        @media all and (max-width: @largestTabletScreen) {
+          border-left-color: transparent !important;
+          border-bottom-color: @secondaryColor !important;
+          background-color: @sidebarBackgroundColor !important;
         }
       }
       &:before {
