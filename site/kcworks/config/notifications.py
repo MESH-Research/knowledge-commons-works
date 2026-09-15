@@ -52,6 +52,11 @@ from kcworks.services.notifications.builders import (
     CustomCommunityInvitationDeclineNotificationBuilder,
     CustomCommunityInvitationExpireNotificationBuilder,
     CustomCommunityInvitationSubmittedNotificationBuilder,
+    CustomGuestAccessRequestSubmitNotificationBuilder,
+    CustomUserAccessRequestAcceptNotificationBuilder,
+    CustomUserAccessRequestCancelNotificationBuilder,
+    CustomUserAccessRequestDeclineNotificationBuilder,
+    CustomUserAccessRequestSubmitNotificationBuilder,
     FirstRecordCreatedNotificationBuilder,
     FirstRecordPublishedNotificationBuilder,
 )
@@ -108,5 +113,20 @@ NOTIFICATIONS_BUILDERS.update({
     ),
     CustomCommunityInvitationExpireNotificationBuilder.type: (
         CustomCommunityInvitationExpireNotificationBuilder
+    ),
+    CustomUserAccessRequestSubmitNotificationBuilder.type: (
+        CustomUserAccessRequestSubmitNotificationBuilder
+    ),
+    CustomUserAccessRequestAcceptNotificationBuilder.type: (
+        CustomUserAccessRequestAcceptNotificationBuilder
+    ),
+    CustomUserAccessRequestCancelNotificationBuilder.type: (
+        CustomUserAccessRequestCancelNotificationBuilder
+    ),
+    CustomUserAccessRequestDeclineNotificationBuilder.type: (
+        CustomUserAccessRequestDeclineNotificationBuilder
+    ),
+    CustomGuestAccessRequestSubmitNotificationBuilder.type: (
+        CustomGuestAccessRequestSubmitNotificationBuilder
     ),
 })

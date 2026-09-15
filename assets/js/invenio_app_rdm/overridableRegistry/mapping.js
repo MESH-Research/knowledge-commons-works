@@ -30,6 +30,7 @@ import { RecordSearchBarElement } from "./search/RecordSearchBarElement";
 import { RequestMetadata } from "./requests/RequestMetadata";
 import { RequestsResultsItemTemplateDashboard } from "./user_dashboard/RequestsResultsItemTemplateDashboard";
 import { RequestsResultsItemTemplateWithCommunity } from "./collections/members/requests/RequestsResultsItemTemplate";
+import { RequestsResults } from "./requests/search/RequestsResults";
 import { RequestsSearchLayout } from "./requests/search/RequestsSearchLayout";
 import { KcworksSubmitReviewModal } from "./deposit/SubmitReviewModal";
 import { RequestActions } from "./requests/actions/RequestActions";
@@ -56,6 +57,7 @@ const SearchAppLayoutWithConfig = parametrize(SearchAppLayout, {
 
 const DashboardRequestsSearchLayoutWithApp = parametrize(RequestsSearchLayout, {
   appName: "InvenioAppRdm.DashboardRequests",
+  reconcileUnreadOnMount: true,
 });
 
 const CommunityRequestsSearchLayoutWithApp = parametrize(RequestsSearchLayout, {
@@ -83,6 +85,7 @@ export const DashboardUploadsSearchLayout = parametrize(SearchAppLayout, {
 
 export const overriddenComponents = {
   "InvenioAppRdm.DashboardRequests.SearchApp.layout": DashboardRequestsSearchLayoutWithApp,
+  "InvenioAppRdm.DashboardRequests.SearchApp.results": RequestsResults,
   "InvenioAppRdm.DashboardRequests.ResultsList.item": RequestsResultsItemTemplateDashboard,
   "InvenioAppRdm.DashboardUploads.SearchApp.layout": DashboardUploadsSearchLayout,
   "InvenioAppRdm.DashboardUploads.SearchBar.element": DashboardSearchBarElementWithConfig,
