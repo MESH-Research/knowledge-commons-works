@@ -6,6 +6,9 @@
 # a host COMPOSE_PROJECT_NAME does not override this.
 #
 # Runs pytest in a container against docker-services-cli databases.
+# Network: base file uses a project-managed ``test-network``. Pytest path
+# merges docker-compose.test.services.yml to attach to docker-services-cli's
+# ``docker_services_cli_default``; ``--js-only`` uses the base file only.
 #
 # Secrets: Compose service secret ``aws_secrets`` (from host file path in
 # TEST_SECRET_FILE at create time). Inside the container it appears at
@@ -121,7 +124,7 @@ secrets:
     # Keep the host file until the container finishes (see run-tests.sh).
     file: ${TEST_SECRET_FILE}
 
+# Project-managed by default (--js-only). Pytest path overlays
+# docker-compose.test.services.yml to attach to docker_services_cli_default.
 networks:
-  test-network:
-    name: docker_services_cli_default
-    external: true
+  test-network: {}
