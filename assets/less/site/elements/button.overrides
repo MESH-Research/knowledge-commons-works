@@ -391,7 +391,7 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset !important;
   }
   .menu button {
     width: 100%;
@@ -411,9 +411,9 @@
   }
 }
 
-.facet-container div.content h2.header .button.right.floated {
-  visibility: hidden;
-}
+// .facet-container div.content h2.header .button.right.floated {
+//   visibility: hidden;
+// }
 
 #detail-main-content .button.tiny.show-less {
   margin-bottom: 1rem;
