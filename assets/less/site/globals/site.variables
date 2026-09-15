@@ -209,9 +209,9 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @ivory; // @mint30; // #f9f9f9;
+@sidebarBackgroundColor: @ivory60; // @mint30; // #f9f9f9;
 @sidebarHeaderColor: @ivy80;
-@sidebarBorderColor: #ddd5b9; // @gold40; // @mint60; // @verdigris20;
+@sidebarBorderColor: #efe9d5; // #ddd5b9; // @gold40; // @mint60; // @verdigris20;
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;

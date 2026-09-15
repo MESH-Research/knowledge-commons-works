@@ -23,8 +23,8 @@
 .ui.small.labels .label,
 .ui.list .item .label,
 .ui.menu.secondary.pointing > .item > .label {
-  background-color: @sidebarBackgroundColor;
-  border: 1px solid @sidebarBorderColor; // @verdigris40;
+  background-color: @mint30; // @sidebarBackgroundColor;
+  border: 1px solid @verdigris40;
   color: @ivy80;
 
   &.transparent {
