@@ -74,9 +74,9 @@
           height: 2rem;
           line-height: 2rem;
           background-color: lighten(@requiredBackgroundColor, 5%);
-          border-top: 1px solid @requiredBorderColor;
-          border-left: 1px solid @requiredBorderColor;
-          border-right: 1px solid @requiredBorderColor;
+          border-top: 1px solid @positiveBorderColor;
+          border-left: 1px solid @positiveBorderColor;
+          border-right: 1px solid @positiveBorderColor;
           color: @positiveColor; //@stepTextColor;
           display: block;
           width: 97%;
