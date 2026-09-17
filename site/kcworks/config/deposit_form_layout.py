@@ -1876,6 +1876,19 @@ FIELDS_BY_TYPE_CONFIG = {
             ],
         },
     },
+    "textDocument-journal": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Journal Details"),
+            "subsections": [
+                _JOURNAL_DETAILS_FIELDS,
+                _LANGUAGE_FIELD,
+                _ALTERNATE_IDENTIFIERS_FIELD,
+                _REPOSITORY_FIELD,
+            ],
+        },
+    },
     "textDocument-journalArticle": {
         "4": {
             "section": "4",
@@ -1919,6 +1932,12 @@ FIELDS_BY_TYPE_CONFIG = {
     "textDocument-monograph": {
         "4": {
             "same_as": "textDocument-book",
+        },
+    },
+    "textDocument-musicalNotation": {
+        "4": {
+            "same_as": "textDocument-book",
+            "label": _("Score Details"),
         },
     },
     "textDocument-newspaperArticle": {
@@ -2009,6 +2028,44 @@ FIELDS_BY_TYPE_CONFIG = {
     },
     "textDocument-preprint": {
         "4": {"same_as": "textDocument-journalArticle", "label": _("Preprint Details")},
+    },
+    "textDocument-proceedingsPaper": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Paper Details"),
+            "subsections": [
+                {
+                    **_MEETING_FIELDS,
+                    "label": _("Conference details"),
+                    "collapsible": False,
+                },
+                _BOOK_SECTION_FIELDS,
+                _BOOK_PUBLICATION_DETAILS,
+                _LANGUAGE_FIELD,
+                {
+                    **_ALTERNATE_IDENTIFIERS_FIELD,
+                    "label": _("Paper URL and other identifiers"),
+                },
+                _REPOSITORY_FIELD,
+            ],
+        },
+    },
+    "textDocument-proposal": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Proposal Details"),
+            "subsections": [
+                {**_REPORT_DETAILS_FIELDS, "label": _("Proposal details")},
+                _LANGUAGE_FIELD,
+                {
+                    **_ALTERNATE_IDENTIFIERS_FIELD,
+                    "label": _("Proposal URL and other identifiers"),
+                },
+                _REPOSITORY_FIELD,
+            ],
+        },
     },
     "textDocument-report": {
         "4": {
