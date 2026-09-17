@@ -32,8 +32,8 @@ _FORM_TITLE = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 1,
-            "widescreen": 1,
+            "largeScreen": 2,
+            "widescreen": 2,
             "only": "large screen",
         },
         {
@@ -60,8 +60,8 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 1,
-            "widescreen": 1,
+            "largeScreen": 2,
+            "widescreen": 2,
             "only": "large screen",
         },
         {
@@ -73,8 +73,8 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
         {
             "component": "FormStepper",
             "classnames": "column",
-            "largeScreen": 12,
-            "widescreen": 12,
+            "largeScreen": 11,
+            "widescreen": 11,
             "computer": 12,
             "only": "computer",
         },
@@ -121,8 +121,8 @@ _FORM_LEFT_SIDEBAR_MENU = {
 _FORM_LEFT_SIDEBAR_EMPTY = {
     "component": "FormLeftSidebar",
     "classnames": "default-layout",
-    "largeScreen": 1,
-    "widescreen": 1,
+    "largeScreen": 2,
+    "widescreen": 2,
     "only": "large screen",
     "subsections": [
         {},
@@ -160,7 +160,28 @@ _FORM_FOOTER = {
     "component": "FormFooter",
     "classnames": "basic default-layout",
     "subsections": [
-        {"component": "FormPageNavigationBar"},
+        {
+            "component": "SpacerColumn",
+            "largeScreen": 2,
+            "widescreen": 2,
+            "only": "large screen",
+        },
+        {
+            "component": "FormPageNavigationBar",
+            "mobile": 16,
+            "tablet": 16,
+            "computer": 12,
+            "largeScreen": 11,
+            "widescreen": 11,
+            "classnames": "p-0",
+        },
+        {
+            "component": "SpacerColumn",
+            "computer": 4,
+            "largeScreen": 3,
+            "widescreen": 3,
+            "only": "computer",
+        },
     ],
 }
 
