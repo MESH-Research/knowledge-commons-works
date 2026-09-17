@@ -43,6 +43,7 @@ dependencies = [
   "uwsgi>=2.0.23",
 ]
 optional-dependencies.dev = [
+  "bump-my-version==1.5.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
@@ -106,6 +107,7 @@ entry-points."invenio_search.index_templates".kcworks = "kcworks.services.search
 
 [dependency-groups]
 dev = [
+  "bump-my-version==1.5.1",
   "check-manifest>=0.25",
   "djlint>=1.36.4",
   "docker-services-cli",
@@ -351,6 +353,45 @@ init_catalog.input-file = "translations/messages.pot"
 init_catalog.output-dir = "translations/"
 update_catalog.input-file = "translations/messages.pot"
 update_catalog.output-dir = "translations/"
+
+[tool.bumpversion]
+current_version = "0.8.1"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
+serialize = ["{major}.{minor}.{patch}"]
+search = "{current_version}"
+replace = "{new_version}"
+commit = false
+tag = false
+allow_shell_hooks = false
+message = "Bump version: {current_version} → {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+key_path = "project.version"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+key_path = "tool.bumpversion.current_version"
+
+[[tool.bumpversion.files]]
+filename = "site/kcworks/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "Version {current_version}"
+replace = "Version {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "docs/source/README.md"
+search = "Version {current_version}"
+replace = "Version {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "docs/source/conf.py"
+search = 'release = "{current_version}"'
+replace = 'release = "{new_version}"'
 
 [tool.pylsp]
 plugins.jedi.extra_paths = [
