@@ -19,6 +19,7 @@ import {
   MetadataAccess,
   FilesAccess,
   EmbargoAccess,
+  AccessRequestsAccess,
   AccessMessage,
 } from "./access_rights_components";
 
@@ -84,6 +85,10 @@ const AccessRightField = ({
             <EmbargoAccess
               access={getIn(values, fieldPath)}
               accessCommunity={communityAccess}
+              metadataOnly={isMetadataOnly}
+            />
+            <AccessRequestsAccess
+              access={getIn(values, fieldPath)}
               metadataOnly={isMetadataOnly}
             />
           </Card.Content>
