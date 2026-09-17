@@ -120,6 +120,19 @@ textarea {
     }
   }
 
+  /* Package LESS uses @primaryColor / @invertedTextColor; restore brand tokens. */
+  .upload-form-pager-mobile-title.ui.dropdown {
+    background: @ivy;
+
+    > .text {
+      color: @ivory;
+    }
+
+    > .dropdown.icon {
+      color: @ivory;
+    }
+  }
+
   .community-field .ui.items > .item > .community-item-actions {
     flex: 0 0 auto;
     align-self: center;
