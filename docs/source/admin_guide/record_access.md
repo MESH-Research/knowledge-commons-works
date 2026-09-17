@@ -11,9 +11,8 @@ gets access depends on which of those is restricted.
 | **Fully restricted record** | No usable landing page for unauthorized users (permission denied / 403) | Keep the work private until access is given explicitly |
 
 These settings live on the record’s access configuration (`record` and `files`
-each public or restricted). Owners can also enable **allow user requests** and
-**allow guest requests** on the record; those flags only matter for the
-request flow described below.
+each public or restricted). Whether visitors may *ask* for file access is a
+separate, opt-in choice on the record (see below).
 
 ## Access requests (requester-initiated)
 
@@ -26,6 +25,29 @@ for the record owner to accept or decline.
 
 On accept, the requester receives a **view** grant (signed-in users) or a
 **secret link** (guests), which unlocks file access for that work.
+
+### Enabling requests on a record
+
+Access requests are **off by default** for every new work. Restricting files
+(or publishing with restricted files) does **not** turn them on. There is no
+global application setting that enables requests site-wide.
+
+They are stored on the parent record as:
+
+- `parent.access.settings.allow_user_requests` — signed-in users may request access
+- `parent.access.settings.allow_guest_requests` — anonymous visitors may request access
+
+Both default to `false`. An owner or manager must enable them explicitly:
+
+1. Open the published record’s landing page.
+2. Open **Share** → **Settings**.
+3. Check **Allow authenticated users…** and/or **Allow non-authenticated users…**
+   as appropriate, optionally set accept conditions and default link expiration,
+   then **Save**.
+
+Until those checkboxes are saved, visitors who cannot read the files will not
+see a working request form, even when metadata is public and files are
+restricted.
 
 ```{important}
 Access requests are **not** available for fully restricted records.
@@ -54,6 +76,9 @@ must stay private until access is approved.
 
 ## Practical notes for operators
 
+- If a user reports they cannot request access to restricted files on a
+  **public** record, check Share → Settings: `allow_user_requests` /
+  `allow_guest_requests` are almost certainly still `false` (the default).
 - If a user reports they cannot request access to a private work, check whether
   the **record** itself is restricted (not only the files). In that case they
   need a grant from the owner, not a request form.
