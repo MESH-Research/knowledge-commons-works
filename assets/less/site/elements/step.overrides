@@ -1,11 +1,11 @@
 @stepBorderColor: @sidebarBorderColor;
 @stepBackgroundColor: @sidebarBackgroundColor;
 @stepTextColor: @sidebarHeaderColor;
-@requiredBackgroundColor: @mint60;
-@requiredBorderColor: @ivy30;
-@activeBackgroundColor: @ivy80;
-@activeBorderColor: @ivy;
-@activeTextColor: @cream;
+@requiredBackgroundColor: @mint30;
+@requiredBorderColor: @mint;
+@activeBackgroundColor: @mint80;
+@activeBorderColor: @verdigris40;
+@activeTextColor: @ivy;
 @borderRadius: 0.25rem;
 
 #rdm-deposit-form-header .ui.steps {
@@ -23,6 +23,7 @@
       border-color: @stepBorderColor;
       border-top: 1px solid @stepBorderColor;
       border-bottom: 1px solid @stepBorderColor;
+      border-left: 0;
       @media all and (min-width: @largeMonitorBreakpoint) {
         padding-right: 2rem;
         padding-left: 2rem;
@@ -30,6 +31,9 @@
       .title {
         font-size: @small;
         color: @stepTextColor;
+      }
+      &:first-child {
+        border-left: 1px solid @stepBorderColor;
       }
       &:last-child {
         border-right: 1px solid @stepBorderColor;
@@ -44,16 +48,20 @@
       &:focus,
       &:active {
         background-color: darken(@stepBackgroundColor, 5%) !important;
+        box-shadow: none;
         &::after {
           background-color: darken(@stepBackgroundColor, 5%);
         }
       }
       &:nth-child(-n+3) {
         background-color: @requiredBackgroundColor;
-        border-left: 1px solid @requiredBorderColor;
+        border-left: 0;
         border-right: 1px solid @requiredBorderColor;
         border-top: 1px solid @requiredBorderColor;
         border-bottom: 1px solid @requiredBorderColor;
+        &:first-child {
+          border-left: 1px solid @requiredBorderColor;
+        }
         &:after {
           transition: all 0.3s ease;
           background-color: @requiredBackgroundColor;
@@ -69,17 +77,17 @@
           border-top: 1px solid @requiredBorderColor;
           border-left: 1px solid @requiredBorderColor;
           border-right: 1px solid @requiredBorderColor;
-          color: @stepTextColor;
+          color: @positiveColor; //@stepTextColor;
           display: block;
           width: 97%;
         }
         &:hover,
         &:focus,
         &:active {
-          background-color: darken(@requiredBackgroundColor, 7%) !important;
+          background-color: darken(@requiredBackgroundColor, 3%) !important;
           color: @ivy;
           &::after {
-            background-color: darken(@requiredBackgroundColor, 7%) !important;
+            background-color: darken(@requiredBackgroundColor, 3%) !important;
           }
         }
       }
@@ -108,6 +116,7 @@
       }
       &:focus-visible {
         outline: none !important;
+        border-top: 3px solid red;
       }
       &.active {
         background-color: @activeBackgroundColor;
@@ -119,6 +128,7 @@
         &::after {
           color: @activeTextColor;
           background-color: @activeBackgroundColor;
+          border-color: @activeBorderColor;
         }
         &:hover,
         &:focus,
@@ -127,6 +137,12 @@
           &::after {
             background-color: darken(@activeBackgroundColor, 7%) !important;
           }
+        }
+      }
+      &:has(+ .active) {
+        border-right-color: @activeBorderColor;
+        &::after {
+          border-color: @activeBorderColor;
         }
       }
       &.has-error {
