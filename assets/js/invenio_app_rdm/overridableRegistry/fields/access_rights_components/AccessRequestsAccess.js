@@ -26,8 +26,7 @@ export const AccessRequestsAccess = ({ access, metadataOnly }) => {
   const { values, setFieldValue } = useFormikContext();
   const record = useSelector((state) => state.deposit.record) ?? {};
   const permissions = useSelector((state) => state.deposit.permissions) ?? {};
-  const groupsEnabled =
-    useSelector((state) => state.deposit.config?.groups_enabled) ?? false;
+  const groupsEnabled = useSelector((state) => state.deposit.config?.groups_enabled) ?? false;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,10 +83,8 @@ export const AccessRequestsAccess = ({ access, metadataOnly }) => {
 
     const previous = { ...settings };
     const payload = {
-      allow_user_requests:
-        nextSettings.allow_user_requests ?? allowUserRequests,
-      allow_guest_requests:
-        nextSettings.allow_guest_requests ?? allowGuestRequests,
+      allow_user_requests: nextSettings.allow_user_requests ?? allowUserRequests,
+      allow_guest_requests: nextSettings.allow_guest_requests ?? allowGuestRequests,
       accept_conditions_text: settings.accept_conditions_text ?? null,
       secret_link_expiration: settings.secret_link_expiration ?? 0,
     };
@@ -159,19 +156,15 @@ export const AccessRequestsAccess = ({ access, metadataOnly }) => {
           />
           <Button
             type="button"
-            size="mini"
-            basic
+            size="small"
             icon="cog"
-            content={i18next.t("Settings")}
             disabled={controlsDisabled}
             onClick={() => setModalOpen(true)}
             aria-haspopup="dialog"
             className="ml-5"
           />
         </div>
-        {error && (
-          <Message negative size="tiny" content={error} className="mt-5" />
-        )}
+        {error && <Message negative size="tiny" content={error} className="mt-5" />}
       </Form.Field>
 
       {modalOpen && (

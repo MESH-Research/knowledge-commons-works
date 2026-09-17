@@ -41,9 +41,7 @@ const AccessRightField = ({
     (community && !isGhostCommunity && community.access.visibility) || "public";
   const { values } = useFormikContext();
   // New drafts / incomplete fixtures may omit files; treat as metadata-only.
-  const isMetadataOnly =
-    !record.files?.enabled ||
-    Object.entries(files?.entries ?? {}).length < 1;
+  const isMetadataOnly = !record.files?.enabled || Object.entries(files?.entries ?? {}).length < 1;
 
   return (
     <>
@@ -52,7 +50,7 @@ const AccessRightField = ({
         accessCommunity={communityAccess}
         metadataOnly={isMetadataOnly}
       />
-      <Card label={label} id="visibility-section" className="access-right pr-5 pl-5">
+      <Card label={label} id="visibility-section" className="access-right pr-20 pl-20" fluid>
         <Form.Field required>
           {label ? (
             <Card.Content className="p-0">
@@ -87,10 +85,7 @@ const AccessRightField = ({
               accessCommunity={communityAccess}
               metadataOnly={isMetadataOnly}
             />
-            <AccessRequestsAccess
-              access={getIn(values, fieldPath)}
-              metadataOnly={isMetadataOnly}
-            />
+            <AccessRequestsAccess access={getIn(values, fieldPath)} metadataOnly={isMetadataOnly} />
           </Card.Content>
         </Form.Field>
       </Card>
