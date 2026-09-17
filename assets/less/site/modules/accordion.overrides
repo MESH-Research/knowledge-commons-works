@@ -22,6 +22,11 @@
         transform: unset;
         margin-right: 0.5em;
         font-size: 1em;
+        &.small {
+          font-size: 0.75em;
+          top: -1px;
+          position: relative;
+        }
       }
     }
     @media screen and (max-width: @largestMobileScreen) {
@@ -103,31 +108,19 @@
   }
 }
 
-
-  .invenio-form-section {
+.invenio-form-section.ui.accordion.invenio-accordion-field {
+  &.error {
     .title {
-      color: @primaryColor;
-      font-weight: bold;
-      font-size: 1.25em;
+      background-color: transparent !important;
+      color: @errorTextColor !important;
     }
   }
-
-  // .prominent-field-label {
-  //   > .invenio-field-wrapper > .field > label,
-  //   > .invenio-field-wrapper > .field > .ui.grid > .column > label,
-  //   > .invenio-field-wrapper > .fields.main-group-field > .field > label {
-  //     color: @primaryColor;
-  //     font-weight: bold;
-  //     font-size: 1.25em;
-  //     position: relative;
-  //     top: -1em;
-  //     margin-bottom: 0;
-  //
-  //     > i.icon {
-  //       margin-right: 0.5em;
-  //     }
-  //   }
-
+  .title {
+    color: @primaryColor;
+    font-weight: bold;
+    font-size: 1.25em;
+  }
+}
 
 .communities-settings,
 .communities-members {

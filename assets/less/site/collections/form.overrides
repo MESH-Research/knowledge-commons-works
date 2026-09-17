@@ -27,10 +27,12 @@ textarea {
 
   > .title {
     border-bottom: none;
+    line-height: 1.5em;
   }
 
   > .content {
-    padding: 1em;
+    padding: 1rem;
+    padding-top: 0.5rem;
   }
 
   .additional-descriptions .ui.grid .row,
