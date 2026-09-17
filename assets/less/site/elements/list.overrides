@@ -6,6 +6,22 @@
   .header {
     line-height: 1.8em;
   }
+  @media (max-width: @largestMobileScreen) {
+    .header {
+      line-height: 1.5em;
+    }
+
+    /* Vertical action column (licenses, funding, creatibutors). */
+    > .content.floated.right.flex.column {
+      align-items: flex-end;
+      margin-left: 0.5em;
+
+      > .ui.button {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  }
 }
 
 #licenses ul.details-list li.has-popup {

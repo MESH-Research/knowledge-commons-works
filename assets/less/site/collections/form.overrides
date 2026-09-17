@@ -144,9 +144,88 @@ textarea {
   .remap-invenio-spacing-helpers(25, 1.75rem);
   .remap-invenio-spacing-helpers(30, 2rem);
 
-  .uppy-Root {
-    font-family: @fontName;
+  .files-field {
+    .file-uploader > .row:first-child {
+      padding-top: 0;
+      & > .column:first-child:has(.disabled) {
+        display: none;
+        & + .column {
+          margin-top: 0;
+          padding-top: 0;
+          width: 100% !important;
+          .horizontal.list {
+            flex-grow: 1;
+          }
+        }
+      }
+      & > .column:nth-child(2) {
+        .list {
+          @media (max-width: @largestMobileScreen) {
+            width: 100%;
+            .item:nth-child(2) {
+              float: right;
+            }
+          }
+        }
+      }
+    }
+    .table {
+      @media (max-width: @largestMobileScreen) {
+        background: @sidebarBackgroundColor;
+        margin-bottom: 0.5rem;
+        tr td {
+          background: transparent;
+        }
+      }
+      td[data-label="Filename"] {
+        a.text-break {
+          word-break: break-all;
+        }
+        @media (max-width: @largestMobileScreen) {
+          padding-bottom: 0 !important;
+        }
+      }
+      td[data-label="Size"] {
+        @media (max-width: @largestMobileScreen) {
+          padding-bottom: 0 !important;
+        }
+      }
+      td[data-label="Progress"] {
+        @media (max-width: @largestMobileScreen) {
+          &::before {
+            content: "";
+            display: none;
+          }
+        }
+      }
+    }
+    .uppy-Root {
+      font-family: @fontName;
+      color: @ivy;
+      .uppy-Dashboard-innerWrap {
+        background-color: darken(@sidebarBackgroundColor, 3%);
+      }
+      @media (max-width: @largestMobileScreen) {
+        .uppy-Dashboard-innerWrap {
+          min-height: 8rem;
+          height: unset;
+          .uppy-Dashboard-dropFilesHereHint {
+            padding-top: 0;
+          }
+          .uppy-Dashboard-AddFiles {
+            padding: 0;
+            .uppy-Dashboard-AddFiles-info {
+              padding-top: 0;
+            }
+          }
+          .uppy-Dashboard-note {
+            padding-top: 0;
+          }
+        }
+      }
+    }
   }
+
 }
 
 // Fade + height collapse for ephemeral sidebar toasts (FadeCollapse / FadeCollapseStack).
