@@ -8,4 +8,5 @@
 export { MetadataAccess } from "./MetadataAccess";
 export { FilesAccess } from "./FilesAccess";
 export { EmbargoAccess } from "./EmbargoAccess";
+export { AccessRequestsAccess } from "./AccessRequestsAccess";
 export { AccessMessage } from "./AccessMessage";

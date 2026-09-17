@@ -32,8 +32,8 @@ _FORM_TITLE = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 1,
-            "widescreen": 1,
+            "largeScreen": 2,
+            "widescreen": 2,
             "only": "large screen",
         },
         {
@@ -60,8 +60,8 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
     "subsections": [
         {
             "component": "SpacerColumn",
-            "largeScreen": 1,
-            "widescreen": 1,
+            "largeScreen": 2,
+            "widescreen": 2,
             "only": "large screen",
         },
         {
@@ -73,8 +73,8 @@ _PAGED_FORM_HEADER_STEPPER_TOP = {
         {
             "component": "FormStepper",
             "classnames": "column",
-            "largeScreen": 12,
-            "widescreen": 12,
+            "largeScreen": 11,
+            "widescreen": 11,
             "computer": 12,
             "only": "computer",
         },
@@ -121,8 +121,8 @@ _FORM_LEFT_SIDEBAR_MENU = {
 _FORM_LEFT_SIDEBAR_EMPTY = {
     "component": "FormLeftSidebar",
     "classnames": "default-layout",
-    "largeScreen": 1,
-    "widescreen": 1,
+    "largeScreen": 2,
+    "widescreen": 2,
     "only": "large screen",
     "subsections": [
         {},
@@ -160,7 +160,28 @@ _FORM_FOOTER = {
     "component": "FormFooter",
     "classnames": "basic default-layout",
     "subsections": [
-        {"component": "FormPageNavigationBar"},
+        {
+            "component": "SpacerColumn",
+            "largeScreen": 2,
+            "widescreen": 2,
+            "only": "large screen",
+        },
+        {
+            "component": "FormPageNavigationBar",
+            "mobile": 16,
+            "tablet": 16,
+            "computer": 12,
+            "largeScreen": 11,
+            "widescreen": 11,
+            "classnames": "p-0",
+        },
+        {
+            "component": "SpacerColumn",
+            "computer": 4,
+            "largeScreen": 3,
+            "widescreen": 3,
+            "only": "computer",
+        },
     ],
 }
 
@@ -1855,6 +1876,19 @@ FIELDS_BY_TYPE_CONFIG = {
             ],
         },
     },
+    "textDocument-journal": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Journal Details"),
+            "subsections": [
+                _JOURNAL_DETAILS_FIELDS,
+                _LANGUAGE_FIELD,
+                _ALTERNATE_IDENTIFIERS_FIELD,
+                _REPOSITORY_FIELD,
+            ],
+        },
+    },
     "textDocument-journalArticle": {
         "4": {
             "section": "4",
@@ -1898,6 +1932,12 @@ FIELDS_BY_TYPE_CONFIG = {
     "textDocument-monograph": {
         "4": {
             "same_as": "textDocument-book",
+        },
+    },
+    "textDocument-musicalNotation": {
+        "4": {
+            "same_as": "textDocument-book",
+            "label": _("Score Details"),
         },
     },
     "textDocument-newspaperArticle": {
@@ -1988,6 +2028,44 @@ FIELDS_BY_TYPE_CONFIG = {
     },
     "textDocument-preprint": {
         "4": {"same_as": "textDocument-journalArticle", "label": _("Preprint Details")},
+    },
+    "textDocument-proceedingsPaper": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Paper Details"),
+            "subsections": [
+                {
+                    **_MEETING_FIELDS,
+                    "label": _("Conference details"),
+                    "collapsible": False,
+                },
+                _BOOK_SECTION_FIELDS,
+                _BOOK_PUBLICATION_DETAILS,
+                _LANGUAGE_FIELD,
+                {
+                    **_ALTERNATE_IDENTIFIERS_FIELD,
+                    "label": _("Paper URL and other identifiers"),
+                },
+                _REPOSITORY_FIELD,
+            ],
+        },
+    },
+    "textDocument-proposal": {
+        "4": {
+            "section": "4",
+            "component": "FormPage",
+            "label": _("Proposal Details"),
+            "subsections": [
+                {**_REPORT_DETAILS_FIELDS, "label": _("Proposal details")},
+                _LANGUAGE_FIELD,
+                {
+                    **_ALTERNATE_IDENTIFIERS_FIELD,
+                    "label": _("Proposal URL and other identifiers"),
+                },
+                _REPOSITORY_FIELD,
+            ],
+        },
     },
     "textDocument-report": {
         "4": {

@@ -2669,7 +2669,7 @@ wheels = [
 
 [[package]]
 name = "invenio-modular-deposit-form"
-version = "0.3.4.dev0"
+version = "0.4.0"
 source = { editable = "site/kcworks/dependencies/invenio-modular-deposit-form" }
 dependencies = [
     { name = "invenio-app-rdm", extra = ["opensearch2"] },

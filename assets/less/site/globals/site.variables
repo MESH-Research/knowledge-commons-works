@@ -174,13 +174,8 @@
 /* ----------------------------
       Semantic state colors
 ------------------------------- */
-@warningColor: @gold;
-@warningTextColor: darken(#8d7313, 10%); // @darkGold;
-@warningBackgroundColor: @gold10;
-@warningBorderColor: @gold40;
-@warningColorDown: darken(@gold, 10%);
-
 @positiveColor: @green;
+@positiveColorDown: darken(@green, 5%);
 @positiveTextColor: @green; 
 @positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
@@ -192,6 +187,14 @@
 @negativeBackgroundColor: #fff6f6;
 @negativeBorderColor: #e0b4b4;
 @negativeBorderColorLight: #f8e4e4;
+
+@warningColor: @negativeColor;
+@warningColorDown: darken(@redDark, 10%);
+@warningTextColor: @redDark;
+@warningBackgroundColor: @negativeBackgroundColor;
+@warningTextColorDarker: @negativeTextColorDarker;
+@warningBorderColor: @negativeBorderColor;
+@warningBorderColorLight: @negativeBorderColorLight;
 
 @errorTextColor: @negativeTextColor; // @salmonDark; // @negativeColor; // = @red
 @errorColor: @negativeColor; // = @red // @salmon;
@@ -209,9 +212,9 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @ivory; // @mint30; // #f9f9f9;
+@sidebarBackgroundColor: @ivory60; // @mint30; // #f9f9f9;
 @sidebarHeaderColor: @ivy80;
-@sidebarBorderColor: #ddd5b9; // @gold40; // @mint60; // @verdigris20;
+@sidebarBorderColor: #efe9d5; // #ddd5b9; // @gold40; // @mint60; // @verdigris20;
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;

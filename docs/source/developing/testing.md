@@ -119,7 +119,7 @@ On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys vi
 ### Containerized test runner for local development
 
 In local mode, pytest (and optional Jest) runs inside a container (`test-runner`) that:
-- Connects to the docker-services-cli network (`docker_services_cli_default`) when pytest needs those services
+- Uses `docker-compose.test.yml` (project-managed network). The pytest path also merges `docker-compose.test.services.yml` so the runner joins docker-services-cli's `docker_services_cli_default` network; `--js-only` uses the base file only
 - Mounts site/deps/tests (and assets/Jest config when needed) from the host
 - Loads secrets via a Compose service secret for the pytest path
 

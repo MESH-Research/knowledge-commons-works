@@ -33,7 +33,8 @@ function cleanup() {
   rm -f /tmp/kcworks-test-services.env  # legacy name from earlier iterations
   rm -f /tmp/kcworks-test-js-only-secrets.env
   if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
-    docker compose -p kcworks-test -f docker-compose.test.yml down --remove-orphans || true
+    test_compose_file_args
+    docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" down --remove-orphans || true
   fi
   if [[ ${keep_services:-0} -eq 0 ]] && [[ ${js_only:-0} -eq 0 ]]; then
     eval "$(uv run docker-services-cli down --env)"
@@ -166,12 +167,13 @@ function start_docker_services() {
 
 # ── test-runner (local container) helpers ─────────────────────────────────
 
-function ensure_test_runner_network() {
-  # Compose uses external network docker_services_cli_default. --js-only does
-  # not start docker-services-cli, so create the network if missing.
-  if ! docker network inspect docker_services_cli_default >/dev/null 2>&1; then
-    echo "Creating docker_services_cli_default network for test-runner..."
-    docker network create docker_services_cli_default >/dev/null
+function test_compose_file_args() {
+  # Sets TEST_COMPOSE_FILES for docker compose -f ... invocations.
+  # Base always; pytest path overlays docker-services-cli's network.
+  # --js-only uses only the base (project-managed network).
+  TEST_COMPOSE_FILES=(-f docker-compose.test.yml)
+  if [[ ${js_only:-0} -eq 0 ]]; then
+    TEST_COMPOSE_FILES+=(-f docker-compose.test.services.yml)
   fi
 }
 
@@ -242,8 +244,11 @@ function write_test_runner_connections_env() {
   } >"$CONNECTIONS_ENV_FILE"
 }
 
-# Optional -B rebuild, then compose run + logs + wait. Sets tests_exit_code.
+# Optional -B rebuild, then compose run. Sets tests_exit_code.
 # "$@" is forwarded to the container entrypoint (wrapper → pytest or Jest).
+#
+# Interactive host TTY: attach so pytest owns the terminal (live status bar,
+# Ctrl-C, colors). Non-TTY (agents, pipes): detached -d -T + docker logs -f.
 function run_local_test_runner() {
   export INVENIO_LOCAL_SITE_PATH="${INVENIO_LOCAL_SITE_PATH:-./site}"
   export INVENIO_LOCAL_DEPENDENCIES_PATH="${INVENIO_LOCAL_DEPENDENCIES_PATH:-./site/kcworks/dependencies}"
@@ -256,8 +261,9 @@ function run_local_test_runner() {
     local progress_script
     progress_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/docker_build_progress.py"
     set +e
+    test_compose_file_args
     BUILDKIT_PROGRESS=rawjson \
-      docker compose -p kcworks-test -f docker-compose.test.yml build test-runner \
+      docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" build test-runner \
       2>&1 | uv run python "$progress_script"
     local build_pipe=("${PIPESTATUS[@]}")
     set -e
@@ -268,27 +274,43 @@ function run_local_test_runner() {
     fi
   fi
 
-  local compose_run=(docker compose -p kcworks-test -f docker-compose.test.yml run -d -T --name kcworks-test-runner)
+  test_compose_file_args
+  local compose_run=(docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" run --name kcworks-test-runner)
   if [[ ${keep_services:-0} -eq 0 ]]; then
     compose_run+=(--rm)
   fi
-  if [ $# -eq 0 ]; then
-    "${compose_run[@]}" test-runner >/dev/null
-  else
-    "${compose_run[@]}" test-runner "$@" >/dev/null
-  fi
-  local cid="kcworks-test-runner"
 
-  docker logs -f "$cid" &
-  local logs_pid=$!
-  set +e
-  tests_exit_code=$(docker wait "$cid")
-  local wait_status=$?
-  set -e
-  if [[ $wait_status -ne 0 ]]; then
-    tests_exit_code=$wait_status
+  local cid="kcworks-test-runner"
+  if [[ -t 0 && -t 1 ]]; then
+    # Attached: host TTY is the container stdio (pytest_live_status, etc.).
+    set +e
+    if [ $# -eq 0 ]; then
+      "${compose_run[@]}" test-runner
+    else
+      "${compose_run[@]}" test-runner "$@"
+    fi
+    tests_exit_code=$?
+    set -e
+  else
+    # Detached: no usable host TTY; follow logs and wait for exit.
+    compose_run+=(-d -T)
+    if [ $# -eq 0 ]; then
+      "${compose_run[@]}" test-runner >/dev/null
+    else
+      "${compose_run[@]}" test-runner "$@" >/dev/null
+    fi
+
+    docker logs -f "$cid" &
+    local logs_pid=$!
+    set +e
+    tests_exit_code=$(docker wait "$cid")
+    local wait_status=$?
+    set -e
+    if [[ $wait_status -ne 0 ]]; then
+      tests_exit_code=$wait_status
+    fi
+    wait "$logs_pid" 2>/dev/null || true
   fi
-  wait "$logs_pid" 2>/dev/null || true
 
   if [[ -n "${TEST_SECRET_FILE}" && -f "${TEST_SECRET_FILE}" ]]; then
     echo "Removing host secrets file (tests finished)..."
@@ -517,7 +539,6 @@ fi
 if [[ "$is_ci" == "false" && ${js_only} -eq 1 ]]; then
   echo "JS-only mode: skipping docker-services-cli, secrets fetch, translations, and pytest"
   echo "  (wrapper runs Jest because KCWORKS_TEST_JS_ONLY=1)"
-  ensure_test_runner_network
   write_js_only_compose_placeholders
   invoke_local_test_runner
   exit "${tests_exit_code:-0}"

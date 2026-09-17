@@ -1,3 +1,6 @@
+// re-declare variables that for some reason aren't picked up
+@negativeTextColor: @redDark;
+
 .ui.button.icon {
   &.fluid.labeled.centered {
     padding-right: 3.25em !important;
@@ -104,7 +107,7 @@
   }
 
   &.negative {
-    background-color: @redDark !important;
+    background-color: @negativeTextColor !important;
     color: @white;
     box-shadow: 0px 0px 0px 1px @redDark inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
@@ -135,7 +138,8 @@
   }
 
   &.warning {
-    text-shadow: 0 2px 16px #653203;
+    background-color: @warningTextColor !important;
+    color: @white;
 
     &:hover,
     &:active,
@@ -391,7 +395,7 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset !important;
   }
   .menu button {
     width: 100%;
@@ -411,9 +415,9 @@
   }
 }
 
-.facet-container div.content h2.header .button.right.floated {
-  visibility: hidden;
-}
+// .facet-container div.content h2.header .button.right.floated {
+//   visibility: hidden;
+// }
 
 #detail-main-content .button.tiny.show-less {
   margin-bottom: 1rem;

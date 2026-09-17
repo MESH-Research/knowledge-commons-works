@@ -11,7 +11,6 @@ import time
 from pprint import pformat
 
 import pytest
-from flask_security import current_user
 from flask_security.utils import login_user, logout_user
 from invenio_access.permissions import SystemRoleNeed, system_identity
 from invenio_access.utils import get_identity
@@ -239,10 +238,10 @@ def test_notify_for_request_acceptance(
         unread_json = submitter.user_profile.get("unread_notifications")
         assert json.loads(unread_json) == [
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": request_id,
                 "request_type": "community-submission",
                 "request_status": "accepted",
+                "is_new_request": True,
                 "unread_comments": [comment_id],
             },
         ]
@@ -451,9 +450,9 @@ def test_notify_for_request_decline(
         assert json.loads(submitter.user_profile.get("unread_notifications")) == [
             {
                 "request_id": request_id,
-                "notification_type": "comment-request-event.create",
                 "request_type": "community-submission",
                 "request_status": "declined",
+                "is_new_request": True,
                 "unread_comments": [comment_id],
             },
         ]
@@ -633,9 +632,10 @@ def test_notify_for_request_cancellation(
         assert json.loads(reviewer.user_profile.get("unread_notifications")) == [
             {
                 "request_id": request_id,
-                "notification_type": "community-submission.cancel",
                 "request_type": "community-submission",
                 "request_status": "cancelled",
+                "is_new_request": True,
+                "unread_comments": [],
             }
         ]
 
@@ -827,10 +827,10 @@ def test_notify_for_new_request_comment(
         )
         assert json.loads(unread_notifications) == [
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": request_id,
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": [comment_id],
             }
         ]
@@ -871,17 +871,17 @@ def test_read_unread_notifications_by_service(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -900,17 +900,17 @@ def test_read_unread_notifications_by_service(
     assert len(unread_notifications) == 2
     assert unread_notifications == [
         {
-            "notification_type": "comment-request-event.create",
             "request_id": "1",
             "request_type": "community-submission",
             "request_status": "submitted",
+            "is_new_request": False,
             "unread_comments": ["1"],
         },
         {
-            "notification_type": "comment-request-event.create",
             "request_id": "2",
             "request_type": "community-submission",
             "request_status": "submitted",
+            "is_new_request": False,
             "unread_comments": ["2"],
         },
     ]
@@ -948,17 +948,17 @@ def test_clear_unread_notifications_by_service(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -998,17 +998,17 @@ def test_clear_unread_notifications_by_service(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -1036,13 +1036,11 @@ def test_read_unread_notifications_by_view(
     client,
     client_with_login,
     headers,
-    admin,
     search_clear,
     mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are read by the view."""
     app = running_app.app
-    admin_id = admin.user.id
     # create a user with a community submission
     u = user_factory(
         email="test@example.com",
@@ -1062,17 +1060,17 @@ def test_read_unread_notifications_by_view(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -1089,20 +1087,10 @@ def test_read_unread_notifications_by_view(
 
         # read the unread notifications
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list"
         )
         assert response.status_code == 200
         assert len(json.loads(response.data)) == 2
-
-        # try to read someone else's unread notifications
-        response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{admin_id}/notifications/unread/list"
-        )
-        assert response.status_code == 403
-        assert json.loads(response.data) == {
-            "message": "You are not authorized to perform this action",
-            "status": 403,
-        }
 
         logout_user()
 
@@ -1110,7 +1098,7 @@ def test_read_unread_notifications_by_view(
     with app.test_client() as client:
         # NOTE: New client has its own session
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/list"
+            f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list"
         )
         assert response.status_code == 401
         error = json.loads(response.data)
@@ -1129,19 +1117,15 @@ def test_clear_unread_notifications_by_view(
     running_app,
     db,
     user_factory,
-    minimal_community_factory,
     client,
     client_with_login,
     headers,
     search_clear,
-    admin,
-    mailbox,
     enable_mail_sending,
     mock_logout_signal_receiver,
 ):
     """Test that the user's unread notifications are cleared by the view."""
     app = running_app.app
-    admin_id = admin.user.id
 
     # create a user with a community submission
     u = user_factory(
@@ -1162,17 +1146,17 @@ def test_clear_unread_notifications_by_view(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -1191,33 +1175,21 @@ def test_clear_unread_notifications_by_view(
 
         # identity = get_identity(current_user)
 
-        # clear the unread notifications
+        # clear the unread notifications (GET clear kept for older clients)
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{current_user.id}/"
-            "notifications/unread/clear",
+            f"{app.config['SITE_API_URL']}/users/me/notifications/unread/clear",
         )
-        assert response.status_code == 200  # TODO: should be 204 with DELETE
+        assert response.status_code == 200
 
         # check that the user has no unread notifications
         final_user = current_accounts.datastore.get_user_by_id(user.id)
         assert json.loads(final_user.user_profile.get("unread_notifications")) == []
-
-        # try to clear someone else's notifications
-        response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{admin_id}/notifications/unread/clear",
-        )
-        assert response.status_code == 403
-        assert json.loads(response.data) == {
-            "message": "You are not authorized to perform this action",
-            "status": 403,
-        }
-
-        logout_user()
+        # Skip logout_user(): clear commits and detaches the login_user User.
 
     # try to clear notifications without logging in
     with app.test_client() as client:
         response = client.get(
-            f"{app.config['SITE_API_URL']}/users/{user.id}/notifications/unread/clear",
+            f"{app.config['SITE_API_URL']}/users/me/notifications/unread/clear",
         )
         assert response.status_code == 401
         error = json.loads(response.data)
@@ -1265,17 +1237,17 @@ def test_clear_one_unread_notification_by_view(
     user.user_profile = {
         "unread_notifications": json.dumps([
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "1",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["1"],
             },
             {
-                "notification_type": "comment-request-event.create",
                 "request_id": "2",
                 "request_type": "community-submission",
                 "request_status": "submitted",
+                "is_new_request": False,
                 "unread_comments": ["2"],
             },
         ])
@@ -1289,10 +1261,9 @@ def test_clear_one_unread_notification_by_view(
     login_user(user)
     login_user_via_session(client, email=user.email)
 
-    # FIXME: should be DELETE
-    # clear the unread notifications
+    # GET clear still supported; UI uses DELETE
     response = client.get(
-        f"{app.config['SITE_API_URL']}/users/{current_user.id}/"
+        f"{app.config['SITE_API_URL']}/users/me/"
         "notifications/unread/clear?request_id=1",
         # query_string={"request_id": "1"},
         headers=headers,
@@ -1301,10 +1272,10 @@ def test_clear_one_unread_notification_by_view(
 
     assert response.get_json() == [
         {
-            "notification_type": "comment-request-event.create",
             "request_id": "2",
             "request_type": "community-submission",
             "request_status": "submitted",
+            "is_new_request": False,
             "unread_comments": ["2"],
         }
     ]
@@ -1313,10 +1284,10 @@ def test_clear_one_unread_notification_by_view(
     final_user = current_accounts.datastore.get_user_by_id(user.id)
     assert json.loads(final_user.user_profile.get("unread_notifications")) == [
         {
-            "notification_type": "comment-request-event.create",
             "request_id": "2",
             "request_type": "community-submission",
             "request_status": "submitted",
+            "is_new_request": False,
             "unread_comments": ["2"],
         },
     ]
@@ -1332,7 +1303,7 @@ def test_unread_endpoint_bad_methods(
     headers = headers_same_origin
 
     response = client.post(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
+        f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1347,7 +1318,7 @@ def test_unread_endpoint_bad_methods(
     headers["X-CSRFToken"] = csrf_token
 
     response = client.put(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/clear",
+        f"{app.config['SITE_API_URL']}/users/me/notifications/unread/clear",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1361,7 +1332,7 @@ def test_unread_endpoint_bad_methods(
     login_user_via_session(client, email=admin_email)
 
     response = client.post(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
+        f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1372,7 +1343,7 @@ def test_unread_endpoint_bad_methods(
     }
 
     response = client.put(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
+        f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list",
         data=json.dumps({}),
         headers=headers,
     )
@@ -1383,7 +1354,7 @@ def test_unread_endpoint_bad_methods(
     }
 
     response = client.patch(
-        f"{app.config['SITE_API_URL']}/users/5/notifications/unread/list",
+        f"{app.config['SITE_API_URL']}/users/me/notifications/unread/list",
         headers=headers,
     )
     assert response.status_code == 405

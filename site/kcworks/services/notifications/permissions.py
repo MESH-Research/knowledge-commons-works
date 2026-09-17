@@ -43,4 +43,5 @@ class InternalNotificationPermissionPolicy(BasePermissionPolicy):
 
     can_clear_unread = [SpecificUser(), SystemProcess()]
     can_read_unread = [SpecificUser(), SystemProcess()]
+    can_reconcile_unread = [SpecificUser(), SystemProcess()]
     can_update_unread = [SpecificUser(), SystemProcess()]

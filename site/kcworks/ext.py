@@ -1,4 +1,4 @@
-# Part of Knowledge Commons Works
+# Part Knowledge Commons Works
 # Copyright (C) 2023-2026 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it under the
@@ -307,6 +307,7 @@ def _schedule_community_menu_overrides(app: Flask) -> None:
     registered ``communities`` children, so overrides targeted empty stubs and
     were overwritten on the next hook. Defer until the first request instead.
     """
+
     @app.before_request
     def _apply_community_menu_overrides_once() -> None:
         kcworks_ext = app.extensions.get("kcworks")
@@ -337,6 +338,8 @@ def finalize_app(app: Flask) -> None:
     blueprint that registers handlers later than this would simply be
     skipped (still works, just no logging).
     """
+    funcs = app.before_request_funcs.get(None, [])
+    app.before_request_funcs[None] = [_setup_csrf_protected_routes] + funcs
     _schedule_community_menu_overrides(app)
     register_themed_error_handlers(app)
     wrap_blueprint_error_handlers_with_logging(app)
@@ -372,7 +375,6 @@ def _static_token_before_request() -> None:
     verify_oauth_token_and_set_current_user in the before_request list will
     no-op. Otherwise we do nothing and OAuth verification runs as usual.
     """
-    current_app.logger.debug("DEBUG: _static_token_before_request firing")
     if getattr(request, "oauth_verify_has_run", False):
         return
 
@@ -417,6 +419,20 @@ def _static_token_before_request() -> None:
     # Skip CSRF and OAuth verification.
     request.skip_csrf_check = True  # ty: ignore[unresolved-attribute]
     request.oauth_verify_has_run = True  # ty: ignore[unresolved-attribute]
+
+
+def _setup_csrf_protected_routes() -> None:
+    """Force the CSRF cookie on selected HTML page loads.
+
+    Upstream views often omit `request.csrf_cookie_needs_reset`; without
+    that flag, `invenio_rest` may not set `csrftoken` on GET page
+    responses. Pages whose UI issues DELETE/POST need the cookie first.
+    """
+    protected_routes = (
+        current_app.config.get("KCWORKS_EXTRA_CSRF_PROTECTED_ROUTES") or []
+    )
+    if any(request.path.startswith(r) for r in protected_routes):
+        request.csrf_cookie_needs_reset = True  # ty: ignore[unresolved-attribute]
 
 
 def api_finalize_app(app: Flask) -> None:

@@ -13,17 +13,31 @@
  * MIT License; see LICENSE file for more details.
  */
 
+import { reconcileUnreadNotifications } from "@js/kcworks/notifications/unreadNotifications";
 import { SearchAppFacets, SearchAppResultsPane } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/invenio_requests/i18next";
 import { RequestStatusFilter } from "./RequestStatusFilterComponent";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { SearchBar } from "react-searchkit";
 import { Button, Container, Grid } from "semantic-ui-react";
 
-export const RequestsSearchLayout = ({ config, appName }) => {
-  const [sidebarVisible, setSidebarVisible] = React.useState(false);
+export const RequestsSearchLayout = ({
+  config,
+  appName,
+  reconcileUnreadOnMount,
+}) => {
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  useEffect(() => {
+    if (reconcileUnreadOnMount) {
+      reconcileUnreadNotifications().catch((error) => {
+        console.error("Error reconciling unread notifications:", error);
+      });
+    }
+  }, [reconcileUnreadOnMount]);
+
   return (
     <Container>
       <Grid>
@@ -69,8 +83,10 @@ export const RequestsSearchLayout = ({ config, appName }) => {
 RequestsSearchLayout.propTypes = {
   config: PropTypes.object.isRequired,
   appName: PropTypes.string,
+  reconcileUnreadOnMount: PropTypes.bool,
 };
 
 RequestsSearchLayout.defaultProps = {
   appName: undefined,
+  reconcileUnreadOnMount: false,
 };

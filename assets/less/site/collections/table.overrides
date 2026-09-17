@@ -1,7 +1,7 @@
 
 .ui.table {
   thead th {
-      background-color: @ivory;  // @seafoam50;
+      background-color: @sidebarBackgroundColor;  // @seafoam50;
       color: @ivy80;
       line-height: 1.15rem;
   }

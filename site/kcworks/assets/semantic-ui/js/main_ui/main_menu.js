@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { i18next } from "@translations/kcworks/i18next";
+import {
+  getUnreadNotificationsFromStorage,
+  setUnreadNotificationsInSession,
+  UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+} from "@js/kcworks/notifications/unreadNotifications";
 import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { MenuItem, IconMenuItem } from "./menu_items";
@@ -40,6 +45,7 @@ const stripHtml = (text) => (text || "").replace(/<[^>]*>/g, "");
 
 const UserMenu = ({
   adminMenuItems,
+  externalIdentifiers,
   profilesURL,
   settingsMenuItems,
   tabIndex,
@@ -58,11 +64,11 @@ const UserMenu = ({
   const adminItems = adminMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((item) => item.visible === true);
-  const userDisplayName =
+  const truncatedDisplayName =
     userDisplayName && userDisplayName.length >= 31
       ? `${userDisplayName.slice(0, 31)}...`
       : userDisplayName;
-  const profileURL = externalIdentifiers.external_id
+  const profileURL = externalIdentifiers?.external_id
     ? `${profilesURL}${externalIdentifiers.external_id}`
     : undefined;
 
@@ -81,10 +87,10 @@ const UserMenu = ({
           aria-controls="user-settings-menu"
           aria-expanded="false"
           aria-haspopup="menu"
-          aria-label={userDisplayName || i18next.t("Settings")}
+          aria-label={truncatedDisplayName || i18next.t("Settings")}
           tabIndex={tabIndex}
         >
-          <span>{userDisplayName}</span>
+          <span>{truncatedDisplayName}</span>
           <i className="dropdown icon"></i>
         </div>
 
@@ -134,7 +140,7 @@ const UserMenu = ({
       </div>
 
       <h2 className="ui small header mobile tablet only ml-25">
-        {userDisplayName || i18next.t("My account")}
+        {truncatedDisplayName || i18next.t("My account")}
       </h2>
 
       {profileURL && (
@@ -261,31 +267,42 @@ const MainMenu = ({
   const [unreadNotifications, setUnreadNotifications] = useState([]);
 
   const fetchUnreadNotifications = async () => {
-    const response = await fetch(`/api/users/${userId}/notifications/unread/list`);
+    const response = await fetch(`/api/users/me/notifications/unread/list`);
     const data = await response.json();
-    // Store unread notifications in session storage.
-    // This is to avoid fetching the same notifications in
+    // Store unread notifications in session storage
+    // to avoid fetching the same notifications in
     // independent components that can't share a context.
-    sessionStorage.setItem(`unreadNotifications`, JSON.stringify(data));
-    // Dispatch a storage event to update other components that are listening.
-    window.dispatchEvent(new Event("storage"));
+    setUnreadNotificationsInSession(data);
     return data;
   };
 
-  const updateUnreadNotifications = () => {
+  const updateUnreadFromStorage = () => {
     const unreadFromStorage = JSON.parse(sessionStorage.getItem(`unreadNotifications`));
     setUnreadNotifications(unreadFromStorage);
   };
 
   useEffect(() => {
     if (![null, undefined, ""].includes(userId)) {
-      fetchUnreadNotifications();
-      window.addEventListener("storage", () => {
-        updateUnreadNotifications();
-      });
+      // On My requests search, the dashboard layout runs reconcile (fetches
+      // from the API and writes sessionStorage). Skip this here to avoid
+      // duplicating the fetch and potential race condition.
+      const path = window.location.pathname.replace(/\/$/, "") || "/";
+      const isMyRequestsDashboard = path === "/me/requests";
+      if (!isMyRequestsDashboard) {
+        fetchUnreadNotifications();
+      } else {
+        updateUnreadFromStorage();
+      }
+      window.addEventListener(
+        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+        updateUnreadFromStorage
+      );
     }
     return () => {
-      window.removeEventListener("storage", updateUnreadNotifications);
+      window.removeEventListener(
+        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+        updateUnreadFromStorage
+      );
     };
   }, [userId]);
 
@@ -389,6 +406,7 @@ const MainMenu = ({
             (!!userAuthenticated ? (
               <UserMenu
                 adminMenuItems={adminMenuItems}
+                externalIdentifiers={externalIdentifiers}
                 profilesURL={profilesURL}
                 settingsMenuItems={settingsMenuItems}
                 userAdministrator={userAdministrator}
@@ -460,58 +478,64 @@ MainMenu.propTypes = {
   userId: PropTypes.string,
 };
 
-// Get the HTML element
+// Provide props from the template mount point when it exists (skip in Jest).
 const element = document.getElementById("main-nav-menu");
 
-// Get the data property from the element
-const accountsEnabled = element.dataset.accountsEnabled === "True" ? true : false;
-const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
-const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
-const externalIdentifiers = JSON.parse(element.dataset.externalIdentifiers);
-const kcWordpressDomain = element.dataset.kcWordpressDomain;
-const kcFaqUrl = element.dataset.kcFaqUrl;
-const kcWorksHelpUrl = element.dataset.kcWorksHelpUrl;
-const loginURL = element.dataset.loginUrl;
-const logoutURL = element.dataset.logoutUrl;
-const mainMenuItems = JSON.parse(element.dataset.mainMenuItems);
-const notificationsMenuItems = JSON.parse(element.dataset.notificationsMenuItems);
-const plusMenuItems = JSON.parse(element.dataset.plusMenuItems);
-const profilesURL = element.dataset.profilesUrl;
-const settingsMenuItems = JSON.parse(element.dataset.settingsMenuItems);
-const themeLogoURL = element.dataset.themeLogoUrl;
-const themeSitename = element.dataset.themeSitename;
-const themeSearchbarEnabled = element.dataset.themeSearchbarEnabled === "True" ? true : false;
-const userDisplayName = element.dataset.userDisplayName || "";
-const userId = element.dataset.userId;
-const userAuthenticated = element.dataset.userAuthenticated === "True" ? true : false;
-const userAdministrator = JSON.parse(element.dataset.userRoles).includes("administration")
-  ? true
-  : false;
+if (element) {
+  const accountsEnabled = element.dataset.accountsEnabled === "True" ? true : false;
+  const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
+  const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
+  const externalIdentifiers = JSON.parse(element.dataset.externalIdentifiers);
+  const kcWordpressDomain = element.dataset.kcWordpressDomain;
+  const kcFaqUrl = element.dataset.kcFaqUrl;
+  const kcWorksHelpUrl = element.dataset.kcWorksHelpUrl;
+  const loginURL = element.dataset.loginUrl;
+  const logoutURL = element.dataset.logoutUrl;
+  const mainMenuItems = JSON.parse(element.dataset.mainMenuItems);
+  const notificationsMenuItems = JSON.parse(element.dataset.notificationsMenuItems);
+  const plusMenuItems = JSON.parse(element.dataset.plusMenuItems);
+  const profilesURL = element.dataset.profilesUrl;
+  const settingsMenuItems = JSON.parse(element.dataset.settingsMenuItems);
+  const themeLogoURL = element.dataset.themeLogoUrl;
+  const themeSitename = element.dataset.themeSitename;
+  const themeSearchbarEnabled =
+    element.dataset.themeSearchbarEnabled === "True" ? true : false;
+  const userDisplayName = element.dataset.userDisplayName || "";
+  const userId = element.dataset.userId;
+  const userAuthenticated =
+    element.dataset.userAuthenticated === "True" ? true : false;
+  const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
+    "administration"
+  )
+    ? true
+    : false;
 
-// Provide the data property as a prop to the MainMenu component
-ReactDOM.render(
-  <MainMenu
-    accountsEnabled={accountsEnabled}
-    actionsMenuItems={actionsMenuItems}
-    adminMenuItems={adminMenuItems}
-    externalIdentifiers={externalIdentifiers}
-    kcFaqUrl={kcFaqUrl}
-    kcWorksHelpUrl={kcWorksHelpUrl}
-    kcWordpressDomain={kcWordpressDomain}
-    loginURL={loginURL}
-    logoutURL={logoutURL}
-    mainMenuItems={mainMenuItems}
-    notificationsMenuItems={notificationsMenuItems}
-    plusMenuItems={plusMenuItems}
-    profilesURL={profilesURL}
-    settingsMenuItems={settingsMenuItems}
-    themeLogoURL={themeLogoURL}
-    themeSitename={themeSitename}
-    themeSearchbarEnabled={themeSearchbarEnabled}
-    userAuthenticated={userAuthenticated}
-    userDisplayName={userDisplayName}
-    userId={userId}
-    userAdministrator={userAdministrator}
-  />,
-  element
-);
+  ReactDOM.render(
+    <MainMenu
+      accountsEnabled={accountsEnabled}
+      actionsMenuItems={actionsMenuItems}
+      adminMenuItems={adminMenuItems}
+      externalIdentifiers={externalIdentifiers}
+      kcFaqUrl={kcFaqUrl}
+      kcWorksHelpUrl={kcWorksHelpUrl}
+      kcWordpressDomain={kcWordpressDomain}
+      loginURL={loginURL}
+      logoutURL={logoutURL}
+      mainMenuItems={mainMenuItems}
+      notificationsMenuItems={notificationsMenuItems}
+      plusMenuItems={plusMenuItems}
+      profilesURL={profilesURL}
+      settingsMenuItems={settingsMenuItems}
+      themeLogoURL={themeLogoURL}
+      themeSitename={themeSitename}
+      themeSearchbarEnabled={themeSearchbarEnabled}
+      userAuthenticated={userAuthenticated}
+      userDisplayName={userDisplayName}
+      userId={userId}
+      userAdministrator={userAdministrator}
+    />,
+    element
+  );
+}
+
+export { MainMenu };
