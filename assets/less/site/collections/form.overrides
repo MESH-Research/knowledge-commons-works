@@ -205,7 +205,7 @@ textarea {
       font-family: @fontName;
       color: @ivy;
       .uppy-Dashboard-innerWrap {
-        background-color: darken(@sidebarBackgroundColor, 3%);
+        background-color: @sidebarBackgroundColor;
       }
       @media (max-width: @largestMobileScreen) {
         .uppy-Dashboard-innerWrap {
