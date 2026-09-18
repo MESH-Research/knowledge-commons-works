@@ -12,7 +12,7 @@ const MenuItem = ({ text, icon, url, tabIndex }) => {
   );
 };
 
-MenuItem.PropTypes = {
+MenuItem.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.string,
   url: PropTypes.string,
@@ -56,7 +56,7 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
   );
 };
 
-IconMenuItem.PropTypes = {
+IconMenuItem.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.string,
   badge: PropTypes.string,
