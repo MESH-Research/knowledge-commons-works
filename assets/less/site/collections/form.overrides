@@ -244,6 +244,7 @@ textarea {
 }
 
 // Fade + height collapse for ephemeral sidebar toasts (FadeCollapse / FadeCollapseStack).
+// Prefer the package copy in deposit_form.less; keep in sync if both load.
 .fade-collapse {
   overflow: hidden;
   max-height: 16rem;
@@ -251,14 +252,14 @@ textarea {
   transition-property: max-height, opacity, margin;
   transition-timing-function: ease;
 
-  &--hiding {
+  &.hiding {
     max-height: 0;
     opacity: 0;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
 
-  &__inner > .ui.message.flashed {
+  .fade-collapse-inner > .ui.message.flashed {
     margin-bottom: 0;
   }
 }
