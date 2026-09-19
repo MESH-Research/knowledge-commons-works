@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
-import { Form } from "semantic-ui-react";
-import { RadioField } from "react-invenio-forms";
+import { Checkbox, Form } from "semantic-ui-react";
 import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
 import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextArea";
 import PropTypes from "prop-types";
@@ -14,58 +13,55 @@ const AIUsageField = ({
   description,
   helpText,
   ai_used,
-  ai_description,
-  ...restProps
 }) => {
   const { values, setFieldValue } = useFormikContext();
   const usedValue = getIn(values, `${fieldPath}.ai_used`, false);
-  const [usedAI, setUsedAI] = useState(usedValue);
+  const [usedAI, setUsedAI] = useState(!!usedValue);
 
   useEffect(() => {
-    setFieldValue(`${fieldPath}.ai_used`, usedAI);
-  }, [usedAI]);
+    setUsedAI(!!usedValue);
+  }, [usedValue]);
 
   return (
-    <Form.Field id={fieldPath} {...restProps}>
+    <Form.Field id={fieldPath}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
       <Form.Group role="radiogroup" aria-labelledby="ai-usage-toggle" className="inline mt-10">
         <label id="ai-usage-toggle" className="invenio-field-label ai-usage-toggle-label">
           {i18next.t(ai_used.description)}
         </label>
-        <RadioField
-          fieldPath={`${fieldPath}.ai_used`}
-          checked={!!usedAI}
-          className="rel-ml-2"
+        <Checkbox
+          radio
           label="Yes"
           name="ai-usage-toggle-yes"
-          onChange={({ _, data }) => {
-            setUsedAI(data.checked);
-            {
-              /* If we don't set ai_description to an empty value it can stay absent and miss validation. */
-            }
-            setFieldValue(
-              `${fieldPath}.ai_description`,
-              getIn(values, `${fieldPath}.ai_description`) ?? ""
-            );
-          }}
-          value={true}
-        />
-        <RadioField
-          fieldPath={`${fieldPath}.ai_used`}
-          checked={!usedAI}
+          checked={usedAI}
           className="rel-ml-2"
+          onChange={(_, data) => {
+            if (data.checked) {
+              setUsedAI(true);
+              setFieldValue(`${fieldPath}.ai_used`, true);
+              setFieldValue(
+                `${fieldPath}.ai_description`,
+                getIn(values, `${fieldPath}.ai_description`) ?? ""
+              );
+            }
+          }}
+        />
+        <Checkbox
+          radio
           label="No"
           name="ai-usage-toggle-no"
-          onChange={({ _, data }) => {
+          checked={!usedAI}
+          className="rel-ml-2"
+          onChange={(_, data) => {
             if (data.checked) {
               setUsedAI(false);
+              setFieldValue(`${fieldPath}.ai_used`, false);
               setFieldValue(`${fieldPath}.ai_description`, "");
             }
           }}
-          value={false}
         />
       </Form.Group>
-      {!!usedAI ? (
+      {usedAI ? (
         <TextArea
           classnames="rel-mt-1"
           fieldPath={`${fieldPath}.ai_description`}
@@ -85,6 +81,7 @@ AIUsageField.propTypes = {
   label: PropTypes.string,
   icon: PropTypes.string,
   description: PropTypes.string,
+  helpText: PropTypes.string,
   ai_used: PropTypes.object,
   ai_description: PropTypes.object,
 };

@@ -9,9 +9,14 @@ const ContentWarningField = ({
   fieldPath,
   label,
   icon,
+  labelIcon,
   description = undefined,
   helpText = undefined,
   editorConfig = {},
+  // Injected by FieldComponentWrapper — keep off the DOM Form.Field.
+  defaultFieldValue,
+  placeholder,
+  priorityFieldValues,
   ...restProps
 }) => {
   const { values, setFieldValue } = useFormikContext();
@@ -29,7 +34,7 @@ const ContentWarningField = ({
 
   return (
     <Form.Field id={fieldPath} name={fieldPath} {...restProps}>
-      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
+      <FieldLabel htmlFor={fieldPath} icon={icon ?? labelIcon} label={label} />
       <Form.Group role="radiogroup" aria-labelledby="content-warning-toggle" className="inline">
         <label
           id="content-warning-toggle"

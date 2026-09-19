@@ -221,7 +221,7 @@ CommunitySelectionModal.propTypes = {
   displaySelected: PropTypes.bool,
   modalOpen: PropTypes.bool,
   apiConfigs: PropTypes.object,
-  handleClose: PropTypes.func.isRequired,
+  handleClose: PropTypes.func,
   record: PropTypes.object,
   isInitialSubmission: PropTypes.bool,
   permissionsPerField: PropTypes.object,
