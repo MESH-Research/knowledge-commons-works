@@ -22,17 +22,17 @@
     border-left: none;
   }
   > .ui.button.active:not(.positive):not(.negative) {
-    background-color: @mint50 !important;
+    background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+    box-shadow: 0px 0px 0px 1px @ivy20 inset,
       0px 0em 0px 0px @ivyRgba10 inset;
 
     &:hover,
     &:active,
     &:focus {
-      background-color: @mint70 !important;
+      background-color: @mint50 !important;
       color: @ivy;
-      box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      box-shadow: 0px 0px 0px 1px darken(@ivy40, 3%) inset,
         0px 0em 0px 0px @ivyRgba10 inset;
     }
   }
@@ -47,14 +47,14 @@
 .ui.info.message .ui.button.icon:not(.basic) {
   background-color: @white;
   color: @ivy90;
-  box-shadow: 0px 0px 0px 1px @ivy40 inset;
+  box-shadow: 0px 0px 0px 1px @ivy20 inset;
 
   &:hover,
   &:active,
   &:focus {
     background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px @ivy30 inset;
+    box-shadow: 0px 0px 0px 1px darken(@ivy20, 3%) inset;
     cursor: pointer;
   }
 
@@ -66,8 +66,8 @@
   &.search {
     background-color: @secondaryColor;
     color: @white;
-    box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
-      0px 0em 0px 0px darken(@secondaryColor, 10%) inset !important;
+    box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 3%) inset,
+      0px 0em 0px 0px darken(@secondaryColor, 3%) inset !important;
     &:hover,
     &:active,
     &:focus {
