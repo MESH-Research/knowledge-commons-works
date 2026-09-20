@@ -30,6 +30,8 @@ const SubjectsField = ({
   limitToOptions,
   noQueryMessage = " ",
   // noResultsMessage = " ",
+  // Wrapper-injected; not a RemoteSelectField / Dropdown prop.
+  initialOptions: _initialOptions,
   ...otherProps
 }) => {
   const [limitTo, setLimitTo] = useState("all");
@@ -102,7 +104,7 @@ const SubjectsField = ({
             {description}
           </div>
         )}
-        <GroupField fluid className="mb-0">
+        <GroupField className="mb-0">
           {/* <Form.Field
             width={4}
             style={{ marginBottom: "auto", marginTop: "auto" }}

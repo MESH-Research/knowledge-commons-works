@@ -85,7 +85,7 @@
   // Theme color labels
 
   &.primary {
-    background-color: @sidebarBackgroundColor;
+    background-color: @mint30;
     border-color: @mint40;
     color: @primaryColor;
 

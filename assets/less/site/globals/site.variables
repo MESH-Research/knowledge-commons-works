@@ -218,7 +218,7 @@
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
-@formInputBorderColor: @ivy40;
+@formInputBorderColor: #e1dac3;
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
 

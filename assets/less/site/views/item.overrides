@@ -68,7 +68,7 @@
   & > .search-result.item {
     .content {
       h2.header a {
-        color: @verdigrisDark;  // @ivy80;
+        color: @ivy80;
       }
       .creatibutors {
         .icon {

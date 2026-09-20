@@ -1,6 +1,7 @@
 /* Segment theme overrides */
 
 .ui.segment {
+    border-color: @sidebarBorderColor;
     &.rdm-sidebar {
         border-color: @sidebarBorderColor;
 

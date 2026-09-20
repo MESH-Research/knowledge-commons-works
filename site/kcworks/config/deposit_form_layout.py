@@ -167,13 +167,23 @@ _FORM_FOOTER = {
             "only": "large screen",
         },
         {
-            "component": "FormPageNavigationBar",
+            "component": "StickyFooter",
             "mobile": 16,
             "tablet": 16,
             "computer": 12,
             "largeScreen": 11,
             "widescreen": 11,
             "classnames": "p-0",
+            "subsections": [
+                {
+                    "component": "HiddenFieldsNotices",
+                },
+                {
+                    "component": "FormPageNavigationBar",
+                    "asColumn": False,
+                    "classnames": "mt-0",
+                },
+            ],
         },
         {
             "component": "SpacerColumn",

@@ -28,7 +28,7 @@ export function EmbargoDateField({
       placeholder={placeholder}
       required={required}
       description={helpText}
-      classname={classnames}
+      classnames={classnames}
     />
   );
 }
@@ -40,6 +40,7 @@ EmbargoDateField.propTypes = {
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   helpText: PropTypes.string,
+  classnames: PropTypes.string,
 };
 
 EmbargoDateField.defaultProps = {
