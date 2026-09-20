@@ -15,7 +15,6 @@ import { connect, useStore } from "react-redux";
 import { i18next } from "@translations/invenio_modular_deposit_form/i18next";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
-import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
 import { Button, Icon, Form, Grid, Header, Item, Message } from "semantic-ui-react";
 
@@ -54,7 +53,6 @@ const CommunityListItem = ({
         size="tiny"
         className="community-image mini"
         src={community.links?.logo || `/api/communities/${community.id}/logo`}
-        fallbackSrc="/static/images/square-placeholder.png"
       />
       <Item.Content verticalAlign="middle">
         <span>{community.metadata.title}</span>
@@ -136,7 +134,7 @@ const AddEditCommunityButton = ({
             name="setting"
             id="community-selector"
             type="button"
-            floated={!community ? "left" : ""}
+            floated={!community ? "left" : undefined}
           >
             {community ? i18next.t("Change") : i18next.t("Select a collection")}
           </Button>
@@ -150,17 +148,19 @@ const AddEditCommunityButton = ({
 };
 
 AddEditCommunityButton.propTypes = {
-  community: PropTypes.object.isRequired,
+  community: PropTypes.object,
   changeSelectedCommunity: PropTypes.func.isRequired,
   focusAddButtonHandler: PropTypes.func.isRequired,
   setModalOpen: PropTypes.func.isRequired,
-  modalOpen: PropTypes.bool.isRequired,
+  modalOpen: PropTypes.bool,
   selectionButtonDisabled: PropTypes.bool.isRequired,
   permissionsPerField: PropTypes.object,
   triggerButtonRef: PropTypes.object,
 };
 
 AddEditCommunityButton.defaultProps = {
+  community: undefined,
+  modalOpen: false,
   permissionsPerField: undefined,
 };
 
@@ -356,7 +356,7 @@ const CommunityFieldComponent = ({
   disableCommunitySelectionButton,
   label = i18next.t("Community submission"),
 }) => {
-  const [modalOpen, setModalOpen] = useState();
+  const [modalOpen, setModalOpen] = useState(false);
   const triggerButtonRef = useRef(null);
   const store = useStore();
   const isPublished = store.getState().deposit.record?.is_published;
@@ -423,12 +423,12 @@ const CommunityFieldComponent = ({
       <Form.Field>
         <label htmlFor="community-selector" className="field-label-class invenio-field-label">
           {label}
-          <Icon name="ml-12 mr-0 users" />
+          <Icon name="users" className="ml-12 mr-0" />
         </label>
         {community && !selectionButtonShown && (
           <div className="description">{changeOnDetailPageMessage}</div>
         )}
-        {community && !isInReview && (
+        {community && !isInReview && selectionButtonShown && (
           <div className="description">
             {i18next.t(
               "This work will be submitted for review to the collection below. (Not yet submitted.)"
