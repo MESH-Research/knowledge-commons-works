@@ -194,13 +194,13 @@
           background-color: @negativeBackgroundColor;
           border-color: #e0b4b4;
         }
-        &:before {
-          content: "\f06a";
-          font-family: Icons;
-          font-size: @huge;
-          position: absolute;
-          bottom: -1.5rem;
-        }
+        // &:before {
+        //   content: "\f06a";
+        //   font-family: Icons;
+        //   font-size: @huge;
+        //   position: absolute;
+        //   bottom: -1.5rem;
+        // }
       }
     }
   }
