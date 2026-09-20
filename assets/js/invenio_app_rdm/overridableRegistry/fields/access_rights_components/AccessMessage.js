@@ -36,7 +36,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullyPublic) {
     return (
-      <Message positive visible data-testid="access-message" attached="top">
+      <Message positive visible data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Public")}
