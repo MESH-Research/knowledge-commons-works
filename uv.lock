@@ -2751,7 +2751,7 @@ name = "invenio-modular-deposit-form"
 version = "0.4.0"
 source = { editable = "site/kcworks/dependencies/invenio-modular-deposit-form" }
 dependencies = [
-    { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "invenio-app-rdm" },
     { name = "marshmallow-utils" },
     { name = "setuptools" },
 ]
@@ -2759,7 +2759,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2023" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "<14" },
+    { name = "invenio-app-rdm", specifier = ">=12,<16" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=0.2" },
     { name = "marshmallow-utils", specifier = ">=0.12" },
     { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.8" },
