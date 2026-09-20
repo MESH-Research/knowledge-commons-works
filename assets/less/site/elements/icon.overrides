@@ -8,6 +8,18 @@
   }
 }
 
+.identifier-icon-link {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  &.email-icon-link {
+    i {
+      margin: 0;
+      height: auto;
+    }
+  }
+}
+
 .sidebar-container {
   &#record-versions {
     .ui.header.version-label {
@@ -46,5 +58,13 @@
 .error-page {
   .icon.huge {
     color: @gold50;
+  }
+}
+
+.creatibutors-list {
+  .icon.mail {
+    margin-bottom: 2px;
+    padding-left: 1px;
+    display: inline-block;
   }
 }
