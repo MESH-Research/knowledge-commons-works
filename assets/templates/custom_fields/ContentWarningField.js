@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { i18next } from "@translations/i18next";
 import { getIn, useFormikContext } from "formik";
 import { Checkbox, Form } from "semantic-ui-react";
-import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
-import { TextArea } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextArea";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/FieldLabel";
+import { TextArea } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/TextArea";
 
 const ContentWarningField = ({
   fieldPath,

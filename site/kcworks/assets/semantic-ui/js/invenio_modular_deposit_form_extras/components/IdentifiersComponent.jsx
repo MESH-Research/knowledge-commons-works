@@ -18,9 +18,9 @@ import { FieldArray, useFormikContext } from "formik";
 import { Button, Form, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
 import { FieldComponentWrapper } from "@js/invenio_modular_deposit_form/field_components/FieldComponentWrapper";
-import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
-import { SelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/SelectField";
-import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/TextField";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/FieldLabel";
+import { SelectField } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/SelectField";
+import { TextField } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/TextField";
 
 const emptyIdentifier = { scheme: "", identifier: "" };
 const emptyURL = { scheme: "url", identifier: "" };
