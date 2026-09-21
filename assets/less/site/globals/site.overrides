@@ -316,12 +316,6 @@ a {
     padding: 0.25rem 0.5rem;
   }
 }
-.creatibutors {
-  a[class$="-icon-link"] {
-    display: flex;
-    align-items: center;
-  }
-}
 
 .login.segment {
   .ui.button {

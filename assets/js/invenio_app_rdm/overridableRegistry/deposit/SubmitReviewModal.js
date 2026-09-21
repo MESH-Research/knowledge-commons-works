@@ -7,7 +7,7 @@
 
 import { connect } from "react-redux";
 import { SubmitReviewModal } from "@js/invenio_rdm_records";
-import { getReadableFields } from "@js/invenio_modular_deposit_form/utils";
+import { getReadableFields } from "@js/invenio_modular_deposit_form/helpers/utils";
 
 const mapStateToProps = (state) => {
   const community = state.deposit.editorState.selectedCommunity;

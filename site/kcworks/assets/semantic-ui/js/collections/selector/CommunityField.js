@@ -19,7 +19,7 @@ import Overridable from "react-overridable";
 import { Button, Icon, Form, Grid, Header, Item, Message } from "semantic-ui-react";
 
 import { FormUIStateContext } from "@js/invenio_modular_deposit_form/FormUIStateManager";
-import { getReadableFields } from "@js/invenio_modular_deposit_form/utils";
+import { getReadableFields } from "@js/invenio_modular_deposit_form/helpers/utils";
 import { CommunitySelectionModalFromDeposit } from "./CommunitySelectionModal/CommunitySelectionModal";
 
 export const changeSelectedCommunity = (community) => {

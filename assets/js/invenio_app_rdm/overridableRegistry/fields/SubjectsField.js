@@ -9,8 +9,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { GroupField } from "react-invenio-forms";
-import { FieldLabel } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/FieldLabel";
-import { RemoteSelectField } from "@js/invenio_modular_deposit_form/replacement_components/input_controls/RemoteSelectField";
+import { FieldLabel } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/FieldLabel";
+import { RemoteSelectField } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/RemoteSelectField";
 import { Form } from "semantic-ui-react";
 import { Field, getIn } from "formik";
 import { i18next } from "@translations/i18next";
