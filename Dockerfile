@@ -1,9 +1,11 @@
 # Dockerfile that builds a fully functional image of Knowledge Commons Works.
 #
 # Uses a multi-stage build:
-#   dev workspace - full toolchain (uv, Node, pnpm, gccc, *-dev libs) to compile
+#   dev-workspace - full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
 #                   Python extensions and build webpack assets. But these assets are
-#                   *not* included in this image itself.
+#                   *not* included in this image itself. This stage also copies a 
+#                   bootstrap script that will pull the actual application code 
+#                   and run the setup in a set of shared volumes for the dev environment.
 #   builder     – full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
 #                 Python extensions and build webpack assets. No test extras.
 #   test-runner – builder + optional-dependencies.tests (pytest, …) + root
@@ -27,18 +29,6 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     PATH="/opt/invenio/src/.venv/bin:${PATH}" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning
-
-RUN groupadd --gid 1000 invenio \
-    && useradd --uid 1000 --gid 1000 \
-        --home-dir /opt/invenio \
-        --create-home \
-        --shell /bin/bash \
-        invenio
-
-RUN mkdir -p /opt/invenio/var/instance && \
-    mkdir -p /opt/invenio/src
-WORKDIR /opt/invenio
-USER invenio
 
 # Build tools, compile-time libs, Node.js — none of these land in the runtime image.
 RUN apt-get update && apt-get install -y \
@@ -67,15 +57,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# pnpm via Corepack. invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
-
-COPY ./docker/workspace_bootstrap.sh .
-
-# ── Stage 1: builder ──────────────────────────────────────────────────────
-FROM dev-workspace AS builder
-
 RUN groupadd --gid 1000 invenio \
     && useradd --uid 1000 --gid 1000 \
         --home-dir /opt/invenio \
@@ -83,12 +64,25 @@ RUN groupadd --gid 1000 invenio \
         --shell /bin/bash \
         invenio
 
-WORKDIR /opt/invenio/src
+RUN mkdir -p /opt/invenio/var/instance && \
+    mkdir -p /opt/invenio/src
+WORKDIR /opt/invenio
 USER invenio
 
 # pnpm via Corepack. invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+COPY ./docker/workspace_bootstrap.sh .
+RUN chmod 0700 /workspace_bootstrap.sh
+
+ENTRYPOINT ["/opt/invenio/workspace_bootstrap.sh"]
+
+# ── Stage 1: builder ──────────────────────────────────────────────────────
+FROM dev-workspace AS builder
+
+WORKDIR /opt/invenio/src
+USER invenio
 
 COPY . .
 
@@ -151,14 +145,6 @@ RUN . .venv/bin/activate && \
 RUN NODE_ENV=development pnpm install --frozen-lockfile \
     && test -x node_modules/.bin/jest
 
-RUN groupadd --gid 1000 invenio \
-    && useradd --uid 1000 --gid 1000 \
-        --home-dir /opt/invenio \
-        --create-home \
-        --shell /bin/bash \
-        invenio
-
-
 # ── Stage 2: runtime ──────────────────────────────────────────────────────
 # python:3.12-slim-bookworm shares the same Python path (/usr/local/bin/python3.12)
 # as the builder base, so venv symlinks resolve correctly after the COPY.
@@ -194,7 +180,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN groupadd --gid 1000 invenio \
     && useradd --uid 1000 --gid 1000 \
         --no-create-home \
-        --home-dir /usr/sbin/nologin \
+        --shell /usr/sbin/nologin \
         invenio
 
 # Copy the entire built tree (venv, source, instance path) from the builder.
