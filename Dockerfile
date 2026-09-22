@@ -64,17 +64,17 @@ RUN groupadd --gid 1000 invenio \
         --shell /bin/bash \
         invenio
 
-RUN mkdir -p /opt/invenio/var/instance && \
-    mkdir -p /opt/invenio/src
-WORKDIR /opt/invenio
-USER invenio
-
 # pnpm via Corepack. invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
-COPY ./docker/workspace_bootstrap.sh .
-RUN chmod 0700 /workspace_bootstrap.sh
+WORKDIR /opt/invenio
+USER invenio
+RUN mkdir -p /opt/invenio/var/instance && \
+    mkdir -p /opt/invenio/src
+
+COPY ./docker/workspace_bootstrap.sh /opt/invenio/workspace_bootstrap.sh
+RUN chmod 0700 /opt/invenio/workspace_bootstrap.sh
 
 ENTRYPOINT ["/opt/invenio/workspace_bootstrap.sh"]
 
@@ -128,6 +128,7 @@ RUN . .venv/bin/activate && \
     invenio shell /opt/invenio/src/scripts/symlink_assets.py && \
     invenio webpack build
 
+ENTRYPOINT []
 
 # ── Stage 1b: test-runner ─────────────────────────────────────────────────
 # Extends builder with test extras only. docker-compose.test.yml targets this
