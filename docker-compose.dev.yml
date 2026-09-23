@@ -15,15 +15,25 @@
 # dev-workspace service to serve as the editing and execution environment for
 # the project.
 #
+x-app-volumes: &app-volumes
+  - src_data:/opt/invenio/src
+  - instance_data:/opt/invenio/var/instance
+  - import_data:/opt/invenio/var/import_data
+  - static_data:/opt/invenio/var/instance/static
+x-app-environment: &app-environment
+  - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
+  - INVENIO_MAIL_SUPPRESS_SEND=True
 services:
   dev-workspace:
     extends:
-      file: docker-compose.yml
+      file: docker-services.yml
       service: dev-workspace
-    image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
+    image: monotasker/kcworks-workspace:${IMAGE_TAG:-latest}
     build:
       context: .
       target: dev-workspace
+    volumes: *app-volumes
+    environment: *app-environment
   web-ui:
     extends:
       file: docker-compose.yml
@@ -32,83 +42,39 @@ services:
     build:
       context: .
       target: runtime
-    environment:
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
-      - INVENIO_MAIL_SUPPRESS_SEND=True
-    volumes:
-      # - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-      - src_data:/src
-      - assets_data:/assets
-      - translations_data:/translations
-      - ./src/app_data:/opt/invenio/var/instance/app_data
-      - static_data:/opt/invenio/var/instance/static
-      - template_data:/opt/invenio/var/instance/templates
-      - archived_data:/opt/invenio/var/instance/archive
-      - uploaded_data:/opt/invenio/var/instance/data
-      - import_data:/opt/invenio/var/import_data}
+    environment: *app-environment
+    volumes: *app-volumes
   web-api:
     extends:
       file: docker-compose.yml
       service: web-api
     image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      target: runtime
-    environment:
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
-      - INVENIO_MAIL_SUPPRESS_SEND=True
-    volumes:
-      - src_data:/src
-      - assets_data:/assets
-      - translations_data:/translations
-      - ./src/app_data:/opt/invenio/var/instance/app_data
-      - static_data:/opt/invenio/var/instance/static
-      - template_data:/opt/invenio/var/instance/templates
-      - archived_data:/opt/invenio/var/instance/archive
-      - uploaded_data:/opt/invenio/var/instance/data
-      - import_data:/opt/invenio/var/import_data}
+    # build same was web-ui
+    environment: *app-environment
+    volumes: *app-volumes
   worker:
     extends:
       file: docker-compose.yml
       service: worker
     image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      target: runtime
-    environment:
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
-      - INVENIO_MAIL_SUPPRESS_SEND=True
-    volumes:
-      - src_data:/src
-      - assets_data:/assets
-      - translations_data:/translations
-      - ./src/app_data:/opt/invenio/var/instance/app_data
-      - static_data:/opt/invenio/var/instance/static
-      - template_data:/opt/invenio/var/instance/templates
-      - archived_data:/opt/invenio/var/instance/archive
-      - uploaded_data:/opt/invenio/var/instance/data
-      - import_data:/opt/invenio/var/import_data}
+    # build same was web-ui
+    environment: *app-environment
+    volumes: *app-volumes
   scheduler:
     extends:
       file: docker-compose.yml
       service: scheduler
     image: monotasker/kcworks-dev:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      target: runtime
-    environment:
-      - INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG
-      - INVENIO_MAIL_SUPPRESS_SEND=True
+    # build same was web-ui
+    environment: *app-environment
+    volumes: *app-volumes
+  frontend:
+    extends:
+      file: docker-compose.yml
+      service: frontend
     volumes:
-      # - ./invenio.cfg:/opt/invenio/var/instance/invenio.cfg
-      - src_data:/src
-      - assets_data:/assets
-      - translations_data:/translations
-      - app_data:/opt/invenio/var/instance/app_data
       - static_data:/opt/invenio/var/instance/static
 volumes:
-  import_data:
-  template_data:
+  # static_data defined in main docker-compose.yml
+  instance_data:
   src_data:
-  assets_data:
-  translations_data:
