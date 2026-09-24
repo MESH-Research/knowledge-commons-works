@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Organization Management" href="organization_management.html"><link rel="prev" title="File Storage Administration" href="file_storage.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Organization Management" href="organization_management.html"><link rel="prev" title="Names Vocabulary Lifecycle" href="names_vocabulary.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>User Data Management - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>User Data Management - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
@@ -274,60 +283,92 @@
 <h1>User Data Management<a class="headerlink" href="#user-data-management" title="Link to this heading">¶</a></h1>
 <p>KCWorks stores user profile data locally and keeps it in sync with the Knowledge
 Commons Profiles service. Administrators can provision users in bulk, inspect
-accounts, correct how a user’s name is divided into parts, and maintain the
-Names vocabulary that powers creator lookup in the upload form.</p>
+accounts, merge duplicate local accounts, correct how a user’s name is divided
+into parts, and maintain the Names vocabulary that powers creator lookup in the
+upload form. For how and when Names index entries are created, updated, merged,
+or flagged, see <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
 <p>All of the operations below are run from the KCWorks UI app container. See
 <a class="reference internal" href="running_commands.html#starting-interactive-shell"><span class="std std-ref">Starting an interactive shell</span></a>
 for how to open a shell session on staging or production.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, InvenioRDM does not expose API endpoints for modifying user data.
+This is to protect users’ data from accidental or malicious misuse. Currently,
+KCWorks holds to this same policy. Hence most user data management operations
+(if they are not available via the Admin UI) must be performed via CLI command.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">&lt;command&gt;</span> <span class="pre">--help</span></code> for the full list of options on any command
 described here. More reference detail is also available in the
 <a class="reference internal" href="../reference/cli_commands.html"><span class="std std-doc">CLI Commands</span></a> page.</p>
 </div>
-<section id="how-do-i-import-a-list-of-users-from-a-kc-csv-file">
-<h2>How do I import a list of users from a KC CSV file?<a class="headerlink" href="#how-do-i-import-a-list-of-users-from-a-kc-csv-file" title="Link to this heading">¶</a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code> to create or update local
-KCWorks accounts from a file of KC usernames. For each username, KCWorks fetches
-the user’s profile from the live Profiles API and provisions or updates the
-matching local account.</p>
-<ol class="arabic simple">
-<li><p>Prepare a CSV file with one KC username per line. A <code class="docutils literal notranslate"><span class="pre">username</span></code> header row is
-optional and is skipped automatically. Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> and blank
-lines are also ignored. If the file has extra columns, only the first column
-(the username) is used.</p></li>
-<li><p>Copy the file into the UI container, or place it somewhere already mounted
-inside the container (for example under <code class="docutils literal notranslate"><span class="pre">/opt/invenio/import_data</span></code>).</p></li>
-<li><p>Run the ingest command:</p></li>
-</ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>ingest-profiles-dump<span class="w"> </span>/path/to/users.csv<span class="w"> </span>--format<span class="w"> </span>usernames
+<section id="how-does-kcworks-sync-user-data-with-kcprofiles">
+<h2>How does KCWorks sync user data with KCProfiles?<a class="headerlink" href="#how-does-kcworks-sync-user-data-with-kcprofiles" title="Link to this heading">¶</a></h2>
+<p>Normally, KCWorks keeps each user’s information (names, email, username,
+affiliations, etc.) up-to-date with any changes made on KCProfiles. When an
+update is made on Profiles, a webhook signal is sent to KCWorks, where the
+user’s data receives the same update. Each user’s data is also freshly checked
+against the Profiles copy each time the user logs into KCWorks. It is also
+possible to force an update manually via the CLI command
+<a class="reference internal" href="#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles"><span class="xref myst">detailed below</span></a>.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-update"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code></span></a>.</p>
+</section>
+<section id="how-do-i-retrieve-a-user-s-details-via-the-cli">
+<h2>How do I retrieve a user’s details via the CLI?<a class="headerlink" href="#how-do-i-retrieve-a-user-s-details-via-the-cli" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code> to print a user’s KCWorks account data,
+including profile fields, KC username, group/role memberships, and
+<code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows (external auth links). Provide exactly one of <code class="docutils literal notranslate"><span class="pre">--user-id</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--email</span></code>, or <code class="docutils literal notranslate"><span class="pre">--kc-id</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--user-id<span class="w"> </span>&lt;user_id&gt;
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--email<span class="w"> </span>user@example.org
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">usernames</span></code> flag is optional when the file is clearly not JSONL;
-format auto-detection will choose <code class="docutils literal notranslate"><span class="pre">usernames</span></code> for a plain username list.</p>
-<p>Useful options:</p>
+<p>The command prints the full user record from the users service, the KC username,
+a list of Flask-Security roles assigned to the account, and any linked
+<code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows (<code class="docutils literal notranslate"><span class="pre">method</span></code>, external <code class="docutils literal notranslate"><span class="pre">id</span></code>, timestamps).</p>
+<p>Related commands for inspecting group membership:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># All groups (roles) in the instance</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>groups
+
+<span class="c1"># Users belonging to a specific group/role</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>group-users<span class="w"> </span>&lt;group_name&gt;
+
+<span class="c1"># Groups belonging to a specific user</span>
+invenio<span class="w"> </span>kcworks-users<span class="w"> </span>user-groups<span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
+</pre></div>
+</div>
+<p>To inventory likely duplicate local accounts before a merge, run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>find-duplicates
+</pre></div>
+</div>
+<p>That command reports pairs/groups that share the same
+<code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> or <code class="docutils literal notranslate"><span class="pre">identifier_orcid</span></code>, or where one account’s
+<code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> matches another’s <code class="docutils literal notranslate"><span class="pre">username</span></code> (exactly or after
+stripping a <code class="docutils literal notranslate"><span class="pre">knowledgeCommons-</span></code> prefix from the username). See
+<a class="reference internal" href="#how-do-i-merge-two-user-accounts"><span class="xref myst">How do I merge two user accounts?</span></a>.</p>
+<p>CLI reference:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">N</span></code> — process only the first <em>N</em> rows (helpful for a trial run).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--rate-per-second</span> <span class="pre">2</span></code> — throttle live Profiles API calls (default <code class="docutils literal notranslate"><span class="pre">2</span></code>; set <code class="docutils literal notranslate"><span class="pre">0</span></code>
-to disable pacing; decimal numbers allow rates of less than 1/second).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code> — enqueue the work as a Celery task and return immediately with
-a task id (recommended for large lists).</p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-read"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-find-duplicates"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-groups"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-group-users"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-user-groups"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></span></a></p></li>
 </ul>
-<p>When the command finishes synchronously, it prints a summary with counts of rows
-seen, processed, skipped, and errors.</p>
 </section>
 <section id="how-do-i-change-a-user-s-name-division">
 <h2>How do I change a user’s name division?<a class="headerlink" href="#how-do-i-change-a-user-s-name-division" title="Link to this heading">¶</a></h2>
-<p>When profile data synced from Knowledge Commons does not divide a user’s name
-correctly—for example, a compound surname or patronymic is split in the wrong
-place—administrators can override the division locally. KCWorks stores these
-overrides in the user’s <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> profile field. The override is used
-when auto-filling creator fields on the upload form and when displaying the
+<p>Sometimes, profile data synced from Knowledge Commons does not divide a user’s
+name correctly—for example, a compound surname or patronymic is split in the
+wrong place. Administrators can override the division locally. KCWorks stores
+these overrides in the user’s <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> profile field. The override is
+used when auto-filling creator fields on the upload form and when displaying the
 user’s name elsewhere in KCWorks.</p>
 <ol class="arabic simple">
 <li><p>Look up the user’s local Invenio user id (see
-<a class="reference internal" href="#how-do-i-retrieve-a-users-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>
-below).</p></li>
+<a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>).</p></li>
 <li><p>To view the current local name parts without making changes, run:</p></li>
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;
@@ -349,17 +390,20 @@ supply are updated; omitted parts are left unchanged:</p></li>
 for descriptions of each.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>After changing name parts, re-sync the user’s Names vocabulary entry so creator
-lookup reflects the new division (see the next section).</p>
+<p>Changing name parts also queues an asynchronous Names vocabulary sync so
+creator lookup reflects the new division. If that task fails or you need to
+re-run it, see
+<a class="reference internal" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data"><span class="xref myst">How do I update a KCWorks user’s Names index entry with new data?</span></a>.</p>
 </div>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-name-parts"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></span></a>.</p>
 </section>
-<section id="how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually">
-<h2>How do I sync a user’s data and Names vocabulary entry manually?<a class="headerlink" href="#how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually" title="Link to this heading">¶</a></h2>
-<p>Two steps are usually involved: pull the latest profile from Knowledge Commons,
-then refresh the local Names vocabulary record from the updated profile.</p>
-<section id="pull-profile-data-from-knowledge-commons">
-<h3>Pull profile data from Knowledge Commons<a class="headerlink" href="#pull-profile-data-from-knowledge-commons" title="Link to this heading">¶</a></h3>
-<p>Identify the user by local user id, KC username, or email address:</p>
+<section id="how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles">
+<h2>How do I sync a KCWorks user’s data with KCProfiles?<a class="headerlink" href="#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles" title="Link to this heading">¶</a></h2>
+<p>Normally, this syncing of user data and happens automatically. In some cases,
+though, it might be necessary to force an update when it might not happen
+naturally. In this case, you can force KCWorks to pull profile data from
+KCProfiles using the <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code> CLI command:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># By local user id</span>
 invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;user_id&gt;
 
@@ -373,11 +417,26 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class
 <p>You can update several users in one invocation by listing multiple ids. ID
 ranges are also accepted (for example <code class="docutils literal notranslate"><span class="pre">100-110</span></code>). The command prints a per-user
 result and a summary when it finishes.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-update"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code></span></a>.</p>
 </section>
-<section id="refresh-the-names-vocabulary-entry">
-<h3>Refresh the Names vocabulary entry<a class="headerlink" href="#refresh-the-names-vocabulary-entry" title="Link to this heading">¶</a></h3>
-<p>Re-derive the user’s Names record from the current local profile (no additional
-Profiles API call):</p>
+<section id="how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data">
+<h2>How do I update a KCWorks user’s Names index entry with new data?<a class="headerlink" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data" title="Link to this heading">¶</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Lifecycle overview (USER vs CITED, draft-save stubs, merge rules):
+<a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
+</div>
+<p>KCWorks maintains a search index (or “vocabulary”) of names–along with the
+individual’s affiliations and identifiers–for quickly populating the names
+search box on the upload form’s “Contributors” fields and elsewhere. Normally,
+updates to a KC user’s data on KCProfiles will automatically propogate to that
+user’s KCWorks account, including their Names vocabulary entry. In some cases,
+though, we might need to force KCWorks to update the user’s Names record from
+the current local profile. (No additional sync with the KCProfiles API is
+performed here, so make sure that the local KCWorks data is current first.)</p>
+<p>From inside the <code class="docutils literal notranslate"><span class="pre">ui</span></code> container, use the <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">sync-now</span></code> command like
+this:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># By local user id</span>
 invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>&lt;user_id&gt;
 
@@ -394,40 +453,292 @@ inline.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>show<span class="w"> </span>&lt;names_pid_or_orcid&gt;
 </pre></div>
 </div>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-names"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code></span></a>
+(<code class="docutils literal notranslate"><span class="pre">sync-now</span></code>, <code class="docutils literal notranslate"><span class="pre">show</span></code>).</p>
 </section>
-</section>
-<section id="how-do-i-retrieve-a-user-s-details-via-the-cli">
-<h2>How do I retrieve a user’s details via the CLI?<a class="headerlink" href="#how-do-i-retrieve-a-user-s-details-via-the-cli" title="Link to this heading">¶</a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code> to print a user’s KCWorks account data,
-including profile fields, KC username, and group/role memberships. Provide
-exactly one of <code class="docutils literal notranslate"><span class="pre">--user-id</span></code>, <code class="docutils literal notranslate"><span class="pre">--email</span></code>, or <code class="docutils literal notranslate"><span class="pre">--kc-id</span></code>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--user-id<span class="w"> </span>&lt;user_id&gt;
-invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--email<span class="w"> </span>user@example.org
-invenio<span class="w"> </span>kcworks-users<span class="w"> </span><span class="nb">read</span><span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
+<section id="how-do-i-transfer-record-ownership">
+<h2>How do I transfer record ownership?<a class="headerlink" href="#how-do-i-transfer-record-ownership" title="Link to this heading">¶</a></h2>
+<p>The KCWorks server-side CLI provides commands to transfer ownership of records
+from one user to another. The <code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> command updates <strong>record
+ownership and access only</strong>. It does not rewrite any “Contributors” entries in
+the metadata of any work records: whether the user’s own records or records
+owned by others. To fix <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> identifiers in creator/contributor
+citations, see
+<a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations"><span class="xref myst">How do I update someone’s username in record citations?</span></a>.
+To combine two local accounts end-to-end, see
+<a class="reference internal" href="#how-do-i-merge-two-user-accounts"><span class="xref myst">How do I merge two user accounts?</span></a>.</p>
+<section id="transfer-ownership-of-one-work">
+<h3>Transfer ownership of one work<a class="headerlink" href="#transfer-ownership-of-one-work" title="Link to this heading">¶</a></h3>
+<p>From inside the KCWorks <code class="docutils literal notranslate"><span class="pre">ui</span></code> app container, run the
+<code class="docutils literal notranslate"><span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code> command. Provide the record UUID and one
+identifier for the new owner:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># By new owner's email (most common)</span>
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-record-owner<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--record-id<span class="w"> </span>&lt;record_uuid&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-owner-email<span class="w"> </span>user@example.org
+
+<span class="c1"># By new owner's local user id</span>
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-record-owner<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--record-id<span class="w"> </span>&lt;record_uuid&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-owner-id<span class="w"> </span>&lt;user_id&gt;
 </pre></div>
 </div>
-<p>The command prints the full user record from the users service, the KC username,
-and a list of Flask-Security roles assigned to the account.</p>
-<p>Related commands for inspecting group membership:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># All groups (roles) in the instance</span>
-invenio<span class="w"> </span>kcworks-users<span class="w"> </span>groups
-
-<span class="c1"># Users belonging to a specific group/role</span>
-invenio<span class="w"> </span>kcworks-users<span class="w"> </span>group-users<span class="w"> </span>&lt;group_name&gt;
-
-<span class="c1"># Groups belonging to a specific user</span>
-invenio<span class="w"> </span>kcworks-users<span class="w"> </span>user-groups<span class="w"> </span>--kc-id<span class="w"> </span>&lt;kc_username&gt;
+<p>On success the command prints the new owner id and updated access grants. If the
+record is already owned by the target user, the command reports that and makes
+no changes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The CLI does not send the “work imported / assigned to you” email that the
+import API can send. You will need to notify the new owner via another means if
+desired.</p>
+</div>
+</section>
+<section id="transfer-all-published-records-for-one-user">
+<h3>Transfer all published records for one user<a class="headerlink" href="#transfer-all-published-records-for-one-user" title="Link to this heading">¶</a></h3>
+<p>You can also transfer all of one user’s owned works to another user. First find
+both users’ local KCWorks numerical ids (NOT their KC usernames) either by
+consulting the Administration &gt; Users page or using the CLI command
+(<a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>).
+Then run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-record-owner<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--old-owner-id<span class="w"> </span>&lt;current_owner_user_id&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-owner-id<span class="w"> </span>&lt;new_owner_user_id&gt;
 </pre></div>
 </div>
+<p>This finds every <strong>published</strong> record owned by the first user and assigns
+ownership to the second. Unpublished drafts are not included.</p>
+</section>
+<section id="related-operations">
+<h3>Related operations<a class="headerlink" href="#related-operations" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Org collection membership</strong> is separate from ownership. To add a user’s
+works to an org community without changing who owns them, see
+<a class="reference internal" href="organization_management.html"><span class="std std-doc">Organization Management</span></a>.</p></li>
+<li><p><strong>Blocking</strong> a user soft-deletes their published works and does not transfer
+ownership. Transfer or otherwise disposition works <em>before</em> blocking when the
+content should remain visible under another account.</p></li>
+<li><p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-change-record-owner"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code></span></a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="how-do-i-merge-two-user-accounts">
+<h2>How do I merge two user accounts?<a class="headerlink" href="#how-do-i-merge-two-user-accounts" title="Link to this heading">¶</a></h2>
+<p>Sometimes one person may end up with <strong>two local KCWorks user ids</strong>. Normally
+this will mean they also have two KCProfiles accounts, although duplicate
+KCWorks accounts can also occasionally result from problems linking a local
+account with the correct Knowledge Commons login. KCWorks does not merge
+duplicate accounts automatically, but a manual merge can be performed via a CLI
+command.</p>
+<p>A full account merge involves two distinct operations, although they are both
+triggered in one command:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#how-do-i-transfer-record-ownership"><span class="xref myst">transferring ownership</span></a> of all work
+records to the canonical account;</p></li>
+<li><p><a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations"><span class="xref myst">updating the user’s <code class="docutils literal notranslate"><span class="pre">kc_username</span></code></span></a>
+ids in <strong>all their “Contributor” citations</strong> in work records with the
+canonical account’s username.</p></li>
+</ol>
+<p>You can also run the two underlying commands separately when you need only one
+part of the merge; see the linked sections above.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently the account merge command does <em>not</em> include transferring ownership of any KCWorks collections (communities). The user may, however, do this manually in the collection’s “Members” tab. Likewise, the retired account’s collection memberships and roles do not transfer, although they can be manually re-invited where necessary. The exception is with KCWorks collections linked to a KC Group of which the canonical user account is a member in Groups. If the canonical account is given membership in the linked KC Group, they will automatically also receive membership in the corresponding KCWorks collection with the appropriate permission level.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A Profiles username change on a <strong>single</strong> account is a different problem; see
+<a class="reference internal" href="#how-do-i-change-someone-s-username"><span class="xref myst">How do I change someone’s username?</span></a>. That
+operation involves just one local user id. It does <strong>not</strong> move ownership from
+one local account to another.</p>
+</div>
+<section id="before-you-start">
+<h3>Before you start<a class="headerlink" href="#before-you-start" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Decide which local account is <strong>canonical</strong> and which is the <strong>duplicate</strong> to
+retire. Use
+<a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>
+to compare user ids, KC usernames, and OAuth linkage. To scan the whole
+database for likely duplicates first, run
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code> (see
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-find-duplicates"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></span></a>).</p></li>
+<li><p>If you need an inventory of the duplicate’s works, you can use:</p>
+<ul class="simple">
+<li><p>the <strong>Records</strong> tab in the admin interface to search for the duplicate
+user’s works (using <code class="docutils literal notranslate"><span class="pre">parent.access.owned_by:&lt;duplicate_user_id&gt;</span></code>);</p></li>
+<li><p>the CLI command
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span> <span class="pre">--owner-id</span> <span class="pre">&lt;duplicate_user_id&gt;</span></code> to
+export an inventory; record UUIDs appear in the archive metadata JSON. (See
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-export-records"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></span></a>).</p></li>
+</ul>
+</li>
+<li><p>Plan for <strong>both</strong> steps below: ownership transfer alone does not rewrite
+creator/contributor citations, and updating citations alone does not change
+who owns a work.</p></li>
+</ol>
+</section>
+<section id="run-the-migrate-user-command">
+<h3>Run the <code class="docutils literal notranslate"><span class="pre">migrate_user</span></code> command<a class="headerlink" href="#run-the-migrate-user-command" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">migrate_user</span></code> command performs the two merge steps in order. It
+<a class="reference internal" href="#how-do-i-transfer-record-ownership"><span class="xref myst">transfers record ownership</span></a> for all of the
+duplicate’s owned work records to the canonical account. Then
+<a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations"><span class="xref myst">updates contributor citations</span></a>
+from the duplicate’s KC username to the canonical one.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>migrate_user<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--old-owner-id<span class="w"> </span>&lt;duplicate_user_id&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-owner-id<span class="w"> </span>&lt;canonical_user_id&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--old-kc-username<span class="w"> </span>&lt;duplicate_kc_username&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-kc-username<span class="w"> </span>&lt;canonical_kc_username&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both the users’ internal KCWorks numerical ids <em>and</em> both of their KC usernames
+must be provided. This is intended to help guard against accidents!</p>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> to preview both steps without writing.</p>
+</section>
+<section id="after-the-merge">
+<h3>After the merge<a class="headerlink" href="#after-the-merge" title="Link to this heading">¶</a></h3>
+<p>Deactivate or block the duplicate account following the process outlined in
+<a class="reference internal" href="moderation.html"><span class="std std-doc">Content Moderation</span></a> if it should no longer be used.</p>
+<p>CLI reference:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-migrate-user"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">migrate_user</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-export-records"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></span></a>
+(inventory of the duplicate’s works)</p></li>
+</ul>
+</section>
+</section>
+<section id="how-do-i-change-someone-s-username">
+<h2>How do I change someone’s username?<a class="headerlink" href="#how-do-i-change-someone-s-username" title="Link to this heading">¶</a></h2>
+<p>KC member usernames are managed centrally on <strong>Knowledge Commons Profiles</strong>
+(KCProfiles). KCWorks does not expose an administrator command to rename a user
+locally. When a username is changed on Profiles, KCWorks picks up the new value
+automatically and keeps the <strong>same local account</strong>. (The user’s internal numeric
+id in KCWorks does not change.) After the profile update commits, KCWorks stores
+the new value in the user’s <code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> profile field.</p>
+<section id="kc-username-in-creator-and-contributor-metadata">
+<h3>KC username in creator and contributor metadata<a class="headerlink" href="#kc-username-in-creator-and-contributor-metadata" title="Link to this heading">¶</a></h3>
+<p>When the stored KC username changes, KCWorks also rewrites <strong>creator and
+contributor metadata</strong> on that user’s existing works, so that profile links and
+keep resolving. A background task scans published records and drafts for ones
+whose <code class="docutils literal notranslate"><span class="pre">metadata.creators</span></code> or <code class="docutils literal notranslate"><span class="pre">metadata.contributors</span></code> entries include a
+<code class="docutils literal notranslate"><span class="pre">kc_username</span></code> personal identifier with and the <strong>old</strong> username. These may be
+owned by the user, or they may be records owned by someone else that simply list
+the user as a contributor. It then replaces that <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> id with the new
+one. The user’s <strong>Names</strong> index entry is also refreshed from the updated
+profile.</p>
+<p>Works that cite the person only by email, ORCID, or another identifier—without a
+<code class="docutils literal notranslate"><span class="pre">kc_username</span></code> block—are not rewritten. Neither are works the user owns but whose
+creator metadata never carried their KC username.</p>
+</section>
+<section id="record-ownership">
+<h3>Record ownership<a class="headerlink" href="#record-ownership" title="Link to this heading">¶</a></h3>
+<p>A username change does <strong>not</strong> affect <strong>record ownership</strong>. Ownership in KCWorks
+is tied to the user’s internal numeric id (<code class="docutils literal notranslate"><span class="pre">parent.access.owned_by</span></code>)–which in
+turn is linked to a persistent KCProfiles account–not to their username. As
+long as the person continues under the <strong>same account</strong> with the new username,
+they still own the same works and retain the same access grants.</p>
+<p>This is different from
+<a class="reference internal" href="#how-do-i-merge-two-user-accounts"><span class="xref myst">merging two user accounts</span></a>, where two
+separate user ids must be consolidated.</p>
+</section>
+<section id="when-to-intervene-manually">
+<h3>When to intervene manually<a class="headerlink" href="#when-to-intervene-manually" title="Link to this heading">¶</a></h3>
+<p>If Profiles already shows the new username but KCWorks still has the old one,
+pull the profile again:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;user_id&gt;
+<span class="c1"># or</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;kc_username&gt;<span class="w"> </span>--by-username
+</pre></div>
+</div>
+<p>The record-metadata rewrite runs asynchronously after the profile update. Watch
+worker logs for <code class="docutils literal notranslate"><span class="pre">rewrite_records_for_kc_username_change</span></code> if you need to confirm
+completion.</p>
+<p>If creator/contributor fields still show the old username after sync, or you
+need to rewrite citations between two usernames on <strong>different</strong> local accounts,
+use
+<a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations"><span class="xref myst">How do I update someone’s username in record citations?</span></a>.</p>
+<p>If the old and new usernames each have a <strong>separate KCProfiles account</strong>, see
+the section above
+<a class="reference internal" href="#how-do-i-merge-two-user-accounts"><span class="xref myst">How do I merge two user accounts?</span></a>.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-update"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code></span></a>.</p>
+</section>
+</section>
+<section id="how-do-i-update-someone-s-username-in-record-citations">
+<h2>How do I update someone’s username in record citations?<a class="headerlink" href="#how-do-i-update-someone-s-username-in-record-citations" title="Link to this heading">¶</a></h2>
+<p>In some situations, as when two accounts need to be merged, a user’s identifiers
+might need to be updated in record metadata. You can update any <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>
+identifier in a <strong>creator or contributor</strong> entry on a record with a new value
+using the <code class="docutils literal notranslate"><span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code> command.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>&lt;old_kc_username&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-n<span class="w"> </span>&lt;new_kc_username&gt;
+</pre></div>
+</div>
+<p>Published matches are edited and re-published; drafts are patched in place. Only
+personal creator/contributor entries with <code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">kc_username</span></code> are touched.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> first to list matching record IDs without writing. Add
+<code class="docutils literal notranslate"><span class="pre">--background</span></code> to queue the rewrite on Celery for large corpora.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are merging two user accounts, consider using the <code class="docutils literal notranslate"><span class="pre">migrate_user</span></code> command
+instead. It runs this step automatically. See
+<a class="reference internal" href="#how-do-i-merge-two-user-accounts"><span class="xref myst">How do I merge two user accounts?</span></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command does <strong>not</strong> change record ownership, delete a user account, or prune
+Names entries—the old username may still belong to a separate valid local account.</p>
+</div>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-update-contributors-username"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code></span></a>.</p>
 </section>
 <section id="how-do-i-backfill-or-refresh-the-names-vocabulary">
 <h2>How do I backfill or refresh the Names vocabulary?<a class="headerlink" href="#how-do-i-backfill-or-refresh-the-names-vocabulary" title="Link to this heading">¶</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a> for when automatic sync,
+draft-save CITED stubs, and ORCID merge apply versus these bulk commands.</p>
+</div>
 <p>The Names vocabulary is an index of user identities used for user name searches,
 as in the “contributor” fields on the upload form. It includes names and
 metadata for every KCWorks user, along with the people listed in the
 creator/contributor fields of work records who have an ORCID identifier.</p>
 <p>Most day-to-day updates happen automatically when user profiles change, but
 administrators sometimes need to run a bulk backfill or refresh.</p>
+<section id="backfill-kc-user-names-entries-for-existing-accounts">
+<h3>Backfill KC-user Names entries for existing accounts<a class="headerlink" href="#backfill-kc-user-names-entries-for-existing-accounts" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">sync-now</span> <span class="pre">--all</span></code> walks every local KCWorks user and
+mirrors eligible accounts into the Names vocabulary from their <strong>current local
+profile</strong> (no Profiles API calls). This is the right tool when pre-existing
+accounts were provisioned before Names sync existed, or when username-list
+ingest skipped them because the local account already existed.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--missing-only</span></code> to backfill only users who do not yet have a Names record
+at their KC username PID. The command is idempotent: re-running without
+<code class="docutils literal notranslate"><span class="pre">--missing-only</span></code> refreshes every eligible user’s Names entry from local profile
+data.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run — count eligible users without writing</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>--all<span class="w"> </span>--missing-only<span class="w"> </span>--dry-run
+
+<span class="c1"># Backfill only missing Names entries</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>--all<span class="w"> </span>--missing-only
+
+<span class="c1"># Refresh every eligible user's Names entry from local profile data</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>--all
+
+<span class="c1"># Trial run on the first 100 eligible users</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>--all<span class="w"> </span>--missing-only<span class="w"> </span>--limit<span class="w"> </span><span class="m">100</span>
+</pre></div>
+</div>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--background</span></code> to enqueue the work as a single Celery task (recommended for
+large instances). A worker must be running. Each eligible user is synced via
+<code class="docutils literal notranslate"><span class="pre">upsert_name_for_user</span></code>, the same service method used by <code class="docutils literal notranslate"><span class="pre">sync_user_to_names</span></code>
+elsewhere.</p>
+</section>
 <section id="backfill-cited-names-from-published-records">
 <h3>Backfill cited names from published records<a class="headerlink" href="#backfill-cited-names-from-published-records" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">backfill-cited-from-records</span></code> scans published work
@@ -457,20 +768,83 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
 <h3>Refresh Names entries for specific users<a class="headerlink" href="#refresh-names-entries-for-specific-users" title="Link to this heading">¶</a></h3>
 <p>To refresh one or more users’ Names records from their current local profiles
 without scanning all published records, use <code class="docutils literal notranslate"><span class="pre">sync-now</span></code> (see
-<a class="reference internal" href="#how-do-i-sync-a-users-data-and-names-vocabulary-entry-manually"><span class="xref myst">How do I sync a user’s data and Names vocabulary entry manually?</span></a>).</p>
+<a class="reference internal" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data"><span class="xref myst">How do I update a KCWorks user’s Names index entry with new data?</span></a>).</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-names"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code></span></a>
+(<code class="docutils literal notranslate"><span class="pre">sync-now</span></code>, <code class="docutils literal notranslate"><span class="pre">backfill-cited-from-records</span></code>).</p>
 </section>
-<section id="consolidate-orcid-duplicates-before-review">
-<h3>Consolidate ORCID duplicates before review<a class="headerlink" href="#consolidate-orcid-duplicates-before-review" title="Link to this heading">¶</a></h3>
-<p>If multiple Names records share the same ORCID, run the auto-merge step before
-reviewing remaining duplicates:</p>
+</section>
+<section id="how-do-i-check-for-duplicate-names-index-entries">
+<h2>How do I check for duplicate Names index entries?<a class="headerlink" href="#how-do-i-check-for-duplicate-names-index-entries" title="Link to this heading">¶</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="names_vocabulary.html#when-are-pairs-flagged-for-review"><span class="std std-ref">Names Vocabulary Lifecycle — When are pairs flagged for review?</span></a>.</p>
+</div>
+<p>Names index entries may be drawn from two different sources: KC user accounts
+and ORCID data, usually gathered when an ORCID-supplied name is selected as a
+contributor to a work. Alternately, someone might be included as a contributor
+using different forms of one’s name. These situations can lead to duplicate
+index entries for the same person.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Corpus-wide ORCID merge and soft-duplicate scanning run on a <strong>weekly
+schedule</strong> once the Names jobs are registered (see
+<a class="reference internal" href="names_vocabulary.html#scheduled-jobs-invenio-jobs"><span class="std std-ref">Names Vocabulary Lifecycle — scheduled jobs</span></a>).
+Opportunistic ORCID merges also happen during normal USER/CITED upserts.
+Reviewing and dismissing soft-duplicate pairs remains a <strong>manual</strong> admin step
+(<code class="docutils literal notranslate"><span class="pre">list-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">dismiss-duplicate</span></code>, …).</p>
+</div>
+<p>If multiple Names records share the same ORCID, merge them with this command
+(running inside the app <code class="docutils literal notranslate"><span class="pre">ui</span></code> container):</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>merge-orcid-duplicates
 </pre></div>
 </div>
-<p>Records that cannot be auto-merged (for example, when more than one USER record
-shares an ORCID) are left for manual review via
-<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">find-duplicates</span></code> and
-<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">list-duplicates</span></code>.</p>
+<p>To scan for Names index entries with similar names even without a shared ORCID
+(and mark them for manual review), run
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">find-duplicates</span></code> and then
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">list-duplicates</span></code>. Re-run <code class="docutils literal notranslate"><span class="pre">list-duplicates</span></code> any time to
+see currently open candidates.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-names"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code></span></a>
+(<code class="docutils literal notranslate"><span class="pre">merge-orcid-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">find-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">list-duplicates</span></code>).</p>
 </section>
+<section id="how-do-i-import-a-list-of-existing-kc-users-from-a-csv-or-jsonl-file">
+<h2>How do I import a list of existing KC users from a CSV or JSONL file?<a class="headerlink" href="#how-do-i-import-a-list-of-existing-kc-users-from-a-csv-or-jsonl-file" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code> to create or update local
+KCWorks accounts from a file of KC usernames. For each username, KCWorks fetches
+the user’s profile from the live Profiles API and provisions or updates the
+matching local account.</p>
+<p>For the import you will need either:</p>
+<ol class="arabic simple">
+<li><p>A CSV file with one KC username per line. A <code class="docutils literal notranslate"><span class="pre">username</span></code> header row is optional
+and is skipped automatically. Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> and blank lines are
+also ignored. If the file has extra columns, only the first column (the
+username) is used.</p></li>
+<li><p>A JSONL file with KC profiles data in the same shape that would be returned
+by a <code class="docutils literal notranslate"><span class="pre">members</span></code> endpoint API request.</p></li>
+</ol>
+<p>In either case, copy the file into the <code class="docutils literal notranslate"><span class="pre">ui</span></code> container, or place it somewhere
+already mounted inside the container (for example under
+<code class="docutils literal notranslate"><span class="pre">/opt/invenio/import_data</span></code>).</p>
+<p>Then run the ingest command inside that same container:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>ingest-profiles-dump<span class="w"> </span>/path/to/users.csv
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">usernames</span></code> flag may be used to clearly specify that the data
+should be treated as a csv, not as JSONL. But format auto-detection will choose
+<code class="docutils literal notranslate"><span class="pre">usernames</span></code> for a plain username list.</p>
+<p>Useful options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span> <span class="pre">N</span></code> — process only the first <em>N</em> rows (helpful for a trial run).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--rate-per-second</span> <span class="pre">2</span></code> — throttle live Profiles API calls (default <code class="docutils literal notranslate"><span class="pre">2</span></code>; set <code class="docutils literal notranslate"><span class="pre">0</span></code>
+to disable pacing; decimal numbers allow rates of less than 1/second).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code> — enqueue the work as a Celery task and return immediately with
+a task id (recommended for large lists).</p></li>
+</ul>
+<p>When the command finishes synchronously, it prints a summary with counts of rows
+seen, processed, skipped, and errors.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-ingest-profiles-dump"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code></span></a>.</p>
 </section>
 </section>
 
@@ -488,14 +862,14 @@ shares an ORCID) are left for manual review via
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="file_storage.html">
+          <a class="prev-page" href="names_vocabulary.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">File Storage Administration</div>
+                <div class="title">Names Vocabulary Lifecycle</div>
                 
               </div>
             </a>
@@ -530,20 +904,38 @@ shares an ORCID) are left for manual review via
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">User Data Management</a><ul>
-<li><a class="reference internal" href="#how-do-i-import-a-list-of-users-from-a-kc-csv-file">How do I import a list of users from a KC CSV file?</a></li>
+<li><a class="reference internal" href="#how-does-kcworks-sync-user-data-with-kcprofiles">How does KCWorks sync user data with KCProfiles?</a></li>
+<li><a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli">How do I retrieve a user’s details via the CLI?</a></li>
 <li><a class="reference internal" href="#how-do-i-change-a-user-s-name-division">How do I change a user’s name division?</a></li>
-<li><a class="reference internal" href="#how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually">How do I sync a user’s data and Names vocabulary entry manually?</a><ul>
-<li><a class="reference internal" href="#pull-profile-data-from-knowledge-commons">Pull profile data from Knowledge Commons</a></li>
-<li><a class="reference internal" href="#refresh-the-names-vocabulary-entry">Refresh the Names vocabulary entry</a></li>
+<li><a class="reference internal" href="#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles">How do I sync a KCWorks user’s data with KCProfiles?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data">How do I update a KCWorks user’s Names index entry with new data?</a></li>
+<li><a class="reference internal" href="#how-do-i-transfer-record-ownership">How do I transfer record ownership?</a><ul>
+<li><a class="reference internal" href="#transfer-ownership-of-one-work">Transfer ownership of one work</a></li>
+<li><a class="reference internal" href="#transfer-all-published-records-for-one-user">Transfer all published records for one user</a></li>
+<li><a class="reference internal" href="#related-operations">Related operations</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli">How do I retrieve a user’s details via the CLI?</a></li>
+<li><a class="reference internal" href="#how-do-i-merge-two-user-accounts">How do I merge two user accounts?</a><ul>
+<li><a class="reference internal" href="#before-you-start">Before you start</a></li>
+<li><a class="reference internal" href="#run-the-migrate-user-command">Run the <code class="docutils literal notranslate"><span class="pre">migrate_user</span></code> command</a></li>
+<li><a class="reference internal" href="#after-the-merge">After the merge</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-do-i-change-someone-s-username">How do I change someone’s username?</a><ul>
+<li><a class="reference internal" href="#kc-username-in-creator-and-contributor-metadata">KC username in creator and contributor metadata</a></li>
+<li><a class="reference internal" href="#record-ownership">Record ownership</a></li>
+<li><a class="reference internal" href="#when-to-intervene-manually">When to intervene manually</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations">How do I update someone’s username in record citations?</a></li>
 <li><a class="reference internal" href="#how-do-i-backfill-or-refresh-the-names-vocabulary">How do I backfill or refresh the Names vocabulary?</a><ul>
+<li><a class="reference internal" href="#backfill-kc-user-names-entries-for-existing-accounts">Backfill KC-user Names entries for existing accounts</a></li>
 <li><a class="reference internal" href="#backfill-cited-names-from-published-records">Backfill cited names from published records</a></li>
 <li><a class="reference internal" href="#refresh-names-entries-for-specific-users">Refresh Names entries for specific users</a></li>
-<li><a class="reference internal" href="#consolidate-orcid-duplicates-before-review">Consolidate ORCID duplicates before review</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#how-do-i-check-for-duplicate-names-index-entries">How do I check for duplicate Names index entries?</a></li>
+<li><a class="reference internal" href="#how-do-i-import-a-list-of-existing-kc-users-from-a-csv-or-jsonl-file">How do I import a list of existing KC users from a CSV or JSONL file?</a></li>
 </ul>
 </li>
 </ul>
@@ -555,7 +947,7 @@ shares an ORCID) are left for manual review via
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

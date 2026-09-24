@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Development Roadmap" href="roadmap.html"><link rel="prev" title="Feature Highlights" href="feature_highlights.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changes - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>Changes - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/i18n.html">I18n</a></li>
@@ -278,40 +287,166 @@
 <h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 </section>
 <section id="id1">
-<h2>0.8.2 (2026-06-19)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>This 1.0.0 release represents not only an upgrade of our underlying InvenioRDM
+platform, but a major step forward in features, stability, and security. These
+enhancements include:</p>
 <ul class="simple">
-<li><p>Docs</p>
+<li><p>Upgrade from InvenioRDM v12 to v13</p>
 <ul>
-<li><p>Documentation for admins on executing cli commands via ssh and s3 bucket
-commands.</p></li>
-<li><p>Documentation on required and recommended metadata fields in the KCWorks
-schema</p></li>
+<li><p>OpenSearch bumped for v13</p></li>
+<li><p>New v13 jobs / scheduler service</p></li>
 </ul>
 </li>
-<li><p>IDMS</p>
+<li><p>Upload form upgrades</p>
 <ul>
-<li><p>Automatically adds a user’s newly associated login methods from Profiles
-when they are made (via “associated” webhook messages).</p></li>
+<li><p>Full form layout and workflow overhaul, allowing clearer and faster
+completion of required fields</p></li>
+<li><p>Better layout adaptation for many resource types</p></li>
+<li><p>Sharing UI to set and configure access grants to drafts or restricted
+records</p></li>
+<li><p>UI to surface hidden field values and errors (when a field isn’t shown on
+the current resource type)</p></li>
+<li><p>Uppy file uploader with better multi-file handling, modal confirmation to
+avoid abandoned uploads</p></li>
+<li><p>upload filename sanitization</p></li>
+<li><p>Contributor names typeahead and autofill from ORCID and a local names index
+(client ORCID API)</p></li>
+<li><p>Separation of primary and secondary contributors</p></li>
+<li><p>UI for users to fix their own display name in-place (and remember the fix)</p></li>
+<li><p>new fields</p>
+<ul>
+<li><p>funding (with orgs from ROR, awards from OpenAIRE and CORDIS)</p></li>
+<li><p>copyright</p></li>
 </ul>
 </li>
-<li><p>Bug fixes</p>
-<ul>
-<li><p>Fixes to several outdated tests.</p></li>
-<li><p>Fix to communities service component registration in exp.py.</p></li>
-<li><p>Fix to community member record assignment service (removing obsolete
-reliance on oauth config).</p></li>
-<li><p>Reduce log noise from the <code class="docutils literal notranslate"><span class="pre">group-collections</span> <span class="pre">assign-org-records</span></code> command
-(per-row progress logged at info instead of error).</p></li>
-<li><p>Improvements to test fixtures, including fixture to skip sso check and bug
-fixes to fixtures for admin roles.</p></li>
-<li><p>User data sync fixes to prevent multiple user or group data updates from
-colliding.</p></li>
+<li><p>Validation improvements (e.g., now allows multiple URLs in identifiers
+field)</p></li>
+<li><p>Clearer error and submission result messaging</p></li>
+<li><p>many a11y improvements</p></li>
+<li><p>Improved responsive adaptation to tablet and mobile screens</p></li>
+<li><p>Improved layout architecture (e.g., sticky footer, footer subsection
+nesting)</p></li>
 </ul>
 </li>
-<li><p>Testing</p>
+<li><p>Record detail page</p>
 <ul>
-<li><p>Tests for new bug fixes and features</p></li>
-<li><p>Updates to the shared test fixtures</p></li>
+<li><p>more powerful share controls with individual and group access grants</p></li>
+<li><p>access-request UI where files are restricted</p></li>
+<li><p>primary / secondary contributors distinguished</p></li>
+<li><p>moderation controls for administrators</p></li>
+<li><p>file selector on content-tab preview</p></li>
+<li><p>metadata-only records get a prominent content URL</p></li>
+<li><p>resource-type label links to faceted search</p></li>
+<li><p>richer embedded metadata (with FAIR signposting level 2)</p></li>
+<li><p>subjects sidebar height-constrained/expandable</p></li>
+<li><p>html rendered in descriptions field</p></li>
+<li><p>PDF previewer returned to the upstream pdf.js viewer (no longer custom js)
+for maintainability</p></li>
+</ul>
+</li>
+<li><p>Stats-dashboard and template tweaks</p></li>
+<li><p>Communities / collections improvements</p>
+<ul>
+<li><p>removal of many communities UI overrides for better maintainability</p></li>
+<li><p>shift to using translations for “community” -&gt; “collection” language
+override</p></li>
+<li><p>nested subcommunities (unrestricted nesting levels)</p></li>
+<li><p>subcommunity browse and search pages</p></li>
+<li><p>CLI and API to set parent-child relationships</p></li>
+<li><p>child collection records included in all ancestor collections (not just
+immediate parents)</p></li>
+<li><p>custom community themes (colors/fonts settings UI)</p></li>
+<li><p>improved default collection theming</p></li>
+<li><p>default geopattern logos now generated and saved on the back end</p></li>
+<li><p>community record mapping updates for theme (and related) fields, with new
+CLI to put mappings Search</p></li>
+<li><p>OpenSearch upgrade (above)</p></li>
+<li><p>full search-path aliasing with multi-path support</p></li>
+<li><p>default search fields/weights fixed (now includes keywords, etc.)</p></li>
+<li><p>facet “clear” controls restored</p></li>
+<li><p>pagination theming fixes</p></li>
+</ul>
+</li>
+<li><p>Vocabularies &amp; scheduled jobs</p>
+<ul>
+<li><p>automated ROR funders and affiliations updates</p></li>
+<li><p>automated OpenAIRE awards ingest (jobs + validation/filename fixes) and
+expanded OpenAIRE funder coverage</p></li>
+<li><p>automated FAST scheduled subject updates + upsert tooling</p></li>
+<li><p>improved Homosaurus import utilities</p></li>
+<li><p>Homosaurus vocabulary updated to v5</p></li>
+<li><p>large resource-types expansion/realignment (OpenAIRE/COAR/schema.org
+mappings)</p></li>
+<li><p>new resource types (journal, proceedings paper, proposal, musical notation)</p></li>
+</ul>
+</li>
+<li><p>Names vocabulary &amp; user data</p>
+<ul>
+<li><p>automated Names record creation/update</p></li>
+<li><p>CLI utilities to initialize and backfill Names from KCProfiles</p></li>
+<li><p>Names database enriched from contributors on work records (based on ORCID
+data)</p></li>
+<li><p>automated jobs to maintain Names index</p></li>
+<li><p>tools to find and merge duplicates</p></li>
+</ul>
+</li>
+<li><p>User account security &amp; applications settings exposed to all users</p>
+<ul>
+<li><p>allowing self-service API token generation</p></li>
+</ul>
+</li>
+<li><p>Security improvements</p>
+<ul>
+<li><p>All testing (jest and pytest/ty/ruff) moved inside a dedicated, sandboxed
+test-runner container</p></li>
+<li><p>secrets moved out of local .env files and into AWS Secrets Manager</p></li>
+<li><p>CI permission blocks and pinned action SHAs</p></li>
+</ul>
+</li>
+<li><p>User management tools</p>
+<ul>
+<li><p>update user’s contributor data on works when username changes</p></li>
+<li><p>bulk owner / citation migration CLI</p></li>
+<li><p>account merge / migration tools</p></li>
+</ul>
+</li>
+<li><p>Import / tooling packages</p>
+<ul>
+<li><p>record importer fixes</p></li>
+<li><p>stronger idempotent update of existing records</p></li>
+<li><p>multi-collection import client (now its own installable package)</p></li>
+</ul>
+</li>
+<li><p>Knowledge-base sync submodule for docs sections</p></li>
+<li><p>Notifications &amp; exports</p>
+<ul>
+<li><p>Unread message notification improvements (dismiss from message list!)</p></li>
+<li><p>BibTeX export fixes for core KCWorks resource types</p></li>
+</ul>
+</li>
+<li><p>Testing / ops</p>
+<ul>
+<li><p>JS lint/test hardening</p></li>
+<li><p>All testing (jest and pytest/ty/ruff) moved inside a dedicated, sandboxed
+test-runner container</p></li>
+<li><p>Fixture overhaul for v13 and search_clear/vocab index retention</p></li>
+<li><p>SSO bypass fixtures</p></li>
+<li><p>admin/superuser fixture fixes.</p></li>
+<li><p>Port-aware test runner</p></li>
+<li><p>Secrets removed completely from testing environment</p></li>
+<li><p>Unified check_health for local/container/EC2.</p></li>
+</ul>
+</li>
+<li><p>Project architecture improvements</p>
+<ul>
+<li><p>Frontend build architecture massively sped up by moving from npm → pnpm,
+webpack → rspack</p></li>
+<li><p>Corepack/pnpm pinning for CI security</p></li>
+<li><p>Build-script improvements</p></li>
+<li><p>Docker/compose multi-stage build with thinner and more secure production
+images</p></li>
+<li><p>Config modularization</p></li>
 </ul>
 </li>
 </ul>
@@ -1236,7 +1371,7 @@ upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
 <li><a class="reference internal" href="#unreleased">Unreleased</a></li>
-<li><a class="reference internal" href="#id1">0.8.2 (2026-06-19)</a></li>
+<li><a class="reference internal" href="#id1">1.0.0 (2026-09-24)</a></li>
 <li><a class="reference internal" href="#id2">0.8.1 (2026-06-09)</a></li>
 <li><a class="reference internal" href="#id3">0.8.0 (2026-05-19)</a></li>
 <li><a class="reference internal" href="#id4">0.7.3 (2026-02-12)</a></li>
@@ -1271,7 +1406,7 @@ upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="_static/documentation_options.js?v=8d563738"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

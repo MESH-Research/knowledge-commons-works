@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="How Tos" href="how_tos.html"><link rel="prev" title="Development Workflow" href="workflow.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Automated Testing - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>Automated Testing - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="i18n.html">I18n</a></li>
@@ -288,6 +297,15 @@
 <p class="admonition-title">Warning</p>
 <p>Ensure that you have <strong>stopped</strong> the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.</p>
 </div>
+<section id="local-development-vs-ci-mode">
+<h3>Local development vs CI mode<a class="headerlink" href="#local-development-vs-ci-mode" title="Link to this heading">¶</a></h3>
+<p>The test runner detects whether it is running in a CI environment (GitHub Actions) or locally:</p>
+<ul class="simple">
+<li><p><strong>Local</strong>: Runs pytest (and optional Jest with <code class="docutils literal notranslate"><span class="pre">-J</span></code>) inside the <code class="docutils literal notranslate"><span class="pre">test-runner</span></code> container connected to docker-services-cli services for security (prevents malicious dependency code from accessing host credentials)</p></li>
+<li><p><strong>CI</strong>: Uses the current behavior (pytest runs directly on the Actions runner; GitHub Actions provides isolation via ephemeral machines)</p></li>
+</ul>
+<p>The detection is done by checking if the <code class="docutils literal notranslate"><span class="pre">$CI</span></code> environment variable is set. This variable is automatically set by GitHub Actions and can be manually set for local testing of CI mode.</p>
+</section>
 <section id="running-specific-tests">
 <h3>Running specific tests<a class="headerlink" href="#running-specific-tests" title="Link to this heading">¶</a></h3>
 <p>To run a specific test file, simply add the relative file path to the command, e.g.,</p>
@@ -317,11 +335,23 @@
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--skip-translations</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">-S</span></code></p></td>
-<td><p>Skip the translation extraction, update, and compilation steps.</p></td>
+<td><p>Skip the translation extraction, update, and compilation steps (and Sphinx docs).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--keep-services</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">-K</span></code></p></td>
 <td><p>Keep the docker-services-cli containers running after the tests are run.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--js</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-J</span></code></p></td>
+<td><p>Also run the root Jest suite (<code class="docutils literal notranslate"><span class="pre">pnpm</span> <span class="pre">test</span></code>) inside the test-runner before pytest.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--js-only</span></code></p></td>
+<td><p></p></td>
+<td><p>Run only Jest in the test-runner: no docker-services-cli, no translations/docs, no pytest. Extra args are passed to Jest.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--build</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-B</span></code></p></td>
+<td><p>Rebuild the test-runner image before running.</p></td>
 </tr>
 </tbody>
 </table>
@@ -358,7 +388,45 @@
 <section id="test-configuration">
 <h3>Test configuration<a class="headerlink" href="#test-configuration" title="Link to this heading">¶</a></h3>
 <p>The top-level <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file. Some of these variables are then overridden in the <code class="docutils literal notranslate"><span class="pre">test_config</span></code> dictionary that <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> passes to the app instance.</p>
-<p>The test environment does not use the top-level <code class="docutils literal notranslate"><span class="pre">.env</span></code> file that is used in the development environment. Where environment variables are needed, these are provided in a dedicated environment file <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> that is used to configure the test environment in the test runner script <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code>.</p>
+<p>The test environment does not use the top-level <code class="docutils literal notranslate"><span class="pre">.env</span></code> file that is used in the development environment. Instead, <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code> layers two environment files into the <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> invocation that launches pytest:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.</p></li>
+<li><p>A dynamically generated <code class="docutils literal notranslate"><span class="pre">/tmp/kcworks-tests-secrets.env</span></code> (mode <code class="docutils literal notranslate"><span class="pre">600</span></code>, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded <strong>after</strong> <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code>, so its values override any matching keys in <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code>.</p></li>
+</ol>
+<p>The secret file is produced by <code class="docutils literal notranslate"><span class="pre">scripts/kcworks_test_secrets.sh</span></code>, which mirrors the production-style flow used by <code class="docutils literal notranslate"><span class="pre">kcworks-startup.sh</span></code>. By default it pulls a small, defined slice of keys from the <code class="docutils literal notranslate"><span class="pre">staging/kcworks</span></code> secret:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_USERNAME</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_API_KEY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INVENIO_ADMIN_EMAIL</span></code></p></li>
+</ul>
+<p>The defaults can be overridden without editing the script:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_SECRET_ID</span></code> (or <code class="docutils literal notranslate"><span class="pre">--secret-id</span></code>): override the AWS Secrets Manager secret id.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_KEYS</span></code> (or <code class="docutils literal notranslate"><span class="pre">--keys</span></code>): comma-separated list of keys to pull from the secret.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--region</span></code>: forwarded to <code class="docutils literal notranslate"><span class="pre">aws</span></code> for cross-region secrets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--allow-missing</span></code>: warn instead of failing when a listed key is absent from the secret.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_DISABLE=1</span></code>: skip the AWS lookup entirely; rely on <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> (used in CI, where secrets come from GitHub Actions secrets).</p></li>
+</ul>
+<p>Run <code class="docutils literal notranslate"><span class="pre">./scripts/kcworks_test_secrets.sh</span> <span class="pre">--help</span></code> for the full contract. The helper requires the <code class="docutils literal notranslate"><span class="pre">aws</span></code> CLI to be configured on the host and the project venv at <code class="docutils literal notranslate"><span class="pre">.venv/bin/python</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On CI the workflow sets <code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_DISABLE=1</span></code> and injects the same keys via the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">tests</span></code> step’s <code class="docutils literal notranslate"><span class="pre">env:</span></code> block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.</p>
+</div>
+</section>
+<section id="containerized-test-runner-for-local-development">
+<h3>Containerized test runner for local development<a class="headerlink" href="#containerized-test-runner-for-local-development" title="Link to this heading">¶</a></h3>
+<p>In local mode, pytest (and optional Jest) runs inside a container (<code class="docutils literal notranslate"><span class="pre">test-runner</span></code>) that:</p>
+<ul class="simple">
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">docker-compose.test.yml</span></code> (project-managed network). The pytest path also merges <code class="docutils literal notranslate"><span class="pre">docker-compose.test.services.yml</span></code> so the runner joins docker-services-cli’s <code class="docutils literal notranslate"><span class="pre">docker_services_cli_default</span></code> network; <code class="docutils literal notranslate"><span class="pre">--js-only</span></code> uses the base file only</p></li>
+<li><p>Mounts site/deps/tests (and assets/Jest config when needed) from the host</p></li>
+<li><p>Loads secrets via a Compose service secret for the pytest path</p></li>
+</ul>
+<p>The temp file containing AWS secrets is:</p>
+<ol class="arabic simple">
+<li><p>Created by <code class="docutils literal notranslate"><span class="pre">kcworks_test_secrets.sh</span></code></p></li>
+<li><p>Mounted into the container for its lifetime</p></li>
+<li><p>Deleted after the container finishes (cleanup trap handles interrupts)</p></li>
+</ol>
 </section>
 <section id="pytest-fixtures">
 <h3>Pytest fixtures<a class="headerlink" href="#pytest-fixtures" title="Link to this heading">¶</a></h3>
@@ -375,19 +443,24 @@
 </section>
 <section id="javascript-tests">
 <h2>Javascript tests<a class="headerlink" href="#javascript-tests" title="Link to this heading">¶</a></h2>
-<p>Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder and run</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-js-tests.sh</span>
+<p>Pytest does not directly test custom javascript files or React components. Those use Jest.</p>
+<p><strong>Local:</strong> one entrypoint runs every registered suite inside the <code class="docutils literal notranslate"><span class="pre">test-runner</span></code> container:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh --js-only</span>
 </pre></div>
 </div>
-<p>These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.</p>
-<p>This is equivalent to running</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm run test</span>
+<p>Or include JS before pytest:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh -J -vv</span>
 </pre></div>
 </div>
-<p>Note that these tests run using a local npm configuration in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm install</span>
+<p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">run-js-tests.sh</span></code> locally forwards to <code class="docutils literal notranslate"><span class="pre">./run-tests.sh</span> <span class="pre">--js-only</span></code>. Suites are defined in <code class="docutils literal notranslate"><span class="pre">scripts/run-js-suites.sh</span></code> (root first, then dependency packages that have their own Jest harness). Each suite uses its own <code class="docutils literal notranslate"><span class="pre">package.json</span></code> / <code class="docutils literal notranslate"><span class="pre">pnpm</span></code> / <code class="docutils literal notranslate"><span class="pre">jest.config.js</span></code>. The root Jest config ignores <code class="docutils literal notranslate"><span class="pre">site/kcworks/dependencies/</span></code> so those tests are not double-run under the root installer.</p>
+<p><strong>CI:</strong> <code class="docutils literal notranslate"><span class="pre">run-js-tests.sh</span></code> runs <code class="docutils literal notranslate"><span class="pre">scripts/run-js-suites.sh</span></code> on the Actions runner (host <code class="docutils literal notranslate"><span class="pre">pnpm</span></code>).</p>
+<p>Extra arguments are passed through to each suite’s Jest, e.g.:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash run-tests.sh --js-only -- test_utils.js</span>
 </pre></div>
 </div>
+<p>Rebuild the test-runner image after root <code class="docutils literal notranslate"><span class="pre">package.json</span></code> / lockfile changes (<code class="docutils literal notranslate"><span class="pre">-B</span></code>). Package-suite installs run in-container onto the editable dep mounts when <code class="docutils literal notranslate"><span class="pre">KCWORKS_JS_SUITE_INSTALL=1</span></code> (default).</p>
+<p>Dependency packages that still have <code class="docutils literal notranslate"><span class="pre">*.test.js</span></code> files but are <strong>not</strong> listed in <code class="docutils literal notranslate"><span class="pre">scripts/run-js-suites.sh</span></code> are not executed until they get a package-local Jest setup and are added to that list. Current package suites: <code class="docutils literal notranslate"><span class="pre">invenio-stats-dashboard</span></code>, <code class="docutils literal notranslate"><span class="pre">invenio-modular-deposit-form</span></code>, <code class="docutils literal notranslate"><span class="pre">invenio-modular-detail-page</span></code> (detail-page may report zero tests until UI tests are added).</p>
+<p>Jest configs use <code class="docutils literal notranslate"><span class="pre">verbose:</span> <span class="pre">false</span></code> by default (file-level results, not per-test PASS lines). For per-test output: <code class="docutils literal notranslate"><span class="pre">pnpm</span> <span class="pre">test</span> <span class="pre">--</span> <span class="pre">--verbose</span></code>.</p>
 </section>
 <section id="ghost-inspector-tests">
 <h2>Ghost Inspector tests<a class="headerlink" href="#ghost-inspector-tests" title="Link to this heading">¶</a></h2>
@@ -456,11 +529,13 @@
             <ul>
 <li><a class="reference internal" href="#">Automated Testing</a><ul>
 <li><a class="reference internal" href="#python-tests">Python tests</a><ul>
+<li><a class="reference internal" href="#local-development-vs-ci-mode">Local development vs CI mode</a></li>
 <li><a class="reference internal" href="#running-specific-tests">Running specific tests</a></li>
 <li><a class="reference internal" href="#options-for-running-tests">Options for running tests</a></li>
 <li><a class="reference internal" href="#passing-pytest-arguments-to-the-test-runner">Passing pytest arguments to the test runner</a></li>
 <li><a class="reference internal" href="#test-discovery-and-doctests">Test discovery and doctests</a></li>
 <li><a class="reference internal" href="#test-configuration">Test configuration</a></li>
+<li><a class="reference internal" href="#containerized-test-runner-for-local-development">Containerized test runner for local development</a></li>
 <li><a class="reference internal" href="#pytest-fixtures">Pytest fixtures</a></li>
 <li><a class="reference internal" href="#additional-actions-included-in-the-test-runner">Additional actions included in the test runner</a></li>
 </ul>
@@ -478,7 +553,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

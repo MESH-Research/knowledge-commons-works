@@ -6,6 +6,13 @@
 moderation.md
 running_commands.md
 file_storage.md
+scheduled_events.md
+vocabulary_management.md
+names_vocabulary.md
 user_data_management.md
 organization_management.md
+collection_hierarchy.md
+record_access.md
+record_search.md
+export_formats.md
 ```

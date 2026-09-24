@@ -1,0 +1,1016 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Names Vocabulary Lifecycle" href="names_vocabulary.html"><link rel="prev" title="Scheduled events" href="scheduled_events.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Vocabulary Management - Knowledge Commons Works 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_highlights.html">Feature Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Development Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export_formats.html">Export formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../setup/configuration.html">Configuration of KCWorks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup/installation.html">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../developing/index.html">Developing KCWorks</a><input aria-label="Toggle navigation of Developing KCWorks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developing/architecture.html">KCWorks Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/code_standards.html">Development Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/source_control.html">Source Control and Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/infrastructure.html">KCWorks Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizations.html">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/admin_guide/vocabulary_management.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="vocabulary-management">
+<h1>Vocabulary Management<a class="headerlink" href="#vocabulary-management" title="Link to this heading">¶</a></h1>
+<p>KCWorks loads funders, affiliations, and awards from live external datasets (not
+from <code class="docutils literal notranslate"><span class="pre">app_data</span></code> fixtures). Subjects (FAST and Homosaurus) and <strong>resource types</strong>
+are loaded from package/fixture data at install time. Deposit-form autocomplete
+and the resource-type dropdown depend on these vocabularies being seeded and
+kept current.</p>
+<p>The <strong>Names</strong> vocabulary (people for creator/contributor lookup) is maintained
+separately — see <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
+<p>Install-time seeding and default job registration are covered in
+<a class="reference internal" href="../setup/installation.html"><span class="std std-doc">Installation — step 5</span></a>. For a chronological overview
+of <strong>all</strong> scheduled beat tasks and jobs, see
+<a class="reference internal" href="scheduled_events.html"><span class="std std-doc">Scheduled events</span></a>. This page is for ongoing
+operation: seed, schedule updates, run one-off imports, and add fixture-backed
+entries (especially resource types).</p>
+<p>Run commands from the KCWorks UI app container unless noted otherwise. See
+<a class="reference internal" href="running_commands.html#starting-interactive-shell"><span class="std std-ref">Starting an interactive shell</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">&lt;command&gt;</span> <span class="pre">--help</span></code> for full option lists. Job upsert syntax:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-jobs"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span></code></span></a>.
+Upstream overview:
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/">InvenioRDM vocabularies</a>,
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/funding/">Funding</a>.</p>
+</div>
+<section id="what-loads-and-in-what-order">
+<h2>What loads, and in what order<a class="headerlink" href="#what-loads-and-in-what-order" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Vocabulary</p></th>
+<th class="head"><p>Source</p></th>
+<th class="head"><p>Weekly job</p></th>
+<th class="head"><p>Depends on</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Affiliations</p></td>
+<td><p>ROR dump (Zenodo)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">process_ror_affiliations</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>Funders</p></td>
+<td><p>ROR dump (Zenodo)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">process_ror_funders</span></code></p></td>
+<td><p>— (must exist before awards write successfully)</p></td>
+</tr>
+<tr class="row-even"><td><p>Awards</p></td>
+<td><p>OpenAIRE (Zenodo)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">import_awards_openaire</span></code></p></td>
+<td><p>Funders vocabulary + funder-prefix allowlist</p></td>
+</tr>
+<tr class="row-odd"><td><p>Awards (enrich)</p></td>
+<td><p>CORDIS XML</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">update_awards_cordis</span></code></p></td>
+<td><p>Existing OpenAIRE award records</p></td>
+</tr>
+<tr class="row-even"><td><p>Subjects (FAST)</p></td>
+<td><p>OCLC updates <code class="docutils literal notranslate"><span class="pre">.mrc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">process_fast_subject_updates</span></code> (Wed)</p></td>
+<td><p>Initial FAST fixtures / package load</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Affiliations and funders are independent of each other. Awards reference funders
+by ROR id. CORDIS does <strong>not</strong> create awards; it only enriches EC awards already
+imported from OpenAIRE.</p>
+<p>Default schedules (UTC, Sundays): funders 03:00 → affiliations 04:00 → OpenAIRE
+awards 05:00 → CORDIS 06:00.</p>
+<p><strong>Subjects</strong> (FAST via <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code>, plus Homosaurus) and <strong>resource
+types</strong> are seeded with <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> from entries declared in
+<code class="docutils literal notranslate"><span class="pre">app_data/vocabularies.yaml</span></code> (see <a class="reference internal" href="../setup/installation.html"><span class="std std-doc">Installation</span></a>).
+FAST incremental updates (OCLC ISO MARC “change files”) are refreshed on a
+mid-week schedule by <code class="docutils literal notranslate"><span class="pre">process_fast_subject_updates</span></code>—see
+<a class="reference internal" href="#subjects-fast--homosaurus"><span class="xref myst">Subjects</span></a>.
+Resource types are edited in YAML and applied with
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">add-to-fixture</span></code>—see <a class="reference internal" href="#resource-types"><span class="xref myst">Resource types</span></a>.</p>
+</section>
+<section id="how-do-i-import-vocabulary-data-from-a-local-file">
+<h2>How do I import vocabulary data from a local file?<a class="headerlink" href="#how-do-i-import-vocabulary-data-from-a-local-file" title="Link to this heading">¶</a></h2>
+<p>Use scheduled jobs for recurring production loads. Use
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">import</span></code> for bootstrap, backfill, or custom one-offs. The
+command blocks until finished and needs enough RAM for the file in memory.</p>
+<p><strong>Built-in reader</strong> (vendor dump the vocabulary already understands):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>vocabularies<span class="w"> </span>import<span class="w"> </span>-v<span class="w"> </span>awards<span class="w"> </span>--origin<span class="w"> </span>/tmp/project.tar
+</pre></div>
+</div>
+<p><strong>Custom YAML</strong> (DataStream definition + records file):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>vocabularies<span class="w"> </span>import<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--vocabulary<span class="w"> </span>funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--filepath<span class="w"> </span>./vocabularies-future.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--origin<span class="w"> </span>./my-funders.yaml
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">update</span></code> with the same flags to refresh existing
+entries. Record shapes are documented upstream under Funding.</p>
+</section>
+<hr class="docutils" />
+<section id="affiliations-ror">
+<h2>Affiliations (ROR)<a class="headerlink" href="#affiliations-ror" title="Link to this heading">¶</a></h2>
+<p>ROR organizations used for creator/contributor affiliation autocomplete. Loaded
+from the same ROR dump as funders, via a separate job and vocabulary.</p>
+<section id="how-do-i-seed-the-ror-affiliations">
+<h3>How do I seed the ROR affiliations?<a class="headerlink" href="#how-do-i-seed-the-ror-affiliations" title="Link to this heading">¶</a></h3>
+<p>If install used <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span> <span class="pre">-f</span></code>, affiliations are already seeded.
+Otherwise register the job and run it once:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>The job downloads the current ROR dump from Zenodo over HTTPS (<code class="docutils literal notranslate"><span class="pre">doi.org</span></code> /
+<code class="docutils literal notranslate"><span class="pre">zenodo.org</span></code> egress required).</p>
+</section>
+<section id="how-do-i-set-up-recurring-updates-to-ror-affiliations">
+<h3>How do I set up recurring updates to ROR affiliations?<a class="headerlink" href="#how-do-i-set-up-recurring-updates-to-ror-affiliations" title="Link to this heading">¶</a></h3>
+<p>Same upsert <strong>without</strong> <code class="docutils literal notranslate"><span class="pre">--run-now</span></code> (idempotent; safe if the row already
+exists):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>Scheduled runs add new records; they do not overwrite existing ones (upstream
+writer default).</p>
+</section>
+<section id="how-do-i-update-ror-affiliations-manually">
+<h3>How do I update ROR affiliations manually?<a class="headerlink" href="#how-do-i-update-ror-affiliations-manually" title="Link to this heading">¶</a></h3>
+<p>Re-dispatch an immediate load (registers the schedule if needed):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>For a custom or staged ROR dump, use
+<a class="reference internal" href="#how-do-i-import-vocabulary-data-from-a-local-file"><span class="xref myst">import from a local file</span></a>
+with <code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">affiliations</span></code> and the appropriate <code class="docutils literal notranslate"><span class="pre">--origin</span></code> / <code class="docutils literal notranslate"><span class="pre">--filepath</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="funders-ror">
+<h2>Funders (ROR)<a class="headerlink" href="#funders-ror" title="Link to this heading">¶</a></h2>
+<p>Funding organizations referenced by award records and shown in funding fields.
+Must be present before awards import can resolve funder ids.</p>
+<section id="how-do-i-seed-the-ror-funders">
+<h3>How do I seed the ROR funders?<a class="headerlink" href="#how-do-i-seed-the-ror-funders" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>Skip this if install already ran the funders seed (<code class="docutils literal notranslate"><span class="pre">setup-services.sh</span> <span class="pre">-f</span></code>).</p>
+</section>
+<section id="how-do-i-set-up-recurring-updates-to-ror-funders">
+<h3>How do I set up recurring updates to ROR funders?<a class="headerlink" href="#how-do-i-set-up-recurring-updates-to-ror-funders" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+</section>
+<section id="how-do-i-update-ror-funders-manually">
+<h3>How do I update ROR funders manually?<a class="headerlink" href="#how-do-i-update-ror-funders-manually" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>Custom YAML funders: use <code class="docutils literal notranslate"><span class="pre">--filepath</span></code> / <code class="docutils literal notranslate"><span class="pre">--origin</span></code> as in
+<a class="reference internal" href="#how-do-i-import-vocabulary-data-from-a-local-file"><span class="xref myst">import from a local file</span></a>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="awards-openaire">
+<h2>Awards — OpenAIRE<a class="headerlink" href="#awards-openaire" title="Link to this heading">¶</a></h2>
+<p>Grant/project records for funding autocomplete. Source files are OpenAIRE Graph
+project dumps on Zenodo. Only projects whose funder prefix appears in
+<code class="docutils literal notranslate"><span class="pre">VOCABULARIES_AWARDS_OPENAIRE_FUNDERS</span></code> (<code class="docutils literal notranslate"><span class="pre">site/kcworks/config/vocabularies.py</span></code>)
+are written; other projects are skipped with per-record errors.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset</p></th>
+<th class="head"><p>Zenodo concept</p></th>
+<th class="head"><p>File</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Full graph</strong></p></td>
+<td><p><a class="reference external" href="https://doi.org/10.5281/zenodo.3516917">10.5281/zenodo.3516917</a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">project.tar</span></code></p></td>
+<td><p><strong>Initial seed</strong> on an empty instance</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Diff</strong></p></td>
+<td><p><a class="reference external" href="https://doi.org/10.5281/zenodo.6419021">10.5281/zenodo.6419021</a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">projects.tar</span></code></p></td>
+<td><p><strong>Weekly refresh</strong> (<code class="docutils literal notranslate"><span class="pre">import_awards_openaire</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The weekly job is hardcoded to the <strong>diff</strong> dump. Diff alone cannot populate an
+empty awards vocabulary.</p>
+<section id="how-do-i-seed-openaire-awards">
+<h3>How do I seed OpenAIRE awards?<a class="headerlink" href="#how-do-i-seed-openaire-awards" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Confirm funders are loaded (see <a class="reference internal" href="#funders-ror"><span class="xref myst">Funders</span></a>).</p></li>
+<li><p>Download and import the <strong>full</strong> tarball (inspectable, usual path):</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>/tmp/project.tar<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://zenodo.org/records/20428976/files/project.tar?download=1"</span>
+
+invenio<span class="w"> </span>vocabularies<span class="w"> </span>import<span class="w"> </span>-v<span class="w"> </span>awards<span class="w"> </span>--origin<span class="w"> </span>/tmp/project.tar
+</pre></div>
+</div>
+<p>Budget roughly 1× download size in RAM (~700 MB for full <code class="docutils literal notranslate"><span class="pre">project.tar</span></code>). Then
+register the weekly jobs (OpenAIRE + CORDIS) if they are not already set up.</p>
+<ol class="arabic simple" start="3">
+<li><p>Verify in the admin UI / API and in the job or CLI log. Unknown funder
+prefixes and missing <code class="docutils literal notranslate"><span class="pre">title</span></code> fields show as per-record errors; the run can
+look “failed” while many awards still imported.</p></li>
+</ol>
+</section>
+<section id="how-do-i-set-up-recurring-updates-to-openaire-awards">
+<h3>How do I set up recurring updates to OpenAIRE awards?<a class="headerlink" href="#how-do-i-set-up-recurring-updates-to-openaire-awards" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>This keeps the vocabulary current with <strong>new</strong> OpenAIRE projects only.
+Historical coverage still depends on an earlier full-seed (or a later full
+re-import).</p>
+</section>
+<section id="how-do-i-update-openaire-awards-manually">
+<h3>How do I update OpenAIRE awards manually?<a class="headerlink" href="#how-do-i-update-openaire-awards-manually" title="Link to this heading">¶</a></h3>
+<p><strong>Weekly-style refresh</strong> (diff dump via the job):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p><strong>Full re-import / backfill</strong> (local full tarball) — use after adding many
+funder prefixes, or when the vocabulary was never fully seeded:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>vocabularies<span class="w"> </span>import<span class="w"> </span>-v<span class="w"> </span>awards<span class="w"> </span>--origin<span class="w"> </span>/tmp/project.tar
+</pre></div>
+</div>
+<p>Custom award YAML: <code class="docutils literal notranslate"><span class="pre">--filepath</span></code> / <code class="docutils literal notranslate"><span class="pre">--origin</span></code> as in
+<a class="reference internal" href="#how-do-i-import-vocabulary-data-from-a-local-file"><span class="xref myst">import from a local file</span></a>.</p>
+</section>
+<section id="how-do-i-expand-which-funders-awards-are-loaded">
+<h3>How do I expand which funders’ awards are loaded?<a class="headerlink" href="#how-do-i-expand-which-funders-awards-are-loaded" title="Link to this heading">¶</a></h3>
+<p>The allowlist is intentionally small (deposit autocomplete for common funders,
+not a full OpenAIRE mirror). To load more awards:</p>
+<ol class="arabic">
+<li><p>Audit unmapped prefixes in a tarball:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/audit-openaire-funder-prefixes.py<span class="w"> </span>/tmp/project.tar
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/audit-openaire-funder-prefixes.py<span class="w"> </span>--download<span class="w"> </span>full<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--resolve-ror<span class="w"> </span>--min-count<span class="w"> </span><span class="m">10</span><span class="w"> </span>--output<span class="w"> </span>config
+</pre></div>
+</div>
+</li>
+<li><p>Add 12-character prefix → 9-character ROR id entries in
+<code class="docutils literal notranslate"><span class="pre">site/kcworks/config/vocabularies.py</span></code> (keys padded to length 12; ROR values
+without <code class="docutils literal notranslate"><span class="pre">https://ror.org/</span></code>). Prefer community-relevant or high-count prefixes
+(<code class="docutils literal notranslate"><span class="pre">--min-count</span></code>).</p></li>
+<li><p>Restart web and worker processes so config reloads.</p></li>
+<li><p>Ensure those ROR ids exist in the funders vocabulary, then re-run awards
+import (diff for recent projects, full tarball to backfill history).</p></li>
+<li><p>Optionally run CORDIS enrichment afterward for EC awards.</p></li>
+</ol>
+</section>
+<section id="how-do-i-troubleshoot-openaire-awards-imports">
+<h3>How do I troubleshoot OpenAIRE awards imports?<a class="headerlink" href="#how-do-i-troubleshoot-openaire-awards-imports" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom</p></th>
+<th class="head"><p>Likely meaning</p></th>
+<th class="head"><p>What to do</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Job fails immediately; no awards written</p></td>
+<td><p>Reader/download problem (e.g. Zenodo renamed file)</p></td>
+<td><p>Fix URL/filename; re-run</p></td>
+</tr>
+<tr class="row-odd"><td><p>Many “Unknown OpenAIRE funder prefix” errors</p></td>
+<td><p>Prefix not in allowlist</p></td>
+<td><p>Audit + extend map, or accept limited coverage</p></td>
+</tr>
+<tr class="row-even"><td><p>“Failed” run but awards appeared</p></td>
+<td><p>Per-record errors; overall <code class="docutils literal notranslate"><span class="pre">TaskExecutionPartialError</span></code></p></td>
+<td><p>Inspect log; treat as partial success</p></td>
+</tr>
+<tr class="row-odd"><td><p>Writer errors for funder id</p></td>
+<td><p>Funder missing from funders vocab</p></td>
+<td><p>Seed/update funders, then re-run awards</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="awards-cordis">
+<h2>Awards — CORDIS<a class="headerlink" href="#awards-cordis" title="Link to this heading">¶</a></h2>
+<p>Enriches <strong>existing</strong> European Commission awards (subjects, organizations,
+programme codes). It does not insert new award records. Run after OpenAIRE
+awards exist.</p>
+<section id="how-do-i-seed-cordis-awards-data">
+<h3>How do I seed CORDIS awards data?<a class="headerlink" href="#how-do-i-seed-cordis-awards-data" title="Link to this heading">¶</a></h3>
+<p>Not applicable as a standalone seed. Seed OpenAIRE awards first; CORDIS only
+updates rows that already exist.</p>
+</section>
+<section id="how-do-i-set-up-recurring-updates-from-cordis">
+<h3>How do I set up recurring updates from CORDIS?<a class="headerlink" href="#how-do-i-set-up-recurring-updates-from-cordis" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>update_awards_cordis<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update Awards CORDIS"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=6,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>Scheduled after the OpenAIRE job so new EC awards from the diff can be enriched
+on a later tick (or run CORDIS manually after a full OpenAIRE seed).</p>
+</section>
+<section id="how-do-i-update-awards-from-cordis-manually">
+<h3>How do I update awards from CORDIS manually?<a class="headerlink" href="#how-do-i-update-awards-from-cordis-manually" title="Link to this heading">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>update_awards_cordis<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update Awards CORDIS"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=6,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>Needs egress to <code class="docutils literal notranslate"><span class="pre">cordis.europa.eu</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="resource-types">
+<h2>Resource types<a class="headerlink" href="#resource-types" title="Link to this heading">¶</a></h2>
+<p>Deposit and related-works resource types for KCWorks. Source of truth is the
+fixture YAML (not an external dump):</p>
+<ul class="simple">
+<li><p>Registry: <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies.yaml</span></code> → <code class="docutils literal notranslate"><span class="pre">resourcetypes</span></code> (<code class="docutils literal notranslate"><span class="pre">pid-type:</span> <span class="pre">rsrct</span></code>)</p></li>
+<li><p>Data: <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies/resource_types.yaml</span></code></p></li>
+</ul>
+<p>Initial load is via <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (install with
+<code class="docutils literal notranslate"><span class="pre">setup-services.sh</span> <span class="pre">-f</span></code>). Re-running <code class="docutils literal notranslate"><span class="pre">fixtures</span></code> alone does <strong>not</strong> reliably
+rewrite terms that already exist; use <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code> for live instances.</p>
+<p>The human-readable hierarchy is documented under
+<a class="reference internal" href="../reference/metadata.html#resource-types"><span class="std std-ref">Resource types</span></a>. Upstream shape and
+props conventions:
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/resource_types/">InvenioRDM — resource types</a>.</p>
+<section id="how-do-i-add-a-new-resource-type-as-a-fixture">
+<h3>How do I add a new resource type (as a fixture)?<a class="headerlink" href="#how-do-i-add-a-new-resource-type-as-a-fixture" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>Edit</strong> <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies/resource_types.yaml</span></code>. Add a new list entry
+(or update an existing one). For a subtype under an existing top-level type:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: <code class="docutils literal notranslate"><span class="pre">{parentId}-{subtypeCamelCase}</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">textDocument-proceedingsPaper</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">props.type</span></code>: the parent id (e.g. <code class="docutils literal notranslate"><span class="pre">textDocument</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">props.subtype</span></code>: the same as this entry’s <code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: at least <code class="docutils literal notranslate"><span class="pre">en</span></code> (and usually <code class="docutils literal notranslate"><span class="pre">de</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tags</span></code>: include <code class="docutils literal notranslate"><span class="pre">depositable</span></code> and/or <code class="docutils literal notranslate"><span class="pre">linkable</span></code> if it should appear in the
+deposit or related-works dropdowns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">props</span></code> equivalencies used on export / interoperability, typically:
+<code class="docutils literal notranslate"><span class="pre">coar</span></code>, <code class="docutils literal notranslate"><span class="pre">coar_type</span></code>, <code class="docutils literal notranslate"><span class="pre">csl</span></code>, <code class="docutils literal notranslate"><span class="pre">datacite_general</span></code>, <code class="docutils literal notranslate"><span class="pre">datacite_type</span></code>, <code class="docutils literal notranslate"><span class="pre">eurepo</span></code>,
+<code class="docutils literal notranslate"><span class="pre">schema.org</span></code></p></li>
+</ul>
+<p>Parent (top-level) entries use <code class="docutils literal notranslate"><span class="pre">props.type</span></code> equal to their own <code class="docutils literal notranslate"><span class="pre">id</span></code> and an
+empty <code class="docutils literal notranslate"><span class="pre">props.subtype</span></code>. Only two levels are supported.</p>
+</li>
+<li><p><strong>Apply</strong> the fixture on a running instance (UI app container):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>rdm-records<span class="w"> </span>add-to-fixture<span class="w"> </span>resourcetypes
+</pre></div>
+</div>
+<p>That command <strong>adds new</strong> resource-type ids and <strong>updates</strong> existing ones
+from the YAML. It does not delete removed ids. Work is queued to Celery;
+ensure a worker is running.</p>
+</li>
+<li><p><strong>Verify</strong> via the vocabularies API / admin UI, e.g. search
+<code class="docutils literal notranslate"><span class="pre">/api/vocabularies/resourcetypes?q=proceedingsPaper</span></code>, and confirm the new
+type appears in the deposit form Resource type dropdown (if <code class="docutils literal notranslate"><span class="pre">depositable</span></code>).</p></li>
+<li><p><strong>Document</strong> the subtype under
+<a class="reference internal" href="../reference/metadata.html#resource-types"><span class="std std-ref">Resource types</span></a> in
+<code class="docutils literal notranslate"><span class="pre">docs/source/reference/metadata.md</span></code>.</p></li>
+<li><p><strong>Optional — deposit form layout.</strong> If the type needs custom field groups
+(meeting details, publication details, etc.), add a matching key under
+<code class="docutils literal notranslate"><span class="pre">site/kcworks/config/deposit_form_layout.py</span></code> (see nearby entries such as
+<code class="docutils literal notranslate"><span class="pre">textDocument-conferenceProceeding</span></code>). Layout changes need a web restart /
+asset rebuild as usual for config and frontend.</p></li>
+</ol>
+</section>
+<section id="how-do-i-update-an-existing-resource-type-fixture-entry">
+<h3>How do I update an existing resource type fixture entry?<a class="headerlink" href="#how-do-i-update-an-existing-resource-type-fixture-entry" title="Link to this heading">¶</a></h3>
+<p>Change the entry in <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies/resource_types.yaml</span></code>, then run the
+same <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code> command. Props, titles, icons, and tags on that id are
+refreshed from YAML. If you rename an <code class="docutils literal notranslate"><span class="pre">id</span></code>, treat it as a new term (old id
+remains unless you remove it separately).</p>
+</section>
+<section id="when-do-i-use-fixtures-vs-add-to-fixture-for-resource-types">
+<h3>When do I use <code class="docutils literal notranslate"><span class="pre">fixtures</span></code> vs <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code> for resource types?<a class="headerlink" href="#when-do-i-use-fixtures-vs-add-to-fixture-for-resource-types" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Use when</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code></p></td>
+<td><p>Fresh install / empty instance (<code class="docutils literal notranslate"><span class="pre">setup-services.sh</span> <span class="pre">-f</span></code>). Loads all vocabularies declared in <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies.yaml</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">add-to-fixture</span> <span class="pre">resourcetypes</span></code></p></td>
+<td><p>Live instance: add or update resource-type rows from <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies/resource_types.yaml</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="subjects-fast-homosaurus">
+<h2>Subjects (FAST / Homosaurus)<a class="headerlink" href="#subjects-fast-homosaurus" title="Link to this heading">¶</a></h2>
+<p>Controlled subject terms for deposit autocomplete and record metadata. FAST is
+shipped by the <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code> package (one JSONL file per facet);
+Homosaurus is loaded alongside from fixtures. Initial load is via
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (install with <code class="docutils literal notranslate"><span class="pre">-f</span></code>), not the weekly ROR/OpenAIRE
+jobs above.</p>
+<p>Expected FAST <code class="docutils literal notranslate"><span class="pre">scheme</span></code> values are listed under
+<a class="reference internal" href="../reference/metadata.html#metadata-subjects"><span class="std std-ref">metadata.subjects</span></a>.</p>
+<section id="how-do-i-schedule-fast-subject-updates">
+<h3>How do I schedule FAST subject updates?<a class="headerlink" href="#how-do-i-schedule-fast-subject-updates" title="Link to this heading">¶</a></h3>
+<p>OCLC publishes incremental ISO MARC (<code class="docutils literal notranslate"><span class="pre">.mrc</span></code>) <strong>change files</strong> on
+https://fast.oclc.org/fastChanges/ (<code class="docutils literal notranslate"><span class="pre">FASTChanges*.mrc</span></code> / <code class="docutils literal notranslate"><span class="pre">FORMChanges*.mrc</span></code>).
+The <strong><code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code></strong> package registers the invenio-jobs task
+<code class="docutils literal notranslate"><span class="pre">process_fast_subject_updates</span></code> (Celery task + JobType). KCWorks schedules that
+task at deploy time:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_fast_subject_updates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update FAST subjects"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=2,day_of_week=3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>Default schedule (from <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span></code>): Wednesdays 02:00 UTC.</p>
+<p><strong>What the job does:</strong> download unseen <code class="docutils literal notranslate"><span class="pre">.mrc</span></code> files, convert them to per-facet
+delta JSONL, upsert into the subjects vocabulary (<code class="docutils literal notranslate"><span class="pre">update=True</span></code>), and move
+<code class="docutils literal notranslate"><span class="pre">.mrc</span></code> files to <code class="docutils literal notranslate"><span class="pre">processed/</span></code> only after a clean ingest. If any vocabulary
+writer entry errors occur, the <code class="docutils literal notranslate"><span class="pre">.mrc</span></code> files stay in the workdir so the next
+run retries them.</p>
+<p><strong>Workdir</strong> (shared by the job and <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">subjects_fast</span> <span class="pre">…</span></code> CLI):</p>
+<ol class="arabic simple">
+<li><p>Explicit <code class="docutils literal notranslate"><span class="pre">--download-dir</span></code> (CLI only), else</p></li>
+<li><p>Flask config <code class="docutils literal notranslate"><span class="pre">SUBJECTS_FAST_UPDATES_PATH</span></code> (or env
+<code class="docutils literal notranslate"><span class="pre">INVENIO_SUBJECTS_FAST_UPDATES_PATH</span></code>), else</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;instance_path&gt;/app_data/vocabularies/fast/</span></code></p></li>
+</ol>
+<p>When no job <code class="docutils literal notranslate"><span class="pre">since</span></code> bookmark exists, the package anchors from local
+<code class="docutils literal notranslate"><span class="pre">FASTChanges*</span></code> / <code class="docutils literal notranslate"><span class="pre">FORMChanges*</span></code> filename dates, then full-dump mtimes, then a
+180-day lookback (same defaults as <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">subjects_fast</span> <span class="pre">download-updates</span></code>).</p>
+<p><strong>Manual one-off</strong> (same pipeline as the job, with app context):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>subjects_fast<span class="w"> </span>process-updates<span class="w"> </span>--ingest
+<span class="c1"># optional: --since 2026-01-01  --download-dir /path/to/dir  --force</span>
+</pre></div>
+</div>
+<p>Details and non-ingest convert-only flows live in the <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code>
+README.</p>
+</section>
+<section id="when-do-i-use-import-vs-update-for-subjects">
+<h3>When do I use <code class="docutils literal notranslate"><span class="pre">import</span></code> vs <code class="docutils literal notranslate"><span class="pre">update</span></code> for subjects?<a class="headerlink" href="#when-do-i-use-import-vs-update-for-subjects" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Use when</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">import</span> <span class="pre">-v</span> <span class="pre">subjects</span> <span class="pre">…</span></code></p></td>
+<td><p>First-time load or create-only. Existing subject ids raise errors and are <strong>not</strong> overwritten.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">update</span> <span class="pre">-v</span> <span class="pre">subjects</span> <span class="pre">…</span></code></p></td>
+<td><p>Refresh terms already in the instance from a corrected or newer JSONL (same subject <code class="docutils literal notranslate"><span class="pre">id</span></code> / URI). Overwrites fields on the subject record, including <code class="docutils literal notranslate"><span class="pre">scheme</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Fixture reload (<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> / <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code>) does <strong>not</strong>
+rewrite existing subject terms for schemes that were already loaded.</p>
+</section>
+<section id="how-do-i-update-subjects-from-an-updated-source-file">
+<h3>How do I update subjects from an updated source file?<a class="headerlink" href="#how-do-i-update-subjects-from-an-updated-source-file" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Obtain the updated JSONL (for example after upgrading <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code>,
+or a staged copy of a facet file). In the UI app container, package files
+typically live under site-packages, e.g.:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>…/site-packages/invenio_subjects_fast/vocabularies/subjects_fast_formgenre.jsonl
+…/site-packages/invenio_subjects_fast/vocabularies/subjects_datastream.yaml
+</pre></div>
+</div>
+</li>
+<li><p>Run update for each changed file (blocks until finished; subject search is
+reindexed per updated term).</p>
+<p>Invenio’s stock subjects CLI defaults to a <strong>YAML</strong> reader. FAST and
+Homosaurus data is <strong>JSONL</strong>, so you must pass a datastream config as
+<code class="docutils literal notranslate"><span class="pre">--filepath</span></code> and the records file as <code class="docutils literal notranslate"><span class="pre">--origin</span></code>:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--filepath</span></code></p></td>
+<td><p>Datastream YAML (<code class="docutils literal notranslate"><span class="pre">readers</span></code> / <code class="docutils literal notranslate"><span class="pre">writers</span></code>). Not the records file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--origin</span></code></p></td>
+<td><p>JSONL of subject terms.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">app_data/vocabularies.yaml</span></code> is the <strong>fixtures</strong> manifest
+(<code class="docutils literal notranslate"><span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> / <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code>); <code class="docutils literal notranslate"><span class="pre">vocabularies</span> <span class="pre">import</span></code> /
+<code class="docutils literal notranslate"><span class="pre">update</span></code> do <strong>not</strong> read it.</p>
+<p><strong>FAST</strong> — <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code> ships
+<code class="docutils literal notranslate"><span class="pre">vocabularies/subjects_datastream.yaml</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>vocabularies<span class="w"> </span>update<span class="w"> </span>-v<span class="w"> </span>subjects<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--filepath<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'from importlib.resources import files; print(files("invenio_subjects_fast") / "vocabularies" / "subjects_datastream.yaml")'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--origin<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'from importlib.resources import files; print(files("invenio_subjects_fast") / "vocabularies" / "subjects_fast_formgenre.jsonl")'</span><span class="k">)</span><span class="s2">"</span>
+</pre></div>
+</div>
+<p>Or use the resolved site-packages paths directly. Repeat with another
+<code class="docutils literal notranslate"><span class="pre">--origin</span></code> (same <code class="docutils literal notranslate"><span class="pre">--filepath</span></code>) for other facet files as needed.</p>
+<p><strong>Homosaurus</strong> — use the JSONL datastream config under <code class="docutils literal notranslate"><span class="pre">app_data</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>vocabularies<span class="w"> </span>update<span class="w"> </span>-v<span class="w"> </span>subjects<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--filepath<span class="w"> </span>app_data/vocabularies/homosaurus/subjects_datastream.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--origin<span class="w"> </span>app_data/vocabularies/homosaurus/subjects_homosaurus.jsonl
+</pre></div>
+</div>
+<p>(Paths relative to <code class="docutils literal notranslate"><span class="pre">/opt/invenio/src</span></code> in the UI container, or absolute
+equivalents.) Terms are matched by subject <code class="docutils literal notranslate"><span class="pre">id</span></code> (WorldCat or Homosaurus
+URI). Use <code class="docutils literal notranslate"><span class="pre">import</span></code> instead of <code class="docutils literal notranslate"><span class="pre">update</span></code> for create-only (existing ids are
+not overwritten).</p>
+</li>
+<li><p>If any term’s <strong><code class="docutils literal notranslate"><span class="pre">scheme</span></code></strong> field changed (see below), rebuild the records
+index so denormalized scheme values on records catch up.</p></li>
+</ol>
+</section>
+<section id="what-if-the-source-changes-a-subjects-scheme">
+<h3>What if the source changes a subject’s <code class="docutils literal notranslate"><span class="pre">scheme</span></code>?<a class="headerlink" href="#what-if-the-source-changes-a-subjects-scheme" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">update</span></code> rewrites the <code class="docutils literal notranslate"><span class="pre">scheme</span></code> on subject vocabulary rows and refreshes the
+<strong>subjects</strong> OpenSearch index. Deposit “limit to facet” options come from
+<code class="docutils literal notranslate"><span class="pre">VocabularyScheme</span></code> rows (created from the package <code class="docutils literal notranslate"><span class="pre">vocabularies.yaml</span></code> scheme
+<strong>id</strong>), which have <strong>no</strong> rename CLI—only create.</p>
+<p>For autocomplete filters to work, the JSONL <code class="docutils literal notranslate"><span class="pre">scheme</span></code> field and the registered
+scheme <strong>id</strong> must be the same string (e.g. both <code class="docutils literal notranslate"><span class="pre">FAST-formgenre</span></code>). If an
+instance already has a scheme row under a wrong id, fix that separately (one-off
+DB / create the correct scheme); <code class="docutils literal notranslate"><span class="pre">vocabularies</span> <span class="pre">update</span></code> alone does not rename
+scheme rows.</p>
+<p>After changing <code class="docutils literal notranslate"><span class="pre">scheme</span></code> on existing terms, reindex records and drafts so record
+search facets on <code class="docutils literal notranslate"><span class="pre">metadata.subjects.scheme</span></code> are current. Subject relations in
+Postgres store subject ids; the stale values are in the records OpenSearch dump:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>rdm-records<span class="w"> </span>rebuild-index
+</pre></div>
+</div>
+<p>That command also rebuilds subjects and other vocabularies; it can take a while
+on a large instance.</p>
+</section>
+<section id="how-do-i-verify-a-subjects-update">
+<h3>How do I verify a subjects update?<a class="headerlink" href="#how-do-i-verify-a-subjects-update" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Suggest API with a scheme prefix, e.g.
+<code class="docutils literal notranslate"><span class="pre">/api/subjects?suggest=FAST-formgenre:&lt;term&gt;</span></code> — should return hits for that
+facet.</p></li>
+<li><p>On the deposit form, select the matching subject category and confirm search
+returns terms.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="related-documentation">
+<h2>Related documentation<a class="headerlink" href="#related-documentation" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../setup/installation.html"><span class="std std-doc">Installation — step 5</span></a></p></li>
+<li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-jobs"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../reference/metadata.html#resource-types"><span class="std std-ref">Resource types</span></a> (KCWorks hierarchy)</p></li>
+<li><p><a class="reference internal" href="../reference/metadata.html#metadata-subjects"><span class="std std-ref">metadata.subjects</span></a> (FAST scheme
+ids, including <code class="docutils literal notranslate"><span class="pre">FAST-formgenre</span></code>)</p></li>
+<li><p><a class="reference internal" href="../customizations.html#metadata-subjects"><span class="std std-ref">Metadata customizations — subjects</span></a></p></li>
+<li><p>Upstream:
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/">InvenioRDM vocabularies</a>,
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/resource_types/">Resource types</a>,
+<a class="reference external" href="https://inveniordm.docs.cern.ch/operate/customize/vocabularies/funding/">Funding</a></p></li>
+<li><p>OpenAIRE project ids:
+<a class="reference external" href="https://graph.openaire.eu/docs/data-model/entities/project">OpenAIRE Graph — Projects</a></p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="names_vocabulary.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Names Vocabulary Lifecycle</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="scheduled_events.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Scheduled events</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Vocabulary Management</a><ul>
+<li><a class="reference internal" href="#what-loads-and-in-what-order">What loads, and in what order</a></li>
+<li><a class="reference internal" href="#how-do-i-import-vocabulary-data-from-a-local-file">How do I import vocabulary data from a local file?</a></li>
+<li><a class="reference internal" href="#affiliations-ror">Affiliations (ROR)</a><ul>
+<li><a class="reference internal" href="#how-do-i-seed-the-ror-affiliations">How do I seed the ROR affiliations?</a></li>
+<li><a class="reference internal" href="#how-do-i-set-up-recurring-updates-to-ror-affiliations">How do I set up recurring updates to ROR affiliations?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-ror-affiliations-manually">How do I update ROR affiliations manually?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#funders-ror">Funders (ROR)</a><ul>
+<li><a class="reference internal" href="#how-do-i-seed-the-ror-funders">How do I seed the ROR funders?</a></li>
+<li><a class="reference internal" href="#how-do-i-set-up-recurring-updates-to-ror-funders">How do I set up recurring updates to ROR funders?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-ror-funders-manually">How do I update ROR funders manually?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#awards-openaire">Awards — OpenAIRE</a><ul>
+<li><a class="reference internal" href="#how-do-i-seed-openaire-awards">How do I seed OpenAIRE awards?</a></li>
+<li><a class="reference internal" href="#how-do-i-set-up-recurring-updates-to-openaire-awards">How do I set up recurring updates to OpenAIRE awards?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-openaire-awards-manually">How do I update OpenAIRE awards manually?</a></li>
+<li><a class="reference internal" href="#how-do-i-expand-which-funders-awards-are-loaded">How do I expand which funders’ awards are loaded?</a></li>
+<li><a class="reference internal" href="#how-do-i-troubleshoot-openaire-awards-imports">How do I troubleshoot OpenAIRE awards imports?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#awards-cordis">Awards — CORDIS</a><ul>
+<li><a class="reference internal" href="#how-do-i-seed-cordis-awards-data">How do I seed CORDIS awards data?</a></li>
+<li><a class="reference internal" href="#how-do-i-set-up-recurring-updates-from-cordis">How do I set up recurring updates from CORDIS?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-awards-from-cordis-manually">How do I update awards from CORDIS manually?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resource-types">Resource types</a><ul>
+<li><a class="reference internal" href="#how-do-i-add-a-new-resource-type-as-a-fixture">How do I add a new resource type (as a fixture)?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-an-existing-resource-type-fixture-entry">How do I update an existing resource type fixture entry?</a></li>
+<li><a class="reference internal" href="#when-do-i-use-fixtures-vs-add-to-fixture-for-resource-types">When do I use <code class="docutils literal notranslate"><span class="pre">fixtures</span></code> vs <code class="docutils literal notranslate"><span class="pre">add-to-fixture</span></code> for resource types?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#subjects-fast-homosaurus">Subjects (FAST / Homosaurus)</a><ul>
+<li><a class="reference internal" href="#how-do-i-schedule-fast-subject-updates">How do I schedule FAST subject updates?</a></li>
+<li><a class="reference internal" href="#when-do-i-use-import-vs-update-for-subjects">When do I use <code class="docutils literal notranslate"><span class="pre">import</span></code> vs <code class="docutils literal notranslate"><span class="pre">update</span></code> for subjects?</a></li>
+<li><a class="reference internal" href="#how-do-i-update-subjects-from-an-updated-source-file">How do I update subjects from an updated source file?</a></li>
+<li><a class="reference internal" href="#what-if-the-source-changes-a-subjects-scheme">What if the source changes a subject’s <code class="docutils literal notranslate"><span class="pre">scheme</span></code>?</a></li>
+<li><a class="reference internal" href="#how-do-i-verify-a-subjects-update">How do I verify a subjects update?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#related-documentation">Related documentation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

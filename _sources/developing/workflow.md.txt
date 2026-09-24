@@ -22,6 +22,10 @@ By default, the `docker-compose.dev.yml` file will use the `latest` tag from Doc
 IMAGE_TAG=dev-my-feature docker compose --file docker-compose.yml --file docker-compose.dev.yml up -d
 ```
 
+After the first ``compose up`` (with or without ``docker-compose.dev.yml``), run
+``bash ./scripts/build-assets.sh`` in the ``web-ui`` container before using the
+site. Compose serves static from the ``static_data`` volume, which starts empty.
+
 ## Updating the running KCWorks instance with development changes
 
 ### Changes to html template files

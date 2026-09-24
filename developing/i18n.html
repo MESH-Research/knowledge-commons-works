@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="KCWorks Infrastructure" href="infrastructure.html"><link rel="prev" title="Stats and Analytics" href="stats.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>I18n - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>I18n - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">I18n</a></li>
@@ -277,7 +286,15 @@
 <p>There are two separate translation systems in InvenioRDM: the python translations provided by the <code class="docutils literal notranslate"><span class="pre">invenio-i18n</span></code> package using the python <code class="docutils literal notranslate"><span class="pre">babel</span></code> library, and the javascript translations provided by the <code class="docutils literal notranslate"><span class="pre">i18next</span></code> library.</p>
 <section id="python-translations">
 <h3>Python Translations<a class="headerlink" href="#python-translations" title="Link to this heading">¶</a></h3>
-<p>The python translations are stored in the <code class="docutils literal notranslate"><span class="pre">translations</span></code> directory in the root of the repository. These are then gathered with babel translations from other Invenio packages into the <code class="docutils literal notranslate"><span class="pre">translations</span></code> directory in the instance directory of the running instance (<code class="docutils literal notranslate"><span class="pre">/opt/invenio/var/instance/translations</span></code>).</p>
+<p>Project-level Python overrides live in the repository root <code class="docutils literal notranslate"><span class="pre">translations/</span></code>
+directory (mounted at <code class="docutils literal notranslate"><span class="pre">/opt/invenio/src/translations</span></code> in local Compose).
+Package catalogs stay inside each installed package and are loaded via
+<code class="docutils literal notranslate"><span class="pre">invenio_i18n.translations</span></code> / <code class="docutils literal notranslate"><span class="pre">translations_bundle</span></code> entry points; they are
+merged in memory by <code class="docutils literal notranslate"><span class="pre">invenio-i18n</span></code>, not copied into the instance tree.</p>
+<p>At build/setup time we compile the project catalog under <code class="docutils literal notranslate"><span class="pre">src/translations</span></code>,
+then symlink <code class="docutils literal notranslate"><span class="pre">/opt/invenio/var/instance/translations</span></code> → that directory (the
+same pattern as <code class="docutils literal notranslate"><span class="pre">invenio-cli</span> <span class="pre">translations</span> <span class="pre">compile</span></code>). The app reads the
+instance path; instance is only a pointer at the project catalog.</p>
 </section>
 <section id="javascript-translations">
 <h3>Javascript Translations<a class="headerlink" href="#javascript-translations" title="Link to this heading">¶</a></h3>
@@ -299,11 +316,12 @@
 </section>
 <section id="compiling-translations">
 <h4>Compiling Translations<a class="headerlink" href="#compiling-translations" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>install<span class="w">  </span>//<span class="w"> </span>this<span class="w"> </span>installs<span class="w"> </span>the<span class="w"> </span>dependencies
-npm<span class="w"> </span>run<span class="w"> </span>extract_messages<span class="w">  </span>//<span class="w"> </span>this<span class="w"> </span>extracts<span class="w"> </span>translatable<span class="w"> </span>strings<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>javascript<span class="w"> </span>components,<span class="w"> </span>compiles<span class="w"> </span>them<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>json<span class="w"> </span>file,and<span class="w"> </span>creates<span class="w"> </span>.pot<span class="w"> </span>files<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>translations<span class="w"> </span>directory
-npm<span class="w"> </span>run<span class="w"> </span>json_to_po<span class="w">  </span>//<span class="w"> </span>this<span class="w"> </span>creates<span class="w"> </span>the<span class="w"> </span>.po<span class="w"> </span>files<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>.json<span class="w"> </span>files
-npm<span class="w"> </span>run<span class="w"> </span>compile_catalog<span class="w">  </span>//<span class="w"> </span>this<span class="w"> </span>compiles<span class="w"> </span>the<span class="w"> </span>.po<span class="w"> </span>files<span class="w"> </span>into<span class="w"> </span>.mo<span class="w"> </span>files
-npm<span class="w"> </span>run<span class="w"> </span>init_catalog<span class="w"> </span>language<span class="w"> </span>en<span class="w">  </span>//<span class="w"> </span>this<span class="w"> </span>initializes<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>language<span class="w"> </span>and<span class="w"> </span>adds<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>language<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span><span class="nb">local</span><span class="w"> </span>package.json<span class="w"> </span>file
+<p>From the root of the <strong>translation package</strong> you are working in (each directory has its own <code class="docutils literal notranslate"><span class="pre">package.json</span></code>). Prefer <strong><a class="reference external" href="https://pnpm.io/">pnpm</a></strong> for consistency with the main app: enable Corepack once per Node install (<code class="docutils literal notranslate"><span class="pre">corepack</span> <span class="pre">enable</span></code>), then:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pnpm<span class="w"> </span>install
+pnpm<span class="w"> </span>run<span class="w"> </span>extract_messages<span class="w">   </span><span class="c1"># extract strings → JSON / .pot</span>
+pnpm<span class="w"> </span>run<span class="w"> </span>json_to_po<span class="w">         </span><span class="c1"># .json → .po</span>
+pnpm<span class="w"> </span>run<span class="w"> </span>compile_catalog<span class="w">    </span><span class="c1"># .po → .mo</span>
+pnpm<span class="w"> </span>run<span class="w"> </span>init_catalog<span class="w"> </span>language<span class="w"> </span>en<span class="w">   </span><span class="c1"># new language + package.json list</span>
 </pre></div>
 </div>
 </section>
@@ -387,7 +405,7 @@ npm<span class="w"> </span>run<span class="w"> </span>init_catalog<span class="w
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

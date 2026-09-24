@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Automated Testing" href="testing.html"><link rel="prev" title="Source Control and Versioning" href="source_control.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Development Workflow - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>Development Workflow - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="i18n.html">I18n</a></li>
@@ -287,6 +296,9 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">IMAGE_TAG</span><span class="o">=</span>dev-my-feature<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>--file<span class="w"> </span>docker-compose.yml<span class="w"> </span>--file<span class="w"> </span>docker-compose.dev.yml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>After the first <code class="docutils literal notranslate"><span class="pre">compose</span> <span class="pre">up</span></code> (with or without <code class="docutils literal notranslate"><span class="pre">docker-compose.dev.yml</span></code>), run
+<code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/build-assets.sh</span></code> in the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container before using the
+site. Compose serves static from the <code class="docutils literal notranslate"><span class="pre">static_data</span></code> volume, which starts empty.</p>
 </section>
 <section id="updating-the-running-kcworks-instance-with-development-changes">
 <h2>Updating the running KCWorks instance with development changes<a class="headerlink" href="#updating-the-running-kcworks-instance-with-development-changes" title="Link to this heading">¶</a></h2>
@@ -540,7 +552,7 @@ bash<span class="w"> </span>./scripts/build-assets.sh
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

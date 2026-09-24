@@ -7,8 +7,15 @@ KCWorks uses semantic versioning (https://semver.org/). When a new release is ma
 - `README.md`
 - `docs/source/README.md`
 - `docs/source/conf.py`
-- `site/pyproject.toml`
+- `pyproject.toml`
 - `site/kcworks/__init__.py`
+
+Use [bump-my-version](https://github.com/callowayproject/bump-my-version) (pinned as `bump-my-version==1.5.1` in the root `pyproject.toml`) to update those strings. Configuration is under `[tool.bumpversion]` in `pyproject.toml`. For example, for a patch release:
+
+```shell
+uv run bump-my-version bump --dry-run --verbose patch
+uv run bump-my-version bump patch
+```
 
 While in beta, the version number should be followed by a numbered `-beta` suffix: e.g., `0.3.3-beta6`. This suffix should be updated continuously (without starting over again for minor releases) until version 1.0.0 is reached and KCWorks leaves beta.
 

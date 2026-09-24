@@ -1,0 +1,687 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Publishing admin docs to the knowledge base" href="knowledge_base_sync.html"><link rel="prev" title="How Tos" href="how_tos.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Menus (Flask-Menu) - Knowledge Commons Works 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_highlights.html">Feature Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Development Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../admin_guide/index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../setup/configuration.html">Configuration of KCWorks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup/installation.html">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Developing KCWorks</a><input aria-label="Toggle navigation of Developing KCWorks" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">KCWorks Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_standards.html">Development Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source_control.html">Source Control and Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="i18n.html">I18n</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrastructure.html">KCWorks Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizations.html">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/developing/menus.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="menus-flask-menu">
+<h1>Menus (Flask-Menu)<a class="headerlink" href="#menus-flask-menu" title="Link to this heading">¶</a></h1>
+<p>KCWorks uses <a class="reference external" href="https://github.com/inveniosoftware/flask-menu">Flask-Menu</a> to build navigation trees that Jinja2 templates render. Community header tabs, main navigation, and similar UI menus are all <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> instances registered at application startup and exposed to templates as <code class="docutils literal notranslate"><span class="pre">current_menu</span></code>.</p>
+<p>This page documents the Flask-Menu <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> API and KCWorks-specific patterns for registering, customizing, filtering, and ordering community menu items.</p>
+<section id="accessing-the-menu">
+<h2>Accessing the menu<a class="headerlink" href="#accessing-the-menu" title="Link to this heading">¶</a></h2>
+<p>The Flask-Menu extension registers <code class="docutils literal notranslate"><span class="pre">current_menu</span></code> as a Jinja2 global. In Python code, import the same proxy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_menu</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_menu</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">current_menu</span></code> is the root <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code>. Navigate the tree with dotted paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">communities</span> <span class="o">=</span> <span class="n">current_menu</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"communities"</span><span class="p">)</span>
+<span class="n">members</span> <span class="o">=</span> <span class="n">current_menu</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"communities.members"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In templates:</p>
+<div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">set</span> <span class="nv">items</span> <span class="o">=</span> <span class="nv">current_menu.submenu</span><span class="o">(</span><span class="s1">'communities'</span><span class="o">)</span><span class="nv">.children</span> <span class="cp">%}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">children</span></code> returns a <strong>sorted list</strong> of child <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> objects (sorted by each child’s <code class="docutils literal notranslate"><span class="pre">order</span></code>). It is recomputed on every access; you cannot assign to it.</p>
+</section>
+<section id="registering-items-in-kcworks">
+<h2>Registering items in KCWorks<a class="headerlink" href="#registering-items-in-kcworks" title="Link to this heading">¶</a></h2>
+<p>Extensions register menu items during <code class="docutils literal notranslate"><span class="pre">init</span></code> or <code class="docutils literal notranslate"><span class="pre">finalize_app</span></code>. KCWorks adds community header items in <code class="docutils literal notranslate"><span class="pre">site/kcworks/ext.py</span></code> (<code class="docutils literal notranslate"><span class="pre">register_community_menu_items</span></code>), which runs from <code class="docutils literal notranslate"><span class="pre">finalize_app</span></code> after other extensions have registered theirs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">current_menu</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"communities"</span><span class="p">)</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"contribute"</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+    <span class="n">endpoint</span><span class="o">=</span><span class="s2">"invenio_app_rdm_records.deposit_create"</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">"Contribute"</span><span class="p">),</span>
+    <span class="n">order</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span>
+    <span class="n">endpoint_arguments_constructor</span><span class="o">=</span><span class="n">deposit_args</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="s2">"plus"</span><span class="p">,</span>
+    <span class="n">permissions</span><span class="o">=</span><span class="s2">"can_submit_record"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Stock Invenio community items (<code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">members</span></code>, <code class="docutils literal notranslate"><span class="pre">settings</span></code>, etc.) are registered in <code class="docutils literal notranslate"><span class="pre">invenio_communities.ext.register_menus</span></code>. The stats tab is registered by <code class="docutils literal notranslate"><span class="pre">invenio_stats_dashboard</span></code>.</p>
+<p>Call <code class="docutils literal notranslate"><span class="pre">register()</span></code> on a submenu path to <strong>create</strong> a new item or <strong>update</strong> an existing one in place. You do not need to reassign the parent submenu.</p>
+</section>
+<section id="kcworks-community-header-pipeline">
+<h2>KCWorks community header pipeline<a class="headerlink" href="#kcworks-community-header-pipeline" title="Link to this heading">¶</a></h2>
+<p>The community details header template (<code class="docutils literal notranslate"><span class="pre">templates/semantic-ui/invenio_communities/details/header.html</span></code>) does not render <code class="docutils literal notranslate"><span class="pre">.children</span></code> directly. It runs two KCWorks filters from <code class="docutils literal notranslate"><span class="pre">site/kcworks/templates/template_filters.py</span></code>:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">sort_menu_items_by_name</span></code></strong> — reorders items by a hard-coded name list (<code class="docutils literal notranslate"><span class="pre">community_menu_order</span></code> in the template). Items not in that list are appended in their existing order.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">filter_visible_community_menu_items</span></code></strong> — applies Flask-Menu visibility, permission checks, and KCWorks-specific gates (stats dashboard enabled, hide <code class="docutils literal notranslate"><span class="pre">search</span></code> when <code class="docutils literal notranslate"><span class="pre">home</span></code> exists, hide <code class="docutils literal notranslate"><span class="pre">submit</span></code>, etc.).</p></li>
+</ol>
+<p>Because of step 1, changing <code class="docutils literal notranslate"><span class="pre">order</span></code> in <code class="docutils literal notranslate"><span class="pre">register()</span></code> or via <code class="docutils literal notranslate"><span class="pre">_order</span></code> mutation often <strong>does not change the displayed tab order</strong>. Update <code class="docutils literal notranslate"><span class="pre">community_menu_order</span></code> in the header template (or change the filter) when you care about display order.</p>
+</section>
+<section id="menunode-reference">
+<h2><code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> reference<a class="headerlink" href="#menunode-reference" title="Link to this heading">¶</a></h2>
+<p>Flask-Menu defines a single entry type: <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> (<code class="docutils literal notranslate"><span class="pre">flask_menu.menu.MenuNode</span></code>). There is no separate <code class="docutils literal notranslate"><span class="pre">MenuItem</span></code> class.</p>
+<section id="identity-and-tree-structure">
+<h3>Identity and tree structure<a class="headerlink" href="#identity-and-tree-structure" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Kind</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>public attribute</p></td>
+<td><p>Stable key for the node (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;members&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;stats&quot;</span></code>). Used in <code class="docutils literal notranslate"><span class="pre">submenu(&quot;members&quot;)</span></code> and in KCWorks filters via <code class="docutils literal notranslate"><span class="pre">item.name</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">parent</span></code></p></td>
+<td><p>public attribute</p></td>
+<td><p>Parent <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for the root.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_child_entries</span></code></p></td>
+<td><p>private attribute</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">MenuNode]</span></code> of child nodes keyed by name. Source of truth for the tree.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">children</span></code></p></td>
+<td><p>read-only property</p></td>
+<td><p>Sorted list of child <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> objects, ordered by each child’s <code class="docutils literal notranslate"><span class="pre">order</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">submenu(path,</span> <span class="pre">auto_create=True)</span></code></p></td>
+<td><p>method</p></td>
+<td><p>Navigate or create children. <code class="docutils literal notranslate"><span class="pre">&quot;communities.members&quot;</span></code> walks the tree; returns the target node.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">list_path(from_path,</span> <span class="pre">to_path)</span></code></p></td>
+<td><p>method</p></td>
+<td><p>Returns the ancestor→descendant path as a list of nodes, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the paths are on unrelated branches.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="configuration-set-via-register">
+<h3>Configuration (set via <code class="docutils literal notranslate"><span class="pre">register()</span></code>)<a class="headerlink" href="#configuration-set-via-register" title="Link to this heading">¶</a></h3>
+<p>These values are stored on private fields. <code class="docutils literal notranslate"><span class="pre">register()</span></code> is the supported way to set them initially.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backing field</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">register()</span></code> parameter</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_endpoint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">endpoint</span></code></p></td>
+<td><p>Flask endpoint name for <code class="docutils literal notranslate"><span class="pre">url_for(...)</span></code>. Mutually exclusive with <code class="docutils literal notranslate"><span class="pre">external_url</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_external_url</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">external_url</span></code></p></td>
+<td><p>Static URL when there is no endpoint. Used when <code class="docutils literal notranslate"><span class="pre">_endpoint</span></code> is unset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p>Label shown in templates (<code class="docutils literal notranslate"><span class="pre">item.text</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">name</span></code> on register.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_order</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">order</span></code></p></td>
+<td><p>Sort key for <code class="docutils literal notranslate"><span class="pre">children</span></code>. Lower values appear earlier.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_expected_args</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">expected_args</span></code></p></td>
+<td><p>URL argument names (e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;pid_value&quot;]</span></code>) pulled from <code class="docutils literal notranslate"><span class="pre">g._menu_kwargs</span></code> when building <code class="docutils literal notranslate"><span class="pre">url</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_endpoint_arguments_constructor</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">endpoint_arguments_constructor</span></code></p></td>
+<td><p>Callable returning extra <code class="docutils literal notranslate"><span class="pre">url_for</span></code> keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_dynamic_list_constructor</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dynamic_list_constructor</span></code></p></td>
+<td><p>Callable returning a list of nodes to render instead of just <code class="docutils literal notranslate"><span class="pre">self</span></code> (for dynamic menu expansion).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_visible_when</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">visible_when</span></code></p></td>
+<td><p>Callable; item is visible only if it returns a truthy value (and <code class="docutils literal notranslate"><span class="pre">_text</span></code> is set). Default: always visible.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_active_when</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">active_when</span></code></p></td>
+<td><p>Callable deciding whether the item is “active”. Default: match endpoint, path prefix, or exact path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code></p></td>
+<td><p>e.g. <code class="docutils literal notranslate"><span class="pre">icon</span></code>, <code class="docutils literal notranslate"><span class="pre">permissions</span></code></p></td>
+<td><p>Arbitrary extra attributes via <code class="docutils literal notranslate"><span class="pre">setattr</span></code>. Re-registering with a <strong>different</strong> value for an existing kwarg raises <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="read-only-computed-properties">
+<h3>Read-only computed properties<a class="headerlink" href="#read-only-computed-properties" title="Link to this heading">¶</a></h3>
+<p>These are what templates and filters usually read.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p>Display label. Falls back to <code class="docutils literal notranslate"><span class="pre">&quot;MenuNode</span> <span class="pre">item</span> <span class="pre">not</span> <span class="pre">initialised&quot;</span></code> if <code class="docutils literal notranslate"><span class="pre">_text</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">url</span></code></p></td>
+<td><p>Link target. Built from <code class="docutils literal notranslate"><span class="pre">endpoint</span></code> and arguments, or <code class="docutils literal notranslate"><span class="pre">external_url</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;#&quot;</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">order</span></code></p></td>
+<td><p>Exposes <code class="docutils literal notranslate"><span class="pre">_order</span></code> (getter only; no setter).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">visible</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">_text</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code> <strong>and</strong> <code class="docutils literal notranslate"><span class="pre">_visible_when()</span></code> is truthy.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">active</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">_active_when()</span></code> considers this item to match the current request.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">active_item</span></code></p></td>
+<td><p>Deepest active node in this subtree, or <code class="docutils literal notranslate"><span class="pre">self</span></code> if active, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_list</span></code></p></td>
+<td><p>Result of <code class="docutils literal notranslate"><span class="pre">_dynamic_list_constructor()</span></code>, or <code class="docutils literal notranslate"><span class="pre">[self]</span></code> if unset.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">register(...)</span></code></p></td>
+<td><p>Configure or reconfigure a node. Updates backing fields in place.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hide()</span></code></p></td>
+<td><p>Sets <code class="docutils literal notranslate"><span class="pre">_visible_when</span></code> to always-false so the item never shows.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">has_active_child(recursive=True)</span></code></p></td>
+<td><p>Whether any descendant is active.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">has_visible_child(recursive=True)</span></code></p></td>
+<td><p>Whether any descendant is visible.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="request-time-url-building">
+<h3>Request-time URL building<a class="headerlink" href="#request-time-url-building" title="Link to this heading">¶</a></h3>
+<p>Flask-Menu’s extension stores the current route’s view arguments on <code class="docutils literal notranslate"><span class="pre">g._menu_kwargs</span></code> during each request. When building <code class="docutils literal notranslate"><span class="pre">url</span></code>, only keys listed in <code class="docutils literal notranslate"><span class="pre">_expected_args</span></code> are passed to <code class="docutils literal notranslate"><span class="pre">url_for</span></code>. Community menu items therefore register <code class="docutils literal notranslate"><span class="pre">expected_args=[&quot;pid_value&quot;]</span></code> so links include the current community slug.</p>
+</section>
+<section id="kcworks-specific-extra-attributes">
+<h3>KCWorks-specific extra attributes<a class="headerlink" href="#kcworks-specific-extra-attributes" title="Link to this heading">¶</a></h3>
+<p>These are not part of Flask-Menu itself. They are set via <code class="docutils literal notranslate"><span class="pre">register(**kwargs)</span></code> and used by KCWorks templates and filters.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Use in KCWorks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">permissions</span></code></p></td>
+<td><p>Permission key checked in <code class="docutils literal notranslate"><span class="pre">filter_visible_community_menu_items</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;can_read&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;can_update&quot;</span></code>). <code class="docutils literal notranslate"><span class="pre">True</span></code> means no permission gate.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">icon</span></code></p></td>
+<td><p>Semantic UI icon name for rendering (not used by Flask-Menu core).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="modifying-items-after-registration">
+<h2>Modifying items after registration<a class="headerlink" href="#modifying-items-after-registration" title="Link to this heading">¶</a></h2>
+<p>A helper can mutate existing <code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> objects in place. <code class="docutils literal notranslate"><span class="pre">submenu(...)</span></code> returns a reference to the node already stored in the tree; changes are visible the next time <code class="docutils literal notranslate"><span class="pre">.children</span></code> is read.</p>
+<section id="via-register-supported-api">
+<h3>Via <code class="docutils literal notranslate"><span class="pre">register()</span></code> (supported API)<a class="headerlink" href="#via-register-supported-api" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">communities</span> <span class="o">=</span> <span class="n">current_menu</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"communities"</span><span class="p">)</span>
+<span class="n">communities</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"members"</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">"Members"</span><span class="p">))</span>
+<span class="n">communities</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"submit"</span><span class="p">)</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Re-calling <code class="docutils literal notranslate"><span class="pre">register()</span></code> updates <code class="docutils literal notranslate"><span class="pre">_order</span></code>, <code class="docutils literal notranslate"><span class="pre">_text</span></code>, <code class="docutils literal notranslate"><span class="pre">_visible_when</span></code>, and other standard fields. Custom kwargs such as <code class="docutils literal notranslate"><span class="pre">permissions</span></code> cannot be changed to a new value via re-<code class="docutils literal notranslate"><span class="pre">register()</span></code>; Flask-Menu raises <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> if the value differs.</p>
+</section>
+<section id="via-direct-mutation-post-registration-tweaks">
+<h3>Via direct mutation (post-registration tweaks)<a class="headerlink" href="#via-direct-mutation-post-registration-tweaks" title="Link to this heading">¶</a></h3>
+<p>Public properties like <code class="docutils literal notranslate"><span class="pre">order</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, and <code class="docutils literal notranslate"><span class="pre">visible</span></code> are read-only. Mutate the backing fields Flask-Menu actually stores:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">item</span> <span class="o">=</span> <span class="n">current_menu</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"communities"</span><span class="p">)</span><span class="o">.</span><span class="n">submenu</span><span class="p">(</span><span class="s2">"members"</span><span class="p">)</span>
+<span class="n">item</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">item</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">"Members"</span><span class="p">)</span>
+<span class="n">item</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="s2">"can_read"</span>  <span class="c1"># custom attribute from register(**kwargs)</span>
+<span class="n">item</span><span class="o">.</span><span class="n">_visible_when</span> <span class="o">=</span> <span class="n">my_visible_fn</span>
+</pre></div>
+</div>
+<p>Or call <code class="docutils literal notranslate"><span class="pre">item.hide()</span></code> instead of assigning <code class="docutils literal notranslate"><span class="pre">_visible_when</span></code>.</p>
+</section>
+<section id="what-you-can-and-cannot-do">
+<h3>What you can and cannot do<a class="headerlink" href="#what-you-can-and-cannot-do" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Goal</p></th>
+<th class="head"><p>Approach</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Add an item</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.submenu(&quot;name&quot;).register(...)</span></code></p></td>
+<td><p>Works from <code class="docutils literal notranslate"><span class="pre">finalize_app</span></code> after other extensions.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change text, endpoint, <code class="docutils literal notranslate"><span class="pre">visible_when</span></code></p></td>
+<td><p>Re-call <code class="docutils literal notranslate"><span class="pre">.register(...)</span></code> on that submenu</p></td>
+<td><p>Supported API.</p></td>
+</tr>
+<tr class="row-even"><td><p>Change <code class="docutils literal notranslate"><span class="pre">order</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">register(order=...)</span></code> or <code class="docutils literal notranslate"><span class="pre">item._order</span> <span class="pre">=</span> <span class="pre">...</span></code></p></td>
+<td><p>May not affect display; template name-order list wins.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change <code class="docutils literal notranslate"><span class="pre">permissions</span></code> after registration</p></td>
+<td><p>Direct assignment (<code class="docutils literal notranslate"><span class="pre">item.permissions</span> <span class="pre">=</span> <span class="pre">...</span></code>)</p></td>
+<td><p>Re-<code class="docutils literal notranslate"><span class="pre">register()</span></code> with a different value errors.</p></td>
+</tr>
+<tr class="row-even"><td><p>Hide an item</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.hide()</span></code> or template filter</p></td>
+<td><p>Filter may also remove items regardless of <code class="docutils literal notranslate"><span class="pre">visible</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change displayed tab order</p></td>
+<td><p>Edit <code class="docutils literal notranslate"><span class="pre">community_menu_order</span></code> in header template</p></td>
+<td><p>Primary control for community header order.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="mental-model">
+<h2>Mental model<a class="headerlink" href="#mental-model" title="Link to this heading">¶</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>MenuNode tree
+├── name, parent           # structure
+├── _child_entries         # children dict
+├── register() / hide()    # configure
+├── children, url, text,   # read in templates
+│   visible, active, order
+└── custom attrs           # icon, permissions, etc.
+</pre></div>
+</div>
+<p><strong>Read in templates and filters:</strong> <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">parent</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">url</span></code>, <code class="docutils literal notranslate"><span class="pre">order</span></code>, <code class="docutils literal notranslate"><span class="pre">visible</span></code>, <code class="docutils literal notranslate"><span class="pre">active</span></code>, <code class="docutils literal notranslate"><span class="pre">children</span></code>, <code class="docutils literal notranslate"><span class="pre">active_item</span></code>, <code class="docutils literal notranslate"><span class="pre">dynamic_list</span></code>.</p>
+<p><strong>Write via <code class="docutils literal notranslate"><span class="pre">register()</span></code>, <code class="docutils literal notranslate"><span class="pre">hide()</span></code>, or private fields:</strong> <code class="docutils literal notranslate"><span class="pre">_order</span></code>, <code class="docutils literal notranslate"><span class="pre">_text</span></code>, <code class="docutils literal notranslate"><span class="pre">_endpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">_visible_when</span></code>, <code class="docutils literal notranslate"><span class="pre">_active_when</span></code>, and custom attributes such as <code class="docutils literal notranslate"><span class="pre">permissions</span></code> and <code class="docutils literal notranslate"><span class="pre">icon</span></code>.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="knowledge_base_sync.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Publishing admin docs to the knowledge base</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="how_tos.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">How Tos</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Menus (Flask-Menu)</a><ul>
+<li><a class="reference internal" href="#accessing-the-menu">Accessing the menu</a></li>
+<li><a class="reference internal" href="#registering-items-in-kcworks">Registering items in KCWorks</a></li>
+<li><a class="reference internal" href="#kcworks-community-header-pipeline">KCWorks community header pipeline</a></li>
+<li><a class="reference internal" href="#menunode-reference"><code class="docutils literal notranslate"><span class="pre">MenuNode</span></code> reference</a><ul>
+<li><a class="reference internal" href="#identity-and-tree-structure">Identity and tree structure</a></li>
+<li><a class="reference internal" href="#configuration-set-via-register">Configuration (set via <code class="docutils literal notranslate"><span class="pre">register()</span></code>)</a></li>
+<li><a class="reference internal" href="#read-only-computed-properties">Read-only computed properties</a></li>
+<li><a class="reference internal" href="#methods">Methods</a></li>
+<li><a class="reference internal" href="#request-time-url-building">Request-time URL building</a></li>
+<li><a class="reference internal" href="#kcworks-specific-extra-attributes">KCWorks-specific extra attributes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modifying-items-after-registration">Modifying items after registration</a><ul>
+<li><a class="reference internal" href="#via-register-supported-api">Via <code class="docutils literal notranslate"><span class="pre">register()</span></code> (supported API)</a></li>
+<li><a class="reference internal" href="#via-direct-mutation-post-registration-tweaks">Via direct mutation (post-registration tweaks)</a></li>
+<li><a class="reference internal" href="#what-you-can-and-cannot-do">What you can and cannot do</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mental-model">Mental model</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

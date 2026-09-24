@@ -5,30 +5,127 @@
 
 ## Unreleased
 
-## 0.8.2 (2026-06-19)
+## 1.0.0 (2026-09-24)
 
-- Docs
-  - Documentation for admins on executing cli commands via ssh and s3 bucket
-    commands.
-  - Documentation on required and recommended metadata fields in the KCWorks
-    schema
-- IDMS
-  - Automatically adds a user's newly associated login methods from Profiles
-    when they are made (via "associated" webhook messages).
-- Bug fixes
-  - Fixes to several outdated tests.
-  - Fix to communities service component registration in exp.py.
-  - Fix to community member record assignment service (removing obsolete
-    reliance on oauth config).
-  - Reduce log noise from the `group-collections assign-org-records` command
-    (per-row progress logged at info instead of error).
-  - Improvements to test fixtures, including fixture to skip sso check and bug
-    fixes to fixtures for admin roles.
-  - User data sync fixes to prevent multiple user or group data updates from
-    colliding.
-- Testing
-  - Tests for new bug fixes and features
-  - Updates to the shared test fixtures
+This 1.0.0 release represents not only an upgrade of our underlying InvenioRDM
+platform, but a major step forward in features, stability, and security. These
+enhancements include:
+
+- Upgrade from InvenioRDM v12 to v13
+  - OpenSearch bumped for v13
+  - New v13 jobs / scheduler service
+- Upload form upgrades
+  - Full form layout and workflow overhaul, allowing clearer and faster
+    completion of required fields
+  - Better layout adaptation for many resource types
+  - Sharing UI to set and configure access grants to drafts or restricted
+    records
+  - UI to surface hidden field values and errors (when a field isn't shown on
+    the current resource type)
+  - Uppy file uploader with better multi-file handling, modal confirmation to
+    avoid abandoned uploads
+  - upload filename sanitization
+  - Contributor names typeahead and autofill from ORCID and a local names index
+    (client ORCID API)
+  - Separation of primary and secondary contributors
+  - UI for users to fix their own display name in-place (and remember the fix)
+  - new fields
+    - funding (with orgs from ROR, awards from OpenAIRE and CORDIS)
+    - copyright
+  - Validation improvements (e.g., now allows multiple URLs in identifiers
+    field)
+  - Clearer error and submission result messaging
+  - many a11y improvements
+  - Improved responsive adaptation to tablet and mobile screens
+  - Improved layout architecture (e.g., sticky footer, footer subsection
+    nesting)
+- Record detail page
+  - more powerful share controls with individual and group access grants
+  - access-request UI where files are restricted
+  - primary / secondary contributors distinguished
+  - moderation controls for administrators
+  - file selector on content-tab preview
+  - metadata-only records get a prominent content URL
+  - resource-type label links to faceted search
+  - richer embedded metadata (with FAIR signposting level 2)
+  - subjects sidebar height-constrained/expandable
+  - html rendered in descriptions field
+  - PDF previewer returned to the upstream pdf.js viewer (no longer custom js)
+    for maintainability
+- Stats-dashboard and template tweaks
+- Communities / collections improvements
+  - removal of many communities UI overrides for better maintainability
+  - shift to using translations for "community" -> "collection" language
+    override
+  - nested subcommunities (unrestricted nesting levels)
+  - subcommunity browse and search pages
+  - CLI and API to set parent-child relationships
+  - child collection records included in all ancestor collections (not just
+    immediate parents)
+  - custom community themes (colors/fonts settings UI)
+  - improved default collection theming
+  - default geopattern logos now generated and saved on the back end
+  - community record mapping updates for theme (and related) fields, with new
+    CLI to put mappings Search
+  - OpenSearch upgrade (above)
+  - full search-path aliasing with multi-path support
+  - default search fields/weights fixed (now includes keywords, etc.)
+  - facet “clear” controls restored
+  - pagination theming fixes
+- Vocabularies & scheduled jobs
+  - automated ROR funders and affiliations updates
+  - automated OpenAIRE awards ingest (jobs + validation/filename fixes) and
+    expanded OpenAIRE funder coverage
+  - automated FAST scheduled subject updates + upsert tooling
+  - improved Homosaurus import utilities
+  - Homosaurus vocabulary updated to v5
+  - large resource-types expansion/realignment (OpenAIRE/COAR/schema.org
+    mappings)
+  - new resource types (journal, proceedings paper, proposal, musical notation)
+- Names vocabulary & user data
+  - automated Names record creation/update
+  - CLI utilities to initialize and backfill Names from KCProfiles
+  - Names database enriched from contributors on work records (based on ORCID
+    data)
+  - automated jobs to maintain Names index
+  - tools to find and merge duplicates
+- User account security & applications settings exposed to all users
+  - allowing self-service API token generation
+- Security improvements
+  - All testing (jest and pytest/ty/ruff) moved inside a dedicated, sandboxed
+    test-runner container
+  - secrets moved out of local .env files and into AWS Secrets Manager
+  - CI permission blocks and pinned action SHAs
+- User management tools
+  - update user’s contributor data on works when username changes
+  - bulk owner / citation migration CLI
+  - account merge / migration tools
+- Import / tooling packages
+  - record importer fixes
+  - stronger idempotent update of existing records
+  - multi-collection import client (now its own installable package)
+- Knowledge-base sync submodule for docs sections
+- Notifications & exports
+  - Unread message notification improvements (dismiss from message list!)
+  - BibTeX export fixes for core KCWorks resource types
+- Testing / ops
+  - JS lint/test hardening
+  - All testing (jest and pytest/ty/ruff) moved inside a dedicated, sandboxed
+    test-runner container
+  - Fixture overhaul for v13 and search_clear/vocab index retention
+  - SSO bypass fixtures
+  - admin/superuser fixture fixes.
+  - Port-aware test runner
+  - Secrets removed completely from testing environment
+  - Unified check_health for local/container/EC2.
+- Project architecture improvements
+  - Frontend build architecture massively sped up by moving from npm → pnpm,
+    webpack → rspack
+  - Corepack/pnpm pinning for CI security
+  - Build-script improvements
+  - Docker/compose multi-stage build with thinner and more secure production
+    images
+  - Config modularization
 
 ## 0.8.1 (2026-06-09)
 

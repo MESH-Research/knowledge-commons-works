@@ -6,7 +6,16 @@ There are two separate translation systems in InvenioRDM: the python translation
 
 ### Python Translations
 
-The python translations are stored in the `translations` directory in the root of the repository. These are then gathered with babel translations from other Invenio packages into the `translations` directory in the instance directory of the running instance (`/opt/invenio/var/instance/translations`).
+Project-level Python overrides live in the repository root `translations/`
+directory (mounted at `/opt/invenio/src/translations` in local Compose).
+Package catalogs stay inside each installed package and are loaded via
+`invenio_i18n.translations` / `translations_bundle` entry points; they are
+merged in memory by `invenio-i18n`, not copied into the instance tree.
+
+At build/setup time we compile the project catalog under `src/translations`,
+then symlink `/opt/invenio/var/instance/translations` → that directory (the
+same pattern as `invenio-cli translations compile`). The app reads the
+instance path; instance is only a pointer at the project catalog.
 
 ### Javascript Translations
 
@@ -32,11 +41,13 @@ In each of these locations a separate instance of the `i18next` object is create
 
 #### Compiling Translations
 
+From the root of the **translation package** you are working in (each directory has its own `package.json`). Prefer **[pnpm](https://pnpm.io/)** for consistency with the main app: enable Corepack once per Node install (`corepack enable`), then:
+
 ```bash
-npm install  // this installs the dependencies
-npm run extract_messages  // this extracts translatable strings from the javascript components, compiles them in a json file,and creates .pot files in the translations directory
-npm run json_to_po  // this creates the .po files from the .json files
-npm run compile_catalog  // this compiles the .po files into .mo files
-npm run init_catalog language en  // this initializes a new language and adds it to the language list of the local package.json file
+pnpm install
+pnpm run extract_messages   # extract strings → JSON / .pot
+pnpm run json_to_po         # .json → .po
+pnpm run compile_catalog    # .po → .mo
+pnpm run init_catalog language en   # new language + package.json list
 ```
 

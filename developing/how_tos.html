@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Build Processes" href="building.html"><link rel="prev" title="Automated Testing" href="testing.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Menus (Flask-Menu)" href="menus.html"><link rel="prev" title="Automated Testing" href="testing.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>How Tos - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>How Tos - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="i18n.html">I18n</a></li>
@@ -350,6 +359,12 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">remote_accounts</span></code> (list)</p></li>
 </ul>
 <p>Most of this data can be obtained by calling <code class="docutils literal notranslate"><span class="pre">User.__dict__</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Once you have a <code class="docutils literal notranslate"><span class="pre">User</span></code> instance, its linked <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows (external auth
+links) are available on the <code class="docutils literal notranslate"><span class="pre">.external_identifiers</span></code> property. That is the same
+relationship stored in the <code class="docutils literal notranslate"><span class="pre">accounts_useridentity</span></code> table.</p>
+</div>
 <p>The User object also has some helper methods and properties:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">active_sessions</span></code> (list)</p></li>
@@ -409,6 +424,8 @@
 <span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">User</span></code> exposes linked <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows on
+<code class="docutils literal notranslate"><span class="pre">user.external_identifiers</span></code>.</p>
 </section>
 <section id="accessing-user-by-email">
 <h4>accessing user by email<a class="headerlink" href="#accessing-user-by-email" title="Link to this heading">¶</a></h4>
@@ -416,6 +433,35 @@
 <span class="n">user</span> <span class="o">=</span> <span class="n">current_accounts</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">get_user_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="accessing-user-by-a-database-field-value">
+<h4>accessing user by a database field value<a class="headerlink" href="#accessing-user-by-a-database-field-value" title="Link to this heading">¶</a></h4>
+<p>For columns on the <code class="docutils literal notranslate"><span class="pre">accounts_user</span></code> table, filter directly with <code class="docutils literal notranslate"><span class="pre">User.query</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">"myusername"</span><span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+<span class="c1"># or with an explicit comparison:</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="s2">"user@example.org"</span><span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Profile fields live in the JSON <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> column. Query those with the
+PostgreSQL <code class="docutils literal notranslate"><span class="pre">-&gt;&gt;</span></code> operator on <code class="docutils literal notranslate"><span class="pre">User._user_profile</span></code> (the underlying mapped
+column; the public <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> property is a <code class="docutils literal notranslate"><span class="pre">UserProfileDict</span></code> wrapper):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">_user_profile</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="s2">"-&gt;&gt;"</span><span class="p">)(</span><span class="s2">"identifier_kc_username"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"some_kc_username"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+
+<span class="c1"># Same pattern for other profile keys, e.g. ORCID:</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">_user_profile</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="s2">"-&gt;&gt;"</span><span class="p">)(</span><span class="s2">"identifier_orcid"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"0000-0002-1825-0097"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.all()</span></code> instead of <code class="docutils literal notranslate"><span class="pre">.one_or_none()</span></code> when more than one match is possible.</p>
+<p>Once you have the <code class="docutils literal notranslate"><span class="pre">User</span></code>, its <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows are on
+<code class="docutils literal notranslate"><span class="pre">user.external_identifiers</span></code>.</p>
 </section>
 <section id="accessing-user-based-on-external-auth-info">
 <h4>accessing user based on external auth info<a class="headerlink" href="#accessing-user-based-on-external-auth-info" title="Link to this heading">¶</a></h4>
@@ -478,7 +524,7 @@ which represent the correlation of user ids with external auth sources and ident
 <li><p><code class="docutils literal notranslate"><span class="pre">method</span></code> (str): the external auth source (IDP) id</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">id_user</span></code> (int): the Invenio user id</p></li>
 </ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">User</span></code> object also has an <code class="docutils literal notranslate"><span class="pre">external_identifiers</span></code> property that is a list of objects with the same properties as the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">User</span></code> object also has an <code class="docutils literal notranslate"><span class="pre">external_identifiers</span></code> property that is a list of objects with the same properties as the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> object. Prefer that property when you already have a <code class="docutils literal notranslate"><span class="pre">User</span></code> instance and only need its linked identities.</p>
 </section>
 <section id="link-a-user-with-an-external-auth-method">
 <h4>link a user with an external auth method<a class="headerlink" href="#link-a-user-with-an-external-auth-method" title="Link to this heading">¶</a></h4>
@@ -486,6 +532,39 @@ which represent the correlation of user ids with external auth sources and ident
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
 <span class="c1"># OR from invenio_oauthclient.models import UserIdentity</span>
 <span class="n">UserIdentity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">myuser</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">idp</span> <span class="n">label</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">id</span> <span class="n">on</span> <span class="n">idp</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="unlink-a-user-from-an-external-auth-method">
+<h4>unlink a user from an external auth method<a class="headerlink" href="#unlink-a-user-from-an-external-auth-method" title="Link to this heading">¶</a></h4>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> classmethods (they open a nested transaction). Commit
+afterward.</p>
+<p>By external id and method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+
+<span class="n">UserIdentity</span><span class="o">.</span><span class="n">delete_by_external_id</span><span class="p">(</span><span class="s2">"&lt;idp label&gt;"</span><span class="p">,</span> <span class="s2">"&lt;id on idp&gt;"</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>By user and method (removes that IDP link for the user):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+
+<span class="n">UserIdentity</span><span class="o">.</span><span class="n">delete_by_user</span><span class="p">(</span><span class="s2">"&lt;idp label&gt;"</span><span class="p">,</span> <span class="n">myuser</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Or delete a looked-up row directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">invenio_accounts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">invenio_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+
+<span class="n">identity</span> <span class="o">=</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"&lt;idp label&gt;"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"&lt;id on idp&gt;"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">identity</span><span class="p">:</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -960,12 +1039,12 @@ which represent the correlation of user ids with external auth sources and ident
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="building.html">
+          <a class="next-page" href="menus.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Build Processes</div>
+                <div class="title">Menus (Flask-Menu)</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -1020,11 +1099,13 @@ which represent the correlation of user ids with external auth sources and ident
 <li><a class="reference internal" href="#activating-user">activating user</a></li>
 <li><a class="reference internal" href="#accessing-user-by-id">accessing user by id</a></li>
 <li><a class="reference internal" href="#accessing-user-by-email">accessing user by email</a></li>
+<li><a class="reference internal" href="#accessing-user-by-a-database-field-value">accessing user by a database field value</a></li>
 <li><a class="reference internal" href="#accessing-user-based-on-external-auth-info">accessing user based on external auth info</a></li>
 <li><a class="reference internal" href="#accessing-current-user">accessing current user</a></li>
 <li><a class="reference internal" href="#accessing-current-user-profile">accessing current user profile</a></li>
 <li><a class="reference internal" href="#accessing-a-user-s-external-authentication-methods">accessing a user’s external authentication methods</a></li>
 <li><a class="reference internal" href="#link-a-user-with-an-external-auth-method">link a user with an external auth method</a></li>
+<li><a class="reference internal" href="#unlink-a-user-from-an-external-auth-method">unlink a user from an external auth method</a></li>
 </ul>
 </li>
 </ul>
@@ -1122,7 +1203,7 @@ which represent the correlation of user ids with external auth sources and ident
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Customizations to InvenioRDM" href="../customizations.html"><link rel="prev" title="Outgoing Signals" href="outgoing_signals.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>CLI Commands - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>CLI Commands - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
@@ -320,13 +329,18 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 </li>
 </ul>
 </section>
-<section id="invenio-kcworks-index-destroy">
-<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code><a class="headerlink" href="#invenio-kcworks-index-destroy" title="Link to this heading">¶</a></h3>
+<section id="invenio-kcworks-index-destroy-indices">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy-indices</span></code><a class="headerlink" href="#invenio-kcworks-index-destroy-indices" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py)</p></li>
-<li><p>destroys search indices for the KCWorks instance that are <em>not</em> destroyed by the main KCWorks index destroy command. These are primarily the indices for storing usage events and aggregated usage data.</p></li>
-<li><p><strong>WARNING:</strong> This data <em>only</em> exists in the OpenSearch indices. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.</p></li>
+<li><p><strong>provided by the main KCWorks package</strong> (<code class="docutils literal notranslate"><span class="pre">site/kcworks/cli.py</span></code>)</p></li>
+<li><p>destroys search indices for the KCWorks instance that are <em>not</em> destroyed by the main Invenio search destroy command. These are primarily the indices for storing usage events and aggregated usage data.</p></li>
+<li><p><strong>WARNING:</strong> This data <em>only</em> exists in OpenSearch. It is not backed up by the database and will be lost if the indices are destroyed. Use this command with extreme caution.</p></li>
 </ul>
+<p>Requires interactive confirmation unless <code class="docutils literal notranslate"><span class="pre">--yes-i-know</span></code> is passed. Use <code class="docutils literal notranslate"><span class="pre">--force</span></code> to ignore 404 errors when an index is already gone.</p>
+<p>Example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-index<span class="w"> </span>destroy-indices<span class="w"> </span>--yes-i-know
+</pre></div>
+</div>
 </section>
 <section id="invenio-kcworks-records">
 <h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code><a class="headerlink" href="#invenio-kcworks-records" title="Link to this heading">¶</a></h3>
@@ -387,31 +401,35 @@ possible to export records from a remote KCWorks instance, but the API url and a
 <p>When exporting records from a remote KCWorks instance, the filtering options by contributor are not currently supported. In other words, these options will only work if the CLI command is exporting from the same KCWorks instance as the one being exported from.</p>
 </div>
 </section>
-<section id="invenio-kcworks-records-import-test-data">
-<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-data</span></code><a class="headerlink" href="#invenio-kcworks-records-import-test-data" title="Link to this heading">¶</a></h4>
-<p>Imports test data into the KCWorks instance.</p>
+<section id="invenio-kcworks-records-import-test-records">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-records</span></code><a class="headerlink" href="#invenio-kcworks-records-import-test-records" title="Link to this heading">¶</a></h4>
+<p>Imports test data from production into the local KCWorks instance.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EMAIL</span></code> (required): email address of the user who will own the imported records.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COUNT</span></code> (optional): number of records to import. Defaults to 10, or to the number of IDs in <code class="docutils literal notranslate"><span class="pre">--record-ids</span></code> when that option is used.</p></li>
+</ul>
 <p>By default the import query is ordered by <code class="docutils literal notranslate"><span class="pre">newest</span></code>, a descending sort based on the <code class="docutils literal notranslate"><span class="pre">created</span></code> field. If a date range is provided, the records within that range will still be ordered by <code class="docutils literal notranslate"><span class="pre">newest</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">count</span></code> argument gives the number of results from that query that will actually be imported. The <code class="docutils literal notranslate"><span class="pre">offset</span></code> argument gives the number of results to skip before starting to import.</p>
 <p>Sometimes it is useful to import a subset of the production data with a wider range of dates than would result from a simple <code class="docutils literal notranslate"><span class="pre">newest</span></code> query. The <code class="docutils literal notranslate"><span class="pre">spread_dates</span></code> argument can be used to spread the records as evenly as possible over a range of dates.</p>
 <p>Options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (optional): the number of records to import. Defaults to 10.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> (optional): the offset from the start of the query results to start importing from. Defaults to 0.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (optional): the start date to import records from. Defaults to None.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (optional): the end date to import records to. Defaults to None.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">spread_dates</span></code> (optional): whether to spread the records over a range of dates. Defaults to False.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">record_ids</span></code> (optional): a comma-separated list of record IDs to import. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--offset</span></code>: the offset from the start of the query results to start importing from. Defaults to 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--start-date</span></code>: the start date to import records from. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--end-date</span></code>: the end date to import records to. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--spread-dates</span></code>: whether to spread the records over a range of dates. Defaults to False.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--record-ids</span></code>: a comma-separated list of record IDs to import. Defaults to None.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">import-test-data</span></code> command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">import-test-records</span></code> command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.</p>
 </div>
 <p>Example of importing 10 records with evenly spread dates over the year 2024:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-data<span class="w"> </span>--count<span class="w"> </span><span class="m">10</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-12-31<span class="w"> </span>--spread-dates
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-records<span class="w"> </span>user@example.com<span class="w"> </span><span class="m">10</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-12-31<span class="w"> </span>--spread-dates
 </pre></div>
 </div>
 <p>Example of importing 2 records with specific record IDs:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-data<span class="w"> </span>--count<span class="w"> </span><span class="m">2</span><span class="w"> </span>--record-ids<span class="w"> </span><span class="s2">"1234567890,1234567891"</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-records<span class="w"> </span>user@example.com<span class="w"> </span><span class="m">2</span><span class="w"> </span>--record-ids<span class="w"> </span><span class="s2">"1234567890,1234567891"</span>
 </pre></div>
 </div>
 </section>
@@ -437,6 +455,70 @@ possible to export records from a remote KCWorks instance, but the API url and a
 <p>Also note that the <code class="docutils literal notranslate"><span class="pre">community_id</span></code> argument is the ID (the UUID) of the collection, not the collection name or its url slug. If you’re not sure what the collection ID is, you can find it by looking at the api response for the collection.</p>
 </div>
 </section>
+<section id="invenio-kcworks-records-change-record-owner">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code><a class="headerlink" href="#invenio-kcworks-records-change-record-owner" title="Link to this heading">¶</a></h4>
+<p>Changes record ownership using the record importer’s ownership assignment logic so that access grants and parent-record ownership are updated consistently.</p>
+<p><strong>Single record:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--record-id</span></code> / <code class="docutils literal notranslate"><span class="pre">-r</span></code>: the record UUID to update.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-owner-id</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--new-owner-email</span></code> / <code class="docutils literal notranslate"><span class="pre">-e</span></code>: the new owner.</p></li>
+</ul>
+<p><strong>All published records for a user</strong> (by local user id):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--old-owner-id</span></code>: current owner’s local user id.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-owner-id</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">--new-owner-email</span></code> / <code class="docutils literal notranslate"><span class="pre">-e</span></code>: the new owner.</p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single record</span>
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-record-owner<span class="w"> </span>--record-id<span class="w"> </span>abc123-def456<span class="w"> </span>--new-owner-email<span class="w"> </span>user@example.org
+
+<span class="c1"># All published records owned by user 100 -&gt; user 200</span>
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-record-owner<span class="w"> </span>--old-owner-id<span class="w"> </span><span class="m">100</span><span class="w"> </span>--new-owner-id<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+</section>
+<section id="invenio-kcworks-records-update-contributors-username">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code><a class="headerlink" href="#invenio-kcworks-records-update-contributors-username" title="Link to this heading">¶</a></h4>
+<p>Rewrites <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> identifiers in record <code class="docutils literal notranslate"><span class="pre">metadata.creators</span></code> and
+<code class="docutils literal notranslate"><span class="pre">metadata.contributors</span></code>. For account merge/migration after
+<code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> when creator blocks still cite the duplicate’s KC
+username. Calls <code class="docutils literal notranslate"><span class="pre">rewrite_records_for_kc_username_change</span></code> with
+<code class="docutils literal notranslate"><span class="pre">prune_names=False</span></code> (record metadata only; no Names prune).</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-o</span></code> (required): KC username on matching creator/contributor entries.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code> (required): KC username to write in its place.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: list matching record IDs without writing changes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code>: queue the rewrite on Celery instead of running synchronously.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>duplicateuser<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-n<span class="w"> </span>canonicaluser
+</pre></div>
+</div>
+</section>
+<section id="invenio-kcworks-records-migrate-user">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">migrate_user</span></code><a class="headerlink" href="#invenio-kcworks-records-migrate-user" title="Link to this heading">¶</a></h4>
+<p>Runs account merge in two steps: <code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> (all published records
+from <code class="docutils literal notranslate"><span class="pre">--old-owner-id</span></code> to <code class="docutils literal notranslate"><span class="pre">--new-owner-id</span></code>), then
+<code class="docutils literal notranslate"><span class="pre">update_contributors_username</span></code> (<code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> to <code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code>).</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--old-owner-id</span></code> (required): duplicate account local user id.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-owner-id</span></code> (required): canonical account local user id.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> (required): duplicate KC username on creator/contributor metadata.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code> (required): canonical KC username to write.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: preview both steps without writing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code>: queue the contributor-username step on Celery after synchronous ownership transfer.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>migrate_user<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--old-owner-id<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-owner-id<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--old-kc-username<span class="w"> </span>duplicateuser<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--new-kc-username<span class="w"> </span>canonicaluser
+</pre></div>
+</div>
+</section>
 </section>
 <section id="invenio-kcworks-users">
 <h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code><a class="headerlink" href="#invenio-kcworks-users" title="Link to this heading">¶</a></h3>
@@ -445,7 +527,7 @@ possible to export records from a remote KCWorks instance, but the API url and a
 </ul>
 <section id="invenio-kcworks-users-name-parts">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code><a class="headerlink" href="#invenio-kcworks-users-name-parts" title="Link to this heading">¶</a></h4>
-<p>Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata.</p>
+<p>Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata. Updates also queue an asynchronous Names vocabulary sync for the user.</p>
 <p>Positional arguments:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: the ID of the user to read or update.</p></li>
@@ -466,13 +548,34 @@ possible to export records from a remote KCWorks instance, but the API url and a
 </section>
 <section id="invenio-kcworks-users-read">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code><a class="headerlink" href="#invenio-kcworks-users-read" title="Link to this heading">¶</a></h4>
-<p>Reads a KCWorks user’s data from the database, including associated KC account and collection memberships.</p>
+<p>Reads a KCWorks user’s data from the database, including associated KC account
+and collection memberships, Flask-Security roles, and <code class="docutils literal notranslate"><span class="pre">UserIdentity</span></code> rows
+(external auth links such as Knowledge Commons / CILogon).</p>
 <p>Named arguments:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> (-e): the email address of the user to read.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--user-id</span></code> (-u): the ID of the user to read.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--kc-id</span></code> (-k): the username of the KC user to read.</p></li>
 </ul>
+</section>
+<section id="invenio-kcworks-users-find-duplicates">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code><a class="headerlink" href="#invenio-kcworks-users-find-duplicates" title="Link to this heading">¶</a></h4>
+<p>Scans local user accounts for likely duplicates and prints match groups. Does
+not modify any data.</p>
+<p>Match reasons reported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">duplicate_kc_username</span></code>: two or more users share the same non-empty
+<code class="docutils literal notranslate"><span class="pre">user_profile.identifier_kc_username</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">duplicate_orcid</span></code>: two or more users share the same non-empty
+<code class="docutils literal notranslate"><span class="pre">user_profile.identifier_orcid</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kc_username_equals_username</span></code>: one user’s <code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> equals
+another user’s <code class="docutils literal notranslate"><span class="pre">username</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kc_username_equals_prefixed_username</span></code>: one user’s <code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code>
+equals another user’s <code class="docutils literal notranslate"><span class="pre">username</span></code> after stripping a leading
+<code class="docutils literal notranslate"><span class="pre">knowledgeCommons-</span></code> prefix from that username.</p></li>
+</ul>
+<p>Each match includes the shared value and a short summary of the involved users
+(id, email, username, KC username, ORCID).</p>
 </section>
 <section id="invenio-kcworks-users-groups">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code><a class="headerlink" href="#invenio-kcworks-users-groups" title="Link to this heading">¶</a></h4>
@@ -496,6 +599,172 @@ possible to export records from a remote KCWorks instance, but the API url and a
 <li><p><code class="docutils literal notranslate"><span class="pre">--kc-id</span></code> (-k): the username of the KC user to list groups for.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--collection-role</span></code> (-r): the name of the collection role to list groups for.</p></li>
 </ul>
+</section>
+</section>
+<section id="invenio-kcworks-jobs">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span></code><a class="headerlink" href="#invenio-kcworks-jobs" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>provided by the main KCWorks package</strong> (<code class="docutils literal notranslate"><span class="pre">site/kcworks/cli.py</span></code>)</p></li>
+<li><p>thin wrapper around the <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> <code class="docutils literal notranslate"><span class="pre">JobsService</span></code> for declarative, idempotent management of <code class="docutils literal notranslate"><span class="pre">Job</span></code> rows at deploy time. <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> itself ships no CLI; this command lets a Job row (which the <code class="docutils literal notranslate"><span class="pre">RunScheduler</span></code> beat picks up) be created or updated from a script without going through the admin UI.</p></li>
+<li><p>Instance-wide schedule (beat + jobs): <a class="reference internal" href="../admin_guide/scheduled_events.html"><span class="std std-doc">Scheduled events</span></a>.</p></li>
+</ul>
+<section id="invenio-kcworks-jobs-upsert">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span> <span class="pre">upsert</span></code><a class="headerlink" href="#invenio-kcworks-jobs-upsert" title="Link to this heading">¶</a></h4>
+<p>Creates or updates a single <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> <code class="docutils literal notranslate"><span class="pre">Job</span></code> row for a registered task. The lookup key is <code class="docutils literal notranslate"><span class="pre">(task,</span> <span class="pre">title)</span></code>; if a row matches, it is updated in place, otherwise a new row is created. Uses <code class="docutils literal notranslate"><span class="pre">current_jobs_service</span></code> with the system identity.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TASK</span></code> (positional, required): the registered task id, e.g. <code class="docutils literal notranslate"><span class="pre">process_ror_funders</span></code>
+or <code class="docutils literal notranslate"><span class="pre">merge_names_orcid_duplicates</span></code>. Must match a task registered via the
+<code class="docutils literal notranslate"><span class="pre">invenio_jobs.jobs</span></code> entry point.</p></li>
+</ul>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--title</span> <span class="pre">TEXT</span></code>: the Job title (also part of the upsert key). Defaults to the task id.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--description</span> <span class="pre">TEXT</span></code>: optional human-readable description.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--schedule</span> <span class="pre">TEXT</span></code>: schedule expression. Two forms are accepted:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">crontab:minute=0,hour=3,day_of_week=0</span></code> (fields are strings, mirroring <code class="docutils literal notranslate"><span class="pre">celery.schedules.crontab</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interval:days=7</span></code> or <code class="docutils literal notranslate"><span class="pre">interval:hours=6,minutes=30</span></code> (fields are integers, mirroring <code class="docutils literal notranslate"><span class="pre">datetime.timedelta</span></code>)</p></li>
+<li><p>Omit for a manual-only Job (no automatic runs).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--queue</span> <span class="pre">TEXT</span></code>: Celery queue name (must be a key in <code class="docutils literal notranslate"><span class="pre">JOBS_QUEUES</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--active</span> <span class="pre">/</span> <span class="pre">--inactive</span></code>: whether the Job is active (i.e. eligible to be picked up by the scheduler). Defaults to <code class="docutils literal notranslate"><span class="pre">--active</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--run-now</span></code>: after upserting the Job row, also dispatch one immediate run, in addition to the normal schedule. Useful on fresh installs to bootstrap data for vocabularies (e.g. <code class="docutils literal notranslate"><span class="pre">awards</span></code>) whose datastream config only exists inside a <code class="docutils literal notranslate"><span class="pre">JobType</span></code> and that therefore can’t be seeded with <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">import</span></code>. Mirrors the upstream <code class="docutils literal notranslate"><span class="pre">RunScheduler.create_run</span></code> pattern (creates a <code class="docutils literal notranslate"><span class="pre">Run</span></code> row with NULL <code class="docutils literal notranslate"><span class="pre">started_by_id</span></code> and dispatches <code class="docutils literal notranslate"><span class="pre">execute_run</span></code> on the job’s <code class="docutils literal notranslate"><span class="pre">default_queue</span></code>).</p></li>
+</ul>
+<p>Example — create or update the recurring ROR funders refresh:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>Example — register the weekly Names ORCID-merge job (see
+<a class="reference internal" href="../admin_guide/names_vocabulary.html#scheduled-jobs-invenio-jobs"><span class="std std-ref">Names Vocabulary Lifecycle</span></a>):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>merge_names_orcid_duplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Merge Names ORCID duplicates"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=7,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>Example — register the awards-from-OpenAIRE schedule and trigger an immediate first run (e.g. on a fresh install):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the scheduled run to actually fire, the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> service in <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> (which runs <code class="docutils literal notranslate"><span class="pre">celery</span> <span class="pre">beat</span> <span class="pre">--scheduler</span> <span class="pre">invenio_jobs.services.scheduler:RunScheduler</span></code>) must be up. That is the standard upstream setup for <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code>. <code class="docutils literal notranslate"><span class="pre">--run-now</span></code>, by contrast, dispatches a one-off run via the regular Celery worker queue and does not depend on the scheduler service.</p>
+</div>
+</section>
+</section>
+<section id="invenio-kcworks-communities">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span></code><a class="headerlink" href="#invenio-kcworks-communities" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>provided by the main KCWorks package</strong> (<code class="docutils literal notranslate"><span class="pre">site/kcworks/cli.py</span></code> and <code class="docutils literal notranslate"><span class="pre">site/kcworks/services/communities/cli.py</span></code>)</p></li>
+<li><p>administrative utilities for community (collection) management</p></li>
+</ul>
+<section id="invenio-kcworks-communities-set-parent">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">set-parent</span></code><a class="headerlink" href="#invenio-kcworks-communities-set-parent" title="Link to this heading">¶</a></h4>
+<p>Assigns or removes a community’s parent link, establishing or changing subcommunity hierarchy. The command runs with the system identity and uses the same community service path as the REST API (<code class="docutils literal notranslate"><span class="pre">CommunityService.update</span></code> with a <code class="docutils literal notranslate"><span class="pre">parent</span></code> field).</p>
+<p>KCWorks allows nested subcommunity hierarchies of arbitrary depth (unlike upstream Invenio Communities, which limits nesting to one level).</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CHILD</span></code> (required): the child community to update, identified by slug or UUID.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PARENT</span></code> (optional): the parent community to assign, identified by slug or UUID. Required when assigning a parent; omit when using <code class="docutils literal notranslate"><span class="pre">--clear</span></code>.</p></li>
+</ul>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--clear</span></code>: remove the child’s existing parent link instead of assigning one. <code class="docutils literal notranslate"><span class="pre">PARENT</span></code> must not be supplied with this flag. If the child has no parent, the command succeeds with a no-op message.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--enable-children</span></code>: if the proposed parent does not have <code class="docutils literal notranslate"><span class="pre">children.allow</span></code> set, enable it on the parent before linking the child. Without this flag, the command exits with an error when the parent is not allowed to have children.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--force</span></code>: replace an existing parent with a different one. Without this flag, the command refuses when the child already has a parent other than the one requested. If the child already has the requested parent, the command succeeds as a no-op without requiring <code class="docutils literal notranslate"><span class="pre">--force</span></code>.</p></li>
+</ul>
+<p>Example — assign a parent by slug:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>set-parent<span class="w"> </span>my-subcommunity<span class="w"> </span>my-parent-org
+</pre></div>
+</div>
+<p>Example — assign a parent when the parent is not yet configured to allow children:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>set-parent<span class="w"> </span>my-subcommunity<span class="w"> </span>my-parent-org<span class="w"> </span>--enable-children
+</pre></div>
+</div>
+<p>Example — move a subcommunity to a different parent:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>set-parent<span class="w"> </span>my-subcommunity<span class="w"> </span>new-parent-org<span class="w"> </span>--force
+</pre></div>
+</div>
+<p>Example — remove a parent link:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>set-parent<span class="w"> </span>my-subcommunity<span class="w"> </span>--clear
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command is intended for administrative use (for example, correcting hierarchy after import or migration). The normal UI workflow for joining a parent community is the subcommunity request/invitation flow in Invenio Communities.</p>
+</div>
+</section>
+<section id="invenio-kcworks-communities-update-index-mapping">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">update-index-mapping</span></code><a class="headerlink" href="#invenio-kcworks-communities-update-index-mapping" title="Link to this heading">¶</a></h4>
+<p>Applies <strong>additive</strong> OpenSearch mapping updates to the live <strong>communities</strong>, <strong>RDM records</strong>, and <strong>RDM drafts</strong> indices, using each index’s registered mapping JSON (<code class="docutils literal notranslate"><span class="pre">communities-communities-v2.0.0</span></code> from <code class="docutils literal notranslate"><span class="pre">invenio-communities</span></code>; record/draft mappings from the vendored <a class="reference internal" href="#customizations.html#invenio-rdm-records"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">invenio-rdm-records</span></code></span></a> fork).</p>
+<p>Fresh installs that run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">init</span></code> pick up current mapping files automatically. Run this command when <strong>migrating existing indices</strong> that predate mapping additions (for example <code class="docutils literal notranslate"><span class="pre">theme.autogeneratedLogo</span></code> on communities and on embedded community snapshots under <code class="docutils literal notranslate"><span class="pre">parent.communities.entries</span></code> in record/draft indices).</p>
+<p>On existing instances, the live communities index often <strong>drifts</strong> from that file: KCWorks custom fields added via <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">communities</span> <span class="pre">custom-fields</span> <span class="pre">init</span></code>, locale subfields materialized by dynamic templates (for example <code class="docutils literal notranslate"><span class="pre">metadata.type.title.de</span></code>), and similar. In those cases <strong><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">update</span> <span class="pre">communities-communities-v2.0.0</span></code> fails</strong> because it compares the entire file and aborts when the diff includes anything other than pure additions.</p>
+<p>This command instead:</p>
+<ul class="simple">
+<li><p>reads the registered mapping file and the live index mapping;</p></li>
+<li><p>builds a <strong><code class="docutils literal notranslate"><span class="pre">put_mapping</span></code> patch containing only fields/subfields present in the file but missing on the live index</strong>;</p></li>
+<li><p>leaves live-only fields untouched;</p></li>
+<li><p>skips fields whose definitions already exist but differ (OpenSearch cannot change them in place), reporting them with <code class="docutils literal notranslate"><span class="pre">--verbose</span></code>.</p></li>
+</ul>
+<p>Use it when deploying mapping changes (for example <code class="docutils literal notranslate"><span class="pre">theme.autogeneratedLogo</span></code>) to <strong>existing</strong> indices. Fresh installs that run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">init</span></code> on an empty cluster do not need it.</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: print the <code class="docutils literal notranslate"><span class="pre">put_mapping</span></code> body without writing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--verbose</span></code>: print fields skipped because the live mapping differs and cannot be updated in place.</p></li>
+</ul>
+<p>Example — inspect the patch:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>update-index-mapping<span class="w"> </span>--dry-run
+</pre></div>
+</div>
+<p>Example — apply updates on a migrated instance (run <strong>before</strong> branding backfill when the index predates new theme fields):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>update-index-mapping
+invenio<span class="w"> </span>communities<span class="w"> </span>rebuild-index
+invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>backfill-default-branding
+</pre></div>
+</div>
+</section>
+<section id="invenio-kcworks-communities-backfill-default-branding">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">backfill-default-branding</span></code><a class="headerlink" href="#invenio-kcworks-communities-backfill-default-branding" title="Link to this heading">¶</a></h4>
+<p>Backfills default geopattern logos and theme colors on existing communities that are missing them.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On migrated instances whose indices were created before <code class="docutils literal notranslate"><span class="pre">theme.autogeneratedLogo</span></code> was added, run <a class="reference internal" href="#invenio-kcworks-communities-update-index-mapping"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">update-index-mapping</span></code></span></a> first (communities <strong>and</strong> record/draft indices). Otherwise indexing during backfill or record reindex will fail on strict mapping.</p>
+</div>
+<p>The command scans all communities and, for each one, fills in only what is currently absent:</p>
+<ul class="simple">
+<li><p><strong>Logo</strong>: adds a slug-derived geopattern PNG when <code class="docutils literal notranslate"><span class="pre">record.files[&quot;logo&quot;]</span></code> is missing.</p></li>
+<li><p><strong>Theme</strong>: seeds any missing default <code class="docutils literal notranslate"><span class="pre">theme.style</span></code> keys from the service
+default for that community’s logo type (slug-derived palette and header
+flags for geopattern logos; site-neutral palette with
+<code class="docutils literal notranslate"><span class="pre">mainHeaderUseLogo=false</span></code> for user-uploaded logos). With
+<code class="docutils literal notranslate"><span class="pre">--reset-theme</span></code>, any key that differs from the current service default
+is overwritten (colors and header flags).</p></li>
+</ul>
+<p>User-uploaded logos are never overwritten. Admin-customized theme values
+are preserved by regular community updates and by backfill unless
+<code class="docutils literal notranslate"><span class="pre">--reset-theme</span></code> is passed.</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: report what would change without writing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code>: stop after touching this many communities.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--logo-only</span></code>: only generate missing logos; skip theme.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--theme-only</span></code>: only seed missing theme colors; skip logo.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--reset-theme</span></code>: overwrite existing theme values with current service defaults.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--async</span></code>: enqueue a Celery task per needy community instead of applying inline (requires a worker).</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-communities<span class="w"> </span>backfill-default-branding<span class="w"> </span>--dry-run
+</pre></div>
+</div>
 </section>
 </section>
 <section id="invenio-group-collections">
@@ -527,14 +796,102 @@ possible to export records from a remote KCWorks instance, but the API url and a
 </div>
 <p>The command will output a summary showing how many communities were unchanged, fixed, or had errors. If any communities had errors, the command will exit with a non-zero status code.</p>
 </section>
+<section id="invenio-group-collections-assign-org-records">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">assign-org-records</span></code><a class="headerlink" href="#invenio-group-collections-assign-org-records" title="Link to this heading">¶</a></h4>
+<p>Assigns published records owned by org members to the corresponding org communities, based on a CSV mapping file.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CSV_FILE</span></code>: path to a CSV file where the first column is the KC username and subsequent columns are org identifiers (column headers such as <code class="docutils literal notranslate"><span class="pre">mla</span></code> map to org community slugs).</p></li>
+</ul>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--org</span></code>: process only one org column.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--start-date</span></code> / <code class="docutils literal notranslate"><span class="pre">--end-date</span></code>: include only records created within the date range (YYYY-MM-DD, inclusive).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--max-rows</span></code>: process only the first <em>N</em> rows of the CSV.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--log-file</span></code>: write cumulative results to a JSON log file (merged with an existing log if present).</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>group-collections<span class="w"> </span>assign-org-records<span class="w"> </span>/path/to/org_members.csv
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../admin_guide/organization_management.html"><span class="std std-doc">Organization Management</span></a> for CSV format and operational guidance.</p>
 </section>
-<section id="invenio-user-data-update">
-<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code><a class="headerlink" href="#invenio-user-data-update" title="Link to this heading">¶</a></h3>
+</section>
+<section id="invenio-community-stats">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">community-stats</span></code><a class="headerlink" href="#invenio-community-stats" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>provided by the <code class="docutils literal notranslate"><span class="pre">invenio-stats-dashboard</span></code> package</strong></p></li>
+<li><p>manages community statistics infrastructure: aggregation, cache, usage-event migration, community-event generation, and background process monitoring</p></li>
+</ul>
+<p>Top-level commands and groups (run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">community-stats</span> <span class="pre">--help</span></code> for the full tree):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aggregate</span></code>, <code class="docutils literal notranslate"><span class="pre">aggregate-background</span></code>: run community statistics aggregation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span></code>: display aggregated statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code>: show aggregation bookmark and completeness status</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clear-bookmarks</span></code>: reset aggregation progress bookmarks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clear-lock</span></code>: clear aggregation locks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enable-dashboards</span></code>: enable dashboard configuration for communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">destroy-indices</span></code>: destroy OpenSearch indices created by this package (<strong>destructive</strong>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cache</span></code>: cache generation and maintenance (<code class="docutils literal notranslate"><span class="pre">generate</span></code>, <code class="docutils literal notranslate"><span class="pre">clear-all</span></code>, <code class="docutils literal notranslate"><span class="pre">clear-pattern</span></code>, <code class="docutils literal notranslate"><span class="pre">clear-item</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community-events</span></code>: generate and inspect community add/remove events</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage-events</span></code>: generate, migrate, and clean up usage (view/download) events</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">processes</span></code>: monitor or cancel background jobs started by <code class="docutils literal notranslate"><span class="pre">*-background</span></code> commands</p></li>
+</ul>
+<p>Detailed option reference for these commands lives in the package source at <code class="docutils literal notranslate"><span class="pre">site/kcworks/dependencies/invenio-stats-dashboard/docs/source/cli.md</span></code>.</p>
+</section>
+<section id="invenio-user-data">
+<h3><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span></code><a class="headerlink" href="#invenio-user-data" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>provided by the <code class="docutils literal notranslate"><span class="pre">invenio-remote-user-data-kcworks</span></code> package</strong></p></li>
-<li><p>updates a single user’s data from the remote KC user data service.</p></li>
-<li><p>with the <code class="docutils literal notranslate"><span class="pre">--groups</span></code> option, updates a group collection’s metadata from the remote KC group data service.</p></li>
+<li><p>syncs user and group metadata from remote KC services and maintains the Names vocabulary</p></li>
 </ul>
+<p>Subgroups:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span></code> — bulk user provisioning and re-pull from Profiles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code> — Names vocabulary maintenance and duplicate review</p></li>
+</ul>
+<p>See <a class="reference internal" href="../admin_guide/user_data_management.html"><span class="std std-doc">User Data Management</span></a> for operational workflows.</p>
+<section id="invenio-user-data-users-update">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code><a class="headerlink" href="#invenio-user-data-users-update" title="Link to this heading">¶</a></h4>
+<p>Re-pulls user (or group) metadata from the remote KC user data service for one or more identities.</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IDS</span></code> (optional): one or more user ids, remote usernames, email addresses, or id ranges such as <code class="docutils literal notranslate"><span class="pre">1-10</span></code>. When omitted, all users are updated.</p></li>
+</ul>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--groups</span></code> / <code class="docutils literal notranslate"><span class="pre">-g</span></code>: update groups rather than users (group update is not yet implemented).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--source</span></code> / <code class="docutils literal notranslate"><span class="pre">-s</span></code>: remote source name (default: <code class="docutils literal notranslate"><span class="pre">knowledgeCommons</span></code>). Should match the OAuth/SAML IDP in <code class="docutils literal notranslate"><span class="pre">UserIdentity.method</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--by-email</span></code> / <code class="docutils literal notranslate"><span class="pre">-e</span></code>: treat each ID as an email address.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--by-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code>: treat each ID as a remote-side username.</p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span><span class="m">12345</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>kcusername<span class="w"> </span>--by-username
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>user@example.org<span class="w"> </span>--by-email
+</pre></div>
+</div>
+</section>
+<section id="invenio-user-data-users-ingest-profiles-dump">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code><a class="headerlink" href="#invenio-user-data-users-ingest-profiles-dump" title="Link to this heading">¶</a></h4>
+<p>Bulk-creates or updates local users from a Profiles API JSONL dump or a CSV of usernames. Accepts <code class="docutils literal notranslate"><span class="pre">--background</span></code> to queue the work on Celery instead of running synchronously.</p>
+</section>
+<section id="invenio-user-data-names">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code><a class="headerlink" href="#invenio-user-data-names" title="Link to this heading">¶</a></h4>
+<p>Names vocabulary maintenance commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sync-now</span></code>: re-sync Names entries from current local profile data (per-user ids, or <code class="docutils literal notranslate"><span class="pre">--all</span></code> for bulk backfill; accepts the same <code class="docutils literal notranslate"><span class="pre">--by-email</span></code> / <code class="docutils literal notranslate"><span class="pre">--by-username</span></code> / <code class="docutils literal notranslate"><span class="pre">--source</span></code> flags as <code class="docutils literal notranslate"><span class="pre">users</span> <span class="pre">update</span></code>; <code class="docutils literal notranslate"><span class="pre">--missing-only</span></code>, <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>, and <code class="docutils literal notranslate"><span class="pre">--limit</span></code> apply with <code class="docutils literal notranslate"><span class="pre">--all</span></code>; supports <code class="docutils literal notranslate"><span class="pre">--background</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">backfill-cited-from-records</span></code>: bulk backfill Names entries from published record metadata</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">show</span></code>: inspect a Names record by pid or ORCID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merge-orcid-duplicates</span></code>: auto-merge duplicate Names entries that share an ORCID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">find-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">list-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">dismiss-duplicate</span></code>, <code class="docutils literal notranslate"><span class="pre">undismiss-duplicate</span></code>, <code class="docutils literal notranslate"><span class="pre">list-dismissed-duplicates</span></code>: duplicate-review workflow</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>user@example.org<span class="w"> </span>--by-email
+invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>sync-now<span class="w"> </span>--all<span class="w"> </span>--missing-only<span class="w"> </span>--dry-run
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 </section>
@@ -599,26 +956,47 @@ possible to export records from a remote KCWorks instance, but the API url and a
 <li><a class="reference internal" href="#running-cli-commands-in-the-kcworks-container">Running CLI Commands in the KCWorks Container</a></li>
 <li><a class="reference internal" href="#kcworks-custom-cli-commands">KCWorks Custom CLI Commands</a><ul>
 <li><a class="reference internal" href="#invenio-importer"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">importer</span></code></a></li>
-<li><a class="reference internal" href="#invenio-kcworks-index-destroy"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-index-destroy-indices"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-index</span> <span class="pre">destroy-indices</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code></a><ul>
 <li><a class="reference internal" href="#invenio-kcworks-records-export-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></a></li>
-<li><a class="reference internal" href="#invenio-kcworks-records-import-test-data"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-data</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-import-test-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-records</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-bulk-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-change-record-owner"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-update-contributors-username"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-migrate-user"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">migrate_user</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#invenio-kcworks-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code></a><ul>
 <li><a class="reference internal" href="#invenio-kcworks-users-name-parts"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-read"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-find-duplicates"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-group-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-user-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#invenio-group-collections"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span></code></a><ul>
-<li><a class="reference internal" href="#invenio-group-collections-check-group-memberships"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">check-group-memberships</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-jobs"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-kcworks-jobs-upsert"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span> <span class="pre">upsert</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#invenio-user-data-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">update</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-communities"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-kcworks-communities-set-parent"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">set-parent</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-communities-update-index-mapping"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">update-index-mapping</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-communities-backfill-default-branding"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-communities</span> <span class="pre">backfill-default-branding</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#invenio-group-collections"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-group-collections-check-group-memberships"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">check-group-memberships</span></code></a></li>
+<li><a class="reference internal" href="#invenio-group-collections-assign-org-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">group-collections</span> <span class="pre">assign-org-records</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#invenio-community-stats"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">community-stats</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span></code></a><ul>
+<li><a class="reference internal" href="#invenio-user-data-users-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-users-ingest-profiles-dump"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-names"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -632,7 +1010,7 @@ possible to export records from a remote KCWorks instance, but the API url and a
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

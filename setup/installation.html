@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Developing KCWorks" href="../developing/index.html"><link rel="prev" title="Configuration of KCWorks" href="configuration.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Installation - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>Installation - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
@@ -274,13 +283,32 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">¶</a></h2>
-<p>These instructions allow you to run Knowledge Commons Works for local development. The app source files are copied onto your system, but the Flask application and other services (database, search, etc.) are run in Docker containers. The application is served to your browser by an nginx web server running in a separate container.</p>
-<p>First you will need to have the correct versions of Docker (20.10.10+ with Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have Python’s <code class="docutils literal notranslate"><span class="pre">uv</span></code> package manager installed (see <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">the uv docs</a> for details). If you are going to run frontend development tests you will also need to have Node.js (20+) and npm (10.9.0+) installed.</p>
-<p>From there, installation involves these steps. Each one is further explained below, but here is a quick reference:</p>
+<p>These instructions allow you to run Knowledge Commons Works for local
+development. The app source files are copied onto your system, but the Flask
+application and other services (database, search, etc.) are run in Docker
+containers. The application is served to your browser by an nginx web server
+running in a separate container.</p>
+<p>First you will need to have the correct versions of Docker (20.10.10+ with
+Docker Compose 1.17.0+) and Python (3.12.0+). You will also need to have
+Python’s <code class="docutils literal notranslate"><span class="pre">uv</span></code> package manager installed (see
+<a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">the uv docs</a> for
+details). For local development, the
+<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS CLI</a>
+must be installed on your <strong>host machine</strong> (not inside the Docker containers) so
+<code class="docutils literal notranslate"><span class="pre">kcworks-startup.sh</span></code> can fetch secrets from AWS Secrets Manager. If you are going
+to run <strong>frontend / JavaScript tests</strong> against the
+root <code class="docutils literal notranslate"><span class="pre">package.json</span></code>, install <strong>Node.js (20+)</strong> and enable <strong>Corepack</strong> (bundled
+with Node) once per Node install: <code class="docutils literal notranslate"><span class="pre">corepack</span> <span class="pre">enable</span></code>. The repo uses
+<strong><a class="reference external" href="https://pnpm.io/">pnpm</a></strong>; the exact version is set in <strong><code class="docutils literal notranslate"><span class="pre">package.json</span></code></strong> as
+<strong><code class="docutils literal notranslate"><span class="pre">packageManager</span></code></strong>. Install dependencies with <strong><code class="docutils literal notranslate"><span class="pre">pnpm</span> <span class="pre">install</span></code></strong> from the
+repository root (see <code class="docutils literal notranslate"><span class="pre">pnpm-lock.yaml</span></code>).</p>
+<p>From there, installation involves these steps. Each one is further explained
+below, but here is a quick reference:</p>
 <section id="clone-the-git-repository">
 <h3>1. Clone the git repository<a class="headerlink" href="#clone-the-git-repository" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>From your command line, navigate to the parent folder where you want the cloned repository code to live</p></li>
+<li><p>From your command line, navigate to the parent folder where you want the
+cloned repository code to live</p></li>
 <li><p>Clone the knowledge-commons-works repository with</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:MESH-Research/knowledge-commons-works.git
@@ -290,14 +318,17 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone redundant copies of the inter-dependent submodules.</p>
+<p>Do not use the <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code> option when cloning the repository or the
+<code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option when initializing the submodules. This will clone
+redundant copies of the inter-dependent submodules.</p>
 </div>
 </section>
 <section id="create-your-configuration-files">
 <h3>2. Create your configuration files<a class="headerlink" href="#create-your-configuration-files" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">knowledge-commons-works</span></code></p></li>
-<li><p>Create and configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in this folder as described below (<a class="reference internal" href="#setting-up-configuration-files"><span class="xref myst">“Setting up configuration files”</span></a>).</p></li>
+<li><p>Create and configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in this folder as described below
+(<a class="reference internal" href="#setting-up-configuration-files"><span class="xref myst">“Setting up configuration files”</span></a>).</p></li>
 <li><p>Create the <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file with the following contents:</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>cli<span class="o">]</span>
@@ -311,6 +342,15 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The UI will not load CSS/JS correctly until step 4 builds static assets.
+Compose mounts an empty <code class="docutils literal notranslate"><span class="pre">static_data</span></code> volume over
+<code class="docutils literal notranslate"><span class="pre">/opt/invenio/var/instance/static</span></code> (nginx and web-ui share it). Image-baked
+static at that path is hidden until you run <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/build-assets.sh</span></code>
+in web-ui (included in <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span></code> below). Same requirement when
+using <code class="docutils literal notranslate"><span class="pre">docker-compose.dev.yml</span></code>.</p>
+</div>
 </section>
 <section id="initialize-the-database-and-other-services-and-build-asset-files">
 <h3>4. Initialize the database and other services, and build asset files<a class="headerlink" href="#initialize-the-database-and-other-services-and-build-asset-files" title="Link to this heading">¶</a></h3>
@@ -319,7 +359,8 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+<p>The container name may be different depending on your local docker
+setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
 </div>
 <ul class="simple">
 <li><p>run the script to set up the instance services, load fixtures, and build
@@ -328,9 +369,11 @@ required on a fresh install (see flag reference below). The script accepts two
 optional flags, which can be combined freely (e.g. <code class="docutils literal notranslate"><span class="pre">-fd</span></code>):</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">-f</span></code> — also load fixtures. Runs <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm</span> <span class="pre">fixtures</span></code> and
-<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (vocabularies such as resource types that the
-deposit form needs, in Celery eager mode). Required on a fresh install. If
-omitted, the script still initializes services but loads no vocabulary data.</p></li>
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (the bundled subject/resource-type
+vocabularies, in Celery eager mode), then seeds the externally-sourced
+funder, affiliation, and award vocabularies (see step 5 below). Required on
+a fresh install. If omitted, the script still initializes services but loads
+no vocabulary data.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-d</span></code> — destructive reset <em>before</em> anything else:
 <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">db</span> <span class="pre">destroy</span> <span class="pre">--yes-i-know</span></code>,
 <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">index</span> <span class="pre">destroy</span> <span class="pre">--force</span> <span class="pre">--yes-i-know</span></code>, and
@@ -342,20 +385,231 @@ installer against an instance that already has data).</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Some of the commands in this script may take a while to run. Patience is
-required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command (run only with <code class="docutils literal notranslate"><span class="pre">-f</span></code>) in
-particular may take up to an hour to complete during which time it provides no
-feedback. Don’t despair! It is working.</p>
+<p>Some of the commands in this script may take a while to run. Patience
+is required! The <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> command (run only with <code class="docutils literal notranslate"><span class="pre">-f</span></code>)
+in particular may take up to an hour to complete during which time it provides
+no feedback. Don’t despair! It is working.</p>
 </div>
 </section>
+<section id="externally-sourced-vocabularies-funders-affiliations-awards-automatic-seed-and-refresh">
+<h3>5. Externally-sourced vocabularies (funders, affiliations, awards) — automatic seed and refresh<a class="headerlink" href="#externally-sourced-vocabularies-funders-affiliations-awards-automatic-seed-and-refresh" title="Link to this heading">¶</a></h3>
+<p>Three vocabularies are not populated by <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">rdm-records</span> <span class="pre">fixtures</span></code> (which
+only loads entries declared in <code class="docutils literal notranslate"><span class="pre">app_data/vocabularies.yaml</span></code>, and we deliberately
+omit them all). Each is sourced from a live external dataset and refreshed on a
+schedule by <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code>:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">funders</span></code></strong> — from the ROR data dump on Zenodo, via the upstream
+<code class="docutils literal notranslate"><span class="pre">invenio-vocabularies/contrib/funders/datastreams.py</span></code> <code class="docutils literal notranslate"><span class="pre">DATASTREAM_CONFIG</span></code>
+(<code class="docutils literal notranslate"><span class="pre">ror-http</span></code> reader). The job task id is <code class="docutils literal notranslate"><span class="pre">process_ror_funders</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">affiliations</span></code></strong> — from the same ROR dump, via the equivalent affiliations
+contrib config. The job task id is <code class="docutils literal notranslate"><span class="pre">process_ror_affiliations</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">awards</span></code></strong> — from the OpenAIRE Graph “diff” project dataset on Zenodo
+(master record list), augmented weekly by CORDIS for European Commission
+projects (subjects, participating organizations, program codes). The two job
+task ids are <code class="docutils literal notranslate"><span class="pre">import_awards_openaire</span></code> and <code class="docutils literal notranslate"><span class="pre">update_awards_cordis</span></code>.</p></li>
+</ul>
+<p>If you ran <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/setup-services.sh</span> <span class="pre">-f</span></code> in step 4 (see step 4 for the
+full flag reference), <strong>all initial seeds and the recurring refresh schedules
+are already in place</strong> — there is nothing extra to do here. Specifically, the
+script:</p>
+<ul class="simple">
+<li><p>Seeds funders and affiliations from the live ROR dump on Zenodo (gated on
+<code class="docutils literal notranslate"><span class="pre">-f</span></code>). Each command both registers the recurring schedule and immediately
+dispatches one run that downloads the current ROR dump and loads it through
+the upstream contrib pipeline. We use this path rather than
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">import</span> <span class="pre">-v</span> <span class="pre">{funders,affiliations}</span></code> because (a) the
+upstream CLI unconditionally requires <code class="docutils literal notranslate"><span class="pre">--filepath</span></code> or <code class="docutils literal notranslate"><span class="pre">--origin</span></code> even though
+the <code class="docutils literal notranslate"><span class="pre">ror-http</span></code> reader ignores <code class="docutils literal notranslate"><span class="pre">origin</span></code> and follows a hardcoded Zenodo DOI, and
+(b) the upsert path registers the recurring schedule in the same step.</p></li>
+<li><p>Seeds awards from OpenAIRE on Zenodo (also gated on <code class="docutils literal notranslate"><span class="pre">-f</span></code>), again both
+registering the schedule and dispatching one immediate run. The upstream
+<code class="docutils literal notranslate"><span class="pre">awards</span></code> <code class="docutils literal notranslate"><span class="pre">DATASTREAM_CONFIG</span></code> has no HTTP reader — the HTTP-driven config lives
+only inside the <code class="docutils literal notranslate"><span class="pre">import_awards_openaire</span></code> <code class="docutils literal notranslate"><span class="pre">JobType</span></code> — so
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">vocabularies</span> <span class="pre">import</span> <span class="pre">-v</span> <span class="pre">awards</span></code> cannot be used at all; the upsert path
+is the only way to bootstrap awards.</p></li>
+<li><p>Registers the recurring schedule for all four jobs (always, regardless of
+<code class="docutils literal notranslate"><span class="pre">-f</span></code>), idempotently inserting or updating four <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> <code class="docutils literal notranslate"><span class="pre">Job</span></code> rows. The
+dedicated <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> compose service (<code class="docutils literal notranslate"><span class="pre">celery</span> <span class="pre">beat</span></code> with <code class="docutils literal notranslate"><span class="pre">RunScheduler</span></code>)
+reads those rows and dispatches the jobs on schedule. The defaults are weekly
+on Sunday at 03:00 UTC (funders), 04:00 UTC (affiliations), 05:00 UTC (awards
+from OpenAIRE), and 06:00 UTC (awards from CORDIS), offset by an hour each so
+the four heavy network pulls don’t overlap. The CORDIS pass is scheduled after
+the OpenAIRE pass because its writer runs with <code class="docutils literal notranslate"><span class="pre">insert=False,</span> <span class="pre">update=True</span></code> —
+it only augments existing award records loaded by the OpenAIRE pass.</p></li>
+</ul>
+<p>Concretely, the seed-and-dispatch commands the script issues when <code class="docutils literal notranslate"><span class="pre">-f</span></code> is passed
+are (the <code class="docutils literal notranslate"><span class="pre">INVENIO_CELERY_TASK_ALWAYS_EAGER</span></code>/<code class="docutils literal notranslate"><span class="pre">..._EAGER_PROPAGATES</span></code> env vars
+force inline execution so the import completes before the script exits, since
+dev workers may not yet be running; the production setup script omits them):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">INVENIO_CELERY_TASK_ALWAYS_EAGER</span><span class="o">=</span>True<span class="w"> </span><span class="nv">INVENIO_CELERY_TASK_EAGER_PROPAGATES</span><span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--run-now
+<span class="nv">INVENIO_CELERY_TASK_ALWAYS_EAGER</span><span class="o">=</span>True<span class="w"> </span><span class="nv">INVENIO_CELERY_TASK_EAGER_PROPAGATES</span><span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--run-now
+<span class="nv">INVENIO_CELERY_TASK_ALWAYS_EAGER</span><span class="o">=</span>True<span class="w"> </span><span class="nv">INVENIO_CELERY_TASK_EAGER_PROPAGATES</span><span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--run-now
+</pre></div>
+</div>
+<p>And the schedule-registration commands it issues unconditionally (idempotent,
+safe to re-run; without <code class="docutils literal notranslate"><span class="pre">--run-now</span></code> they only record the schedule, they do not
+load data) are:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>update_awards_cordis<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update Awards CORDIS"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=6,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_fast_subject_updates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update FAST subjects"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=2,day_of_week=3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>merge_names_orcid_duplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Merge Names ORCID duplicates"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=7,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>find_names_duplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Find Names duplicate candidates"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=8,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>sync_names_missing_users<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Sync missing Names USER records"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=9,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>The Names jobs (hours 7–9) are documented in
+<a class="reference internal" href="../admin_guide/names_vocabulary.html#scheduled-jobs-invenio-jobs"><span class="std std-ref">Names Vocabulary Lifecycle</span></a>.
+FAST subject updates (<code class="docutils literal notranslate"><span class="pre">process_fast_subject_updates</span></code>, Wednesdays) are provided
+by <code class="docutils literal notranslate"><span class="pre">invenio-subjects-fast</span></code> and scheduled from <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span></code>; see
+<a class="reference internal" href="../admin_guide/vocabulary_management.html#how-do-i-schedule-fast-subject-updates"><span class="std std-ref">Vocabulary Management — Subjects</span></a>.
+Chronological overview of all beat tasks and jobs:
+<a class="reference internal" href="../admin_guide/scheduled_events.html"><span class="std std-doc">Scheduled events</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The container running the seed step needs network egress to <code class="docutils literal notranslate"><span class="pre">doi.org</span></code> and
+<code class="docutils literal notranslate"><span class="pre">zenodo.org</span></code> (and, for the CORDIS schedule once it fires, to
+<code class="docutils literal notranslate"><span class="pre">cordis.europa.eu</span></code>). The full ROR ZIP and the OpenAIRE project tarball are each
+held in memory during their respective imports; the OpenAIRE dataset can be
+multi-GB.</p>
+</div>
+<section id="how-the-jobs-are-configured">
+<h4>How the jobs are configured<a class="headerlink" href="#how-the-jobs-are-configured" title="Link to this heading">¶</a></h4>
+<p>All four jobs use upstream <code class="docutils literal notranslate"><span class="pre">JobType</span></code>s registered via the <code class="docutils literal notranslate"><span class="pre">invenio_jobs.jobs</span></code>
+entry point by <code class="docutils literal notranslate"><span class="pre">invenio-vocabularies</span></code>. Each uses its own hardcoded datastream
+config — for ROR, equivalent to the contrib default but with a <code class="docutils literal notranslate"><span class="pre">since</span></code> parameter
+on the <code class="docutils literal notranslate"><span class="pre">ror-http</span></code> reader so subsequent scheduled runs only fetch the latest dump
+if it postdates the previous successful run.</p>
+<p>The ROR writers default to <code class="docutils literal notranslate"><span class="pre">update:</span> <span class="pre">false</span></code>, so scheduled runs add new records
+but do not overwrite existing entries. This mirrors upstream behavior, since
+<code class="docutils literal notranslate"><span class="pre">invenio-vocabularies</span></code> has no logic yet to re-index dependent records on
+funder/affiliation updates.</p>
+</section>
+<section id="manual-seeding-if-you-ran-without-f">
+<h4>Manual seeding (if you ran without <code class="docutils literal notranslate"><span class="pre">-f</span></code>)<a class="headerlink" href="#manual-seeding-if-you-ran-without-f" title="Link to this heading">¶</a></h4>
+<p>If you ran <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span></code> without <code class="docutils literal notranslate"><span class="pre">-f</span></code>, the recurring jobs are still
+registered but the initial seeds were skipped — the funder, affiliation, and
+award fields in the deposit form will be empty until the next scheduled run
+completes (up to a week away).</p>
+<p>To seed manually, run each of the following inside the <code class="docutils literal notranslate"><span class="pre">web-api</span></code> container (or
+wherever you run the <code class="docutils literal notranslate"><span class="pre">invenio</span></code> CLI). Each call upserts the <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> <code class="docutils literal notranslate"><span class="pre">Job</span></code>
+row (idempotent) and <code class="docutils literal notranslate"><span class="pre">--run-now</span></code> dispatches one immediate run on top of the
+recurring schedule:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run-now
+</pre></div>
+</div>
+<p>The CORDIS pass (<code class="docutils literal notranslate"><span class="pre">update_awards_cordis</span></code>) runs with <code class="docutils literal notranslate"><span class="pre">insert=False,</span> <span class="pre">update=True</span></code>
+and only augments existing award records, so it is registered with a recurring
+schedule but does not need an immediate <code class="docutils literal notranslate"><span class="pre">--run-now</span></code> dispatch — it will pick up
+on its next weekly tick after OpenAIRE has loaded the master record list.</p>
+</section>
+<section id="customizing-or-re-registering-the-schedule">
+<h4>Customizing or re-registering the schedule<a class="headerlink" href="#customizing-or-re-registering-the-schedule" title="Link to this heading">¶</a></h4>
+<p>To change a schedule (or to register the jobs on a custom deploy that doesn’t
+use <code class="docutils literal notranslate"><span class="pre">setup-services.sh</span></code>), run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span> <span class="pre">upsert</span></code> manually. It is
+idempotent — it looks up the <code class="docutils literal notranslate"><span class="pre">Job</span></code> row by <code class="docutils literal notranslate"><span class="pre">(task,</span> <span class="pre">title)</span></code> and updates in place
+if found, or creates if not. See <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span> <span class="pre">upsert</span> <span class="pre">--help</span></code> for
+options (including <code class="docutils literal notranslate"><span class="pre">--run-now</span></code> to dispatch a one-off run on top of the
+schedule).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_funders<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR funders"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=3,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_ror_affiliations<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Load ROR affiliations"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=4,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>import_awards_openaire<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Import Awards OpenAIRE"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=5,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>update_awards_cordis<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update Awards CORDIS"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=6,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>process_fast_subject_updates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Update FAST subjects"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=2,day_of_week=3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>merge_names_orcid_duplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Merge Names ORCID duplicates"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=7,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>find_names_duplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Find Names duplicate candidates"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=8,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>sync_names_missing_users<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Sync missing Names USER records"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=9,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--queue<span class="w"> </span>celery
+</pre></div>
+</div>
+</section>
+</section>
 <section id="create-your-own-admin-user">
-<h3>5. Create your own admin user<a class="headerlink" href="#create-your-own-admin-user" title="Link to this heading">¶</a></h3>
+<h3>6. Create your own admin user<a class="headerlink" href="#create-your-own-admin-user" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>enter the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">kcworks-ui</span> <span class="pre">bash</span></code></p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The container name may be different depending on your local docker setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
+<p>The container name may be different depending on your local docker
+setup. You can find the correct name by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p>
 </div>
 <ul class="simple">
 <li><p>run the commands:</p></li>
@@ -376,26 +630,41 @@ invenio<span class="w"> </span>roles<span class="w"> </span>add<span class="w"> 
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The “admin-moderator” role (distinct from “administration-moderation”) designates the one user who should receive email notices of first-time uploads and publications by new KCWorks users. This role may be assigned to a different user later on, but it should only be held by one user.</p>
+<p>The “admin-moderator” role (distinct from
+“administration-moderation”) designates the one user who should receive email
+notices of first-time uploads and publications by new KCWorks users. This role
+may be assigned to a different user later on, but it should only be held by one
+user.</p>
 </div>
 </section>
 <section id="view-the-application">
-<h3>6. View the application<a class="headerlink" href="#view-the-application" title="Link to this heading">¶</a></h3>
+<h3>7. View the application<a class="headerlink" href="#view-the-application" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>The Knowledge Commons Works app is now running at <code class="docutils literal notranslate"><span class="pre">https://localhost</span></code></p></li>
-<li><p>The REST API is running at <code class="docutils literal notranslate"><span class="pre">https://localhost/api</span></code></p></li>
-<li><p>pgAdmin is running at <code class="docutils literal notranslate"><span class="pre">https://localhost/pgadmin</span></code></p></li>
-<li><p>OpenSearch Dashboards is running at <code class="docutils literal notranslate"><span class="pre">https://localhost:5601</span></code></p></li>
+<li><p>The Knowledge Commons Works app is now running at <code class="docutils literal notranslate"><span class="pre">https://localhost</span></code> (if you
+set <code class="docutils literal notranslate"><span class="pre">KCWORKS_NGINX_HTTPS_HOST_PORT</span></code> to something other than <code class="docutils literal notranslate"><span class="pre">443</span></code>, use that
+port in the URL, e.g. <code class="docutils literal notranslate"><span class="pre">https://localhost:8443</span></code>, and set <code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_UI_URL</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_API_URL</span></code> to match — see
+<a class="reference internal" href="#host-port-overrides"><span class="xref myst">Host port overrides</span></a>)</p></li>
+<li><p>The REST API is running at the same origin under <code class="docutils literal notranslate"><span class="pre">/api</span></code></p></li>
+<li><p>pgAdmin is proxied at <code class="docutils literal notranslate"><span class="pre">https://localhost/pgadmin</span></code> (direct UI port defaults to
+host <code class="docutils literal notranslate"><span class="pre">5050</span></code> mapped to the pgAdmin container)</p></li>
+<li><p>OpenSearch Dashboards defaults to <code class="docutils literal notranslate"><span class="pre">http://localhost:5601</span></code> unless you override
+<code class="docutils literal notranslate"><span class="pre">KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT</span></code></p></li>
 </ul>
-<p>This setup will allow you to make changes to the core Knowledge Commons Works codebase and see those changes reflected in the running application.</p>
+<p>This setup will allow you to make changes to the core Knowledge Commons Works
+codebase and see those changes reflected in the running application.</p>
 </section>
 </section>
 <section id="full-local-development-setup">
 <h2>Full local development setup<a class="headerlink" href="#full-local-development-setup" title="Link to this heading">¶</a></h2>
-<p>You will need to take some further steps if you want to - Make and test changes to the various invenio modules that are included as git submodules. - View and insert debugging statements into the code of the various core Invenio packages installed into the python environment.
-To do this, you will need to do the following:</p>
+<p>You will need to take some further steps if you want to - Make and test changes
+to the various invenio modules that are included as git submodules. - View and
+insert debugging statements into the code of the various core Invenio packages
+installed into the python environment. To do this, you will need to do the
+following:</p>
 <ol class="arabic">
-<li><p>Ensure the required git submodules are cloned by running the following commands in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder:</p>
+<li><p>Ensure the required git submodules are cloned by running the following
+commands in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init
 </pre></div>
 </div>
@@ -412,26 +681,44 @@ local-working<span class="w"> </span>git@github.com:MESH-Research/invenio-record
 local-working<span class="w"> </span>git@github.com:MESH-Research/invenio-vocabularies.git
 </pre></div>
 </div>
-<p>These cloned repositories should then appear under the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/site/kcworks/dependencies</span></code> folder.</p>
+<p>These cloned repositories should then appear under the
+<code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/site/kcworks/dependencies</span></code> folder.</p>
 </li>
-<li><p>Install the python packages required by Knowldge Commons Works locally by running <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--all-extras</span></code> in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder.</p></li>
-<li><p>When you start up the docker compose project, add an additional project file to the command: - <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">--file</span> <span class="pre">docker-compose.dev.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code>
-This will mount a variety of local package folders as bind mounts in your running containers. This will allow you to make changes to the python code, both in the cloned repositories and in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/.venv</span></code> virtual environment, and see those changes reflected in the running Knowledge Commons Works instance.</p></li>
+<li><p>Install the python packages required by Knowldge Commons Works locally by
+running <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--all-extras</span></code> in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code> folder.</p></li>
+<li><p>When you start up the docker compose project, add an additional project file
+to the command: -
+<code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">--file</span> <span class="pre">docker-compose.dev.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code>
+This will mount a variety of local package folders as bind mounts in your
+running containers. This will allow you to make changes to the python code,
+both in the cloned repositories and in the <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works/.venv</span></code>
+virtual environment, and see those changes reflected in the running Knowledge
+Commons Works instance.</p></li>
 </ol>
 <section id="troubleshooting-and-workarounds">
 <h3>Troubleshooting and Workarounds<a class="headerlink" href="#troubleshooting-and-workarounds" title="Link to this heading">¶</a></h3>
 <section id="macos-cairo-error">
 <h4>MacOS cairo error<a class="headerlink" href="#macos-cairo-error" title="Link to this heading">¶</a></h4>
-<p>The <code class="docutils literal notranslate"><span class="pre">invenio-formatter</span></code> package relies on <code class="docutils literal notranslate"><span class="pre">cairoffi</span></code> for generating svg badges, which in turn relies on having the <code class="docutils literal notranslate"><span class="pre">cairo</span></code> rendering library accessible on your local machine. <em>This should only be necessary if you are running tests locally</em>, since otherwise the library is already installed in the service containers. But you can install this locally with homebrew by running</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">invenio-formatter</span></code> package relies on <code class="docutils literal notranslate"><span class="pre">cairoffi</span></code> for generating svg badges,
+which in turn relies on having the <code class="docutils literal notranslate"><span class="pre">cairo</span></code> rendering library accessible on your
+local machine. <em>This should only be necessary if you are running tests locally</em>,
+since otherwise the library is already installed in the service containers. But
+you can install this locally with homebrew by running</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cairo
 </pre></div>
 </div>
-<p>On MacOS machines with Apple Silicon chips (all modern macs now) the python library may still not be able to <em>find</em> your Homebrew-installed packages. The workaround for this is to add your homebrew binary directory to your system path. In your <code class="docutils literal notranslate"><span class="pre">.zshrc</span></code> (or other shell environment file) add this line:</p>
+<p>On MacOS machines with Apple Silicon chips (all modern macs now) the python
+library may still not be able to <em>find</em> your Homebrew-installed packages. The
+workaround for this is to add your homebrew binary directory to your system
+path. In your <code class="docutils literal notranslate"><span class="pre">.zshrc</span></code> (or other shell environment file) add this line:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:</span><span class="nv">$DYLD_FALLBACK_LIBRARY_PATH</span><span class="s2">"</span>
 </pre></div>
 </div>
-<p>This will allow your terminal system to find any binary files in the <code class="docutils literal notranslate"><span class="pre">/opt/homebrew/lib</span></code> folder, the standard installation location on Apple Silicon Macs.</p>
-<p>If that doesn’t work, you can add these lines to your <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> testing environment file:</p>
+<p>This will allow your terminal system to find any binary files in the
+<code class="docutils literal notranslate"><span class="pre">/opt/homebrew/lib</span></code> folder, the standard installation location on Apple Silicon
+Macs.</p>
+<p>If that doesn’t work, you can add these lines to your <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> testing
+environment file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"</span>
 <span class="n">DYLD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_LIBRARY_PATH"</span>
 <span class="n">DYLD_FALLBACK_LIBRARY_PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/lib:/opt/homebrew/opt/cairo/lib:$DYLD_FALLBACK_LIBRARY_PATH"</span>
@@ -442,29 +729,147 @@ This will mount a variety of local package folders as bind mounts in your runnin
 </section>
 <section id="running-multiple-kcworks-instances-on-the-same-machine">
 <h2>Running multiple KCWorks instances on the same machine<a class="headerlink" href="#running-multiple-kcworks-instances-on-the-same-machine" title="Link to this heading">¶</a></h2>
-<p>It is perfectly feasible to run multiple KCWorks instances on the same machine. The only change necessary in this case is to edit the docker-compose.yml and docker-services.yml files to change the <em>container</em> names (NOT the <em>service</em> names) so that the additional instances each uses its own set of unique containers. For example, we can make the following changes:</p>
-<p>“kcworks-frontend” –&gt; “kcworks-next-frontend”
-“kcworks-ui” –&gt; “kcworks-next-ui”
-“kcworks-api” –&gt; “kcworks-next-api”
-“kcworks-worker” –&gt; “kcworks-next-api”</p>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>Do not run multiple KCWorks instances on the same computer at the <em>same time</em>. This will produce conflicts in docker compose orchestration.</p>
+<p>You can run several clones (for example <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code>,
+<code class="docutils literal notranslate"><span class="pre">kcworks-next</span></code>, and <code class="docutils literal notranslate"><span class="pre">v13test</span></code>) at once if each project uses:</p>
+<ol class="arabic simple">
+<li><p>A distinct <strong><code class="docutils literal notranslate"><span class="pre">KCWORKS_CONTAINERS_BASE_NAME</span></code></strong> in its <code class="docutils literal notranslate"><span class="pre">.env</span></code> so Docker
+container names do not collide.</p></li>
+<li><p>Distinct <strong>published host ports</strong> for every service that binds to the host
+(see <a class="reference internal" href="#host-port-overrides"><span class="xref myst">Host port overrides</span></a>). Compose variable defaults
+preserve the original single-instance ports when you omit the overrides.</p></li>
+</ol>
+<p>Keep <strong>service</strong> names in <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as <code class="docutils literal notranslate"><span class="pre">web-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">web-api</span></code>, <code class="docutils literal notranslate"><span class="pre">worker</span></code>,
+<code class="docutils literal notranslate"><span class="pre">cache</span></code>, <code class="docutils literal notranslate"><span class="pre">db</span></code>, etc. Only container display names and host ports need to differ
+per clone.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">docker-compose.dev.yml</span></code>, ensure these point at the correct clone for that
+project:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PYTHON_LOCAL_SITE_PACKAGES_PATH</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INVENIO_LOCAL_DEPENDENCIES_PATH</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INVENIO_LOCAL_SITE_PATH</span></code></p></li>
+</ul>
+<section id="host-port-overrides">
+<h3>Host port overrides<a class="headerlink" href="#host-port-overrides" title="Link to this heading">¶</a></h3>
+<p>Set these in each clone’s <strong><code class="docutils literal notranslate"><span class="pre">.env</span></code></strong> in the repository root (same directory as
+<code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>). Docker Compose reads this file for <code class="docutils literal notranslate"><span class="pre">${VAR:-default}</span></code>
+substitution. <strong>Defaults</strong> match the historical ports; omit a variable to keep
+the default.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Container port</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_NGINX_HTTP_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">80</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">80</span></code></p></td>
+<td><p>HTTP (nginx)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_NGINX_HTTPS_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">443</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">443</span></code></p></td>
+<td><p>HTTPS (nginx)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_REDIS_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">6379</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">6379</span></code></p></td>
+<td><p>Redis (host access / tools)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_POSTGRES_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5432</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5432</span></code></p></td>
+<td><p>PostgreSQL</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_PGADMIN_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5050</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">80</span></code> (pgAdmin listens on 80 in-container)</p></td>
+<td><p>pgAdmin web UI (host)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_RABBITMQ_AMQP_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5672</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5672</span></code></p></td>
+<td><p>AMQP</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">15672</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">15672</span></code></p></td>
+<td><p>RabbitMQ management UI</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_OPENSEARCH_HTTP_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">9200</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">9200</span></code></p></td>
+<td><p>OpenSearch HTTP</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">9600</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">9600</span></code></p></td>
+<td><p>OpenSearch Performance Analyzer</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5601</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5601</span></code></p></td>
+<td><p>OpenSearch Dashboards</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>Do not modify the names of the services, like “web-ui”, “web-api”, and “web-worker”. These can remain the same since only one instance’s containers will be running at a time.</p>
+<p><strong>Do not change</strong> <code class="docutils literal notranslate"><span class="pre">REDIS_DOMAIN</span></code>, <code class="docutils literal notranslate"><span class="pre">INVENIO_SEARCH_DOMAIN</span></code>, or the host in
+<code class="docutils literal notranslate"><span class="pre">INVENIO_SQLALCHEMY_DATABASE_URI</span></code> for normal Docker Compose use: apps inside the
+stack should keep using Docker service names (for example
+<code class="docutils literal notranslate"><span class="pre">REDIS_DOMAIN='cache:6379'</span></code>, <code class="docutils literal notranslate"><span class="pre">INVENIO_SEARCH_DOMAIN='search:9200'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">...&#64;db/kcworks</span></code>). Host-port overrides only change how ports are published <strong>to
+your Mac</strong>, not how containers talk to each other.</p>
+<p>If you change nginx HTTPS (or HTTP) host ports, update <strong><code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_UI_URL</span></code></strong>
+and <strong><code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_API_URL</span></code></strong> in that clone’s <code class="docutils literal notranslate"><span class="pre">.env</span></code> so the app generates
+correct links (for example <code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_UI_URL=&quot;https://localhost:8443&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_API_URL=&quot;https://localhost:8443/api&quot;</span></code>).</p>
+<p><strong>Example — second instance (<code class="docutils literal notranslate"><span class="pre">kcworks-next</span></code>)</strong> so it can run alongside defaults
+on <code class="docutils literal notranslate"><span class="pre">knowledge-commons-works</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KCWORKS_CONTAINERS_BASE_NAME</span><span class="o">=</span>kcworks-next
+<span class="nv">KCWORKS_NGINX_HTTP_HOST_PORT</span><span class="o">=</span><span class="m">8080</span>
+<span class="nv">KCWORKS_NGINX_HTTPS_HOST_PORT</span><span class="o">=</span><span class="m">8443</span>
+<span class="nv">KCWORKS_REDIS_HOST_PORT</span><span class="o">=</span><span class="m">6380</span>
+<span class="nv">KCWORKS_POSTGRES_HOST_PORT</span><span class="o">=</span><span class="m">5433</span>
+<span class="nv">KCWORKS_PGADMIN_HOST_PORT</span><span class="o">=</span><span class="m">5051</span>
+<span class="nv">KCWORKS_RABBITMQ_AMQP_HOST_PORT</span><span class="o">=</span><span class="m">5673</span>
+<span class="nv">KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT</span><span class="o">=</span><span class="m">15673</span>
+<span class="nv">KCWORKS_OPENSEARCH_HTTP_HOST_PORT</span><span class="o">=</span><span class="m">9201</span>
+<span class="nv">KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT</span><span class="o">=</span><span class="m">9601</span>
+<span class="nv">KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT</span><span class="o">=</span><span class="m">5602</span>
+<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">"https://localhost:8443"</span>
+<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">"https://localhost:8443/api"</span>
+</pre></div>
 </div>
-<p>You will also need to ensure that the following environment variables point to the correct KCWorks instance folder for each instance:</p>
-<p>PYTHON_LOCAL_SITE_PACKAGES_PATH
-INVENIO_LOCAL_DEPENDENCIES_PATH
-INVENIO_LOCAL_SITE_PATH
-INVENIO_LOCAL_INSTANCE_PATH
-INVENIO_INSTANCE_PATH</p>
+<p><strong>Example — third instance (<code class="docutils literal notranslate"><span class="pre">v13test</span></code>)</strong> alongside the above (pick unused ports
+on your machine):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KCWORKS_CONTAINERS_BASE_NAME</span><span class="o">=</span>v13test
+<span class="nv">KCWORKS_NGINX_HTTP_HOST_PORT</span><span class="o">=</span><span class="m">9080</span>
+<span class="nv">KCWORKS_NGINX_HTTPS_HOST_PORT</span><span class="o">=</span><span class="m">9443</span>
+<span class="nv">KCWORKS_REDIS_HOST_PORT</span><span class="o">=</span><span class="m">6381</span>
+<span class="nv">KCWORKS_POSTGRES_HOST_PORT</span><span class="o">=</span><span class="m">5434</span>
+<span class="nv">KCWORKS_PGADMIN_HOST_PORT</span><span class="o">=</span><span class="m">5052</span>
+<span class="nv">KCWORKS_RABBITMQ_AMQP_HOST_PORT</span><span class="o">=</span><span class="m">5674</span>
+<span class="nv">KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT</span><span class="o">=</span><span class="m">15674</span>
+<span class="nv">KCWORKS_OPENSEARCH_HTTP_HOST_PORT</span><span class="o">=</span><span class="m">9202</span>
+<span class="nv">KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT</span><span class="o">=</span><span class="m">9602</span>
+<span class="nv">KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT</span><span class="o">=</span><span class="m">5603</span>
+<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">"https://localhost:9443"</span>
+<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">"https://localhost:9443/api"</span>
+</pre></div>
+</div>
+<p>Leave <strong>one</strong> instance (typically your primary clone) with no
+<code class="docutils literal notranslate"><span class="pre">KCWORKS_*_HOST_PORT</span></code> lines so it keeps ports <code class="docutils literal notranslate"><span class="pre">80</span></code>, <code class="docutils literal notranslate"><span class="pre">443</span></code>, <code class="docutils literal notranslate"><span class="pre">6379</span></code>, <code class="docutils literal notranslate"><span class="pre">5432</span></code>, and
+so on.</p>
+</section>
 </section>
 <section id="controlling-the-kcworks-flask-application">
 <h2>Controlling the KCWorks (Flask) application<a class="headerlink" href="#controlling-the-kcworks-flask-application" title="Link to this heading">¶</a></h2>
-<p>The application instance and its services can be started and stopped by starting and stopping the docker-compose project:</p>
+<p>The application instance and its services can be started and stopped by starting
+and stopping the docker-compose project:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>--file<span class="w"> </span>docker-compose.yml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
@@ -475,11 +880,15 @@ INVENIO_INSTANCE_PATH</p>
 <p class="admonition-title">Caution</p>
 <p>Do not use the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">down</span></code> command unless you want the containers to be destroyed. This will destroy all data in your database and all OpenSearch indices. YOU DO NOT WANT TO DO THIS!</p>
 </div>
-<p>If you need to restart the main Flask application (e.g., after making configuration changes) you can do so either by stopping and restarting the docker-compose project or by running the following command inside the <code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code> container:</p>
+<p>If you need to restart the main Flask application (e.g., after making
+configuration changes) you can do so either by stopping and restarting the
+docker-compose project or by running the following command inside the
+<code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code> container:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_ui.pid
 </pre></div>
 </div>
-<p>Similarly, the REST API can be restarted by running the following command inside the <code class="docutils literal notranslate"><span class="pre">kcworks-api</span></code> container:</p>
+<p>Similarly, the REST API can be restarted by running the following command inside
+the <code class="docutils literal notranslate"><span class="pre">kcworks-api</span></code> container:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_api.pid
 </pre></div>
 </div>
@@ -489,69 +898,115 @@ INVENIO_INSTANCE_PATH</p>
 <h2>Setting up configuration files<a class="headerlink" href="#setting-up-configuration-files" title="Link to this heading">¶</a></h2>
 <section id="configuring-your-env-file">
 <h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file<a class="headerlink" href="#configuring-your-env-file" title="Link to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
-<p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get the application running. For local development you should use the default values for all variables except the ones with comments:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is used to configure the Knowledge Commons Works application. It
+is a standard python environment file that is used to set the environment
+variables for the application.</p>
+<p>These are the minimal variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file to get
+the application running. For local development you should use the default values
+for all variables except the ones with comments:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optional: base name for Docker container names (default: kcworks). Set to e.g. kcworks-next when</span>
 <span class="c1"># running a second instance on the same host to avoid container name conflicts.</span>
 <span class="c1"># KCWORKS_CONTAINERS_BASE_NAME=kcworks</span>
-<span class="nv">FLASK_DEBUG</span><span class="o">=</span><span class="m">1</span>
-<span class="nv">INVENIO_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
-<span class="nv">INVENIO_LOGGING_CONSOLE</span><span class="o">=</span>True
-<span class="nv">INVENIO_LOGGING_CONSOLE_LEVEL</span><span class="o">=</span>DEBUG
+<span class="nv">INVENIO_ADMIN_EMAIL</span><span class="o">=</span><span class="s2">"myemail@sample.com"</span>
 <span class="nv">INVENIO_RECORD_IMPORTER_LOCAL_DATA_DIR</span><span class="o">=</span>/
-<span class="nv">INVENIO_RECORD_IMPORTER_DATA_DIR</span><span class="o">=</span>/opt/invenio/var/import_data
-<span class="nv">INVENIO_SEARCH_DOMAIN</span><span class="o">=</span><span class="s1">'search:9200'</span>
-<span class="nv">INVENIO_SITE_UI_URL</span><span class="o">=</span><span class="s2">"https://localhost"</span>
-<span class="nv">INVENIO_SITE_API_URL</span><span class="o">=</span><span class="s2">"https://localhost/api"</span>
-<span class="nv">REDIS_DOMAIN</span><span class="o">=</span><span class="s1">'cache:6379'</span>
-<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">"postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks"</span><span class="w"> </span><span class="c1"># THE PASSWORD HERE MUST MATCH THE POSTGRES_PASSWORD BELOW</span>
-<span class="nv">POSTGRES_USER</span><span class="o">=</span>kcworks
-<span class="nv">POSTGRES_DB</span><span class="o">=</span>kcworks
+<span class="nv">INVENIO_SQLALCHEMY_DATABASE_URI</span><span class="o">=</span><span class="s2">"postgresql+psycopg2://kcworks:PASSWORDHERE@db/kcworks"</span><span class="w"> </span><span class="c1"># user/db default to kcworks in compose; password must match POSTGRES_PASSWORD below</span>
 <span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>PASSWORDHERE
 <span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
 <span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
 <span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">'SECRET_KEY_VERY_SECRET'</span>
-<span class="nv">COMMONS_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
-<span class="nv">COMMONS_SEARCH_API_TOKEN</span><span class="o">=</span>mytoken<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
-<span class="nv">INVENIO_DATACITE_PASSWORD</span><span class="o">=</span>myinveniodatacitepassword<span class="w">  </span><span class="c1"># this must be obtained from the Commons administrators - just leave as is</span>
 <span class="nv">API_TOKEN</span><span class="o">=</span>myapitoken<span class="w"> </span><span class="c1"># this can be generated after the instance is running, just leave as is</span>
-<span class="nv">API_TOKEN_PRODUCTION</span><span class="o">=</span>myapitokenproduction<span class="w"> </span><span class="c1"># for importing test data in local development, this must be obtained from the KCWorks administrators - just leave as is for now</span>
 <span class="nv">INVENIO_LOCAL_SITE_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site<span class="w"> </span><span class="c1"># set this to `site` under the base directory of your cloned repository</span>
 <span class="nv">INVENIO_LOCAL_DEPENDENCIES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies<span class="w"> </span><span class="c1"># set this to `site/kcworks/dependencies` under the base directory of your cloned repository</span>
 <span class="nv">PYTHON_LOCAL_SITE_PACKAGES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages<span class="w"> </span><span class="c1"># you need this for dev</span>
 <span class="nv">PGADMIN_DEFAULT_EMAIL</span><span class="o">=</span>your.email@example.com<span class="w">  </span><span class="c1"># change this to your email address</span>
 <span class="nv">PGADMIN_DEFAULT_PASSWORD</span><span class="o">=</span>PASSWORDHERE
-<span class="nv">INVENIO_LOCAL_INSTANCE_PATH</span><span class="o">=</span>/opt/invenio/var/instance
+<span class="c1"># Optional: your personal Sentry dev-project DSN (see below). Omit to disable Sentry locally.</span>
+<span class="c1"># INVENIO_SENTRY_DSN="https://examplePublicKey@o0.ingest.sentry.io/0"</span>
 </pre></div>
 </div>
+<p>A few other secret values are required but not stored locally in your .env file.
+If you start the KCWorks project in local development using the startup bash
+script (<code class="docutils literal notranslate"><span class="pre">kcworks-startup.sh</span></code> in the repository root), the values will be pulled
+automatically from AWS Secrets Manager. That script runs the AWS CLI on your
+<strong>host machine</strong>, so the CLI must be installed locally (see the Quickstart
+prerequisites above) and configured with an AWS identity that has
+<code class="docutils literal notranslate"><span class="pre">secretsmanager:GetSecretValue</span></code> permission on the target secret. These remote
+secrets include:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>COMMONS_SEARCH_API_TOKEN
+COMMONS_PROFILES_API_TOKEN
+SPARKPOST_USERNAME
+SPARKPOST_API_KEY
+INVENIO_DATACITE_PASSWORD
+API_TOKEN_PRODUCTION
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_USERNAME</span></code> and <code class="docutils literal notranslate"><span class="pre">SPARKPOST_API_KEY</span></code> are the SMTP credentials for outgoing
+mail (see <code class="docutils literal notranslate"><span class="pre">site/kcworks/config/mail.py</span></code>). <code class="docutils literal notranslate"><span class="pre">API_TOKEN_PRODUCTION</span></code> is used when
+importing test data from the production KCWorks API (see
+<a class="reference internal" href="#importing-test-data"><span class="xref myst">Importing test data</span></a>).</p>
+<section id="optional-sentry-local-error-reporting">
+<h4>Optional: Sentry (local error reporting)<a class="headerlink" href="#optional-sentry-local-error-reporting" title="Link to this heading">¶</a></h4>
+<p>Sentry is <strong>optional</strong> for local development. When you want it, create a <strong>separate
+Sentry project</strong> (or use a personal dev project) and set its DSN in your local
+<code class="docutils literal notranslate"><span class="pre">.env</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">INVENIO_SENTRY_DSN</span><span class="o">=</span><span class="s2">"https://examplePublicKey@o0.ingest.sentry.io/0"</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Omit</strong> <code class="docutils literal notranslate"><span class="pre">INVENIO_SENTRY_DSN</span></code> (or leave it unset) to disable Sentry locally.</p></li>
+<li><p><strong>Do not commit</strong> the DSN; keep it only in your untracked <code class="docutils literal notranslate"><span class="pre">.env</span></code>.</p></li>
+</ul>
+<p>Sentry behavior is configured in <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> (<code class="docutils literal notranslate"><span class="pre">LOGGING_SENTRY_LEVEL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LOGGING_SENTRY_INIT_KWARGS</span></code>, and related settings). The environment variable
+maps to Invenio’s <code class="docutils literal notranslate"><span class="pre">SENTRY_DSN</span></code> config key via the usual <code class="docutils literal notranslate"><span class="pre">INVENIO_</span></code> prefix.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Don’t forget to change the <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> values to the actual passwords you use for your admin user and pgAdmin. This includes replacing <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> in the <code class="docutils literal notranslate"><span class="pre">INVENIO_SQLALCHEMY_DATABASE_URI</span></code> variable.</p>
+<p>Don’t forget to change the <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> values to the actual passwords you use
+for your admin user and pgAdmin. This includes replacing <code class="docutils literal notranslate"><span class="pre">PASSWORDHERE</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">INVENIO_SQLALCHEMY_DATABASE_URI</span></code> variable.</p>
 </div>
+</section>
 <section id="running-a-second-instance-on-the-same-machine">
 <h4>Running a second instance on the same machine<a class="headerlink" href="#running-a-second-instance-on-the-same-machine" title="Link to this heading">¶</a></h4>
-<p>If you run another copy of KCWorks on the same host (e.g. a second clone for a different branch), set a unique base name in that copy’s <code class="docutils literal notranslate"><span class="pre">.env</span></code> so Docker container names do not clash:</p>
+<p>If you run another copy of KCWorks on the same host (e.g. a second clone for a
+different branch), set a unique base name in that copy’s <code class="docutils literal notranslate"><span class="pre">.env</span></code> so Docker
+container names do not clash:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KCWORKS_CONTAINERS_BASE_NAME</span><span class="o">=</span>kcworks-next
 </pre></div>
 </div>
-<p>Use any distinct value (e.g. <code class="docutils literal notranslate"><span class="pre">kcworks-next</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-dev2</span></code>). Container names will become <code class="docutils literal notranslate"><span class="pre">kcworks-next-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-next-db</span></code>, and so on. If both instances need to run at once, you must also avoid port conflicts: use a separate Compose project (e.g. <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">-p</span> <span class="pre">kcworks-next</span> <span class="pre">--file</span> <span class="pre">docker-compose.yml</span> <span class="pre">up</span> <span class="pre">-d</span></code>) and/or override published ports (e.g. in a <code class="docutils literal notranslate"><span class="pre">docker-compose.override.yml</span></code> or env) for the second instance.</p>
+<p>Use any distinct value (e.g. <code class="docutils literal notranslate"><span class="pre">kcworks-next</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-dev2</span></code>). Container names
+will become <code class="docutils literal notranslate"><span class="pre">kcworks-next-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">kcworks-next-db</span></code>, and so on.</p>
+<p>If <strong>more than one</strong> stack should run <strong>at the same time</strong>, also assign a
+non-overlapping set of <a class="reference internal" href="#host-port-overrides"><span class="xref myst">Host port overrides</span></a> in each
+clone’s <code class="docutils literal notranslate"><span class="pre">.env</span></code> (and matching <code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_*_URL</span></code> values when nginx ports
+change). Optionally set <strong><code class="docutils literal notranslate"><span class="pre">COMPOSE_PROJECT_NAME</span></code></strong> (or
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-p</span> <span class="pre">&lt;name&gt;</span></code>) per clone so Compose project labels and default
+network names stay distinct; that is separate from host port binding.</p>
 </section>
 <section id="generating-random-secrets">
 <h4>Generating random secrets<a class="headerlink" href="#generating-random-secrets" title="Link to this heading">¶</a></h4>
-<p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal by running</p>
+<p>Random values for secrets like INVENIO_SECRET_KEY can be generated in a terminal
+by running</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import secrets; print(secrets.token_hex())'</span>
 </pre></div>
 </div>
 </section>
 <section id="generating-an-api-token">
 <h4>Generating an API token<a class="headerlink" href="#generating-an-api-token" title="Link to this heading">¶</a></h4>
-<p>Once you are up and running, you will need to replace the dummy <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code> variable in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with a genuine oAuth token that identifies you when you make API requests from your local instance. You can generate a token for yourself in the KC Works admin ui and enter it as the value of the <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code> variable.</p>
+<p>Once you are up and running, you will need to replace the dummy <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code>
+variable in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with a genuine oAuth token that identifies you when
+you make API requests from your local instance. You can generate a token for
+yourself in the KC Works admin ui and enter it as the value of the <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code>
+variable.</p>
 </section>
 </section>
 <section id="configuring-your-invenio-private-file">
 <h3>Configuring your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file<a class="headerlink" href="#configuring-your-invenio-private-file" title="Link to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file is used to configure the Knowledge Commons Works application. It is a standard python environment file that is used to set the environment variables for the application.</p>
-<p>Here is a list of the variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code> file is used to configure the Knowledge Commons Works
+application. It is a standard python environment file that is used to set the
+environment variables for the application.</p>
+<p>Here is a list of the variables that you need to set in your <code class="docutils literal notranslate"><span class="pre">.invenio.private</span></code>
+file:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>cli<span class="o">]</span>
 <span class="nv">services_setup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>True
 <span class="nv">instance_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/opt/invenio/var/instance
@@ -561,11 +1016,18 @@ INVENIO_INSTANCE_PATH</p>
 </section>
 <section id="importing-test-data">
 <h2>Importing test data<a class="headerlink" href="#importing-test-data" title="Link to this heading">¶</a></h2>
-<p>To import test data into your local instance, you can use the <code class="docutils literal notranslate"><span class="pre">import_test_data</span></code> command. This command will import records from the production API and create a Knowledge Commons community if it doesn’t exist. The new records will be added to the Knowledge Commons community. From inside the <code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code> container, run the following command:</p>
+<p>To import test data into your local instance, you can use the <code class="docutils literal notranslate"><span class="pre">import_test_data</span></code>
+command. This command will import records from the production API and create a
+Knowledge Commons community if it doesn’t exist. The new records will be added
+to the Knowledge Commons community. From inside the <code class="docutils literal notranslate"><span class="pre">kcworks-ui</span></code> container, run
+the following command:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks_records<span class="w"> </span>import-test-records<span class="w"> </span>&lt;email&gt;<span class="w"> </span>&lt;number-of-records&gt;
 </pre></div>
 </div>
-<p>This will import the specified number of records from the production API and add them to the Knowledge Commons community, owned by the user with the specified email address. (The email address must be an existing user in the local instance and must have the “owner” role for the Knowledge Commons community.)</p>
+<p>This will import the specified number of records from the production API and add
+them to the Knowledge Commons community, owned by the user with the specified
+email address. (The email address must be an existing user in the local instance
+and must have the “owner” role for the Knowledge Commons community.)</p>
 </section>
 </section>
 
@@ -630,8 +1092,14 @@ INVENIO_INSTANCE_PATH</p>
 <li><a class="reference internal" href="#create-your-configuration-files">2. Create your configuration files</a></li>
 <li><a class="reference internal" href="#start-the-docker-compose-project">3. Start the docker-compose project</a></li>
 <li><a class="reference internal" href="#initialize-the-database-and-other-services-and-build-asset-files">4. Initialize the database and other services, and build asset files</a></li>
-<li><a class="reference internal" href="#create-your-own-admin-user">5. Create your own admin user</a></li>
-<li><a class="reference internal" href="#view-the-application">6. View the application</a></li>
+<li><a class="reference internal" href="#externally-sourced-vocabularies-funders-affiliations-awards-automatic-seed-and-refresh">5. Externally-sourced vocabularies (funders, affiliations, awards) — automatic seed and refresh</a><ul>
+<li><a class="reference internal" href="#how-the-jobs-are-configured">How the jobs are configured</a></li>
+<li><a class="reference internal" href="#manual-seeding-if-you-ran-without-f">Manual seeding (if you ran without <code class="docutils literal notranslate"><span class="pre">-f</span></code>)</a></li>
+<li><a class="reference internal" href="#customizing-or-re-registering-the-schedule">Customizing or re-registering the schedule</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create-your-own-admin-user">6. Create your own admin user</a></li>
+<li><a class="reference internal" href="#view-the-application">7. View the application</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#full-local-development-setup">Full local development setup</a><ul>
@@ -641,10 +1109,14 @@ INVENIO_INSTANCE_PATH</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#running-multiple-kcworks-instances-on-the-same-machine">Running multiple KCWorks instances on the same machine</a></li>
+<li><a class="reference internal" href="#running-multiple-kcworks-instances-on-the-same-machine">Running multiple KCWorks instances on the same machine</a><ul>
+<li><a class="reference internal" href="#host-port-overrides">Host port overrides</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
 <li><a class="reference internal" href="#setting-up-configuration-files">Setting up configuration files</a><ul>
 <li><a class="reference internal" href="#configuring-your-env-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a><ul>
+<li><a class="reference internal" href="#optional-sentry-local-error-reporting">Optional: Sentry (local error reporting)</a></li>
 <li><a class="reference internal" href="#running-a-second-instance-on-the-same-machine">Running a second instance on the same machine</a></li>
 <li><a class="reference internal" href="#generating-random-secrets">Generating random secrets</a></li>
 <li><a class="reference internal" href="#generating-an-api-token">Generating an API token</a></li>
@@ -665,7 +1137,7 @@ INVENIO_INSTANCE_PATH</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

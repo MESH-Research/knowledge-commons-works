@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Content Moderation" href="moderation.html"><link rel="prev" title="Known Issues" href="../known_issues.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Administrator Guide - Knowledge Commons Works 0.8.2 documentation</title>
+        <title>Administrator Guide - Knowledge Commons Works 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 0.8.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -201,8 +201,15 @@
 <li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export_formats.html">Export formats</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -217,6 +224,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
@@ -287,16 +296,80 @@
 <li class="toctree-l2"><a class="reference internal" href="file_storage.html#changing-the-kcworks-s3-file-storage-bucket">Changing the KCWorks S3 file storage bucket</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="scheduled_events.html">Scheduled events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#two-schedulers">Two schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#within-each-hour">Within each hour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#daily-utc">Daily (UTC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#weekly">Weekly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#interval-not-clock-tied">Interval (not clock-tied)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#changing-schedules">Changing schedules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#what-loads-and-in-what-order">What loads, and in what order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#how-do-i-import-vocabulary-data-from-a-local-file">How do I import vocabulary data from a local file?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#affiliations-ror">Affiliations (ROR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#funders-ror">Funders (ROR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-openaire">Awards — OpenAIRE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-cordis">Awards — CORDIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#resource-types">Resource types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#subjects-fast-homosaurus">Subjects (FAST / Homosaurus)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#related-documentation">Related documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-kinds-of-names-records-does-kcworks-write">What kinds of Names records does KCWorks write?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-runs-automatically-vs-what-you-run-by-hand">What runs automatically vs what you run by hand?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-user-records-created-or-updated">When are USER records created or updated?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-cited-records-created-or-updated">When are CITED records created or updated?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-records-merged">When are records merged?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-pairs-flagged-for-review">When are pairs flagged for review?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#how-do-i-inspect-or-force-a-refresh">How do I inspect or force a refresh?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#mental-model-short">Mental model (short)</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="user_data_management.html">User Data Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-import-a-list-of-users-from-a-kc-csv-file">How do I import a list of users from a KC CSV file?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-change-a-user-s-name-division">How do I change a user’s name division?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-sync-a-user-s-data-and-names-vocabulary-entry-manually">How do I sync a user’s data and Names vocabulary entry manually?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-does-kcworks-sync-user-data-with-kcprofiles">How does KCWorks sync user data with KCProfiles?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-retrieve-a-user-s-details-via-the-cli">How do I retrieve a user’s details via the CLI?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-change-a-user-s-name-division">How do I change a user’s name division?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles">How do I sync a KCWorks user’s data with KCProfiles?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data">How do I update a KCWorks user’s Names index entry with new data?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-transfer-record-ownership">How do I transfer record ownership?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-merge-two-user-accounts">How do I merge two user accounts?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-change-someone-s-username">How do I change someone’s username?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-update-someone-s-username-in-record-citations">How do I update someone’s username in record citations?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-backfill-or-refresh-the-names-vocabulary">How do I backfill or refresh the Names vocabulary?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-check-for-duplicate-names-index-entries">How do I check for duplicate Names index entries?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html#how-do-i-import-a-list-of-existing-kc-users-from-a-csv-or-jsonl-file">How do I import a list of existing KC users from a CSV or JSONL file?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="organization_management.html">Organization Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html#how-do-i-manually-update-org-collections-with-records-uploaded-by-org-members">How do I manually update org collections with records uploaded by org members?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#child-requests-to-join-a-parent-subcommunity">Child requests to join a parent (<code class="docutils literal notranslate"><span class="pre">subcommunity</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#parent-invites-a-child-subcommunity-invitation">Parent invites a child (<code class="docutils literal notranslate"><span class="pre">subcommunity-invitation</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#direct-parent-assignment-without-a-request">Direct parent assignment (without a request)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#notifications">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html#nested-hierarchies">Nested hierarchies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="record_access.html">Record access: requests and grants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html#restriction-modes">Restriction modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html#access-requests-requester-initiated">Access requests (requester-initiated)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html#access-grants-owner-or-manager-initiated">Access grants (owner- or manager-initiated)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html#practical-notes-for-operators">Practical notes for operators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="record_search.html">Record search</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html#what-do-quotes-do-around-a-search-term">What do quotes do around a search term?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html#record-search-field-aliases">Record search field aliases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="export_formats.html">Export formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="export_formats.html#bibtex-serialization">BibTeX serialization</a></li>
 </ul>
 </li>
 </ul>
@@ -352,7 +425,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dbee5847"></script>
+</div><script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
