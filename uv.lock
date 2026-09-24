@@ -3111,14 +3111,12 @@ requires-dist = [
     { name = "jsonlines" },
     { name = "kcworks", editable = "." },
     { name = "langdetect" },
-    { name = "mypy", marker = "extra == 'test'", specifier = ">=1.8" },
     { name = "pydantic" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'test'", specifier = ">=3.3,<4" },
     { name = "pytest-isort", marker = "extra == 'test'", specifier = ">=4" },
     { name = "pytest-mock", marker = "extra == 'test'" },
-    { name = "pytest-mypy", marker = "extra == 'test'", specifier = ">=0.10" },
     { name = "pytest-ruff", marker = "extra == 'test'", specifier = ">=0.1" },
     { name = "python-dateutil" },
     { name = "python-iso639" },
@@ -3130,6 +3128,7 @@ requires-dist = [
     { name = "selenium", marker = "extra == 'test'" },
     { name = "timefhuman" },
     { name = "titlecase" },
+    { name = "ty", marker = "extra == 'test'" },
     { name = "unidecode" },
     { name = "validators" },
     { name = "wheel", marker = "extra == 'test'" },
@@ -3515,18 +3514,19 @@ provides-extras = ["dev", "docs", "tests"]
 
 [[package]]
 name = "invenio-subjects-fast"
-version = "2026.7.24"
+version = "2026.9.23"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "halo" },
     { name = "jsonlines" },
+    { name = "pymarc" },
     { name = "requests" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/58/205e03e98c45b36d45a32a4348e2fbaf51b685146f1e090afccc7d9a2928/invenio_subjects_fast-2026.7.24.tar.gz", hash = "sha256:22bd6c966332fc2e0bac09187d79becf3d7f3c927ab9b87d657db0599d87cc89", size = 32313390, upload-time = "2026-07-24T14:52:25.438Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/82/0f/f48b31f3e3bbf43ab4d86fd6cc34930004fad612e3eb8172c86d13966e23/invenio_subjects_fast-2026.9.23.tar.gz", hash = "sha256:9d4730fd42190411441a6883b921d8cf5a6103a3c5420ad14c52e85bce791bac", size = 32424799, upload-time = "2026-09-24T02:31:29.704Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/88/31825430348af452e22e4879b4733f9d4dc33fe419aa49b2a6eef7aa7c2b/invenio_subjects_fast-2026.7.24-py3-none-any.whl", hash = "sha256:7fa13b55eb07dd2365e454213e35d0b8ca090b1a11d3614e8f3038687570ccf2", size = 33296240, upload-time = "2026-07-24T14:52:21.494Z" },
+    { url = "https://files.pythonhosted.org/packages/92/fc/316d221969f7c3dd8410e5441b6df7462709e82d193622945be149ac4c66/invenio_subjects_fast-2026.9.23-py3-none-any.whl", hash = "sha256:df497cac8b834d2b188f693d2e41cbd4702d770c06cee62aaa4552106b4455e9", size = 33316988, upload-time = "2026-09-24T02:31:18.563Z" },
 ]
 
 [[package]]
@@ -4133,7 +4133,7 @@ requires-dist = [
     { name = "invenio-remote-user-data-kcworks", editable = "site/kcworks/dependencies/invenio-remote-user-data-kcworks" },
     { name = "invenio-s3" },
     { name = "invenio-stats-dashboard", editable = "site/kcworks/dependencies/invenio-stats-dashboard" },
-    { name = "invenio-subjects-fast", specifier = ">=2026.7.24" },
+    { name = "invenio-subjects-fast", specifier = ">=2026.9.23" },
     { name = "invenio-utilities-tuw" },
     { name = "invenio-vocabularies", editable = "site/kcworks/dependencies/invenio-vocabularies" },
     { name = "jsonlines", marker = "extra == 'dev'" },
@@ -5739,6 +5739,15 @@ wheels = [
 [package.optional-dependencies]
 crypto = [
     { name = "cryptography" },
+]
+
+[[package]]
+name = "pymarc"
+version = "5.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/77/f0e5774845a3c60b26da5dab344e391e9941eeb811a1685fb2ff01ae90c7/pymarc-5.4.0.tar.gz", hash = "sha256:b2016b1674d1956636c99b9bf95b31840c5cb8f22645672a660e66326371b2f3", size = 76224964, upload-time = "2026-07-02T12:12:51.002Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f9/41/ed8ad9925859d66fe7135f64690ecb5c766e2969e9a52c23d1123df9eaf5/pymarc-5.4.0-py3-none-any.whl", hash = "sha256:10549ce513c191f77b081e5e505c02aca76f6b9f1164c47a326bb635b24a77eb", size = 161390, upload-time = "2026-07-02T12:12:55.949Z" },
 ]
 
 [[package]]

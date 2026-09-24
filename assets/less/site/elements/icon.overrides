@@ -20,6 +20,12 @@
   }
 }
 
+// in detail-page metadata-only preview link display
+.metadata-only-content-message .icon.external.alternate {
+  position: relative;
+  top: -0.15rem;
+}
+
 // Short-list only: drop trailing icon margin before .separated semicolon
 // (!important to override Invenio .mr-5 spacing helper)
 #creatibutors-list-section {
