@@ -328,6 +328,7 @@ Arguments:
 
 - **provided by the main KCWorks package** (`site/kcworks/cli.py`)
 - thin wrapper around the `invenio-jobs` `JobsService` for declarative, idempotent management of `Job` rows at deploy time. `invenio-jobs` itself ships no CLI; this command lets a Job row (which the `RunScheduler` beat picks up) be created or updated from a script without going through the admin UI.
+- Instance-wide schedule (beat + jobs): [Scheduled events](../admin_guide/scheduled_events.md).
 
 #### `invenio kcworks-jobs upsert`
 

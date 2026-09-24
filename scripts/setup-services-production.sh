@@ -153,6 +153,10 @@ invenio kcworks-jobs upsert update_awards_cordis \
     --title "Update Awards CORDIS" \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
+    --queue celery
 
 # Names vocabulary maintenance (see docs/source/admin_guide/names_vocabulary.md).
 echo -e "${yellow}Registering scheduled Names vocabulary jobs...${clear}"

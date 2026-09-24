@@ -183,12 +183,12 @@ def _parse_schedule(value):
     are integers (per IntervalScheduleSchema).
 
     Returns:
-        ``None`` if ``value`` is empty, else a dict with a ``type`` key of
-        ``"crontab"`` or ``"interval"`` plus the parsed schedule fields.
+        `None` if `value` is empty, else a dict with a `type` key of
+        `"crontab"` or `"interval"` plus the parsed schedule fields.
 
     Raises:
-        click.BadParameter: if ``value`` is non-empty but cannot be parsed as
-            one of the accepted forms (wraps the underlying ``ValueError``).
+        click.BadParameter: if `value` is non-empty but cannot be parsed as
+            one of the accepted forms (wraps the underlying `ValueError`).
     """
     if not value:
         return None

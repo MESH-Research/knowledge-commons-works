@@ -44,6 +44,8 @@
   - Added new CLI command to set the parent of a community.
 - Subjects
   - Update Homosuarus vocabulary to v5 and update utilities for import
+  - Update to invenio-subjects-fast v2026.9.23 with automated incremental update
+    of the subjects vocabulary on a regular schedule.
 
 ## 0.8.1 (2026-06-09)
 
