@@ -66,7 +66,8 @@ enhancements include:
   - improved default collection theming
   - default geopattern logos now generated and saved on the back end
   - community record mapping updates for theme (and related) fields, with new
-    CLI to put mappings Search
+    CLI to put mappings
+- Search
   - OpenSearch upgrade (above)
   - full search-path aliasing with multi-path support
   - default search fields/weights fixed (now includes keywords, etc.)
@@ -126,6 +127,8 @@ enhancements include:
   - Docker/compose multi-stage build with thinner and more secure production
     images
   - Config modularization
+- Documentation
+  - many, many updates!
 
 ## 0.8.1 (2026-06-09)
 
