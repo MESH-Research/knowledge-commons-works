@@ -6,6 +6,7 @@
 moderation.md
 running_commands.md
 file_storage.md
+scheduled_events.md
 vocabulary_management.md
 names_vocabulary.md
 user_data_management.md

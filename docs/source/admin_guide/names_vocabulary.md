@@ -48,7 +48,8 @@ invenio-jobs**, and **operator CLI** for one-offs and triage.
 
 Registered by `setup-services.sh` / `setup-services-production.sh` (idempotent
 `kcworks-jobs upsert`). The `scheduler` compose service must be running. Default
-schedule is **Sundays UTC**, after the ROR/awards window:
+schedule is **Sundays UTC**, after the ROR/awards window. For the full instance
+schedule (beat + jobs), see [Scheduled events](scheduled_events.md).
 
 | Job task id | Default schedule (UTC) | What it does |
 | ----------- | ---------------------- | ------------ |

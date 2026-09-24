@@ -63,11 +63,11 @@ instance_path = /opt/invenio/var/instance
 
 ```{note}
 The UI will not load CSS/JS correctly until step 4 builds static assets.
-Compose mounts an empty ``static_data`` volume over
-``/opt/invenio/var/instance/static`` (nginx and web-ui share it). Image-baked
-static at that path is hidden until you run ``bash ./scripts/build-assets.sh``
-in web-ui (included in ``setup-services.sh`` below). Same requirement when
-using ``docker-compose.dev.yml``.
+Compose mounts an empty `static_data` volume over
+`/opt/invenio/var/instance/static` (nginx and web-ui share it). Image-baked
+static at that path is hidden until you run `bash ./scripts/build-assets.sh`
+in web-ui (included in `setup-services.sh` below). Same requirement when
+using `docker-compose.dev.yml`.
 ```
 
 ### 4. Initialize the database and other services, and build asset files
@@ -196,6 +196,10 @@ invenio kcworks-jobs upsert update_awards_cordis \
     --title "Update Awards CORDIS" \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
+    --queue celery
 invenio kcworks-jobs upsert merge_names_orcid_duplicates \
     --title "Merge Names ORCID duplicates" \
     --schedule "crontab:minute=0,hour=7,day_of_week=0" \
@@ -212,6 +216,11 @@ invenio kcworks-jobs upsert sync_names_missing_users \
 
 The Names jobs (hours 7–9) are documented in
 [Names Vocabulary Lifecycle](../admin_guide/names_vocabulary.md#scheduled-jobs-invenio-jobs).
+FAST subject updates (`process_fast_subject_updates`, Wednesdays) are provided
+by `invenio-subjects-fast` and scheduled from `setup-services.sh`; see
+[Vocabulary Management — Subjects](../admin_guide/vocabulary_management.md#how-do-i-schedule-fast-subject-updates).
+Chronological overview of all beat tasks and jobs:
+[Scheduled events](../admin_guide/scheduled_events.md).
 
 ```{note}
 The container running the seed step needs network egress to `doi.org` and
@@ -294,6 +303,10 @@ invenio kcworks-jobs upsert import_awards_openaire \
 invenio kcworks-jobs upsert update_awards_cordis \
     --title "Update Awards CORDIS" \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
     --queue celery
 invenio kcworks-jobs upsert merge_names_orcid_duplicates \
     --title "Merge Names ORCID duplicates" \
