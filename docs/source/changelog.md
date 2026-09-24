@@ -11,10 +11,10 @@
     OpenAIRE mappings (4-digit `openaire_resourceType` codes paired with
     `openaire_type` from OpenAIRE’s publication/dataset/software/other
     typologies), and tightening COAR and schema.org equivalents across existing
-    types—for example conference proceedings vs proceedings papers, instructional
-    and collection COAR terms, and finer audiovisual schema.org types. **New
-    types added:** journal (`textDocument-journal`), conference proceedings
-    paper (`textDocument-proceedingsPaper`), and proposal
+    types—for example conference proceedings vs proceedings papers,
+    instructional and collection COAR terms, and finer audiovisual schema.org
+    types. **New types added:** journal (`textDocument-journal`), conference
+    proceedings paper (`textDocument-proceedingsPaper`), and proposal
     (`textDocument-proposal`).
 - Docs
   - Vocabulary management: new admin guide section on resource-type fixtures
@@ -42,6 +42,8 @@
     account with a cilogon authentication method (and so lack a sub id).
 - Collections/communities
   - Added new CLI command to set the parent of a community.
+- Subjects
+  - Update Homosuarus vocabulary to v5 and update utilities for import
 
 ## 0.8.1 (2026-06-09)
 
