@@ -1,0 +1,25 @@
+{#
+  Shared helpers for KC embedded metadata macros.
+
+  Copyright (C) 2026 MESH Research. SPDX-License-Identifier: MIT
+#}
+
+{%- macro resource_type_id(record) -%}
+  {{- record.metadata.resource_type.id if record.metadata.resource_type else '' -}}
+{%- endmacro -%}
+
+{%- macro resource_type_title(record) -%}
+  {%- if record.metadata.resource_type and record.metadata.resource_type.title -%}
+    {%- set title = record.metadata.resource_type.title -%}
+    {%- if title is mapping -%}
+      {{- title.en|striptags if title.en else '' -}}
+    {%- else -%}
+      {{- title|striptags -}}
+    {%- endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro first_url_identifier(record) -%}
+  {%- set url_ids = record.metadata.identifiers | selectattr('scheme', 'equalto', 'url') | list if record.metadata.identifiers else [] -%}
+  {{- url_ids[0].identifier if url_ids else '' -}}
+{%- endmacro -%}

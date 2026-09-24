@@ -13,8 +13,21 @@
     background-color: transparent;
     text-align: left;
     width: 100%;
-    i.icon.dropdown {
-      float: right;
+    i.icon {
+      &.dropdown, &.caret {
+        float: right;
+      }
+      &:not(.dropdown):not(.caret) {
+        float: unset;
+        transform: unset;
+        margin-right: 0.5em;
+        font-size: 1em;
+        &.small {
+          font-size: 0.75em;
+          top: -1px;
+          position: relative;
+        }
+      }
     }
     @media screen and (max-width: @largestMobileScreen) {
       font-size: @large;
@@ -72,19 +85,40 @@
   }
 }
 
-.file-type-message {
+#rdm-deposit-form .invenio-form-section.file_type_message {
+  .ui.message.danger {
+    border-radius: 0;
+  }
   .ui.accordion:not(.styled) {
-    margin-top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
     .title {
       font-size: 1rem;
       font-weight: normal;
-      color: @infoTextColor;
       border-bottom: none;
-      padding: 0;
     }
     .content.active {
-      padding-top: 1rem;
+      border-top: 1px solid @borderColor;
+      padding-bottom: 1rem;
+      .list {
+        padding-left: 1.5rem;
+        padding-top: 0;
+      }
     }
+  }
+}
+
+.invenio-form-section.ui.accordion.invenio-accordion-field {
+  &.error {
+    .title {
+      background-color: transparent !important;
+      color: @errorTextColor !important;
+    }
+  }
+  .title {
+    color: @primaryColor;
+    font-weight: bold;
+    font-size: 1.25em;
   }
 }
 
@@ -97,6 +131,16 @@
       font-weight: bold;
       color: @textColor;
       padding-left: 0.75rem;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    &[data-label="Linked Commons Group"] {
+      .content.active {
+        padding-left: 1rem;
+      }
     }
   }
 }
+
+

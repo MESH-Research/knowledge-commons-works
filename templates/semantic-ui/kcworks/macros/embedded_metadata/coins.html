@@ -1,0 +1,35 @@
+{#
+  COinS embedded metadata (page body).
+
+  COinS spans are not valid in <head>; include meta_coins(record) from the record
+  detail page body (invenio_modular_detail_page/detail.html).
+
+  Primary consumer: Zotero (rft.genre for item type, e.g. blog). Complements DC.*
+  and citation_* in <head>. Not used by Google Scholar or API harvesters.
+
+  Copyright (C) 2026 MESH Research. SPDX-License-Identifier: MIT
+#}
+{%- from "kcworks/macros/embedded_metadata/helpers.html" import first_url_identifier, resource_type_id -%}
+
+{%- macro _coins_blog_title(record) -%}
+  {%- if record.custom_fields and 'journal:journal' in record.custom_fields and record.custom_fields['journal:journal'].title -%}
+    {{- record.custom_fields['journal:journal'].title -}}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro _coins_blog_post(record) -%}
+  {%- set title = record.metadata.title|striptags -%}
+  {%- set authors = record.metadata.creators|map(attribute='person_or_org.name')|list if record.metadata.creators else [] -%}
+  {%- set pub_date = record.metadata.publication_date -%}
+  {%- set blog_title = _coins_blog_title(record) -%}
+  {%- set post_url = first_url_identifier(record) -%}
+  {%- set identifier_url = post_url or record.links.self_html -%}
+  <span class="Z3988"
+        title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info:ofi/fmt:kev:mtx:journal&amp;rft.genre=blog&amp;rft.title={{ title|urlencode }}{%- for author in authors %}&amp;rft.au={{ author|urlencode }}{%- endfor %}{%- if pub_date %}&amp;rft.date={{ pub_date|urlencode }}{%- endif %}{%- if blog_title %}&amp;rft.jtitle={{ blog_title|urlencode }}{%- endif %}{%- if identifier_url %}&amp;rft_id={{ ('info:url/' ~ identifier_url)|urlencode }}{%- endif %}"></span>
+{%- endmacro -%}
+
+{%- macro meta_coins(record) -%}
+  {%- if resource_type_id(record) == 'textDocument-blogPost' -%}
+    {{- _coins_blog_post(record) -}}
+  {%- endif -%}
+{%- endmacro -%}

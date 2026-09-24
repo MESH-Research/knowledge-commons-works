@@ -4,6 +4,11 @@
 // Invenio App RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import {
+  clearUnreadNotifications,
+  getUnreadNotificationsFromStorage,
+  UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+} from "@js/kcworks/notifications/unreadNotifications";
 import { i18next } from "@translations/i18next";
 import { default as RequestTypeIcon } from "@js/invenio_requests/components/RequestTypeIcon";
 import { Trans } from "react-i18next";
@@ -11,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import RequestTypeLabel from "@js/invenio_requests/request/RequestTypeLabel";
 import RequestStatusLabel from "@js/invenio_requests/request/RequestStatusLabel";
 import { RequestActionController } from "@js/invenio_requests/request/actions/RequestActionController";
-import { Icon, Item, Label } from "semantic-ui-react";
+import { Button, Icon, Item, Label } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { toRelativeTime } from "react-invenio-forms";
 import { DateTime } from "luxon";
@@ -24,7 +29,8 @@ export const ComputerTabletRequestItem = ({
 }) => {
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [isUnread, setIsUnread] = useState(false);
-  const [hasUnreadComments, setHasUnreadComments] = useState(false);
+  const [isNewRequest, setIsNewRequest] = useState(false);
+  const [markingRead, setMarkingRead] = useState(false);
 
   const createdDate = new Date(result.created);
   let creatorName = "";
@@ -44,26 +50,46 @@ export const ComputerTabletRequestItem = ({
   }
 
   const updateUnreadNotifications = () => {
-    const storedNotifications = sessionStorage.getItem('unreadNotifications');
-    if (storedNotifications) {
-      setUnreadNotifications(JSON.parse(storedNotifications));
-    }
-  }
+    setUnreadNotifications(getUnreadNotificationsFromStorage());
+  };
 
   useEffect(() => {
     updateUnreadNotifications();
-    window.addEventListener("storage", updateUnreadNotifications);
+    window.addEventListener(
+      UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+      updateUnreadNotifications
+    );
     return () => {
-      window.removeEventListener("storage", updateUnreadNotifications);
-    }
+      window.removeEventListener(
+        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+        updateUnreadNotifications
+      );
+    };
   }, []);
 
   useEffect(() => {
-    const isUnread = unreadNotifications.some(notification => notification.request_id === result.id);
-    const hasUnreadComments = unreadNotifications.some(notification => notification.request_id === result.id && notification.unread_comments?.length > 0);
-    setIsUnread(isUnread);
-    setHasUnreadComments(hasUnreadComments);
+    const match = unreadNotifications.find(
+      (notification) => notification.request_id === result.id
+    );
+    setIsUnread(Boolean(match));
+    setIsNewRequest(match ? match.is_new_request !== false : false);
   }, [unreadNotifications, result.id]);
+
+  const handleMarkAsRead = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (markingRead) {
+      return;
+    }
+    setMarkingRead(true);
+    try {
+      await clearUnreadNotifications({ requestId: result.id });
+    } catch (error) {
+      console.error("Error marking request as read:", error);
+    } finally {
+      setMarkingRead(false);
+    }
+  };
 
   const getUserIcon = (receiver) => {
     return receiver?.is_ghost ? "user secret" : "users";
@@ -85,7 +111,22 @@ export const ComputerTabletRequestItem = ({
             <RequestStatusLabel status={result.status} />
           )}
           {isUnread && (
-            <Label color="orange" className="small horizontal">{ hasUnreadComments ? i18next.t("New") : i18next.t("New comment") }</Label>
+            <>
+              <Label color="orange" className="small horizontal">
+                {isNewRequest ? i18next.t("New") : i18next.t("New comment")}
+              </Label>
+              <Button
+                basic
+                compact
+                size="mini"
+                className="ml-5"
+                loading={markingRead}
+                disabled={markingRead}
+                onClick={handleMarkAsRead}
+                content={i18next.t("Mark as read")}
+                aria-label={i18next.t("Mark as read")}
+              />
+            </>
           )}
           <div className="right floated">
             <RequestActionController

@@ -1,6 +1,15 @@
+@stepBorderColor: @sidebarBorderColor;
+@stepBackgroundColor: @sidebarBackgroundColor;
+@stepTextColor: @sidebarHeaderColor;
+@requiredBackgroundColor: @mint30;
+@requiredBorderColor: @mint;
+@activeBackgroundColor: @mint80;
+@activeBorderColor: @verdigris40;
+@activeTextColor: @ivy;
+@borderRadius: 0.25rem;
 
-.ui.steps {
-    margin-bottom: 2rem;
+#rdm-deposit-form-header .ui.steps {
+    margin-top: 1rem;
     // border-color: @sidebarBorderColor;
     border-color: transparent;
     .step.link {
@@ -8,31 +17,98 @@
       line-height: 1.15rem;
       padding-top: @small;
       padding-bottom: @small;
-      background-color: @sidebarBackgroundColor;
-      border-color: @verdigris60;
-      border-top: 1px solid @sidebarBorderColor;
-      border-bottom: 1px solid @sidebarBorderColor;
+      padding-right: @small;
+      padding-left: @small;
+      background-color: @stepBackgroundColor;
+      border-color: @stepBorderColor;
+      border-top: 1px solid @stepBorderColor;
+      border-bottom: 1px solid @stepBorderColor;
+      border-left: 0;
+      @media all and (min-width: @largeMonitorBreakpoint) {
+        padding-right: 2rem;
+        padding-left: 2rem;
+      }
       .title {
         font-size: @small;
-        color: @sidebarHeaderColor;
+        color: @stepTextColor;
       }
       &:first-child {
-        border-left: 1px solid @sidebarBorderColor;
+        border-left: 1px solid @stepBorderColor;
       }
       &:last-child {
-        border-right: 1px solid @sidebarBorderColor;
+        border-right: 1px solid @stepBorderColor;
       }
       &:after {
         transition: all 0.3s ease;
-        background-color: @sidebarBackgroundColor;
-        border-color: @verdigris60;
+        background-color: @stepBackgroundColor;
+        border-color: @stepBorderColor;
+        right: -1px;
       }
       &:hover,
       &:focus,
       &:active {
-        background-color: darken(@sidebarBackgroundColor, 5%) !important;
+        background-color: darken(@stepBackgroundColor, 5%) !important;
+        box-shadow: none;
         &::after {
-          background-color: darken(@sidebarBackgroundColor, 5%);
+          background-color: darken(@stepBackgroundColor, 5%);
+        }
+      }
+      &:nth-child(-n+3) {
+        background-color: @requiredBackgroundColor;
+        border-left: 0;
+        border-right: 1px solid @requiredBorderColor;
+        border-top: 1px solid @requiredBorderColor;
+        border-bottom: 1px solid @requiredBorderColor;
+        &:first-child {
+          border-left: 1px solid @requiredBorderColor;
+        }
+        &:after {
+          transition: all 0.3s ease;
+          background-color: @requiredBackgroundColor;
+          border-color: @requiredBorderColor;
+        }
+        &:before {
+          content: " ";
+          position: absolute;
+          top: -2.1rem;
+          height: 2rem;
+          line-height: 2rem;
+          background-color: lighten(@requiredBackgroundColor, 5%);
+          border-top: 1px solid @positiveBorderColor;
+          border-left: 1px solid @positiveBorderColor;
+          border-right: 1px solid @positiveBorderColor;
+          color: @positiveColor; //@stepTextColor;
+          display: block;
+          width: 97%;
+        }
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: darken(@requiredBackgroundColor, 3%) !important;
+          color: @ivy;
+          &::after {
+            background-color: darken(@requiredBackgroundColor, 3%) !important;
+          }
+        }
+      }
+      &:nth-child(1) {
+        &:before {
+          border-right: 0px;
+          border-radius: @borderRadius 0 0 0;
+        }
+      }
+      &:nth-child(2) {
+        &:before {
+          content: "Required";
+          width: 120%;
+          border-right: 0px;
+          border-left: 0px;
+        }
+      }
+      &:nth-child(3) {
+        &:before {
+          border-left: 0px;
+          border-radius: 0 @borderRadius 0 0;
         }
       }
       & + .has-error.active {
@@ -40,25 +116,33 @@
       }
       &:focus-visible {
         outline: none !important;
+        border-top: 3px solid red;
       }
       &.active {
-        background-color: @mint;
-        color: @ivy;
-        border-color: @verdigris50;
+        background-color: @activeBackgroundColor;
+        color: @activeTextColor;
+        border-color: @activeBorderColor;
         .title {
-          color: @ivy;
+          color: @activeTextColor;
         }
         &::after {
-          color: #fff;
-          background-color: @mint;
+          color: @activeTextColor;
+          background-color: @activeBackgroundColor;
+          border-color: @activeBorderColor;
         }
         &:hover,
         &:focus,
         &:active {
-          background-color: darken(@mint, 10%) !important;
+          background-color: darken(@activeBackgroundColor, 7%) !important;
           &::after {
-            background-color: darken(@mint, 10%);
+            background-color: darken(@activeBackgroundColor, 7%) !important;
           }
+        }
+      }
+      &:has(+ .active) {
+        border-right-color: @activeBorderColor;
+        &::after {
+          border-color: @activeBorderColor;
         }
       }
       &.has-error {
@@ -66,8 +150,6 @@
         background-color: @negativeBackgroundColor;
         border: 1px solid @negativeBorderColor;
         border-left: 0;
-        border-top: 1px solid @negativeBorderColorLight;
-        border-bottom: 1px solid #f8e4e4;
         .title {
           color: @errorTextColor;
         }
@@ -112,13 +194,13 @@
           background-color: @negativeBackgroundColor;
           border-color: #e0b4b4;
         }
-        &:before {
-          content: "\f06a";
-          font-family: Icons;
-          font-size: @huge;
-          position: absolute;
-          bottom: -1.5rem;
-        }
+        // &:before {
+        //   content: "\f06a";
+        //   font-family: Icons;
+        //   font-size: @huge;
+        //   position: absolute;
+        //   bottom: -1.5rem;
+        // }
       }
     }
   }

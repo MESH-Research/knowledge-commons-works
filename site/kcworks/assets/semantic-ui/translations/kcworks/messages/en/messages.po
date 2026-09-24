@@ -93,6 +93,15 @@ msgstr "Filter results"
 msgid "Sort by"
 msgstr "Sort by"
 
+msgid "Community logo"
+msgstr "Collection logo"
+
+msgid "Verified community"
+msgstr "Verified collection"
+
+msgid "Part of"
+msgstr "Part of"
+
 msgid "Search filters"
 msgstr "Search filters"
 

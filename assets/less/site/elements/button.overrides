@@ -1,10 +1,17 @@
+// re-declare variables that for some reason aren't picked up
+@negativeTextColor: @redDark;
+
 .ui.button.icon {
   &.fluid.labeled.centered {
     padding-right: 3.25em !important;
   }
+  &.right.labeled {
+    padding-right: @labeledIconWidth + @horizontalPadding !important
+  }
 }
 
-.ui.buttons.basic {
+.ui.buttons.basic,
+.ui.buttons:has(.ui.button.basic) {
   border-color: transparent;
   .ui.button {
     position: relative;
@@ -14,55 +21,93 @@
     margin-left: 3px;
     border-left: none;
   }
-  > .ui.button.active {
-    background-color: @mint50 !important;
+  > .ui.button.active:not(.positive):not(.negative) {
+    background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px @ivy40 inset,
+    box-shadow: 0px 0px 0px 1px @ivy20 inset,
       0px 0em 0px 0px @ivyRgba10 inset;
 
     &:hover,
     &:active,
     &:focus {
-      background-color: @mint70 !important;
+      background-color: @mint50 !important;
       color: @ivy;
-      box-shadow: 0px 0px 0px 1px @ivy40 inset,
+      box-shadow: 0px 0px 0px 1px darken(@ivy40, 3%) inset,
         0px 0em 0px 0px @ivyRgba10 inset;
     }
   }
 }
 
-.ui.buttons > .ui.button:not(.inverted),
-.ui.buttons:not(.inverted) > .ui.button,
-.ui.button,
-.ui.info.message .button,
-.ui.info.message .ui.button.icon {
+// Basic styles
+
+.ui.buttons > .ui.button:not(.basic):not(.inverted),
+.ui.buttons:not(.basic):not(.inverted) > .ui.button,
+.ui.button:not(.basic),
+.ui.info.message .button:not(.basic),
+.ui.info.message .ui.button.icon:not(.basic) {
   background-color: @white;
-  color: @ivy;
-  box-shadow: 0px 0px 0px 1px @verdigris90 inset, 0px 0em 0px 0px @verdigris90 inset;
+  color: @ivy90;
+  box-shadow: 0px 0px 0px 1px @ivy20 inset;
 
   &:hover,
   &:active,
   &:focus {
     background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px @ivy40 inset,
-      0px 0em 0px 0px @ivyRgba10 inset;
+    box-shadow: 0px 0px 0px 1px darken(@ivy20, 3%) inset;
     cursor: pointer;
   }
+
+  &:disabled,
+  &.disabled {
+    box-shadow: 0px 0px 0px 1px @ivy30 inset !important;
+  }
+
   &.search {
     background-color: @secondaryColor;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 3%) inset,
+      0px 0em 0px 0px darken(@secondaryColor, 3%) inset !important;
     &:hover,
     &:active,
     &:focus {
       background-color: darken(@secondaryColor, 10%) !important;
-      border-color: darken(@secondaryColor, 10%);
+      border-color: darken(@secondaryColor, 10%) !important;
       box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
-        0px 0em 0px 0px rgba(28, 64, 54, 0.15) inset;
+        0px 0em 0px 0px darken(@secondaryColor, 10%) inset !important;
+    }
+  }
+
+  &.primary:not(.basic):not(.inverted),
+  &.primary {
+    background-color: @ivy80; // @verdigrisDark;
+    color: @white;
+    box-shadow: 0px 0px 0px 1px @ivy inset;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @ivy !important;
+      box-shadow: 0px 0px 0px 1px @ivy90 inset
+    }
+    &.labeled.icon > .icon {
+      background-color: transparent;
+    }
+  }
+
+  &.secondary:not(.basic):not(.inverted),
+  &.secondary {
+    text-shadow: 0 2px 16px #653203;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: darken(@secondaryColor, 10%) !important;
+      box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset;
     }
   }
 
   &.negative {
-    background-color: @redDark !important;
+    background-color: @negativeTextColor !important;
     color: @white;
     box-shadow: 0px 0px 0px 1px @redDark inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
@@ -70,7 +115,6 @@
     &:hover,
     &:active,
     &:focus {
-      color: @negativeBackgroundColor;
       background-color: @negativeTextColorDarker !important;
     }
   }
@@ -84,7 +128,6 @@
     &:hover,
     &:active,
     &:focus {
-      color: @positiveBackgroundColor;
       background-color: @positiveColorDown !important;
       border: 1px solid @positiveColorDown;
     }
@@ -95,11 +138,12 @@
   }
 
   &.warning {
+    background-color: @warningTextColor !important;
+    color: @white;
 
     &:hover,
     &:active,
     &:focus {
-      color: @warningBackgroundColor;
       background-color: @warningColorDown !important;
       box-shadow: 0px 0px 0px 1px @warningColorDown inset
       }
@@ -118,18 +162,18 @@
   &.transparent {
     background-color: transparent;
     box-shadow: none;
-    color: @verdigrisDark;
+    color: @ivy80;
     &:hover,
     &:active,
     &:focus {
-      background-color: transparent;
+      background-color: transparent !important;
       color: @ivy;
     }
   }
 
-  &.labeled.icon > .icon {
-    background-color: transparent;
-  }
+  // &.labeled.icon > .icon {
+  //   background-color: transparent;
+  // }
 
   &.icon {
     &.close-btn {
@@ -139,10 +183,6 @@
       color: @white;
       border-color: @redDark;
       box-shadow: 0px 0px 0px 1px #b54f1e inset, 0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-
-      &:not(:has(+ label)) {
-        margin-top: 1.7rem;
-      }
 
       &:hover,
       &:active,
@@ -156,23 +196,60 @@
   }
 }
 
+.ui.form {
+  .ui.buttons > .ui.button:not(.basic):not(.inverted),
+  .ui.buttons:not(.basic):not(.inverted) > .ui.button,
+  .ui.button:not(.basic),
+  .ui.info.message .button:not(.basic),
+  .ui.info.message .ui.button.icon:not(.basic) {
+    &.icon.close-btn:not(:has(+ label)) {
+        margin-top: 1.7rem;
+    }
+  }
+}
+
+
+// Basic 
+
 .ui.buttons > .ui.button.basic:not(.inverted),
 .ui.buttons.basic:not(.inverted) > .ui.button,
 .ui.button.basic {
   background-color: @white;
   color: @ivy !important;
-  box-shadow: 0px 0px 0px 1px @ivy30 inset, 0px 0em 0px 0px @ivyRgba10 inset;
+  box-shadow: 0px 0px 0px 1px @ivy20 inset;
   &:hover,
   &:active,
   &:focus {
-    background-color: @mint50 !important;
+    background-color: @mint30 !important;
     color: @ivy !important;
-    box-shadow: 0px 0px 0px 1px @ivy40 inset,
-      0px 0em 0px 0px @ivyRgba10 inset;
+    box-shadow: 0px 0px 0px 1px @ivy30 inset;
     cursor: pointer;
   }
 
-  &.negative,
+  &.positive {
+    color: @positiveTextColor;
+    background-color: @white !important;
+    box-shadow: none !important;
+    border: 1px solid @positiveBorderColor !important;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: @positiveBackgroundColor !important;
+      color: @positiveTextColorDarker !important;
+    }
+    &.active {
+      background-color: @positiveTextColor !important;
+      color: @positiveBackgroundColor !important;
+      box-shadow: none;
+      border: 1px solid @positiveBorderColor; 
+    }
+
+    .icon {
+      color: @white;
+    }
+  }
+
   &.negative {
     color: @redDark !important;
     background-color: @white !important;
@@ -193,7 +270,7 @@
   }
 
   &.primary {
-    color: @verdigrisDark;
+    color: @ivy80; //@verdigrisDark;
     background-color: @white;
     box-shadow: 0px 0px 0px 1px @verdigris60 inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
@@ -210,8 +287,7 @@
   &.secondary {
     color: @verdigrisDark !important;
     background-color: @white !important;
-    box-shadow: 0px 0px 0px 1px @secondaryColor inset,
-      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    box-shadow: 0px 0px 0px 1px @secondaryColor inset;
     &:hover,
     &:active,
     &:focus {
@@ -225,63 +301,37 @@
 
 }
 
-// .ui.buttons .button:not(.basic):not(.inverted) {
-//     &:first-child {
-//         border-top-left-radius: 0.28571429rem;
-//         border-bottom-left-radius: 0.28571429rem;
+// .ui.form,
+// .ui.modal {
+//   .ui.button {
+//     font-weight: normal;
+//     &.add-btn,
+//     &.add-id-button,
+//     &.add-url-button,
+//     &.add-button {
+//       background-color: transparent;
+//       box-shadow: none;
+//       color: @linkColor;
+//       border: 1px solid transparent;
+//       &:hover,
+//       &:focus,
+//       &:active {
+//         color: darken(@linkColor, 15%);
+//         border: 1px solid @sidebarBorderColor;
+//       }
+//       &.labeled.icon {
+//         padding-left: 2.5rem !important;
+//       }
+//       .add.icon {
+//         background-color: transparent;
+//       }
 //     }
+//   }
+//   .ui.mini.ui.button {
+//     font-size: 1em;
+//   }
+//
 // }
-
-.ui.buttons .button.primary:not(.basic):not(.inverted),
-.ui.primary.button {
-  background-color: @verdigrisDark;
-  color: @white;
-  box-shadow: 0px 0px 0px 1px @verdigrisDark inset,
-    0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-  &:hover,
-  &:active,
-  &:focus {
-    background-color: @ivy90 !important;
-    color: @seafoam;
-    box-shadow: 0px 0px 0px 1px @ivy90 inset,
-      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-  }
-  &.labeled.icon > .icon {
-    background-color: transparent;
-  }
-}
-
-.ui.form,
-.ui.modal {
-  .ui.button {
-    font-weight: normal;
-    &.add-btn,
-    &.add-id-button,
-    &.add-url-button,
-    &.add-button {
-      background-color: transparent;
-      box-shadow: none;
-      color: @linkColor;
-      border: 1px solid transparent;
-      &:hover,
-      &:focus,
-      &:active {
-        color: darken(@linkColor, 15%);
-        border: 1px solid @sidebarBorderColor;
-      }
-      &.labeled.icon {
-        padding-left: 2.5rem !important;
-      }
-      .add.icon {
-        background-color: transparent;
-      }
-    }
-  }
-  .ui.mini.ui.button {
-    font-size: 1em;
-  }
-
-}
 
 .invenio-fieldset.resource_type {
     .menu .button.item {
@@ -345,7 +395,7 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset !important;
   }
   .menu button {
     width: 100%;
@@ -365,9 +415,9 @@
   }
 }
 
-.facet-container div.content h2.header .button.right.floated {
-  visibility: hidden;
-}
+// .facet-container div.content h2.header .button.right.floated {
+//   visibility: hidden;
+// }
 
 #detail-main-content .button.tiny.show-less {
   margin-bottom: 1rem;
@@ -386,43 +436,69 @@
   }
 }
 
-#deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
-  .add-btn {
-    margin: -0.5em 0.5em 0 0;
-    font-weight: normal;
-  }
+// #deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
+//   .add-btn {
+//     margin: -0.5em 0.5em 0 0;
+//     font-weight: normal;
+//   }
+//
+//   &.creators {
+//     .ui.form .creatibutors-identifiers-add-button {
+//       margin-top: 0;
+//       margin-bottom: 0.5rem;
+//     }
+//     .creatibutors-item-form-buttons {
+//       justify-content: space-between;
+//       background-color: @sidebarBackgroundColor;
+//     }
+//     &.error .creatibutors-item-form-buttons {
+//       border: 1px solid @errorColor;
+//       border-top: 0;
+//     }
+//
+//   }
+//
+//   &.licenses {
+//     .add-btn {
+//       margin-top: 0;
+//     }
+//   }
+//
+//   &.communities {
+//     .fields {
+//       .ui.icon.button.close-btn {
+//         margin-top: 0;
+//         float: none;
+//       }
+//       .right-btn-column {
+//         text-align: right;
+//       }
+//     }
+//   }
+// }
 
-  &.creators {
-    .ui.form .creatibutors-identifiers-add-button {
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-    }
-    .creatibutors-item-form-buttons {
-      justify-content: space-between;
-      background-color: @sidebarBackgroundColor;
-    }
-    &.error .creatibutors-item-form-buttons {
-      border: 1px solid @errorColor;
-      border-top: 0;
-    }
+.ui.button.link-button {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: @linkColor;
+  font-weight: normal;
+  padding: 0;
+  vertical-align: baseline;
+  text-decoration: underline;
+  text-decoration-color: transparent;
 
+  &:hover,
+  &:focus,
+  &:active {
+    background: transparent;
+    background-color: transparent !important;
+    box-shadow: none;
+    color: @linkHoverColor;
+    text-decoration-color: currentColor;
   }
+}
 
-  &.licenses {
-    .add-btn {
-      margin-top: 0;
-    }
-  }
-
-  &.communities {
-    .fields {
-      .ui.icon.button.close-btn {
-        margin-top: 0;
-        float: none;
-      }
-      .right-btn-column {
-        text-align: right;
-      }
-    }
-  }
+.community-admin-cog-button {
+  display: block;
 }

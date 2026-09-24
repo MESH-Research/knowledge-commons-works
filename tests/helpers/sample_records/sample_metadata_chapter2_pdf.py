@@ -54,7 +54,7 @@ sample_metadata_chapter2_pdf = {
                 "person_or_org": {
                     "family_name": "Tworek",
                     "given_name": "Wojciech",
-                    "identifiers": [{"identifier": "wtworek", "scheme": "hc_username"}],
+                    "identifiers": [{"identifier": "wtworek", "scheme": "kc_username"}],
                     "name": "Tworek, Wojciech",
                     "type": "personal",
                 },

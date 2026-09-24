@@ -63,6 +63,8 @@
   }
 
   &.flashed {
+    border-right: 0;
+    border-left: 0;
     .ui.grid.centered {
       text-align: right;
       .ui.icon.button.close-btn {

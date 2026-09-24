@@ -1,0 +1,15 @@
+# Overlay for the pytest path (not --js-only).
+#
+# Merged with docker-compose.test.yml so the test-runner joins the network
+# created by docker-services-cli. Start docker-services-cli before compose run.
+#
+# Usage (from run-tests.sh):
+#   docker compose -p kcworks-test \
+#     -f docker-compose.test.yml \
+#     -f docker-compose.test.services.yml \
+#     run test-runner ...
+
+networks:
+  test-network:
+    name: docker_services_cli_default
+    external: true

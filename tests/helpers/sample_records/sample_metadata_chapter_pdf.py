@@ -50,7 +50,7 @@ sample_metadata_chapter_pdf = {
                 "person_or_org": {
                     "family_name": "Alice Joubin",
                     "given_name": "Alexa",
-                    "identifiers": [{"identifier": "joubin", "scheme": "hc_username"}],
+                    "identifiers": [{"identifier": "joubin", "scheme": "kc_username"}],
                     "name": "Alice Joubin, Alexa",
                     "type": "personal",
                 },

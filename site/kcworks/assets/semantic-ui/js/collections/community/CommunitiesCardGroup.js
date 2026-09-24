@@ -13,7 +13,6 @@ import { Image, withCancel } from "react-invenio-forms";
 import { Card, Grid, Message, Placeholder } from "semantic-ui-react";
 import { http } from "react-invenio-forms";
 import PropTypes from "prop-types";
-import GeoPattern from "geopattern";
 
 const PlaceholderLoader = ({ size, isLoading, children, ...props }) => {
   const PlaceholderItem = () => (
@@ -66,8 +65,6 @@ class CommunityCard extends Component {
   render() {
     const { community, defaultLogo } = this.props;
 
-    const pattern = GeoPattern.generate(encodeURI(community.slug));
-
     return (
       <Card fluid href={`/collections/${community.slug}`}>
         <Image
@@ -75,7 +72,7 @@ class CommunityCard extends Component {
           centered
           ui={false}
           src={community.links.logo}
-          fallbackSrc={pattern.toDataUri()}
+          fallbackSrc={defaultLogo || "/static/images/square-placeholder.png"}
           loadFallbackFirst
         />
         <Card.Content>

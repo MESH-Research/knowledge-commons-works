@@ -16,14 +16,19 @@ __pycache__/
 *.crt
 *.key
 
+# Private directory
+private/
+
 # Node module files
 node_modules/
+.pnpm-store/
 
 # untracked assets files (e.g. compiled assets)
 static/admin/
 static/bootstrap/
 static/css/
 static/dist/
+static/images/pdfjs/
 static/js/
 static/templates/
 static/vendor/
@@ -68,6 +73,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/build/
+docs/private/
 
 # PyBuilder
 # target/
@@ -108,8 +114,10 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
 # Docker private environment variables
 .env
+**/.env
 .env.private
 .env-tests
+.envrc
 
 # Private files
 private/
@@ -160,4 +168,5 @@ site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
 biome.json
 .ropeproject/autoimport.db-journal
 tests/.env
+docs/knowledge_base_sync/config.yaml
 app_data/importer/user_memberships.csv

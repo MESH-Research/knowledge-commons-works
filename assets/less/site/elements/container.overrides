@@ -6,6 +6,7 @@
       margin-left: 0 !important;
       margin-right: 0 !important;
     }
+    #frontpage-hero-band,
     #frontpage-info-bar {
       @media all and (max-width: @largestMobileScreen) {
         margin-left: 0 !important;
@@ -23,7 +24,6 @@
     background: radial-gradient(ellipse at 100% 0%, transparent, #fff 60%),
       url("../../../../static/images/textured_bgs/KCommons_assets_Seafoam_800.png"),
       @mint;
-    // background: radial-gradient(ellipse at 100% 0%, @mint50, transparent 60%);
 
     @media all and (max-width: @largestMobileScreen) {
       text-align: center;
@@ -33,7 +33,11 @@
       height: 8rem;
     }
 
-    .ui.container.page-subheader {
+    // Community detail header keeps Semantic UI grid layout; menus live in
+    // `.community-header-menus` as siblings (see header.html).
+    .ui.container.page-subheader:not(.community-header) {
+      position: relative;
+      z-index: 1;
       height: 100%;
       display: flex;
       align-items: center;
@@ -59,6 +63,11 @@
     }
   }
 
+  .community-header-menus {
+    position: relative;
+    z-index: 1;
+  }
+
   > .ui.container:last-of-type {
     margin-bottom: 1rem;
   }
@@ -67,16 +76,19 @@
     padding-top: 0 !important;
   }
 
-  .file-uploader-container {
-    display: flex;
-    flex-direction: column;
-  }
+  .files-field .file-uploader {
+    margin-bottom: 0;
+    .file-uploader-container {
+      display: flex;
+      flex-direction: column;
+    }
 
-  .file-uploader-toolbar {
-    margin-top: -1px;
-    border-top: none;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: none;
+    .file-uploader-toolbar {
+      margin-top: -1px;
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      box-shadow: none;
+    }
   }
 }

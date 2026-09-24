@@ -154,7 +154,7 @@ class RecordsResultsListItem extends Component {
 									uniqueDownloads={uniqueDownloads}
 								/>
 							</small>
-							{!!doi ? <small className="mr-10">DOI: {doi}</small> : null}
+							{doi ? <small className="mr-10">DOI: {doi}</small> : null}
 							{createdDate && (
 								<small className="created-date">
 									{i18next.t("Uploaded on {{uploadDate}}", {

@@ -47,10 +47,7 @@ export function DashboardResultView(props) {
           currentResultsState={currentResultsState}
           appName={appName}
         >
-          <InvenioSearchPagination
-            total={total}
-            paginationOptions={paginationOptions}
-          />
+          <InvenioSearchPagination total={total} paginationOptions={paginationOptions} />
         </Overridable>
       </Grid>
     )
@@ -68,10 +65,7 @@ DashboardResultView.defaultProps = {
   appName: "",
 };
 
-export const DashboardSearchLayoutHOC = ({
-  searchBarPlaceholder = "",
-  appName = undefined,
-}) => {
+export const DashboardSearchLayoutHOC = ({ searchBarPlaceholder = "", appName = undefined }) => {
   const DashboardUploadsSearchLayout = (props) => {
     const [sidebarVisible, setSidebarVisible] = React.useState(false);
     const { config } = props;
@@ -94,12 +88,7 @@ export const DashboardSearchLayoutHOC = ({
                   aria-label={i18next.t("Filter results")}
                 />
               </Grid.Column>
-              <Grid.Column
-                mobile={14}
-                tablet={10}
-                verticalAlign="middle"
-                floated="right"
-              >
+              <Grid.Column mobile={14} tablet={10} verticalAlign="middle" floated="right">
                 <SearchBar placeholder={searchBarPlaceholder} />
               </Grid.Column>
             </Grid.Row>
@@ -123,7 +112,7 @@ export const DashboardSearchLayoutHOC = ({
             {/* End mobile/tablet search header */}
 
             {/* Desktop search header */}
-            <Grid.Row className="computer large-monitor only">
+            <Grid.Row className="computer large screen only">
               <Grid.Column width={8} floated="right">
                 <SearchBar placeholder={searchBarPlaceholder} />
               </Grid.Column>
@@ -156,10 +145,7 @@ export const DashboardSearchLayoutHOC = ({
             <SearchAppFacets aggs={config.aggs} appName={appName} />
           </GridResponsiveSidebarColumn>
           <Grid.Column mobile={16} tablet={16} computer={12}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-            />
+            <SearchAppResultsPane layoutOptions={config.layoutOptions} appName={appName} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

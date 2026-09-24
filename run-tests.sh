@@ -13,31 +13,141 @@
 # InvenioRDM and Knowledge Commons Works are both free software;
 # you can redistribute and/or modify them under the terms of the
 # MIT License; see LICENSE file for more details.
+#
+# Local: pytest (and optional Jest) run inside the test-runner container.
+# CI: pytest on the Actions runner; Jest via run-js-tests.sh (host pnpm).
+#
+# Flags consumed here; everything else is forwarded to the suite runner:
+#   pytest normally, Jest when --js-only (wrapper chooses via env).
 
-# Quit on errors
 set -o errexit
-
-# Quit on unbound symbols
 set -o nounset
 
-# Always bring down docker services
+# ── Cleanup ───────────────────────────────────────────────────────────────
+
 function cleanup() {
-  eval "$(uv run docker-services-cli down --env)"
+  if [[ -n "${TEST_SECRET_FILE:-}" ]]; then
+    rm -f "$TEST_SECRET_FILE"
+  fi
+  rm -f /tmp/kcworks-test-connections.env
+  rm -f /tmp/kcworks-test-services.env  # legacy name from earlier iterations
+  rm -f /tmp/kcworks-test-js-only-secrets.env
+  if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
+    test_compose_file_args
+    docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" down --remove-orphans || true
+  fi
+  if [[ ${keep_services:-0} -eq 0 ]] && [[ ${js_only:-0} -eq 0 ]]; then
+    eval "$(uv run docker-services-cli down --env)"
+  fi
 }
 
-# Check if any docker-compose projects are running
+# ── docker-services-cli helpers ───────────────────────────────────────────
+
+function docker_services_cli_yml_path() {
+  local resolved candidate
+  if resolved="$(
+    uv run python -c \
+      "from pathlib import Path; import docker_services_cli; \
+print(Path(docker_services_cli.__file__).parent / 'docker-services.yml')" \
+      2>/dev/null
+  )" && [ -n "${resolved}" ] && [ -f "${resolved}" ]; then
+    echo "${resolved}"
+    return 0
+  fi
+  for candidate in .venv/lib/python*/site-packages/docker_services_cli/docker-services.yml; do
+    if [ -f "${candidate}" ]; then
+      echo "${candidate}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+function docker_services_cli_expected_host_ports() {
+  local yml ports_str script_dir helper
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  helper="${script_dir}/scripts/docker_services_cli_host_ports.py"
+  local services="${DB:-postgresql},${CACHE:-redis},${SEARCH:-opensearch},${MQ:-rabbitmq}"
+
+  if ! yml="$(docker_services_cli_yml_path 2>/dev/null)"; then
+    echo "Warning: could not locate docker-services-cli compose file; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if [ ! -f "$helper" ]; then
+    echo "Warning: missing ${helper}; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if ! ports_str="$(uv run python "$helper" "$yml" "$services" 2>/dev/null)"; then
+    echo "Warning: failed to parse host ports from ${yml}; using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  if [ -z "${ports_str// /}" ]; then
+    echo "Warning: no host ports found for services (${services}); using fallback ports." >&2
+    echo "5432 6379 9200 9300 5672 15672"
+    return 0
+  fi
+  echo "$ports_str"
+}
+
 function check_docker_compose_running() {
-  echo "Checking for running docker-compose projects..."
+  echo "Checking for containers that conflict with docker-services-cli ports..."
 
-  # Get list of running containers that might be from docker-compose
-  running_containers=$(docker ps --format "table {{.Names}}\t{{.Image}}" | grep -E "(postgres|redis|opensearch|rabbitmq|elasticsearch)" || true)
+  local expected_ports
+  # shellcheck disable=SC2207
+  expected_ports=($(docker_services_cli_expected_host_ports))
+  echo "Expected docker-services-cli host ports: ${expected_ports[*]}"
 
-  if [ -n "$running_containers" ]; then
-    echo "Warning: Found potentially conflicting containers running:"
-    echo "$running_containers"
+  local candidates
+  candidates=$(
+    docker ps --format '{{.Names}}\t{{.Image}}\t{{.Ports}}' |
+      grep -E '(postgres|redis|opensearch|rabbitmq|elasticsearch)' || true
+  )
+
+  if [ -z "$candidates" ]; then
+    echo "No related service containers detected."
+    return 0
+  fi
+
+  local conflicts=""
+  local ok_related=""
+
+  while IFS=$'\t' read -r name image ports; do
+    [ -z "${name:-}" ] && continue
+
+    if [[ "$name" == docker_services_cli-* ]]; then
+      ok_related+="  ${name} (docker-services-cli; OK to reuse)"$'\n'
+      continue
+    fi
+
+    local hit_ports=()
+    local p
+    for p in "${expected_ports[@]}"; do
+      if echo "$ports" | grep -Eq ":${p}->"; then
+        hit_ports+=("$p")
+      fi
+    done
+
+    if [ ${#hit_ports[@]} -gt 0 ]; then
+      conflicts+="  ${name}	${image}	host ports: ${hit_ports[*]}"$'\n'
+    else
+      ok_related+="  ${name} (related name/image, different host ports; OK)"$'\n'
+    fi
+  done <<<"$candidates"
+
+  if [ -n "$ok_related" ]; then
+    echo "Related containers without docker-services-cli port conflicts:"
+    printf "%s" "$ok_related"
+  fi
+
+  if [ -n "$conflicts" ]; then
+    echo "Warning: Found containers publishing ports docker-services-cli needs:"
+    printf "%s" "$conflicts"
     echo ""
-    echo "This might cause port conflicts with docker-services-cli."
-    echo "Consider stopping any running docker-compose projects before continuing."
+    echo "This will cause port conflicts with docker-services-cli."
+    echo "Consider stopping those containers before continuing."
     echo ""
     read -p "Do you want to continue anyway? (y/N): " -n 1 -r
     echo
@@ -46,78 +156,326 @@ function check_docker_compose_running() {
       exit 1
     fi
   else
-    echo "No conflicting containers detected."
+    echo "No port conflicts with docker-services-cli detected."
   fi
 }
 
-# Create symlinks to submodule tests
+function start_docker_services() {
+  echo "Starting docker-services-cli services..."
+  eval "$(uv run "${env_file_args[@]+"${env_file_args[@]}"}" docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
+}
+
+# ── test-runner (local container) helpers ─────────────────────────────────
+
+function test_compose_file_args() {
+  # Sets TEST_COMPOSE_FILES for docker compose -f ... invocations.
+  # Base always; pytest path overlays docker-services-cli's network.
+  # --js-only uses only the base (project-managed network).
+  TEST_COMPOSE_FILES=(-f docker-compose.test.yml)
+  if [[ ${js_only:-0} -eq 0 ]]; then
+    TEST_COMPOSE_FILES+=(-f docker-compose.test.services.yml)
+  fi
+}
+
+function write_js_only_compose_placeholders() {
+  # Compose always mounts these; wrapper exits before reading them in JS-only.
+  CONNECTIONS_ENV_FILE="/tmp/kcworks-test-connections.env"
+  printf '# js-only placeholder\n' >"$CONNECTIONS_ENV_FILE"
+  TEST_SECRET_FILE="/tmp/kcworks-test-js-only-secrets.env"
+  {
+    printf 'SPARKPOST_USERNAME=js-only-unused\n'
+    printf 'SPARKPOST_API_KEY=js-only-unused\n'
+    printf 'INVENIO_ADMIN_EMAIL=js-only-unused@example.com\n'
+  } >"$TEST_SECRET_FILE"
+  chmod 600 "$TEST_SECRET_FILE"
+  export TEST_SECRET_FILE
+}
+
+function dotenv_quote() {
+  local v="$1"
+  v="${v//\\/\\\\}"
+  v="${v//\"/\\\"}"
+  v="${v//$'\n'/\\n}"
+  v="${v//$'\r'/\\r}"
+  printf '"%s"' "$v"
+}
+
+function write_test_runner_connections_env() {
+  # docker-services-cli --env uses localhost. Inside the compose network the
+  # DNS names are postgresql / redis / opensearch / rabbitmq.
+  # Defaults containing "}" must not be inlined in ${VAR:-...}.
+  local container_sqlalchemy_uri="${SQLALCHEMY_DATABASE_URI:-postgresql+psycopg2://invenio:invenio@localhost:5432/invenio}"
+  container_sqlalchemy_uri="${container_sqlalchemy_uri//localhost/postgresql}"
+
+  local container_broker_url="${BROKER_URL:-amqp://guest:guest@localhost:5672//}"
+  if [[ "${container_broker_url}" == amqp://* ]]; then
+    container_broker_url="${container_broker_url//localhost/rabbitmq}"
+  elif [[ "${container_broker_url}" == redis://* ]]; then
+    container_broker_url="${container_broker_url//localhost/redis}"
+  fi
+
+  local _default_search_hosts='[{"host": "localhost", "port": 9200}]'
+  local container_search_hosts="${SEARCH_HOSTS:-${_default_search_hosts}}"
+  container_search_hosts="${container_search_hosts#\"}"
+  container_search_hosts="${container_search_hosts%\"}"
+  container_search_hosts="${container_search_hosts//localhost/opensearch}"
+
+  local container_cache_redis_url="${CACHE_REDIS_URL:-${REDIS_URL:-redis://localhost:6379/0}}"
+  container_cache_redis_url="${container_cache_redis_url//localhost/redis}"
+  local container_accounts_session_redis_url="${ACCOUNTS_SESSION_REDIS_URL:-redis://localhost:6379/1}"
+  container_accounts_session_redis_url="${container_accounts_session_redis_url//localhost/redis}"
+  local container_celery_result_backend="${CELERY_RESULT_BACKEND:-redis://localhost:6379/2}"
+  container_celery_result_backend="${container_celery_result_backend//localhost/redis}"
+  local container_ratelimit_storage_uri="${RATELIMIT_STORAGE_URI:-redis://localhost:6379/3}"
+  container_ratelimit_storage_uri="${container_ratelimit_storage_uri//localhost/redis}"
+  local container_communities_identities_cache_redis_url="${COMMUNITIES_IDENTITIES_CACHE_REDIS_URL:-redis://localhost:6379/4}"
+  container_communities_identities_cache_redis_url="${container_communities_identities_cache_redis_url//localhost/redis}"
+
+  {
+    printf 'SQLALCHEMY_DATABASE_URI=%s\n' "$(dotenv_quote "${container_sqlalchemy_uri}")"
+    printf 'BROKER_URL=%s\n' "$(dotenv_quote "${container_broker_url}")"
+    printf 'SEARCH_HOSTS=%s\n' "$(dotenv_quote "${container_search_hosts}")"
+    printf 'CACHE_REDIS_URL=%s\n' "$(dotenv_quote "${container_cache_redis_url}")"
+    printf 'REDIS_URL=%s\n' "$(dotenv_quote "${container_cache_redis_url}")"
+    printf 'ACCOUNTS_SESSION_REDIS_URL=%s\n' "$(dotenv_quote "${container_accounts_session_redis_url}")"
+    printf 'CELERY_RESULT_BACKEND=%s\n' "$(dotenv_quote "${container_celery_result_backend}")"
+    printf 'RATELIMIT_STORAGE_URI=%s\n' "$(dotenv_quote "${container_ratelimit_storage_uri}")"
+    printf 'COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=%s\n' "$(dotenv_quote "${container_communities_identities_cache_redis_url}")"
+  } >"$CONNECTIONS_ENV_FILE"
+}
+
+# Optional -B rebuild, then compose run. Sets tests_exit_code.
+# "$@" is forwarded to the container entrypoint (wrapper → pytest or Jest).
+#
+# Interactive host TTY: attach so pytest owns the terminal (live status bar,
+# Ctrl-C, colors). Non-TTY (agents, pipes): detached -d -T + docker logs -f.
+function run_local_test_runner() {
+  export INVENIO_LOCAL_SITE_PATH="${INVENIO_LOCAL_SITE_PATH:-./site}"
+  export INVENIO_LOCAL_DEPENDENCIES_PATH="${INVENIO_LOCAL_DEPENDENCIES_PATH:-./site/kcworks/dependencies}"
+
+  echo "Starting test-runner container..."
+  docker rm -f kcworks-test-runner >/dev/null 2>&1 || true
+
+  if [[ ${build_image:-0} -eq 1 ]]; then
+    echo "Rebuilding test-runner image (-B/--build)..."
+    local progress_script
+    progress_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/docker_build_progress.py"
+    set +e
+    test_compose_file_args
+    BUILDKIT_PROGRESS=rawjson \
+      docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" build test-runner \
+      2>&1 | uv run python "$progress_script"
+    local build_pipe=("${PIPESTATUS[@]}")
+    set -e
+    local build_exit="${build_pipe[0]:-1}"
+    if [[ "$build_exit" -ne 0 ]]; then
+      echo "Error: test-runner image build failed (exit ${build_exit})" >&2
+      exit "$build_exit"
+    fi
+  fi
+
+  test_compose_file_args
+  local compose_run=(docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" run --name kcworks-test-runner)
+  if [[ ${keep_services:-0} -eq 0 ]]; then
+    compose_run+=(--rm)
+  fi
+
+  local cid="kcworks-test-runner"
+  if [[ -t 0 && -t 1 ]]; then
+    # Attached: host TTY is the container stdio (pytest_live_status, etc.).
+    set +e
+    if [ $# -eq 0 ]; then
+      "${compose_run[@]}" test-runner
+    else
+      "${compose_run[@]}" test-runner "$@"
+    fi
+    tests_exit_code=$?
+    set -e
+  else
+    # Detached: no usable host TTY; follow logs and wait for exit.
+    compose_run+=(-d -T)
+    if [ $# -eq 0 ]; then
+      "${compose_run[@]}" test-runner >/dev/null
+    else
+      "${compose_run[@]}" test-runner "$@" >/dev/null
+    fi
+
+    docker logs -f "$cid" &
+    local logs_pid=$!
+    set +e
+    tests_exit_code=$(docker wait "$cid")
+    local wait_status=$?
+    set -e
+    if [[ $wait_status -ne 0 ]]; then
+      tests_exit_code=$wait_status
+    fi
+    wait "$logs_pid" 2>/dev/null || true
+  fi
+
+  if [[ -n "${TEST_SECRET_FILE}" && -f "${TEST_SECRET_FILE}" ]]; then
+    echo "Removing host secrets file (tests finished)..."
+    rm -f "$TEST_SECRET_FILE"
+    TEST_SECRET_FILE=""
+  fi
+
+  if [[ ${keep_services:-0} -eq 1 ]]; then
+    echo "Keeping test-runner container ${cid} (--keep-services)."
+  fi
+}
+
+function invoke_local_test_runner() {
+  if [ ${#forwarded_args[@]} -eq 0 ]; then
+    run_local_test_runner
+  else
+    run_local_test_runner "${forwarded_args[@]}"
+  fi
+}
+
+# ── Pytest path helpers ───────────────────────────────────────────────────
+
 function create_test_symlinks() {
   echo "Creating symlinks to submodule tests..."
-  
-  # invenio-stats-dashboard
+
+  local submodule_tests_dir
+
   submodule_tests_dir="site/kcworks/dependencies/invenio-stats-dashboard/tests"
-  
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
     if [ -d "$submodule_tests_dir/api" ]; then
-      if [ -L "tests/api/stats_dashboard" ] || [ -e "tests/api/stats_dashboard" ]; then
-        rm -f "tests/api/stats_dashboard"
-      fi
+      rm -f "tests/api/stats_dashboard"
       ln -s "../../$submodule_tests_dir/api" "tests/api/stats_dashboard"
       echo "Created symlink: tests/api/stats_dashboard -> $submodule_tests_dir/api"
     fi
-    
     if [ -d "$submodule_tests_dir/cli" ]; then
-      if [ -L "tests/cli/stats_dashboard" ] || [ -e "tests/cli/stats_dashboard" ]; then
-        rm -f "tests/cli/stats_dashboard"
-      fi
+      rm -f "tests/cli/stats_dashboard"
       ln -s "../../$submodule_tests_dir/cli" "tests/cli/stats_dashboard"
       echo "Created symlink: tests/cli/stats_dashboard -> $submodule_tests_dir/cli"
     fi
-    
     if [ -d "$submodule_tests_dir/ui" ]; then
-      if [ -L "tests/ui/stats_dashboard" ] || [ -e "tests/ui/stats_dashboard" ]; then
-        rm -f "tests/ui/stats_dashboard"
-      fi
+      rm -f "tests/ui/stats_dashboard"
       ln -s "../../$submodule_tests_dir/ui" "tests/ui/stats_dashboard"
       echo "Created symlink: tests/ui/stats_dashboard -> $submodule_tests_dir/ui"
     fi
   fi
-  
-  # invenio-record-importer-kcworks
+
   submodule_tests_dir="site/kcworks/dependencies/invenio-record-importer-kcworks/tests"
-  
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
   else
     if [ -d "$submodule_tests_dir/api" ]; then
-      if [ -L "tests/api/record_importer" ] || [ -e "tests/api/record_importer" ]; then
-        rm -f "tests/api/record_importer"
-      fi
+      rm -f "tests/api/record_importer"
       ln -s "../../$submodule_tests_dir/api" "tests/api/record_importer"
       echo "Created symlink: tests/api/record_importer -> $submodule_tests_dir/api"
     fi
-    
     if [ -d "$submodule_tests_dir/cli" ]; then
-      if [ -L "tests/cli/record_importer" ] || [ -e "tests/cli/record_importer" ]; then
-        rm -f "tests/cli/record_importer"
-      fi
+      rm -f "tests/cli/record_importer"
       ln -s "../../$submodule_tests_dir/cli" "tests/cli/record_importer"
       echo "Created symlink: tests/cli/record_importer -> $submodule_tests_dir/cli"
     fi
   fi
+
+  submodule_tests_dir="site/kcworks/dependencies/invenio-remote-user-data-kcworks/tests"
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      rm -f "tests/api/remote_user_data"
+      ln -s "../../$submodule_tests_dir/api" "tests/api/remote_user_data"
+      echo "Created symlink: tests/api/remote_user_data -> $submodule_tests_dir/api"
+    fi
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      rm -f "tests/cli/remote_user_data"
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/remote_user_data"
+      echo "Created symlink: tests/cli/remote_user_data -> $submodule_tests_dir/cli"
+    fi
+    if [ -d "$submodule_tests_dir/ui" ]; then
+      rm -f "tests/ui/remote_user_data"
+      ln -s "../../$submodule_tests_dir/ui" "tests/ui/remote_user_data"
+      echo "Created symlink: tests/ui/remote_user_data -> $submodule_tests_dir/ui"
+    fi
+  fi
+
+  submodule_tests_dir="site/kcworks/dependencies/kcworks-import-client/tests"
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    rm -f "tests/user_scripts/import_client"
+    ln -s "../../$submodule_tests_dir" "tests/user_scripts/import_client"
+    echo "Created symlink: tests/user_scripts/import_client -> $submodule_tests_dir"
+  fi
 }
 
-# Check for arguments
-# Note: "-k" would clash with "pytest"
+function resolve_test_env_files() {
+  env_file_args=()
+  if [ -f "tests/.env" ]; then
+    env_file_args+=(--env-file tests/.env)
+    echo "Using tests/.env file for non-secret environment variables"
+  else
+    echo "No tests/.env file found"
+  fi
+
+  CONNECTIONS_ENV_FILE="/tmp/kcworks-test-connections.env"
+  rm -f "$CONNECTIONS_ENV_FILE"
+  rm -f /tmp/kcworks-test-services.env
+
+  TEST_SECRET_FILE=""
+  local test_secret_file
+  if test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
+    if [ -n "$test_secret_file" ]; then
+      TEST_SECRET_FILE="$test_secret_file"
+      env_file_args+=(--env-file "$TEST_SECRET_FILE")
+      echo "Using AWS Secrets Manager test secrets at ${TEST_SECRET_FILE}"
+    else
+      echo "AWS Secrets Manager lookup skipped (KCWORKS_TEST_SM_DISABLE=1)"
+    fi
+  else
+    echo "Error: failed to fetch test secrets from AWS Secrets Manager." >&2
+    echo "       Set KCWORKS_TEST_SM_DISABLE=1 to skip and rely on tests/.env only." >&2
+    exit 1
+  fi
+}
+
+function run_ci_translations_and_docs() {
+  if [[ ${skip_translations} -eq 0 ]]; then
+    echo "Extracting translations from python files"
+    uv run invenio-cli translations extract
+    echo "Updating translations"
+    uv run invenio-cli translations update
+    echo "Compiling translations"
+    uv run invenio-cli translations compile
+    echo "Building the documentation"
+    uv run sphinx-build -b html docs/source/ docs/build/
+  else
+    echo "Skipping translations compilation and documentation build"
+  fi
+}
+
+function run_ci_pytest() {
+  echo "Running ty on the site directory"
+  uv run ty check site/
+
+  if [ ${#forwarded_args[@]} -eq 0 ]; then
+    echo "Running pytest"
+    uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest -vv -s --disable-warnings
+  else
+    echo "Running pytest with additional arguments"
+    uv run "${env_file_args[@]+"${env_file_args[@]}"}" python -m pytest "${forwarded_args[@]}" -s --disable-warnings
+  fi
+}
+
+# ── Argument parsing ──────────────────────────────────────────────────────
+
+# Flags for this script. Remaining tokens go to forwarded_args (pytest normally;
+# Jest when --js-only). Not getopts: long options, and -k must reach pytest.
 keep_services=0
 skip_translations=0
-pytest_args=()
-for arg in $@; do
-  # from the CLI args, filter out some known values and forward the rest to "pytest"
-  # note: we don't use "getopts" here b/c of some limitations (e.g. long options),
-  #       which means that we can't combine short options (e.g. "./run-tests -Kk pattern")
+build_image=0
+run_js=0
+js_only=0
+forwarded_args=()
+
+for arg in "$@"; do
   case ${arg} in
   -K | --keep-services)
     keep_services=1
@@ -125,68 +483,100 @@ for arg in $@; do
   -S | --skip-translations)
     skip_translations=1
     ;;
+  -B | --build)
+    build_image=1
+    ;;
+  -J | --js)
+    run_js=1
+    ;;
+  --js-only)
+    js_only=1
+    run_js=1
+    ;;
   *)
-    pytest_args+=(${arg})
+    forwarded_args+=("${arg}")
     ;;
   esac
 done
 
-if [[ ${keep_services} -eq 0 ]]; then
-  trap cleanup EXIT
+if [[ ${js_only} -eq 1 ]]; then
+  skip_translations=1
 fi
 
-# Create symlinks to submodule tests
+# ── Main ──────────────────────────────────────────────────────────────────
+
+trap cleanup EXIT
+
+if [ -z "${CI:-}" ]; then
+  is_ci=false
+  echo "Running in local development mode"
+else
+  is_ci=true
+  echo "Running in CI mode"
+fi
+
+# Wrapper reads these (compose injects them into the test-runner).
+export KCWORKS_TEST_RUN_JS="${run_js}"
+export KCWORKS_TEST_JS_ONLY="${js_only}"
+export KCWORKS_TEST_SKIP_TRANSLATIONS="${skip_translations}"
+
+if [[ ${run_js} -eq 1 ]]; then
+  echo "JS suites enabled (-J / --js-only); see scripts/run-js-suites.sh"
+fi
+
+# --- Jest-only shortcuts (no pytest / no docker-services) ----------------
+
+if [[ "$is_ci" == "true" && ${js_only} -eq 1 ]]; then
+  echo "CI --js-only: running pnpm test on the host"
+  if [ ${#forwarded_args[@]} -eq 0 ]; then
+    pnpm test
+  else
+    pnpm test -- "${forwarded_args[@]}"
+  fi
+  exit 0
+fi
+
+if [[ "$is_ci" == "false" && ${js_only} -eq 1 ]]; then
+  echo "JS-only mode: skipping docker-services-cli, secrets fetch, translations, and pytest"
+  echo "  (wrapper runs Jest because KCWORKS_TEST_JS_ONLY=1)"
+  write_js_only_compose_placeholders
+  invoke_local_test_runner
+  exit "${tests_exit_code:-0}"
+fi
+
+# --- Pytest path (optional Jest via -J inside the wrapper) ---------------
+
 create_test_symlinks
 
-# Extract and compile translations from python files
-if [[ ${skip_translations} -eq 0 ]]; then
-  echo "Extracting translations from python files"
-  uv run invenio-cli translations extract
-  echo "Updating translations"
-  uv run invenio-cli translations update
-  echo "Compiling translations"
-  uv run invenio-cli translations compile
+if [[ "$is_ci" == "true" ]]; then
+  run_ci_translations_and_docs
 else
-  echo "Skipping translations compilation"
+  if [[ ${skip_translations} -eq 1 ]]; then
+    echo "Translations/docs will be skipped inside the test-runner (-S)"
+  else
+    echo "Translations/docs will run inside the test-runner container"
+  fi
+  if [[ ${run_js} -eq 1 ]]; then
+    echo "JS suites will run inside the test-runner before pytest (-J)"
+  fi
 fi
 
-# Build the documentation
-echo "Building the documentation"
-uv run sphinx-build -b html docs/source/ docs/build/
-
-# Check for running docker-compose projects before starting services
 check_docker_compose_running
+resolve_test_env_files
+start_docker_services
 
-# Check if tests/.env exists and set env_file_arg accordingly
-if [ -f "tests/.env" ]; then
-  env_file_arg="--env-file tests/.env"
-  echo "Using tests/.env file for environment variables"
+if [[ "$is_ci" == "true" ]]; then
+  run_ci_pytest
 else
-  env_file_arg=""
-  echo "No tests/.env file found, using default environment"
+  write_test_runner_connections_env
+  if [[ -z "${TEST_SECRET_FILE}" || ! -f "${TEST_SECRET_FILE}" ]]; then
+    echo "Error: local test-runner requires a secrets file from kcworks_test_secrets.sh." >&2
+    echo "       Do not set KCWORKS_TEST_SM_DISABLE=1 for local containerized runs." >&2
+    exit 1
+  fi
+  export TEST_SECRET_FILE
+  # Forwarded args go to pytest; wrapper runs Jest first when RUN_JS=1, then pytest.
+  invoke_local_test_runner
 fi
 
-# Start the services and get their environment variables
-echo "Starting the services"
-eval "$(uv run ${env_file_arg} docker-services-cli --filepath .venv/lib/python3.12/site-packages/docker_services_cli/docker-services.yml up --db ${DB:-postgresql} --cache ${CACHE:-redis} --search opensearch --mq ${MQ:-rabbitmq} --env)"
-
-# Unset the environment variables that docker-services-cli set so that the values from tests/.env are used instead of those defaults from docker-services.yml
-unset SQLALCHEMY_DATABASE_URI
-unset INVENIO_SQLALCHEMY_DATABASE_URI
-
-# Run mypy
-echo "Running mypy on the site directory"
-uv run mypy --config-file pyproject.toml site/
-
-# Note: expansion of pytest_args looks like below to not cause an unbound
-# variable error when 1) "nounset" and 2) the array is empty.
-if [ ${#pytest_args[@]} -eq 0 ]; then
-  echo "Running pytest"
-  uv run ${env_file_arg} python -m pytest -vv -s --disable-warnings
-else
-  echo "Running pytest with additional arguments"
-  uv run ${env_file_arg} python -m pytest ${pytest_args[@]} -s --disable-warnings
-fi
-
-tests_exit_code=$?
-exit "$tests_exit_code"
+exit "${tests_exit_code:-0}"

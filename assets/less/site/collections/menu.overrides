@@ -1,3 +1,13 @@
+.ui.secondary.pointing.menu > .item {
+  &:has(.label),
+  &:has(.label) + .item{
+    line-height: 1.5rem;
+    .icon {
+      line-height: 1rem;
+    }
+  }
+}
+
 .ui.menu.pagination {
   box-shadow: none;
   border: 1px solid @formInputBorderColor;
@@ -55,48 +65,66 @@
       }
     }
 
-    &.active {
-      h2.header {
-        @media all and (max-width: @largestTabletScreen) {
-          margin-top: 0;
-          color: @primaryColor;
-        }
-      }
+    &.active {  // mobile menu when open
+
       #invenio-menu.ui.menu {
         @media all and (max-width: @largestTabletScreen) {
-          z-index: 1000;
+          background-color: @sidebarBackgroundColor;
+          padding-left: 0;
+          padding-right: 0;
+          padding-top: 1.5rem;
+          z-index: 1010 !important;
           top: 0;
           overflow-y: auto;
           overflow-x: hidden;
+          h2.header {
+              margin-top: 1rem;
+              margin-bottom: 0.5rem;
+              color: @ivy;
+          }
+          .item:not(.logo) {
+              padding: 0;
+          }
+
+          a:not(.ui.button),
+          a[role="menuitem"],
+          div[role="menuitem"] {
+            padding: 1rem 1.5rem;
+            width: 100%;
+            border-left: 2px solid transparent;
+          }
+
+          .right.menu.item {
+            a:not(.ui.button),
+            a[role="menuitem"],
+            div[role="menuitem"] {
+              height: auto;
+
+              &.restricted {
+                background-color: @ivy80 !important;
+                color: @white !important;
+              }
+
+              &:hover,
+              &:focus,
+              &:active {
+                background-color: @mint80 !important;
+              }
+            }
+          }
+          #rdm-close-burger-menu-icon {
+              margin-right: 1rem;
+              margin-bottom: 0;
+          }
         }
         @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
           max-width: 40vw;
         }
-        .item {
-          @media screen and (max-width: @largestTabletScreen) {
-            padding: 0;
-          }
-        }
-        #rdm-close-burger-menu-icon {
-          @media screen and (max-width: @largestTabletScreen) {
-            margin-right: 1rem;
-            margin-bottom: 0;
-          }
-        }
       }
     }
     #invenio-menu.ui.menu {
-      @media screen and (max-width: @largestTabletScreen) {
-        background-color: @sidebarBackgroundColor;
-        padding-left: 0;
-        padding-right: 0;
-        padding-top: 1.5rem;
-      }
       > .item:not(.logo) {
         line-height: 1.3rem;
-        @media screen and (max-width: @largestTabletScreen) {
-          padding: 0;
-        }
         &:hover,
         &:focus,
         &:active {
@@ -138,7 +166,7 @@
           padding: 1.7rem 1rem;
           color: @ivy80;
           @media screen and (max-width: @largestTabletScreen) {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.5rem;
             width: 100%;
             border-left: 2px solid transparent;
           }
@@ -182,16 +210,10 @@
         a.ui.button.basic {
           box-shadow: none;
         }
-        &.right.menu {
+        &.right.menu.item {
           border-right: 0.5rem solid @mint;
           border-left: 0.5rem solid @mint;
           background-color: @mint;
-          @media screen and (max-width: @largestTabletScreen) {
-            border-right: 0;
-            border-left: 0;
-            margin-top: 1.5rem;
-            padding: 1.5rem 0;
-          }
           &.logged-out:hover,
           &.logged-out:focus,
           &.logged-out:active {
@@ -200,9 +222,6 @@
           }
           &> .item {
             height: 100%;
-            @media screen and (max-width: @largestTabletScreen) {
-              height: unset;
-            }
           }
           a,
           div[role="menuitem"] {
@@ -334,8 +353,42 @@
     border: 1px solid transparent;
     box-shadow: none;
 
+    // Structural horizontal chrome when SUI flips this menu to tablet/mobile.
+    // Per-community colors are overridden in community_theme_template.css.
+    @media all and (max-width: @largestTabletScreen) {
+      border-radius: 0.5em !important;
+      border-width: 2px;
+      border-style: solid;
+      border-color: @sidebarBorderColor;
+      background-color: @sidebarBackgroundColor !important;
+      box-shadow: 0 0 10px 0 @sidebarBorderColor;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .item {
       border-left: 2px solid @sidebarBorderColor;
+
+      @media all and (max-width: @largestTabletScreen) {
+        border-left-width: 0 !important;
+        border-left-color: transparent !important;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: @sidebarBorderColor !important;
+        background-color: @sidebarBackgroundColor !important;
+        margin-bottom: -2px;
+
+        &:first-child,
+        &.active:first-child {
+          border-radius: 0.5em 0 0 0.5em;
+        }
+
+        &:last-child,
+        &.active:last-child {
+          border-radius: 0 0.5em 0.5em 0;
+        }
+      }
+
       &.active {
         background-color: transparent;
         border-left: 2px solid @primaryColor;
@@ -344,9 +397,10 @@
         &:last-child {
           border-radius: 0;
         }
-        @media all and (max-width: @largestMobileScreen) {
-          border-left: none;
-          border-bottom: 2px solid @secondaryColor;
+        @media all and (max-width: @largestTabletScreen) {
+          border-left-color: transparent !important;
+          border-bottom-color: @secondaryColor !important;
+          background-color: @sidebarBackgroundColor !important;
         }
       }
       &:before {
@@ -428,7 +482,7 @@
 // Collapsing menu items - hide computer only elements above 1200px
 .menu {
   .item.collapsing {
-    &.computer.only:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+    &.computer.only:not([class*="large screen"]):not(.widescreen):not(.tablet):not(.mobile) {
       @media all and (min-width: @largeMonitorBreakpoint) {
         display: none !important;
       }

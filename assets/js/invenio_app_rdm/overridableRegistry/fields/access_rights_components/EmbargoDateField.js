@@ -9,7 +9,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { FieldLabel } from "react-invenio-forms";
-import { TextField } from "@js/invenio_modular_deposit_form/replacement_components/TextField";
+import { TextField } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/TextField";
 import { i18next } from "@translations/i18next";
 
 export function EmbargoDateField({
@@ -19,6 +19,7 @@ export function EmbargoDateField({
   placeholder,
   required,
   helpText,
+  classnames,
 }) {
   return (
     <TextField
@@ -26,7 +27,8 @@ export function EmbargoDateField({
       label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       placeholder={placeholder}
       required={required}
-      helpText={helpText}
+      description={helpText}
+      classnames={classnames}
     />
   );
 }
@@ -38,6 +40,7 @@ EmbargoDateField.propTypes = {
   placeholder: PropTypes.string,
   required: PropTypes.bool,
   helpText: PropTypes.string,
+  classnames: PropTypes.string,
 };
 
 EmbargoDateField.defaultProps = {

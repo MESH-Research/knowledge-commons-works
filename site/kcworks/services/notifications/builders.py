@@ -20,15 +20,12 @@
 # GuestAccessRequestAcceptNotificationBuilder,
 # GuestAccessRequestCancelNotificationBuilder,
 # GuestAccessRequestDeclineNotificationBuilder,
-# GuestAccessRequestSubmitNotificationBuilder,
 # GuestAccessRequestSubmittedNotificationBuilder,
 # GuestAccessRequestTokenCreateNotificationBuilder,
-# UserAccessRequestAcceptNotificationBuilder,
-# UserAccessRequestCancelNotificationBuilder,
-# UserAccessRequestDeclineNotificationBuilder,
-# UserAccessRequestSubmitNotificationBuilder,
+# (Guest email recipients cannot use the user-id-keyed internal unread store.)
 """
 
+from flask import current_app as app
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
     CommunityInvitationAcceptNotificationBuilder,
@@ -48,6 +45,11 @@ from invenio_rdm_records.notifications.builders import (
     CommunityInclusionDeclineNotificationBuilder,
     CommunityInclusionExpireNotificationBuilder,
     CommunityInclusionSubmittedNotificationBuilder,
+    GuestAccessRequestSubmitNotificationBuilder,
+    UserAccessRequestAcceptNotificationBuilder,
+    UserAccessRequestCancelNotificationBuilder,
+    UserAccessRequestDeclineNotificationBuilder,
+    UserAccessRequestSubmitNotificationBuilder,
 )
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_requests.notifications.builders import (
@@ -268,13 +270,84 @@ class CustomCommentRequestEventCreateNotificationBuilder(
     )
 
 
+class CustomUserAccessRequestSubmitNotificationBuilder(
+    UserAccessRequestSubmitNotificationBuilder
+):
+    """Notification builder for user access request submit action."""
+
+    recipient_backends = (
+        UserAccessRequestSubmitNotificationBuilder.recipient_backends
+        + [
+            UserInternalBackend(),
+        ]
+    )
+
+
+class CustomUserAccessRequestAcceptNotificationBuilder(
+    UserAccessRequestAcceptNotificationBuilder
+):
+    """Notification builder for user access request accept action."""
+
+    recipient_backends = (
+        UserAccessRequestAcceptNotificationBuilder.recipient_backends
+        + [
+            UserInternalBackend(),
+        ]
+    )
+
+
+class CustomUserAccessRequestCancelNotificationBuilder(
+    UserAccessRequestCancelNotificationBuilder
+):
+    """Notification builder for user access request cancel action."""
+
+    recipient_backends = (
+        UserAccessRequestCancelNotificationBuilder.recipient_backends
+        + [
+            UserInternalBackend(),
+        ]
+    )
+
+
+class CustomUserAccessRequestDeclineNotificationBuilder(
+    UserAccessRequestDeclineNotificationBuilder
+):
+    """Notification builder for user access request decline action."""
+
+    recipient_backends = (
+        UserAccessRequestDeclineNotificationBuilder.recipient_backends
+        + [
+            UserInternalBackend(),
+        ]
+    )
+
+
+class CustomGuestAccessRequestSubmitNotificationBuilder(
+    GuestAccessRequestSubmitNotificationBuilder
+):
+    """Notification builder for guest access request submit action."""
+
+    recipient_backends = (
+        GuestAccessRequestSubmitNotificationBuilder.recipient_backends
+        + [
+            UserInternalBackend(),
+        ]
+    )
+
+
 class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     """Notification builder for first record created action."""
 
     type = "user-first-record.create"
 
     @classmethod
-    def build(cls, data: dict, record: RDMDraft, sender: User):
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        data: dict,
+        record: RDMDraft,
+        sender: User,
+    ) -> Notification:
         """Build notification with context.
 
         Returns:
@@ -341,7 +414,13 @@ class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.publish"
 
     @classmethod
-    def build(cls, draft: RDMDraft, record: RDMRecord, sender: User) -> Notification:
+    def build(  # ty: ignore[invalid-method-override]
+        cls,
+        *,
+        draft: RDMDraft,
+        record: RDMRecord,
+        sender: User,
+    ) -> Notification:
         """Build notification with context.
 
         Returns:

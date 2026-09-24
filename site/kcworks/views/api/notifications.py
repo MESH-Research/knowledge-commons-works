@@ -12,16 +12,19 @@ from flask.views import MethodView
 from flask_login import current_user
 from invenio_access.utils import get_identity
 from kcworks.proxies import current_internal_notifications
-from werkzeug.exceptions import BadRequest, Forbidden, Unauthorized
+from werkzeug.exceptions import BadRequest, Unauthorized
 
 
 class InternalNotifications(MethodView):
     """View class for the internal notifications api endpoint.
 
-    This endpoint is used to manage in-app user notifications in KCWorks.
+    This endpoint manages in-app unread notifications for the authenticated
+    user only, via `/users/me/notifications/unread/...`.
 
-    At present, the only action supported is clearing the user's unread
-    notifications.
+    Supported GET actions are `list`, `clear`, and `reconcile`. DELETE on the
+    same `/unread/<action>` path clears unread notifications (optionally scoped
+    by `request_id` / `comment_id`); the `action` segment is ignored for
+    DELETE for now.
     """
 
     view_name = "internal_notifications"
@@ -30,34 +33,31 @@ class InternalNotifications(MethodView):
         """Initialize the InternalNotifications view."""
         self.logger = app.logger
 
-    def get(self, user_id: int, action: str) -> tuple[Response, int]:
+    def get(self, action: str) -> tuple[Response, int]:
         """Handle GET requests to the user notifications unread endpoint.
 
         Parameters:
-            user_id (int): The ID of the user to get notifications for.
-            action (str): The action to perform on the notifications.
+            action (str): `list` to read unread notifications, `clear` to
+                clear them (optionally with `request_id` / `comment_id` query
+                params), or `reconcile` to drop orphan / non-personal rows and
+                refresh status from live requests.
 
         Returns:
             tuple[Response, int]: A tuple containing the response and the status code.
 
         Raises:
             Unauthorized: If the user is not authenticated.
-            Forbidden: If the user is not authorized to perform the action.
             BadRequest: If the action is invalid.
 
         Note:
-            This action is used to read the user's unread notifications. It
-            is permitted for any user.
+            Always operates on the authenticated session user.
         """
         if not current_user.is_authenticated:
             raise Unauthorized
-        if not current_user.id == user_id:
-            raise Forbidden
 
-        # FIXME: We should be clearing the notifications via a DELETE request
-        # to the endpoint, not a GET request with a query parameter. But we
-        # to be able to authenticate the request somehow from client side
-        # for methods other than GET
+        user_id = current_user.id
+
+        # Prefer DELETE for clear; GET clear kept for older clients.
         if action == "clear":
             request_id: str | None = request.args.get("request_id")
             comment_id: str | None = request.args.get("comment_id")
@@ -73,15 +73,21 @@ class InternalNotifications(MethodView):
                 get_identity(current_user), user_id=user_id
             )
             return jsonify(unread_notifications), 200
+        elif action == "reconcile":
+            unread_notifications = current_internal_notifications.reconcile_unread(
+                get_identity(current_user), user_id=user_id
+            )
+            return jsonify(unread_notifications), 200
         else:
             raise BadRequest(
-                f"Invalid action: {action}. Valid actions are 'clear' and 'list'."
+                "Invalid action: "
+                f"{action}. Valid actions are 'clear', 'list', and 'reconcile'."
             )
 
     # def post(self, user_id):
     #     """
     #     Handle POST requests to the user notifications unread endpoint.
-
+    #
     #     This action is used to clear the user's unread notifications. It
     #     is permitted only for the system process and the user themselves.
     #     """
@@ -93,30 +99,29 @@ class InternalNotifications(MethodView):
     #     )
     #     return jsonify(new_notification), 200
 
-    def delete(self, user_id: int) -> tuple[Response, int]:
+    def delete(self, action: str) -> tuple[Response, int]:
         """Handle DELETE requests to the user notifications unread endpoint.
 
-        This action is used to clear the user's unread notifications. It
-        is permitted only for the system process and the user themselves.
-
-        Parameters:
-            user_id (int): The ID of the user to clear notifications for.
+        Clears unread notifications for the authenticated session user.
+        Optional query params: `request_id`, `comment_id`. The `action` path
+        segment is accepted so DELETE shares the GET URL rule; it is unused
+        for now.
 
         Returns:
             tuple[Response, int]: A tuple containing the response and the status code.
 
         Raises:
             Unauthorized: If the user is not authenticated.
-            Forbidden: If the user is not authorized to perform the action.
         """
-        request_id = request.args.get("request_id")
-        comment_id = request.args.get("comment_id")
         if not current_user.is_authenticated:
             raise Unauthorized
-        if not current_user.id == user_id:
-            raise Forbidden
 
-        remaining_unread = current_internal_notifications.clear_unread_notifications(
-            get_identity(current_user), user_id, request_id, comment_id
+        request_id = request.args.get("request_id")
+        comment_id = request.args.get("comment_id")
+        remaining_unread = current_internal_notifications.clear_unread(
+            get_identity(current_user),
+            user_id=current_user.id,
+            request_id=request_id,
+            comment_id=comment_id,
         )
-        return jsonify({"remaining_unread": remaining_unread}), 200
+        return jsonify(remaining_unread), 200

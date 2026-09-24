@@ -108,7 +108,7 @@ In order to streamline the process of uploading works to KCWorks, particularly f
 Why is this API needed? The InvenioRDM REST API can be fragile and difficult to use, particularly for clients who are not familiar with the system. The creation and acceptance of a review request is redundant where collection administrators are uploading works for a collection they administer. The file upload steps are also not truly stateless, introducing the possibility of a file upload being interrupted and left incomplete, even if the upload of the file's content was successful.
 
 ```{note}
-KCWorks provides a standalone Python script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) that simplifies using the import API. The script handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for details.
+KCWorks provides a standalone Python package [`kcworks-import-client`](https://github.com/MESH-Research/kcworks-import-client) that simplifies using the import API (library classes and CLI). Package documentation: [kcworks-import-client docs](https://mesh-research.github.io/kcworks-import-client/). The single-collection importer handles authentication, file uploads, and response formatting automatically. See {ref}`the script documentation <api:kcworks-api-importer-script>` below for a summary. For importing into multiple collections (creating collections and parent links as needed), see {ref}`the multi-collection importer <api:kcworks-multi-collection-importer-script>`.
 ```
 
 ### Who can use the import API?
@@ -156,7 +156,10 @@ This request must be made with a `multipart/form-data` request. The request body
 | `review_required`      | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the work should be reviewed before publication. This setting is only relevant if the work is intended for publication in a collection that requires review. It will override the collection's usual review policy, since the work is being uploaded by a collection administrator. (Default: "true")                                                                                                                                                                   |
 | `strict_validation`    | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the import request should be rejected if any validation errors are encountered. If this value is "false", the imported work will be created in KCWorks even if some of the provided metadata does not conform to the KCWorks metadata schema, provided these are not required fields. If this value is "true", the import request will be rejected if any validation errors are encountered. (Default: "true")                                                         |
 | `all_or_none`          | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is "false", the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: "true")                                 |
-| `notify_record_owners` | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: "true")                                                                                                                                                                                                                                                                                                                                                                           |
+| `notify_record_owners` | no       | `text/plain`               | A string representation of a boolean (either "true" or "false") indicating whether the owners of the work should be notified by email of the work's creation. (Default: `"false"`)                                                                                                                                                                                                                                                                                                                                                                       |
+| `id_scheme`            | no       | `text/plain`               | Identifier scheme used to match existing works for idempotent re-import (looked up in each work's `metadata.identifiers`). Default: `import-recid`. The scheme must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import. Built-in import-oriented schemes include `import-recid` and `neh-recid`.                                                                                                                                                                         |
+| `alternate_id_scheme`  | no       | `text/plain`               | Optional secondary identifier scheme checked after `id_scheme` when looking up existing works. Same constraint as `id_scheme`. (Default: empty / unused)                                                                                                                                                                                                                                                                                                                                                                                                |
+| `no_updates`           | no       | `text/plain`               | When `"true"`, refuse to change an existing matched work if its **metadata** differs from the import payload (soft skip; file handling is not reached in that case). When `"false"` (default), differing metadata is applied to the existing draft/record, and files are reconciled as described below under {ref}`api:import-existing-record-files`. Matching uses DOI / `id_scheme` so identical re-imports do not create duplicates. |
 
 #### Identifying the owners of the work
 
@@ -210,7 +213,7 @@ If an owner does not already belong to the collection to which the records are b
 
 #### Email notifications for work owners
 
-When a work is imported into a collection, the work owners will receive an email notification unless the `notify_record_owners` parameter is set to "false". This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
+When a work is imported into a collection, the work owners will receive an email notification only if the `notify_record_owners` parameter is set to `"true"`. (The default is `"false"`.) This email will include a link to the work's landing page on KCWorks. The email subject line and the email template used for this notification are configurable on a collection-by-collection basis. Authorized organizations should discuss the desired content with the KCWorks team.
 
 For KCWorks developers: The configuration for this email is found in the config variable `RECORD_IMPORTER_COMMUNITIES` in the KCWorks instance's `invenio.cfg` file. This is a dictionary whose keys are the collection slugs and whose values are dictionaries with the following keys:
 
@@ -228,7 +231,7 @@ The template will receive the following variables:
 
 It is crucial that each work to be imported is assigned a unique identifier. This may be an identifier used internally by the importing organization, it may be a universally unique string such as a UUID, or it may be a universal identifier such as a DOI or a handle. In either case it must be unique across all works to be imported for the collection. This identifier will be used to identify the work in the response, and will be used to identify the work when checking for duplicate imports.
 
-The identifier may be provided in the `metadata` object as an `identifiers` array with the scheme `import-recid`. E.g.,
+By default, the identifier is provided in the `metadata` object as an `identifiers` array with the scheme `import-recid`. E.g.,
 
 ```json
 {
@@ -241,6 +244,23 @@ The identifier may be provided in the `metadata` object as an `identifiers` arra
   ]
 }
 ```
+
+To use a different scheme for deduplication, set the request form field `id_scheme` (and optionally `alternate_id_scheme`) to that scheme name, and use the same scheme in each work's `metadata.identifiers`. The scheme must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import. Built-in import-oriented schemes include `import-recid` and `neh-recid`. DOI values in `pids.doi` are also used for matching when present.
+
+(import-existing-record-files)=
+
+#### Files when re-importing an existing work (`no_updates` is `"false"`)
+
+When an import matches an existing draft or published work and `no_updates` is `"false"` (the default), or when `no_updates` is `"true"` but metadata is unchanged so the load continues, KCWorks reconciles files against the existing record as follows:
+
+- Same filename (key) and same size → leave the existing file; no re-upload.
+- Same filename but different size, or a file still marked pending → delete the existing object and upload the new file.
+- Filename present only in the import payload → upload as a new file.
+- Filename present only on the existing record → delete it from the record.
+
+Comparison is by **filename and size**, not by checksum or byte content. Two different files with the same name and size are treated as unchanged.
+
+When `no_updates` is `"true"` and metadata **differs**, the import stops before this file step; existing files are not modified.
 
 ### Example import request
 
@@ -349,11 +369,40 @@ Of course, in most cases the request will be made programmatically, not via a co
 
 (kcworks-api-importer-script)=
 
-KCWorks provides a standalone Python script that simplifies the process of importing works via the import API. The script ([scripts/user_resources/kcworks_api_importer.py](https://github.com/MESH-Research/knowledge-commons-works/tree/main/scripts/user_resources/kcworks_api_importer.py)) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages.
+KCWorks provides a standalone Python package that simplifies the process of importing works via the import API. The package ([`kcworks-import-client`](https://github.com/MESH-Research/kcworks-import-client), module `kcworks_import_client`) handles authentication, file uploads, multipart form data encoding, and provides human-readable success and error messages. Full client documentation: [kcworks-import-client docs](https://mesh-research.github.io/kcworks-import-client/).
 
 #### Requirements
 
-The script requires Python 3.9 or later and the `requests` library. It can be run standalone from the KCWorks project directory or copied to any location where Python 3.9+ is available.
+The client requires Python 3.12 or later and the `requests` library. Install from the monorepo package directory:
+
+```bash
+pip install -e site/kcworks/dependencies/kcworks-import-client
+# or with uv:
+uv pip install -e site/kcworks/dependencies/kcworks-import-client
+```
+
+This installs the `kcworks-api-importer` and `kcworks-multi-collection-importer` console commands.
+
+#### Library API
+
+Applications can import service classes instead of shelling out to the CLI:
+
+```python
+from kcworks_import_client import ImportClient, MultiCollectionImporter
+
+client = ImportClient(api_key="...")
+result = client.import_works(
+    "my-collection",
+    metadata=[{"metadata": {"title": "Example"}}],  # path, JSON str, list, or dict
+    files=["paper.pdf"],  # paths or (filename, fileobj[, mime]) tuples
+)
+# result.ok, result.status_code, result.data, result.errors
+
+importer = MultiCollectionImporter(api_key="...")
+multi = importer.run_manifest("manifest.json", assign_parents=True)
+```
+
+`ImportResult` / `MultiCollectionImportResult` are returned for HTTP outcomes; transport failures raise `ImportRequestError`. Prefer these classes over the CLI-oriented `import_works(...)` helper (which prints status and returns an exit code).
 
 #### Command-Line Arguments
 
@@ -366,6 +415,11 @@ The script accepts the following command-line arguments:
 | `--metadata PATH`         | Path to the metadata JSON file. The metadata must be a JSON array of metadata objects, even if importing a single record. If not provided, checks `KCWORKS_IMPORT_METADATA_PATH` environment variable, or prompts interactively.                   |
 | `--files PATH [PATH ...]` | One or more file paths to upload with the records. Multiple files can be specified by providing multiple arguments. If not provided, checks `KCWORKS_IMPORT_FILES_PATH` environment variable (comma or space-separated), or prompts interactively. |
 | `--output PATH`           | Optional path to save the API response as JSON. If not provided, checks `KCWORKS_IMPORT_OUTPUT_PATH` environment variable, or prompts interactively (can be skipped by pressing Enter).                                                            |
+| `--testing`               | Use a local testing instance (`https://localhost`).                                                                                                                                                                                                |
+| `--notify-record-owners`  | Send email notifications to users listed as record owners in metadata. Default: off.                                                                                                                                                               |
+| `--id-scheme SCHEME`      | Identifier scheme for import deduplication (default: `import-recid`). Must be defined in KCWorks or pre-arranged for addition.                                                                                                                     |
+| `--alternate-id-scheme`   | Optional secondary identifier scheme for deduplication. Same constraint as `--id-scheme`.                                                                                                                                                          |
+| `--no-updates`            | Refuse to change an existing matched record when **metadata** differs (skips file reconciliation in that case). Default: allow metadata updates; files then follow the key/size rules under {ref}`api:import-existing-record-files`. |
 
 #### Environment Variables
 
@@ -382,7 +436,7 @@ All command-line arguments can also be provided via environment variables:
 **Basic usage with all arguments:**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py \
+kcworks-api-importer \
   --api-key "your-api-key" \
   --collection-id "my-collection" \
   --metadata "metadata.json" \
@@ -397,19 +451,19 @@ export KCWORKS_IMPORT_API_KEY="your-api-key"
 export KCWORKS_IMPORT_COLLECTION_ID="my-collection"
 export KCWORKS_IMPORT_METADATA_PATH="metadata.json"
 export KCWORKS_IMPORT_FILES_PATH="file1.pdf file2.docx"
-python scripts/user_resources/kcworks_api_importer.py --output "response.json"
+python -m kcworks_import_client.api_importer --output "response.json"
 ```
 
 **Interactive mode (will prompt for missing values):**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py
+python -m kcworks_import_client.api_importer
 ```
 
 **Single file upload:**
 
 ```bash
-python scripts/user_resources/kcworks_api_importer.py \
+python -m kcworks_import_client.api_importer \
   --api-key "your-api-key" \
   --collection-id "my-collection" \
   --metadata "metadata.json" \
@@ -430,6 +484,103 @@ If an output path is provided, the full API response is also saved to that file 
 
 - `0` - Success
 - `1` - Error (invalid input, file not found, API error, etc.)
+
+### Using the Multi-Collection Importer Script
+
+(kcworks-multi-collection-importer-script)=
+
+For bulk imports that span multiple collections, use [`kcworks-multi-collection-importer`](https://github.com/MESH-Research/knowledge-commons-works/tree/main/site/kcworks/dependencies/kcworks-import-client) (`kcworks_import_client.multi_collection_importer`). Install with the `yaml` extra if you use YAML manifests (`pip install -e "site/kcworks/dependencies/kcworks-import-client[yaml]"`). It reads a JSON or YAML **manifest**, creates any missing collections via the communities API, optionally links parent/child collections, and then calls the same import logic as the single-collection importer for each entry.
+
+The single-collection importer remains usable on its own. The multi-collection wrapper is for when you want one command driven by a manifest.
+
+#### Manifest format
+
+YAML example:
+
+```yaml
+collections:
+  - slug: my-university
+    name: My University
+    metadata: ./university/metadata.json
+    files: ./university/files.zip
+    output: ./university/response.json
+
+  - slug: dept-history
+    name: Department of History
+    parent_slug: my-university
+    metadata: ./history/metadata.json
+    files:
+      - ./history/a.pdf
+      - ./history/b.pdf
+    id_scheme: neh-recid
+    notify_record_owners: true
+```
+
+Equivalent JSON:
+
+```json
+{
+  "collections": [
+    {
+      "slug": "my-university",
+      "name": "My University",
+      "metadata": "./university/metadata.json",
+      "files": "./university/files.zip",
+      "output": "./university/response.json"
+    },
+    {
+      "slug": "dept-history",
+      "name": "Department of History",
+      "parent_slug": "my-university",
+      "metadata": "./history/metadata.json",
+      "files": ["./history/a.pdf", "./history/b.pdf"],
+      "id_scheme": "neh-recid",
+      "notify_record_owners": true
+    }
+  ]
+}
+```
+
+Relative paths in the manifest are resolved against the manifest file's directory. YAML manifests require [PyYAML](https://pyyaml.org/).
+
+Each collection **slug** may appear only once in a given manifest. The importer treats that as a single create/link/import batch for that collection. Duplicate slugs are not supported as multiple batches (later rows silently override earlier ones for the same slug). To import more records into a collection later, use another manifest run or the single-collection importer.
+
+Optional per-entry fields:
+
+- `id_scheme` / `alternate_id_scheme` — override the CLI defaults for that collection. Schemes must already be defined in KCWorks (`RDM_RECORDS_IDENTIFIERS_SCHEMES`), or arranged with the KCWorks team for addition before import.
+- `notify_record_owners` — `true`/`false` for that collection; overrides `--notify-record-owners` for the entry.
+- `no_updates` — `true`/`false` for that collection; overrides `--no-updates` for the entry. Default is to allow metadata updates on existing matches (with file reconciliation as in {ref}`api:import-existing-record-files`).
+
+#### Parent / child links
+
+With `--assign-parents`, entries that list `parent_slug` are linked under that parent. The script:
+
+1. Ensures the parent has `children.allow=true` (collection owners can set this on KCWorks).
+2. Submits a subcommunity **join-request**. When the OAuth user owns both collections, the request is **auto-accepted** and the link is created immediately.
+
+See [Collection hierarchy and subcollection requests](../admin_guide/collection_hierarchy.md) for the full operator documentation on collection hierarchy.
+
+#### Command-Line Arguments
+
+| Argument                 | Description                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `--api-key KEY`          | API key (or `KCWORKS_IMPORT_API_KEY`, or interactive prompt).                                                            |
+| `--manifest PATH`        | Path to the JSON/YAML manifest (or `KCWORKS_IMPORT_MANIFEST_PATH`, or interactive prompt).                               |
+| `--assign-parents`       | Create parent/child links for entries that list `parent_slug`.                                                           |
+| `--testing`              | Use a local testing instance (`https://localhost`).                                                                      |
+| `--notify-record-owners` | Default notify flag for entries that do not set `notify_record_owners`.                                                  |
+| `--id-scheme SCHEME`     | Default import dedupe scheme (default: `import-recid`); overridable per entry.                                           |
+| `--alternate-id-scheme`  | Default secondary dedupe scheme; overridable per entry.                                                                  |
+| `--no-updates`           | Default block on metadata updates for existing matches; overridable per entry. Default: allow updates (see {ref}`api:import-existing-record-files` for files). |
+
+#### Usage Example
+
+```bash
+kcworks-multi-collection-importer \
+  --api-key "your-api-key" \
+  --manifest "import_manifest.yaml" \
+  --assign-parents
+```
 
 ### A successful import response
 
@@ -858,7 +1009,7 @@ GET https://works.hcommons.org/api/group_collections HTTP/1.1
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -910,7 +1061,7 @@ GET https://works.hcommons.org/api/group_collections HTTP/1.1
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -988,7 +1139,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -1040,7 +1191,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -1120,7 +1271,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "id": "5402d72b-b144-4891-aa8e-1038515d68f7",
                 "access": {
                     "member_policy": "open",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "closed",
                     "visibility": "public",
                 },
@@ -1172,7 +1323,7 @@ GET https://works.hcommons.org/api/group_collections?commons_instance=knowledgeC
                 "access": {
                     "visibility": "public",
                     "member_policy": "closed",
-                    "record_policy": "open",
+                    "record_submission_policy": "open",
                     "review_policy": "open",
                 }
             },
@@ -1263,7 +1414,7 @@ GET https://works.hcommons.org/api/group_collections/my-collection-slug HTTP/1.1
     "access": {
         "visibility": "public",
         "member_policy": "closed",
-        "record_policy": "open",
+        "record_submission_policy": "open",
         "review_policy": "open",
     }
 }
@@ -1472,7 +1623,7 @@ Required request headers:
 https://works.hcommons.org/api/webhooks/users/update
 ```
 
-**Deprecated (still operational):** ``/api/webhooks/user_data_update``
+**Deprecated (still operational):** `/api/webhooks/user_data_update`
 
 ```{warning}
 This API endpoint is intended for internal use only. It is not intended to be used by clients outside of the Knowledge Commons system.
@@ -1484,9 +1635,13 @@ This API was implemented with a distributed network of independent Commons insta
 
 The endpoint `/api/webhooks/users/update` (and the deprecated `/api/webhooks/user_data_update`) is provided for Knowledge Commons applications and instances to signal that user or group metadata has been changed. These endpoints do not receive the actual updated data. They only receive notices _that_ the metadata for a user or group has changed. KCWorks will then query the Commons instance's endpoint to retrieve current metadata for the user or group.
 
+In addition to ordinary metadata-change notifications, this endpoint also accepts `created` events for newly-registered Commons users so that KCWorks can lazily provision a matching local user account on demand. There is no corresponding `deleted` event for users -- see [No `deleted` event for users](#no-deleted-event-for-users) below for the rationale.
+
 ### User/Groups Metadata updates and SAML authentication
 
-It is assumed that Commons instances have registered a SAML authentication IDP with KCWorks. The Commons identifiers for users in metadata update signals must be the same identifiers provided by the instance's SAML IDP. This allows KCWorks to reliably identify the correct KCWorks user account, even if the same identifier happens to be used internally by multiple Commons instances. It also allows KCWorks to store Commons instance user ids in one central place within KCWorks, minimizing the chances of those links between a Commons instance user account and a KCWorks user account becoming corrupted.
+It is assumed that Commons instances have registered a SAML authentication IDP with KCWorks. The Commons identifiers for users in metadata update signals must be the **OAuth `sub`** values that the instance's SAML/OAuth IDP issues for those users -- i.e. the same identifier KCWorks stores as `UserIdentity.id` when the user logs in. They are **not** Commons usernames. This allows KCWorks to reliably identify the correct KCWorks user account, even if the same identifier happens to be used internally by multiple Commons instances. It also allows KCWorks to store Commons instance user ids in one central place within KCWorks, minimizing the chances of those links between a Commons instance user account and a KCWorks user account becoming corrupted.
+
+When KCWorks needs to address a status callback to the Commons-side `/api/v1/members/{member_name}/works/status` endpoint, it resolves the KC member name (Commons username) locally from the `sub` via `UserIdentity` -> `User.user_profile["identifier_kc_username"]`. If no local member name can yet be resolved (e.g. the very first attempt to provision a brand-new user failed before the local row was created), the callback URL falls back to the literal slug `unknown` and the request body still carries the raw `sub` so the Profiles operator can correlate manually. See [Status callback](#status-callback) below.
 
 ### GET requests
 
@@ -1507,15 +1662,15 @@ Update notices should be sent via a `POST` request to `/api/webhooks/users/updat
 
 ```json
 {
-	"idp": "knowledgeCommons",
-	"updates": {
-		"users": [
-			{"id": "myusername", "event": "updated"},
-			{"id": "anotherusername", "event": "created"},
-		],
-		"groups": [{"id": "1234", "event": "updated"}],
-	},
-},
+  "idp": "knowledgeCommons",
+  "updates": {
+    "users": [
+      {"id": "auth0|abc123", "event": "updated"},
+      {"id": "auth0|def456", "event": "created"}
+    ],
+    "groups": [{"id": "1234", "event": "updated"}]
+  }
+}
 ```
 
 Top level payload object properties:
@@ -1536,18 +1691,65 @@ Top level payload object properties:
 A valid payload *must* provide either a `users` array or a `groups` array with at least one member. Requests providing neither `users` nor `groups`, or providing only empty arrays, will result in an error response.
 ```
 
-`users` and `groups` object properties
+`users` and `groups` object properties:
 
-| Property | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                           | Required |
-| -------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `id`     | number | The local identifier of the user or group on the Commons instance. This must be the same identifier that can be used to retrieve the entity's metadata at the corresponding endpoint on the Commons instance.                                                                                                                                                                                         | Y        |
-| `event`  | string | The nature of the metadata change for the entity. Must be one of `updated`, `created`, or `deleted`. The `updated` and `deleted` event types should be sent when an entity is first created or is deleted entirely from the Commons instance. These will trigger the creation or deletion of corresponding entities (a user or a group) on KC Works. All other metadata changes are `updated` events. | Y        |
+| Property | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Required |
+| -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `id`     | string | For `users`: the OAuth `sub` for the user as issued by the Commons instance's IDP (the same value KCWorks stores as `UserIdentity.id`). **Not** a Commons username. For `groups`: the local identifier of the group on the Commons instance, used to retrieve the group's metadata at the corresponding endpoint.                                                                                                                                                                                                       | Y        |
+| `event`  | string | The nature of the metadata change for the entity. For `users`: `created` or `updated` (see [Per-event behaviour](#per-event-behaviour) below for what each does, and why no `deleted` event is supported). For `groups`: `created`, `updated`, or `deleted`.                                                                                                                                                                                                                                                            | Y        |
 
 NOTE: A valid payload's user and/or group objects must each include _both_ an `id` _and_ an `event` value.
 
+#### Per-event behaviour
+
+For `users` events:
+
+- **`created`** — KCWorks treats this as a request to lazily provision a local user matching the supplied OAuth `sub`. KCWorks queries the Commons instance for the user's full profile, then either matches an existing local user (by external id, ORCID, KC username, or email) and links the OAuth identity, or creates a new local user from the profile data. The provisioning is idempotent: re-sending `created` for a sub that's already linked just refreshes the user's profile data via the `updated` path.
+- **`updated`** — KCWorks queries the Commons instance for the user's current profile and applies any changes (profile fields, group memberships, etc.) to the matching local user. If the supplied `sub` does not correspond to any known local user, KCWorks **automatically converts the event to `created`** and provisions the user lazily. A warning is logged so operators can spot cases where a `created` event was missed earlier; no separate response code is returned.
+- **`deleted`** — *Not supported.* See [No `deleted` event for users](#no-deleted-event-for-users).
+
+For `groups` events:
+
+- **`created`** and **`updated`** are processed; KCWorks fetches the group's current metadata from the Commons instance and updates (or creates) the corresponding KCWorks group collection.
+- **`deleted`** is currently dropped at the dispatcher with a warning logged; deletion of group collections is handled by the operator-driven `invenio_group_collections_kcworks` flow rather than by automatic webhook deletion.
+
+#### No `deleted` event for users
+
+KCWorks intentionally does **not** implement automatic deletion of local users in response to `users.deleted` webhook events. KCWorks records (deposits, drafts, communities, comments) created by a user on KCWorks belong to that user even after the user has left the originating Commons instance, and we do not want a remote deletion to silently orphan or remove them. If a Commons instance does send a `users.deleted` event for a user, KCWorks will accept the payload (the event passes payload validation) but the dispatcher will log a warning and take no further action on the local user account.
+
+User account removal in KCWorks should instead be handled by an operator-driven flow that explicitly decides what to do with each user's items (transfer ownership, mark as community-owned, archive, anonymise, etc.) before deleting the local account.
+
 #### Event timing
 
-There may be some delay between KC Works' receiving an update signal and the updating of the corresponding entity's metadata in KC Works. The actual updates are handled by background workers and in some cases there may be a slight delay before a worker is free. Usually this will only be a fraction of a second, but if intensive background tasks (like indexing) are ongoing it could be several minutes. The update also depends on a successful callback request from KC Works to the Commons instance's endpoint for serving user or group metadata. If that request fails, it is possible for an update to fail even though the webhook signal was received successfully.
+There may be some delay between KC Works' receiving an update signal and the updating of the corresponding entity's metadata in KC Works. The actual updates are handled by background workers and in some cases there may be a slight delay before a worker is free. Usually this will only be a fraction of a second, but if intensive background tasks (like indexing) are ongoing it could be several minutes. The update also depends on a successful callback request from KC Works to the Commons instance's endpoint for serving user or group metadata. If that request fails, the metadata update can fail even though the webhook signal itself was received and acknowledged successfully. KCWorks applies bounded exponential-backoff retries (5 attempts, 30s -> 600s) followed by a long-delay reschedule (default 1 hour) when the Commons-side metadata endpoint is unreachable, and reports each transition via the [status callback](#status-callback).
+
+#### Status callback
+
+For each `users` event KCWorks accepts (whether `created`, `updated`, or an `updated`-converted-to-`created`), KCWorks fires a best-effort callback to the Commons-side `/api/v1/members/{member_name}/works/status` endpoint once the work item has been resolved. This lets the Commons side correlate each webhook it sent with KCWorks' eventual outcome.
+
+The callback URL uses the **resolved KC member name** (Commons username) for `member_name`, looked up locally from the `sub` via `UserIdentity` -> `User.user_profile["identifier_kc_username"]`. If no local member name can be resolved (typically only on the very first failed attempt to provision a brand-new user), the URL falls back to the literal slug `unknown` and the body still carries the raw `sub` so a Profiles operator can correlate manually.
+
+The callback request uses the static bearer token configured via `COMMONS_PROFILES_API_TOKEN` and sends a JSON body of the form:
+
+```json
+{
+  "username": "myusername",
+  "sub": "auth0|abc123",
+  "status": "PROCESSED",
+  "event": "created",
+  "retry_at": "2026-04-21T16:30:00+00:00",
+  "note": "profiles_api:Timeout"
+}
+```
+
+| Field      | Type           | Description                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `username` | string \| null | The resolved KC member name. `null` when the member name cannot yet be resolved.                                                                                                                                                                                                                                             |
+| `sub`      | string         | The OAuth `sub` from the original webhook event. Always present.                                                                                                                                                                                                                                                             |
+| `status`   | string         | `"PROCESSED"` for successful resolution, `"FAILED"` for any failure (including transient failures that KCWorks will retry).                                                                                                                                                                                                  |
+| `event`    | string         | `"created"` or `"updated"`, mirroring the inbound webhook `event` field (after any `updated`-to-`created` conversion described above).                                                                                                                                                                                       |
+| `retry_at` | string \| null | When `status` is `"FAILED"` and another attempt is already scheduled, an ISO 8601 UTC timestamp for that next attempt (so the Profiles side can avoid prompting an operator while a retry is pending). Omitted when no retry is scheduled.                                                                                   |
+| `note`     | string \| null | Optional freeform diagnostic, typically the failing exception class (e.g. `profiles_api:Timeout`, `profiles_api:Timeout:retries_exhausted_rescheduled`, `integrity_error_unresolved`, `no_profile_data`). Omitted on success.                                                                                                |
 
 #### Success responses
 
@@ -1555,23 +1757,23 @@ If a signal is received successfully, the response will have a status of `202` a
 
 ```json
 {
-  "message": "Webhook received",
+  "message": "Webhook notification accepted",
   "status": 202,
   "updates": {
     "users": [
-      { "id": "myusername", "event": "updated" },
-      { "id": "anotherusername", "event": "created" }
+      { "id": "auth0|abc123", "event": "updated" },
+      { "id": "auth0|def456", "event": "created" }
     ],
     "groups": [{ "id": "1234", "event": "updated" }]
   }
 }
 ```
 
-The `updates` object should be identical to the `updates` object provided in the `POST` request. This confirms that the correct events have all been received and are being sent for processing.
+The `updates` object echoes the `updates` object provided in the `POST` request. A `202` response only confirms that the notification was accepted and queued; the actual outcome of each per-user resolution is reported asynchronously via the [status callback](#status-callback).
 
 #### Error responses
 
-If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source).
+If multiple update signals are received in one `POST` request, it is possible that only some of the updates can be processed. The request might, for example, provide `updated` event signals for a number of entities, some of whose ids do not exist in KC Works. In this case the response code will be `207 Multi-Status` and the response payload will be a JSON object (documented in the source). Note that for `users` events, an `updated` signal for an unknown sub is **not** an error -- it is silently converted to `created` and provisioning proceeds (a warning is logged on the KCWorks side).
 
 ## Central User Logout Receiver (Internal Only)
 

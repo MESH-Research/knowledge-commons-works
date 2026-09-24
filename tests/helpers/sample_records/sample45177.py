@@ -193,7 +193,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",
@@ -231,9 +231,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",
@@ -305,6 +303,7 @@ rec45177 = {
                 "provider": "datacite",
             }
         },
+        "internal_notes": [],
         "custom_fields": {
             "hclegacy:collection": "hccollection:1",
             "hclegacy:file_location": (
@@ -490,7 +489,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",
@@ -528,9 +527,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",
@@ -575,6 +572,7 @@ rec45177 = {
     "expected_loaded": {
         "record_source": "knowledgeCommons",
         "created": "2022-03-31T13:53:16Z",
+        "internal_notes": [],
         "pids": {
             "doi": {
                 "client": "datacite",
@@ -774,7 +772,7 @@ rec45177 = {
                         "family_name": "Provo",
                         "given_name": "Alexandra",
                         "identifiers": [
-                            {"identifier": "aprovo", "scheme": "hc_username"}
+                            {"identifier": "aprovo", "scheme": "kc_username"}
                         ],
                         "name": "Provo, Alexandra",
                         "type": "personal",
@@ -812,9 +810,7 @@ rec45177 = {
             "contributors": [
                 {
                     "person_or_org": {
-                        "family_name": (
-                            "ARLIS/NA Cataloging Advisory Committee"
-                        ),
+                        "family_name": ("ARLIS/NA Cataloging Advisory Committee"),
                         "given_name": "",
                         "name": "ARLIS/NA Cataloging Advisory Committee",
                         "type": "personal",

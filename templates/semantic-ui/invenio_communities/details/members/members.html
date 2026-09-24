@@ -39,7 +39,7 @@
 <div class="thirteen wide computer sixteen wide tablet sixteen wide mobile column">
     <div id="community-members-search-root"
       data-invenio-search-config='{{ search_app_communities_members_config(app_id=app_id, endpoint=search_endpoint) | tojson }}'
-      data-community='{{ community | tojson }}'
+      data-community='{{ community_ui | tojson }}'
       data-communities-all-roles='{{ config.COMMUNITIES_ROLES | tojson }}'
       data-communities-roles-can-update='{{ roles_can_update | tojson }}'
       data-groups-enabled='{{ config.USERS_RESOURCES_GROUPS_ENABLED | tojson }}'

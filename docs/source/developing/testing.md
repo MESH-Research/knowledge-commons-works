@@ -19,6 +19,14 @@ Note that you will need to have your local docker service running for these test
 Ensure that you have **stopped** the docker-compose project for your local development instance before running the tests! Otherwise, you will get conflicts with the services that are started by the tests.
 ```
 
+### Local development vs CI mode
+
+The test runner detects whether it is running in a CI environment (GitHub Actions) or locally:
+- **Local**: Runs pytest (and optional Jest with `-J`) inside the `test-runner` container connected to docker-services-cli services for security (prevents malicious dependency code from accessing host credentials)
+- **CI**: Uses the current behavior (pytest runs directly on the Actions runner; GitHub Actions provides isolation via ephemeral machines)
+
+The detection is done by checking if the `$CI` environment variable is set. This variable is automatically set by GitHub Actions and can be manually set for local testing of CI mode.
+
 ### Running specific tests
 
 To run a specific test file, simply add the relative file path to the command, e.g.,
@@ -41,8 +49,11 @@ In addition to the options listed above, the test runner script provides the fol
 
 | Option | Short form | Description |
 |--------|------------|-------------|
-| `--skip-translations` | `-S` | Skip the translation extraction, update, and compilation steps. |
+| `--skip-translations` | `-S` | Skip the translation extraction, update, and compilation steps (and Sphinx docs). |
 | `--keep-services` | `-K` | Keep the docker-services-cli containers running after the tests are run. |
+| `--js` | `-J` | Also run the root Jest suite (`pnpm test`) inside the test-runner before pytest. |
+| `--js-only` | | Run only Jest in the test-runner: no docker-services-cli, no translations/docs, no pytest. Extra args are passed to Jest. |
+| `--build` | `-B` | Rebuild the test-runner image before running. |
 
 ```{note}
 Any pytest flags and options can be added to the test runner command and will be passed to pytest. E.g., the `-vv` flag in the examples above is equivalent to running `pytest -vv` and specifies verbose output.
@@ -80,7 +91,42 @@ Pytest will also run any doctests that are found in these directories. This incl
 
 The top-level `conftest.py` file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the `invenio.cfg` file. Some of these variables are then overridden in the `test_config` dictionary that `conftest.py` passes to the app instance.
 
-The test environment does not use the top-level `.env` file that is used in the development environment. Where environment variables are needed, these are provided in a dedicated environment file `tests/.env` that is used to configure the test environment in the test runner script `run-tests.sh`.
+The test environment does not use the top-level `.env` file that is used in the development environment. Instead, `run-tests.sh` layers two environment files into the `uv run` invocation that launches pytest:
+
+1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
+2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
+
+The secret file is produced by `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
+
+- `SPARKPOST_USERNAME`
+- `SPARKPOST_API_KEY`
+- `INVENIO_ADMIN_EMAIL`
+
+The defaults can be overridden without editing the script:
+
+- `KCWORKS_TEST_SM_SECRET_ID` (or `--secret-id`): override the AWS Secrets Manager secret id.
+- `KCWORKS_TEST_SM_KEYS` (or `--keys`): comma-separated list of keys to pull from the secret.
+- `--region`: forwarded to `aws` for cross-region secrets.
+- `--allow-missing`: warn instead of failing when a listed key is absent from the secret.
+- `KCWORKS_TEST_SM_DISABLE=1`: skip the AWS lookup entirely; rely on `tests/.env` (used in CI, where secrets come from GitHub Actions secrets).
+
+Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
+
+```{note}
+On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys via the `Run tests` step's `env:` block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.
+```
+
+### Containerized test runner for local development
+
+In local mode, pytest (and optional Jest) runs inside a container (`test-runner`) that:
+- Uses `docker-compose.test.yml` (project-managed network). The pytest path also merges `docker-compose.test.services.yml` so the runner joins docker-services-cli's `docker_services_cli_default` network; `--js-only` uses the base file only
+- Mounts site/deps/tests (and assets/Jest config when needed) from the host
+- Loads secrets via a Compose service secret for the pytest path
+
+The temp file containing AWS secrets is:
+1. Created by `kcworks_test_secrets.sh`
+2. Mounted into the container for its lifetime
+3. Deleted after the container finishes (cleanup trap handles interrupts)
 
 ### Pytest fixtures
 
@@ -96,22 +142,35 @@ The test runner includes additional actions that are not part of the pytest fram
 
 ## Javascript tests
 
-Pytest does not directly test custom javascript files or React components. In order to test these, navigate to the root `knowledge-commons-works` folder and run
-```console
-bash run-js-tests.sh
-```
-These tests are run using the jest test runner, configured in the packages.json file in the root knowledge-commons-works folder.
+Pytest does not directly test custom javascript files or React components. Those use Jest.
 
-This is equivalent to running
-```console
-npm run test
-```
-
-Note that these tests run using a local npm configuration in the knowledge-commons-works folder. Any packages that are normally available to InvenioRDM must be added to the local package.json configuration and will be installed in the local node_modules folder. Since this folder is not included in GIT version control, before you run the javascript tests you must ensure the required packages are installed locally by running
+**Local:** one entrypoint runs every registered suite inside the `test-runner` container:
 
 ```console
-npm install
+bash run-tests.sh --js-only
 ```
+
+Or include JS before pytest:
+
+```console
+bash run-tests.sh -J -vv
+```
+
+`bash run-js-tests.sh` locally forwards to `./run-tests.sh --js-only`. Suites are defined in `scripts/run-js-suites.sh` (root first, then dependency packages that have their own Jest harness). Each suite uses its own `package.json` / `pnpm` / `jest.config.js`. The root Jest config ignores `site/kcworks/dependencies/` so those tests are not double-run under the root installer.
+
+**CI:** `run-js-tests.sh` runs `scripts/run-js-suites.sh` on the Actions runner (host `pnpm`).
+
+Extra arguments are passed through to each suite’s Jest, e.g.:
+
+```console
+bash run-tests.sh --js-only -- test_utils.js
+```
+
+Rebuild the test-runner image after root `package.json` / lockfile changes (`-B`). Package-suite installs run in-container onto the editable dep mounts when `KCWORKS_JS_SUITE_INSTALL=1` (default).
+
+Dependency packages that still have `*.test.js` files but are **not** listed in `scripts/run-js-suites.sh` are not executed until they get a package-local Jest setup and are added to that list. Current package suites: `invenio-stats-dashboard`, `invenio-modular-deposit-form`, `invenio-modular-detail-page` (detail-page may report zero tests until UI tests are added).
+
+Jest configs use `verbose: false` by default (file-level results, not per-test PASS lines). For per-test output: `pnpm test -- --verbose`.
 
 ## Ghost Inspector tests
 

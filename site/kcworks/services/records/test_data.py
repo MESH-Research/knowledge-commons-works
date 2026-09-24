@@ -40,7 +40,7 @@ def set_up_community(importing_user: User) -> dict:
             "access": {
                 "visibility": "public",
                 "member_policy": "open",
-                "record_policy": "open",
+                "record_submission_policy": "open",
                 "review_policy": "closed",
                 "members_visibility": "public",
             },

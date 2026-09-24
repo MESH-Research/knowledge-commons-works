@@ -1,0 +1,64 @@
+{#
+  Dublin Core DC.* embedded metadata (<head>).
+
+  Consumer: Zotero and similar reference managers (esp. where Highwire types are
+  ambiguous). Not used by Google Scholar or API harvesters.
+
+  Copyright (C) 2026 MESH Research. SPDX-License-Identifier: MIT
+#}
+{%- from "kcworks/macros/embedded_metadata/helpers.html" import first_url_identifier, resource_type_id, resource_type_title -%}
+
+{# --- common (all resource types) --- #}
+
+{%- macro _dublin_core_common(meta_title, meta_authors, meta_description, meta_publication_date, meta_publisher, meta_doi, meta_url) -%}
+  <meta name="DC.title" content="{{ meta_title }}" />
+  {%- if meta_description %}<meta name="DC.description" content="{{ meta_description }}" />{%- endif %}
+  {%- for author in meta_authors %}<meta name="DC.creator" content="{{ author }}" />{%- endfor %}
+  {%- if meta_publication_date %}<meta name="DC.date" content="{{ meta_publication_date }}" />{%- endif %}
+  {%- if meta_publisher %}<meta name="DC.publisher" content="{{ meta_publisher }}" />{%- endif %}
+  {%- if meta_doi %}
+    <meta name="DC.identifier" content="{{ meta_doi }}" />
+  {%- elif meta_url %}
+    <meta name="DC.identifier" content="{{ meta_url }}" />
+  {%- endif %}
+{%- endmacro -%}
+
+
+{# --- type-specific --- #}
+
+{%- macro _blog_title(record) -%}
+  {%- if record.custom_fields and 'journal:journal' in record.custom_fields and record.custom_fields['journal:journal'].title -%}
+    {{- record.custom_fields['journal:journal'].title -}}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro _dublin_core_blog_post(record) -%}
+  {%- set blog_title = _blog_title(record) -%}
+  {%- set post_url = first_url_identifier(record) -%}
+  {# FIXME: Hardcoded "Blog" until app_data/vocabularies/resource_types.yaml has
+     per-term DC.type mappings (e.g. props.dublin_core) and this macro looks them
+     up from the resourcetypes vocabulary by record.metadata.resource_type.id. #}
+  <meta name="DC.type" content="Blog" />
+  {%- if blog_title %}<meta name="DC.source" content="{{ blog_title }}" />{%- endif %}
+  {%- if post_url %}<meta name="DC.identifier" content="{{ post_url }}" />{%- endif %}
+{%- endmacro -%}
+
+{%- macro _dublin_core_default_type(record) -%}
+  {# FIXME: Interim English UI label from record.metadata.resource_type.title.en
+     until app_data/vocabularies/resource_types.yaml has per-term DC.type mappings
+     (e.g. props.dublin_core) and this macro looks them up from resourcetypes. #}
+  {%- set type_label = resource_type_title(record) -%}
+  {%- if type_label %}<meta name="DC.type" content="{{ type_label }}" />{%- endif %}
+{%- endmacro -%}
+
+
+{# --- public --- #}
+
+{%- macro meta_dublin_core(record, meta_title, meta_authors, meta_description, meta_publication_date, meta_publisher, meta_doi, meta_url) -%}
+  {{- _dublin_core_common(meta_title, meta_authors, meta_description, meta_publication_date, meta_publisher, meta_doi, meta_url) }}
+  {%- if resource_type_id(record) == 'textDocument-blogPost' -%}
+    {{- _dublin_core_blog_post(record) -}}
+  {%- else -%}
+    {{- _dublin_core_default_type(record) -}}
+  {%- endif -%}
+{%- endmacro -%}

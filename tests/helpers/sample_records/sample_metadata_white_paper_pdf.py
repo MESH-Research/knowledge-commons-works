@@ -111,7 +111,7 @@ sample_metadata_white_paper_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "jristola009",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Ristola, Jacqueline",
@@ -310,7 +310,7 @@ sample_metadata_white_paper_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "jristola009",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Ristola, Jacqueline",
@@ -496,7 +496,7 @@ sample_metadata_white_paper_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "jristola009",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Ristola, Jacqueline",

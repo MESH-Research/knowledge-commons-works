@@ -1,7 +1,16 @@
-# Assumes an accompanying file for environment variables: ./.env
-# This should contain values for:
-# PGADMIN_DEFAULT_EMAIL
-# PGADMIN_DEFAULT_PASSWORD
+# Public environment: ./.env is the first env_file on services that need it (non-secrets).
+# A second env_file points at a fixed host path for the SM slice written by
+# kcworks-startup.sh (repo root):
+#   /tmp/kcworks-runtime-secrets.env
+# That file is removed after launch; for compose without the script, create an empty file:
+#   install -m 600 /dev/null /tmp/kcworks-runtime-secrets.env
+#
+# Published (host) ports are configurable so multiple clones can run on one machine.
+# Defaults match the historical fixed ports. Override in .env as needed; see
+# docs/source/setup/installation.md ("Host port overrides").
+# KCWORKS_NGINX_HTTP_HOST_PORT / KCWORKS_NGINX_HTTPS_HOST_PORT are set in docker-compose.yml.
+# Internal service DNS, container paths, and Postgres role/database name default in
+# compose below; override in .env only for non-standard layouts or alternate nginx ports.
 services:
   app:
     # build:
@@ -11,23 +20,23 @@ services:
     image: monotasker/kcworks:latest
     restart: "unless-stopped"
     environment:
-      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
-      - INVENIO_SECRET_KEY=${INVENIO_SECRET_KEY}
-      - "INVENIO_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/0"
-      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://${REDIS_DOMAIN}/1"
-      - "INVENIO_RATELIMIT_STORAGE_URI=redis://${REDIS_DOMAIN}/3"
-      - "INVENIO_RATELIMIT_STORAGE_URL=redis://${REDIS_DOMAIN}/3"
-      - "INVENIO_CELERY_RESULT_BACKEND=redis://${REDIS_DOMAIN}/2"
-      - "INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://${REDIS_DOMAIN}/4"
+      - "INVENIO_CACHE_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/0"
+      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/1"
+      - "INVENIO_RATELIMIT_STORAGE_URI=redis://${REDIS_DOMAIN:-cache:6379}/3"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://${REDIS_DOMAIN:-cache:6379}/3"
+      - "INVENIO_CELERY_RESULT_BACKEND=redis://${REDIS_DOMAIN:-cache:6379}/2"
+      - "INVENIO_COMMUNITIES_IDENTITIES_CACHE_REDIS_URL=redis://${REDIS_DOMAIN:-cache:6379}/4"
       - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
       - "INVENIO_CACHE_TYPE=redis"
       - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
-      - "INVENIO_SEARCH_HOSTS=['${INVENIO_SEARCH_DOMAIN}']"
-      # - "INVENIO_SEARCH_HOSTS=['search:9200']"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=${INVENIO_SQLALCHEMY_DATABASE_URI}"
+      - "INVENIO_SEARCH_HOSTS=['${INVENIO_SEARCH_DOMAIN:-search:9200}']"
       - "INVENIO_WSGI_PROXIES=2"
+      - INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH:-/opt/invenio/var/instance}
+      - INVENIO_SITE_UI_URL=${INVENIO_SITE_UI_URL:-https://localhost}
+      - INVENIO_SITE_API_URL=${INVENIO_SITE_API_URL:-https://localhost/api}
     env_file:
       - ./.env
+      - /tmp/kcworks-runtime-secrets.env
       # cpus: ${APP_CPUS:-2.0}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
   frontend:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-frontend:local
@@ -35,8 +44,8 @@ services:
     image: monotasker/kcworks-frontend:local
     restart: "unless-stopped"
     ports:
-      - "80"
-      - "443"
+      - "${KCWORKS_NGINX_HTTP_HOST_PORT:-80}:80"
+      - "${KCWORKS_NGINX_HTTPS_HOST_PORT:-443}:443"
     env_file:
       - ./.env
   cache:
@@ -45,30 +54,28 @@ services:
     restart: "unless-stopped"
     read_only: true
     ports:
-      - "6379:6379"
+      - "${KCWORKS_REDIS_HOST_PORT:-6379}:6379"
   db:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-db
     image: postgres:12.4
     restart: "unless-stopped"
     ports:
-      - "5432:5432"
+      - "${KCWORKS_POSTGRES_HOST_PORT:-5432}:5432"
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-kcworks}
+      POSTGRES_DB: ${POSTGRES_DB:-kcworks}
     env_file:
       - ./.env
+      - /tmp/kcworks-runtime-secrets.env
   pgadmin:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-pgadmin
     image: dpage/pgadmin4:6
     restart: "unless-stopped"
     ports:
-      - "5050:80"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - "${KCWORKS_PGADMIN_HOST_PORT:-5050}:80"
     env_file:
       - ./.env
+      - /tmp/kcworks-runtime-secrets.env
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
@@ -76,11 +83,12 @@ services:
     image: rabbitmq:3-management
     restart: "unless-stopped"
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "${KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT:-15672}:15672"
+      - "${KCWORKS_RABBITMQ_AMQP_HOST_PORT:-5672}:5672"
   search:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-search
-    image: opensearchproject/opensearch:2.3.0
+    hostname: search
+    image: opensearchproject/opensearch:2.17.1
     restart: "unless-stopped"
     environment:
       # settings only for development. DO NOT use in production!
@@ -106,22 +114,34 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    # Healthcheck: confirms the OpenSearch HTTP API is actually serving (not just
+    # that the container's PID 1 is alive). Dependents that need search at boot
+    # (web-ui, web-api, worker) gate on `condition: service_healthy` in
+    # docker-compose.yml so they don't race the cluster start. `start_period`
+    # gives a generous grace window for cold starts on slow hosts (GitHub
+    # Actions) before failing probes count toward `retries`.
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "curl -fs 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' >/dev/null"
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
     # Memory limit: 2GB (original conservative setting) works well for GitHub Actions (7GB RAM)
     # This leaves ~5GB for other containers and the host system
     mem_limit: ${OPENSEARCH_MEMORY_LIMIT:-2g}
     # cpus: ${OPENSEARCH_CPUS:-1.5}  # Commented out to avoid GitHub build CPU limit issues (4-CPU environment)
-    ports:
-      - "9200:9200"
-      - "9600:9600"
+    # Host ports for search are declared in docker-compose.yml (extends merge).
   opensearch-dashboards:
     container_name: ${KCWORKS_CONTAINERS_BASE_NAME:-kcworks}-opensearch-dashboards
-    image: opensearchproject/opensearch-dashboards:2.3.0
+    image: opensearchproject/opensearch-dashboards:2.17.1
     ports:
-      - "5601:5601"
+      - "${KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT:-5601}:5601"
     expose:
       - "5601"
     environment:
       # settings only for development. DO NOT use in production!
       # TODO: change in production
-      - 'OPENSEARCH_HOSTS=["http://${INVENIO_SEARCH_DOMAIN}"]'
+      - 'OPENSEARCH_HOSTS=["http://${INVENIO_SEARCH_DOMAIN:-search:9200}"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
