@@ -14,6 +14,9 @@
   - stripped out some style overrides and made markup more consistent
   - improved theming and layout of sidebar nav
   - tweaked layout of top nav
+- infrastructure
+  - add --prod flag to kcworks_startup.sh script to simulate a production
+    container environment in local dev
 
 ## 1.0.0 (2026-09-24)
 
