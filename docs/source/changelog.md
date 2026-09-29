@@ -5,6 +5,16 @@
 
 ## Unreleased
 
+- jobs
+  - fixed bug preventing logs from being recorded for runs initiated by the
+    scheduler or via our cli command
+- a11y and theming improvements to main navigation (desktop and mobile)
+  - stopped treating top nav as a menu for the purposes of roles and aria
+    attributes
+  - stripped out some style overrides and made markup more consistent
+  - improved theming and layout of sidebar nav
+  - tweaked layout of top nav
+
 ## 1.0.0 (2026-09-24)
 
 This 1.0.0 release represents not only an upgrade of our underlying InvenioRDM

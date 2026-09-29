@@ -48,6 +48,9 @@ from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
 from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
+from kcworks.services.jobs.wrap_runscheduler_job_context import (
+    wrap_runscheduler_for_job_context,
+)
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -343,6 +346,7 @@ def finalize_app(app: Flask) -> None:
     _schedule_community_menu_overrides(app)
     register_themed_error_handlers(app)
     wrap_blueprint_error_handlers_with_logging(app)
+    wrap_runscheduler_for_job_context(app)
 
 
 def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
