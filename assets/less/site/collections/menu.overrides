@@ -52,12 +52,14 @@
   border-color: transparent;
   background-color: transparent;
 
+  // Main page top navigation
   #invenio-nav.ui.menu {
     @media screen and (max-width: @largestMobileScreen) {
       height: 3.5rem;
     }
     box-shadow: none;
 
+    // mobile menu toggle
     #rdm-burger-toggle {
       #rdm-burger-menu-icon {
         padding-top: 1.7rem;
@@ -86,29 +88,67 @@
               padding: 0;
           }
 
-          a:not(.ui.button),
-          a[role="menuitem"],
-          div[role="menuitem"] {
-            padding: 1rem 1.5rem;
+          a:not(.ui.button) {
+            padding: 0.75rem 1.5rem;
+            padding-left: 25px !important; // pl-25
             width: 100%;
             border-left: 2px solid transparent;
-          }
+            color: @ivy80;
 
-          .right.menu.item {
-            a:not(.ui.button),
-            a[role="menuitem"],
-            div[role="menuitem"] {
-              height: auto;
-
-              &.restricted {
-                background-color: @ivy80 !important;
-                color: @white !important;
+            &:hover,
+            &:focus,
+            &:active {
+              background-color: darken(@sidebarBackgroundColor, 5%);
+              border-left: 2px solid @secondaryColor;
+              &::after {
+                display: none;
               }
+            }
+          }
+          // Drawer: stack account links; don't keep desktop row flex
+          .right.menu.item {
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            background-color: darken(@sidebarBackgroundColor, 3%) !important;
+
+            > .item {
+              height: auto;
+              width: 100%;
+              display: block;
+              background-color: darken(@sidebarBackgroundColor, 3%) !important;
 
               &:hover,
               &:focus,
               &:active {
-                background-color: @mint80 !important;
+              background-color: darken(@sidebarBackgroundColor, 5%);
+                border-left: 2px solid @ivy;
+              }
+
+            }
+
+            a:not(.ui.button) {
+              height: auto;
+              width: 100%;
+              background-color: darken(@sidebarBackgroundColor, 3%) !important;
+
+              &:hover,
+              &:focus,
+              &:active {
+                background-color: darken(@sidebarBackgroundColor, 5%) !important;
+              }
+
+              &.restricted {
+                background-color: @ivy80 !important;
+                color: @white !important;
+                &:hover,
+                &:focus,
+                &:active {
+                  background-color: darken(@ivy80, 5%) !important;
+                  border-left: 2px solid @ivy;
+                }
               }
             }
           }
@@ -124,144 +164,129 @@
     }
     #invenio-menu.ui.menu {
       > .item:not(.logo) {
-        line-height: 1.3rem;
+        // Vertical align: SUI .item stretch/center — no magic vertical pad on links
         &:hover,
         &:focus,
         &:active {
           z-index: 100;
         }
-        & > span {
-          padding-left: 1.5rem;
-          padding-right: 1.5rem;
-        }
-        hr {
-          width: 100%;
-          background: @sidebarBorderColor;
-          background-color: @sidebarBorderColor;
-          border-color: @sidebarBorderColor;
-          height: 1px;
-          color: @sidebarBorderColor;
-          &::before {
-            content: none;
-          }
-          &::after {
-            content: none;
-          }
-        }
-        &:nth-last-child(2) {
-          margin-right: 1rem;
-          a:not(.ui.button) {
-            color: @primaryColor;
-          }
-        }
-        &:nth-last-child(3) {
-          a:not(.ui.button) {
-            color: @primaryColor;
-          }
-        }
-        a:not(.ui.button),
-        a,
-        div[role="menuitem"] {
+
+        a {
           position: relative;
-          padding: 1.7rem 1rem;
           color: @ivy80;
-          @media screen and (max-width: @largestTabletScreen) {
-            padding: 1rem 1.5rem;
-            width: 100%;
-            border-left: 2px solid transparent;
+          // horizontal spacing from pl-15 / pr-15 on the markup
+
+          // Fill bar height only on desktop — not in the mobile sidebar
+          @media screen and (min-width: (@largestTabletScreen + 1)) {
+            height: 100%;
+            display: flex;
+            align-items: center;
           }
+
           &::after {
             content: "";
             position: absolute;
             width: 100%;
             transform: scaleX(0);
             height: 2px;
-            bottom: 0rem;
+            bottom: 0;
             left: 0;
             background-color: @primaryColor;
             transform-origin: bottom right;
             transition: transform 0.1s ease-out;
           }
+
           .inline {
             margin-left: 0.5rem;
           }
-        }
-        a:not(.ui.button):hover,
-        a:not(.ui.button):focus,
-        a:not(.ui.button):active,
-        div[role="menuitem"]:hover,
-        div[role="menuitem"]:focus,
-        div[role="menuitem"]:active {
-          color: darken(@primaryTextColor, 10%);
-          background-color: @seafoam;
-          &::after {
-            transform: scaleX(1);
-            transform-origin: center;
-          }
 
-          @media screen and (max-width: @largestTabletScreen) {
-            background-color: @mint80 !important;
-            border-left: 2px solid @primaryColor;
+          &:hover,
+          &:focus,
+          &:active {
+            color: darken(@primaryTextColor, 10%);
+            background-color: @seafoam;
+
             &::after {
-              display: none;
+              transform: scaleX(1);
+              transform-origin: center;
             }
           }
         }
-        a.ui.button.basic {
-          box-shadow: none;
-        }
+
         &.right.menu.item {
-          border-right: 0.5rem solid @mint;
-          border-left: 0.5rem solid @mint;
           background-color: @mint;
+
+          // Desktop bar only — row + vertical center (Invenio drawer wants column)
+          @media screen and (min-width: (@largestTabletScreen + 1)) {
+            display: flex;
+            align-items: center;
+
+            > .item {
+              height: 100%;
+              display: flex;
+              align-items: center;
+            }
+
+            a {
+              height: 100%;
+              display: flex;
+              align-items: center;
+            }
+          }
+
           &.logged-out:hover,
           &.logged-out:focus,
           &.logged-out:active {
             background-color: @mint60;
             border-color: @mint60;
           }
-          &> .item {
-            height: 100%;
-          }
-          a,
-          div[role="menuitem"] {
+
+          a {
             background-color: @mint !important;
-            height: 100%;
-            display: flex;
-            align-items: center;
+
             &:hover,
             &:focus,
             &:active {
-              background-color: @mint60 !important;
+              background-color: darken(@mint, 5%) !important;
               z-index: 100;
               @media screen and (max-width: @largestTabletScreen) {
                 background-color: @mint80 !important;
               }
             }
           }
+
           a,
-          a:hover,
-          .item > span {
+          a:hover {
             color: @ivy80 !important;
-          }
-          > form > a.ui.button.basic {
-            color: @ivy80 !important;
-            i {
-              margin-right: 0.5rem !important;
-            }
           }
         }
+
         #user-profile-dropdown {
           margin-right: 0;
           width: auto;
+
+          #user-profile-dropdown-btn {
+            display: flex;
+            align-items: center;
+            height: 100%;
+          }
+
+          &:hover,
+          &:focus,
+          &:active,
+          #user-profile-dropdown-btn:hover,
+          #user-profile-dropdown-btn:focus,
+          #user-profile-dropdown-btn:active {
+            background-color: darken(@mint, 5%) !important;
+          }
         }
-        #user-profile-menu {
+
+        #user-profile-nav {
           background-color: @mint;
           border: 1px solid @mint;
-          a {
-            &::after {
-              background-color: transparent;
-            }
+
+          a::after {
+            background-color: transparent;
           }
         }
       }
@@ -274,57 +299,12 @@
       display: flex;
       align-items: center;
 
-      // &::after {
-      //   content: "BETA";
-      //   position: absolute;
-      //   top: 4px;
-      //   right: 12px;
-      //   color: @white;
-      //   font-size: 0.8rem;
-      //   font-weight: bold;
-      //   background-color: @orange;
-      //   padding: 0.1rem 0.4rem;
-      //   letter-spacing: 0.05rem;
-      //   @media screen and (max-width: @largestMobileScreen) {
-      //     right: unset;
-      //     left: 9rem;
-      //   }
-      // }
       .rdm-logo {
         width: auto;
         max-height: 4rem;
         @media screen and (max-width: @largestMobileScreen) {
           max-height: 3rem;
           margin-top: 0.25rem;
-        }
-      }
-      .title-wrapper {
-        margin-left: 1rem;
-        h1 {
-          margin-top: 0.3rem;
-          margin-bottom: 0;
-          letter-spacing: 0.05rem;
-          font-size: 3rem;
-          line-height: 3rem;
-          color: @primaryColor;
-          @media screen and (max-width: @largestMobileScreen) {
-            margin-top: 0.5rem;
-            font-size: 2rem;
-            line-height: 2rem;
-          }
-        }
-        .subtitle {
-          font-size: 1rem;
-          font-weight: bold;
-          text-transform: uppercase;
-          display: block;
-          margin-top: 0;
-          line-height: 1rem;
-          letter-spacing: 0.1rem;
-          font-weight: normal;
-          @media screen and (max-width: @largestMobileScreen) {
-            font-size: 0.85rem;
-          }
         }
       }
     }

@@ -13,7 +13,7 @@ import {
   UNREAD_NOTIFICATIONS_UPDATED_EVENT,
   setUnreadNotificationsInSession,
 } from "@js/kcworks/notifications/unreadNotifications";
-import { MainMenu } from "./main_menu";
+import { MainNav } from "./main_nav";
 
 jest.mock("@translations/kcworks/i18next", () => ({
   i18next: {
@@ -76,7 +76,7 @@ function setPathname(pathname) {
   window.history.pushState({}, "", pathname);
 }
 
-describe("MainMenu unread notifications", () => {
+describe("MainNav unread notifications", () => {
   beforeEach(() => {
     sessionStorage.clear();
     setPathname("/");
@@ -94,7 +94,7 @@ describe("MainMenu unread notifications", () => {
       json: async () => unreadFixture,
     });
 
-    render(<MainMenu {...baseProps} />);
+    render(<MainNav {...baseProps} />);
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -122,7 +122,7 @@ describe("MainMenu unread notifications", () => {
       JSON.stringify(unreadFixture)
     );
 
-    render(<MainMenu {...baseProps} />);
+    render(<MainNav {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getAllByText("2").length).toBeGreaterThan(0);
@@ -137,7 +137,7 @@ describe("MainMenu unread notifications", () => {
       JSON.stringify([unreadFixture[0]])
     );
 
-    render(<MainMenu {...baseProps} />);
+    render(<MainNav {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getAllByText("1").length).toBeGreaterThan(0);
@@ -146,7 +146,7 @@ describe("MainMenu unread notifications", () => {
   });
 
   it("does not fetch or show a badge when userId is missing", async () => {
-    render(<MainMenu {...baseProps} userId="" />);
+    render(<MainNav {...baseProps} userId="" />);
 
     await act(async () => {
       await Promise.resolve();
@@ -162,7 +162,7 @@ describe("MainMenu unread notifications", () => {
     setPathname("/me/requests");
     sessionStorage.setItem(UNREAD_NOTIFICATIONS_STORAGE_KEY, JSON.stringify([]));
 
-    render(<MainMenu {...baseProps} />);
+    render(<MainNav {...baseProps} />);
 
     await act(async () => {
       await Promise.resolve();
@@ -182,7 +182,7 @@ describe("MainMenu unread notifications", () => {
 
   it("removes the unread listener on unmount", async () => {
     setPathname("/me/requests");
-    const { unmount } = render(<MainMenu {...baseProps} />);
+    const { unmount } = render(<MainNav {...baseProps} />);
 
     await act(async () => {
       await Promise.resolve();
@@ -202,7 +202,7 @@ describe("MainMenu unread notifications", () => {
       json: async () => [],
     });
 
-    render(<MainMenu {...baseProps} />);
+    render(<MainNav {...baseProps} />);
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalled();

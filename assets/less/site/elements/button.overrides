@@ -499,6 +499,41 @@
   }
 }
 
+// Strip UA button chrome so a <button> can inherit surrounding nav/menu styles.
+button.unstyled {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  text-align: inherit;
+  text-decoration: none;
+  vertical-align: middle;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 1px dotted currentColor;
+    outline-offset: 2px;
+  }
+}
+
 .community-admin-cog-button {
   display: block;
 }

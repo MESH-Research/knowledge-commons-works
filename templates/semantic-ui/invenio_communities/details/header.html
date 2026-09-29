@@ -191,41 +191,38 @@
     {% endfor %}
   </select>
   {% set collapsing_menu_items = ["curation_policy", "members", "stats", "requests", "settings", "submit"] %}
-  <div class="ui container secondary pointing menu page-subheader community-header-menu pl-0 pr-0 theme-primary theme-primary-menu tablet computer widescreen large screen only">
+  <nav class="ui container secondary pointing menu page-subheader community-header-menu pl-0 pr-0 theme-primary theme-primary-menu tablet computer widescreen large screen only"
+       aria-label="{{ _("Community navigation") }}">
     {% for item in community_menu_items %}
       {% set item_active_class = 'active' if active_community_header_menu_item == item.name else '' %}
       {% set item_disabled_class = 'disabled' if not item.url else '' %}
       {% if item.name in collapsing_menu_items %}
         <a class="tablet only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
            href="{{ item.url }}"
-           role="button"
            aria-label="{{ item.text }}"
            data-tooltip="{{ item.text }}">
           <i aria-hidden="true" class="{{ item.icon }} fitted icon"></i>
         </a>
         <a class="computer only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
            href="{{ item.url }}"
-           role="button"
            aria-label="{{ item.text }}"
            data-tooltip="{{ item.text }}">
           <i aria-hidden="true" class="{{ item.icon }} fitted icon"></i>
         </a>
         <a class="widescreen large screen only item collapsing {{ item_active_class }} {{ item_disabled_class }}"
-           href="{{ item.url }}"
-           role="button">
+           href="{{ item.url }}">
           <i aria-hidden="true" class="{{ item.icon }} icon"></i>
           {{ item.text }}
         </a>
       {% else %}
         <a class="item {{ item_active_class }} {{ item_disabled_class }}"
-           href="{{ item.url }}"
-           role="button">
+           href="{{ item.url }}">
           <i aria-hidden="true" class="{{ item.icon }} icon"></i>
           {{ item.text }}
         </a>
       {% endif %}
     {% endfor %}
-  </div>
+  </nav>
 </div>
 <!-- <div class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile" -->
 <!--      id="community-detail-header" -->

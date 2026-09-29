@@ -1,37 +1,45 @@
-import React, { useEffect, useState } from "react";
+// Part of Knowledge Commons Works
+// Copyright (C) 2023-2026, MESH Research
+//
+// Knowledge Commons Works is an instance of InvenioRDM, which is
+// Copyright (c) 2019-2026, CERN
+//
+// Knowledge Commons Works and InvenioRDM are both free software;
+// You can redistribute and/or modify them under the terms of the
+// MIT License; see LICENSE file for more details.
+
+// biome-ignore lint/correctness/noUnusedImports: classic JSX
+import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { i18next } from "@translations/kcworks/i18next";
 import {
-  getUnreadNotificationsFromStorage,
   setUnreadNotificationsInSession,
   UNREAD_NOTIFICATIONS_UPDATED_EVENT,
 } from "@js/kcworks/notifications/unreadNotifications";
-import { Button, Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { MenuItem, IconMenuItem } from "./menu_items";
+import { NavItem, IconNavItem } from "./nav_items";
 
 const SubMenu = ({ item, index }) => {
   return (
     <div className={`dropdown ${item.active ? " active" : ""}`}>
-      <a
-        role="menuitem"
-        className="dropdown-toggle"
+      <button
+        type="button"
+        className="dropdown-toggle unstyled"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        href={item.url}
         tabIndex={index}
       >
         {/* // FIXME: safe filter??? */}
         {item.text.replace(/<[^>]*>/g, "")}
         <b className="caret"></b>
-      </a>
+      </button>
       <ul className="dropdown-menu">
         {item.children
           .sort((a, b) => a.order - b.order)
-          .map((childItem, indexInner) => (
-            <li className={`${childItem.active ? "active" : ""}`} key={indexInner}>
-              <MenuItem {...childItem} />
+          .map((childItem) => (
+            <li className={`${childItem.active ? "active" : ""}`} key={childItem.text}>
+              <NavItem {...childItem} />
             </li>
           ))}
       </ul>
@@ -43,7 +51,7 @@ const NON_ADMIN_SETTINGS_MENU_NAMES = ["security", "applications"];
 
 const stripHtml = (text) => (text || "").replace(/<[^>]*>/g, "");
 
-const UserMenu = ({
+const UserNav = ({
   adminMenuItems,
   externalIdentifiers,
   profilesURL,
@@ -64,6 +72,7 @@ const UserMenu = ({
   const adminItems = adminMenuItems
     .sort((a, b) => a.order - b.order)
     .filter((item) => item.visible === true);
+  const adminItemsCombined = adminSettingsItems.concat(adminItems);
   const truncatedDisplayName =
     userDisplayName && userDisplayName.length >= 31
       ? `${userDisplayName.slice(0, 31)}...`
@@ -75,63 +84,36 @@ const UserMenu = ({
   return (
     <>
       <div
-        role="menuitem"
         id="user-profile-dropdown"
         className="ui item floating dropdown computer widescreen large screen only"
       >
-        <div
-          as="a"
-          role="button"
+        <button
+          type="button"
           id="user-profile-dropdown-btn"
-          className=""
-          aria-controls="user-settings-menu"
+          className="unstyled pl-15 pr-5"
+          aria-controls="user-profile-nav"
           aria-expanded="false"
-          aria-haspopup="menu"
           aria-label={truncatedDisplayName || i18next.t("Settings")}
           tabIndex={tabIndex}
         >
-          <span>{truncatedDisplayName}</span>
+          <span className="pr-5">{truncatedDisplayName}</span>
           <i className="dropdown icon"></i>
-        </div>
+        </button>
 
-        <div
-          id="user-profile-menu"
-          className="ui menu"
-          role="menu"
-          aria-labelledby="user-profile-dropdown-btn"
-        >
+        <div id="user-profile-nav" className="ui menu">
           {profileURL && (
-            <a role="menuitem" className="item" href={profileURL} tabIndex={-1}>
+            <a className="item" href={profileURL} tabIndex={-1}>
               {i18next.t("KC profile")}
             </a>
           )}
-          {nonAdminSettingsItems.map((item, index) => (
-            <a role="menuitem" className="item" href={item.url} tabIndex={-1} key={index}>
+          {nonAdminSettingsItems.map((item) => (
+            <a className="item" href={item.url} tabIndex={-1} key={item.text}>
               {stripHtml(item.text)}
             </a>
           ))}
           {userAdministrator
-            ? adminSettingsItems?.map((item, index) => (
-                <a
-                  role="menuitem"
-                  className="item restricted"
-                  href={item.url}
-                  tabIndex={-1}
-                  key={index}
-                >
-                  {stripHtml(item.text)}
-                </a>
-              ))
-            : null}
-          {userAdministrator
-            ? adminItems?.map((item, index) => (
-                <a
-                  role="menuitem"
-                  className="item restricted"
-                  href={item.url}
-                  tabIndex={-1}
-                  key={index}
-                >
+            ? adminItemsCombined?.map((item) => (
+                <a className="item restricted" href={item.url} tabIndex={-1} key={item.text}>
                   {stripHtml(item.text)}
                 </a>
               ))
@@ -139,61 +121,36 @@ const UserMenu = ({
         </div>
       </div>
 
+      <div className="item spacer mobile tablet only mt-10"></div>
+
       <h2 className="ui small header mobile tablet only ml-25">
         {truncatedDisplayName || i18next.t("My account")}
       </h2>
 
       {profileURL && (
-        <a role="menuitem" className="item mobile tablet only" href={profileURL} tabIndex={0}>
+        <a className="ui mobile tablet only" href={profileURL} tabIndex={0}>
           {i18next.t("KC profile")}
         </a>
       )}
-      {nonAdminSettingsItems.map((item, index) => (
-        <a
-          role="menuitem"
-          className="item mobile tablet only"
-          href={item.url}
-          key={index}
-          tabIndex={0}
-        >
+      {nonAdminSettingsItems.map((item) => (
+        <a className="ui mobile tablet only" href={item.url} key={item.text} tabIndex={0}>
           {stripHtml(item.text)}
         </a>
       ))}
 
-      {adminSettingsItems.map((item, index) => (
+      {userAdministrator && <div className="item spacer mobile tablet only restricted mt-10"></div>}
+      {adminItemsCombined.map((item) => (
         <a
-          role="menuitem"
-          className="item mobile tablet only restricted"
+          className="ui mobile tablet only restricted"
           href={item.url}
-          key={index}
+          key={item.text}
           tabIndex={0}
         >
           {stripHtml(item.text)}
         </a>
       ))}
-      {adminItems?.map((item, index) => (
-        <a
-          role="menuitem"
-          className="item mobile tablet only restricted"
-          href={item.url}
-          key={index}
-          tabIndex={0}
-        >
-          {stripHtml(item.text)}
-        </a>
-      ))}
+      {userAdministrator && <div className="item spacer mobile tablet only restricted mb-10"></div>}
     </>
-  );
-};
-
-const LoginForm = ({ loginURL, tabIndex }) => {
-  return (
-    <form className="mt-0">
-      <a href={loginURL} className="ui basic button" tabIndex={tabIndex}>
-        <i className="fitted sign-in icon"></i>
-        {i18next.t("Log in")}
-      </a>
-    </form>
   );
 };
 
@@ -211,12 +168,6 @@ const Brand = ({ themeLogoURL, themeSitename }) => {
         src={`${themeLogoURL}`}
         alt={siteNameOverride ? siteNameOverride : themeSitename}
       />
-      {/* <span className="title-wrapper">
-        <h1 className="ui header">
-          {siteNameOverride !== "" ? "Works" : themeSitename}
-        </h1>
-        <span className="ui header subtitle">Knowledge Commons</span>
-      </span> */}
     </a>
   ) : (
     <a className="logo" href="/">
@@ -225,7 +176,7 @@ const Brand = ({ themeLogoURL, themeSitename }) => {
   );
 };
 
-const MainMenu = ({
+const MainNav = ({
   accountsEnabled,
   actionsMenuItems,
   adminMenuItems,
@@ -241,7 +192,7 @@ const MainMenu = ({
   settingsMenuItems,
   themeLogoURL,
   themeSitename,
-  themeSearchbarEnabled,
+  // themeSearchbarEnabled,
   userAuthenticated,
   userDisplayName,
   userId,
@@ -266,7 +217,7 @@ const MainMenu = ({
     .filter((i) => i.visible === true);
   const [unreadNotifications, setUnreadNotifications] = useState([]);
 
-  const fetchUnreadNotifications = async () => {
+  const fetchUnreadNotifications = useCallback(async () => {
     const response = await fetch(`/api/users/me/notifications/unread/list`);
     const data = await response.json();
     // Store unread notifications in session storage
@@ -274,12 +225,12 @@ const MainMenu = ({
     // independent components that can't share a context.
     setUnreadNotificationsInSession(data);
     return data;
-  };
+  }, []);
 
-  const updateUnreadFromStorage = () => {
+  const updateUnreadFromStorage = useCallback(() => {
     const unreadFromStorage = JSON.parse(sessionStorage.getItem(`unreadNotifications`));
     setUnreadNotifications(unreadFromStorage);
-  };
+  }, []);
 
   useEffect(() => {
     if (![null, undefined, ""].includes(userId)) {
@@ -293,18 +244,12 @@ const MainMenu = ({
       } else {
         updateUnreadFromStorage();
       }
-      window.addEventListener(
-        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
-        updateUnreadFromStorage
-      );
+      window.addEventListener(UNREAD_NOTIFICATIONS_UPDATED_EVENT, updateUnreadFromStorage);
     }
     return () => {
-      window.removeEventListener(
-        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
-        updateUnreadFromStorage
-      );
+      window.removeEventListener(UNREAD_NOTIFICATIONS_UPDATED_EVENT, updateUnreadFromStorage);
     };
-  }, [userId]);
+  }, [userId, fetchUnreadNotifications, updateUnreadFromStorage]);
 
   return (
     <nav id="invenio-nav" className="ui menu borderless stackable pr-0 pl-0">
@@ -316,8 +261,8 @@ const MainMenu = ({
         <button
           id="rdm-burger-menu-icon"
           className="ui button transparent"
+          type="button"
           aria-label={i18next.t("Menu")}
-          aria-haspopup="menu"
           aria-expanded="false"
           aria-controls="invenio-menu"
         >
@@ -325,16 +270,12 @@ const MainMenu = ({
         </button>
       </div>
 
-      <div
-        role="menu"
-        id="invenio-menu"
-        aria-labelledby="rdm-burger-menu-icon"
-        className="ui fluid menu borderless mobile-hidden"
-      >
+      <div id="invenio-menu" className="ui fluid menu borderless mobile-hidden">
         <button
           id="rdm-close-burger-menu-icon"
           className="ui button transparent"
-          aria-label="{{ _('Close menu') }}"
+          type="button"
+          aria-label={i18next.t("Close menu")}
         >
           <span className="navicon"></span>
         </button>
@@ -347,18 +288,20 @@ const MainMenu = ({
             )} */}
 
         {/* "Main" menu, including search and collections */}
-        {mainItems.map((item, index) =>
+        <h3 className="ui small header mobile tablet only ml-25 mb-10 secondary">
+          {i18next.t("Explore")}
+        </h3>
+        {mainItems.map((item) =>
           item.children ? (
-            <div className="item" key={index}>
+            <div className="item" key={item.text}>
               <SubMenu item={item} index={0} />
             </div>
           ) : (
-            <div className={`item`} key={index}>
-              <MenuItem
+            <div className="item" key={item.text}>
+              <NavItem
                 url={item.url}
                 text={item.text}
                 icon={["Communities", "Collections"].includes(item.text) ? "copy" : item.icon}
-                key={index}
                 tabIndex={0}
               />
             </div>
@@ -369,9 +312,12 @@ const MainMenu = ({
         {/*<PlusMenu plusMenuItems={plusMenuItems} baseTabIndex={0} />*/}
 
         <div className="item spacer mobile tablet only"></div>
+        <h3 className="ui small header mobile tablet only ml-25 mb-10 secondary">
+          {i18next.t("Info")}
+        </h3>
 
-        <div className={`item`} role="menuitem">
-          <IconMenuItem
+        <div className="item">
+          <IconNavItem
             text={i18next.t("Help and support")}
             url={kcWorksHelpUrl}
             icon="question circle"
@@ -379,8 +325,8 @@ const MainMenu = ({
           />
         </div>
 
-        <div className={`item`} role="menuitem">
-          <IconMenuItem
+        <div className="item">
+          <IconNavItem
             text={i18next.t("Statistics")}
             url={"/stats"}
             icon="chart line"
@@ -388,8 +334,8 @@ const MainMenu = ({
           />
         </div>
 
-        <div className={`item`} role="menuitem">
-          <IconMenuItem
+        <div className="item">
+          <IconNavItem
             text={i18next.t("KC Home")}
             url={`https://${kcWordpressDomain}`}
             icon="home"
@@ -397,30 +343,29 @@ const MainMenu = ({
           />
         </div>
 
-        {/* Right-aligned menu items */}
-        <div className={`right menu item ${userAuthenticated ? "" : "logged-out"}`} role="group">
-          {!!accountsEnabled &&
-            (!userAuthenticated ? <LoginForm loginURL={loginURL} tabIndex={0} /> : null)}
-
-          {!!accountsEnabled &&
-            (!!userAuthenticated ? (
-              <UserMenu
-                adminMenuItems={adminMenuItems}
-                externalIdentifiers={externalIdentifiers}
-                profilesURL={profilesURL}
-                settingsMenuItems={settingsMenuItems}
-                userAdministrator={userAdministrator}
-                userDisplayName={userDisplayName}
-                tabIndex={0}
-              />
-            ) : null)}
+        <div className="item spacer mobile tablet only mt-20"></div>
+        {/* Invenio expects .item.right.menu here — not a nested .right.menu */}
+        <div className={`right menu item pr-10 pl-10 ${userAuthenticated ? "" : "logged-out"}`}>
+          {!!accountsEnabled && !userAuthenticated ? (
+            <NavItem url={loginURL} text={i18next.t("Log in")} icon="sign-in" tabIndex={0} />
+          ) : (
+            <UserNav
+              adminMenuItems={adminMenuItems}
+              externalIdentifiers={externalIdentifiers}
+              profilesURL={profilesURL}
+              settingsMenuItems={settingsMenuItems}
+              userAdministrator={userAdministrator}
+              userDisplayName={userDisplayName}
+              tabIndex={0}
+            />
+          )}
 
           {!!accountsEnabled &&
             !!userAuthenticated &&
-            actionsItems.map((item, index) => (
-              <IconMenuItem
-                className={`item ${item.text}`}
-                key={index}
+            actionsItems.map((item) => (
+              <IconNavItem
+                className={item.text}
+                key={item.text}
                 text={item.text}
                 url={item.url}
                 icon={item.text === "My dashboard" ? "user" : item.icon}
@@ -430,10 +375,10 @@ const MainMenu = ({
 
           {!!accountsEnabled &&
             !!userAuthenticated &&
-            notificationsItems.map((item, index) => (
-              <IconMenuItem
-                className="item inbox"
-                key={index}
+            notificationsItems.map((item) => (
+              <IconNavItem
+                className="inbox"
+                key={item.text}
                 text={item.text === "requests" ? i18next.t("My requests") : item.text}
                 url={item.url}
                 icon={item.text === "requests" ? "inbox" : item.icon}
@@ -443,21 +388,22 @@ const MainMenu = ({
             ))}
 
           {!!accountsEnabled && !!userAuthenticated && (
-            <IconMenuItem
-              className="item logout"
+            <IconNavItem
+              className="logout"
               text={i18next.t("Log out")}
               url={logoutURL}
               icon="sign-out"
               tabIndex={0}
             />
           )}
+          <div className="item spacer mobile tablet only mb-10"></div>
         </div>
       </div>
     </nav>
   );
 };
 
-MainMenu.propTypes = {
+MainNav.propTypes = {
   accountsEnabled: PropTypes.bool,
   actionsMenuItems: PropTypes.array,
   adminMenuItems: PropTypes.array,
@@ -482,7 +428,7 @@ MainMenu.propTypes = {
 const element = document.getElementById("main-nav-menu");
 
 if (element) {
-  const accountsEnabled = element.dataset.accountsEnabled === "True" ? true : false;
+  const accountsEnabled = element.dataset.accountsEnabled === "True";
   const actionsMenuItems = JSON.parse(element.dataset.actionsMenuItems);
   const adminMenuItems = JSON.parse(element.dataset.adminMenuItems);
   const externalIdentifiers = JSON.parse(element.dataset.externalIdentifiers);
@@ -498,20 +444,14 @@ if (element) {
   const settingsMenuItems = JSON.parse(element.dataset.settingsMenuItems);
   const themeLogoURL = element.dataset.themeLogoUrl;
   const themeSitename = element.dataset.themeSitename;
-  const themeSearchbarEnabled =
-    element.dataset.themeSearchbarEnabled === "True" ? true : false;
+  const themeSearchbarEnabled = element.dataset.themeSearchbarEnabled === "True";
   const userDisplayName = element.dataset.userDisplayName || "";
   const userId = element.dataset.userId;
-  const userAuthenticated =
-    element.dataset.userAuthenticated === "True" ? true : false;
-  const userAdministrator = JSON.parse(element.dataset.userRoles).includes(
-    "administration"
-  )
-    ? true
-    : false;
+  const userAuthenticated = element.dataset.userAuthenticated === "True";
+  const userAdministrator = JSON.parse(element.dataset.userRoles).includes("administration");
 
   ReactDOM.render(
-    <MainMenu
+    <MainNav
       accountsEnabled={accountsEnabled}
       actionsMenuItems={actionsMenuItems}
       adminMenuItems={adminMenuItems}
@@ -538,4 +478,4 @@ if (element) {
   );
 }
 
-export { MainMenu };
+export { MainNav };

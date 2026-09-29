@@ -1,6 +1,11 @@
-h1.ui.header {
-  color: @ivy; // @verdigris;
-  margin-top: 2rem;
+.ui.header {
+  &h1 {
+    color: @ivy; // @verdigris;
+    margin-top: 2rem;
+  }
+  &.secondary {
+    color: @redDark;
+  }
 }
 .deposit-form-title {
   h1.ui.header {
