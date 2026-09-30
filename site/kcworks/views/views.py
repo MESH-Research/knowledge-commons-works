@@ -12,6 +12,7 @@ from kcworks.views.remote_data_collections.globus_endpoints import (
     GlobusEndpointInfo,
     GlobusFolderLS,
     GlobusGuestCollectionCheck,
+    GlobusGuestCollectionCreate,
     GlobusGuestCollectionProvision,
 )
 from kcworks.views.remote_data_collections.globus_login import GlobusLogin, GlobusStart
@@ -115,6 +116,14 @@ def create_api_blueprint(app):
             view_func=GlobusGuestCollectionCheck.as_view(
                 "globus_guest_collection_check"
             ),
+        )
+
+        blueprint.add_url_rule(
+            "/globus/guest-collections/create",
+            view_func=GlobusGuestCollectionCreate.as_view(
+                "globus_guest_collection_create"
+            ),
+            methods=["POST"],
         )
 
         # Register error handlers
