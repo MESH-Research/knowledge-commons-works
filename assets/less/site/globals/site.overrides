@@ -643,15 +643,6 @@ html.cover-page {
         box-shadow: none;
       }
 
-      dl.details-list {
-        dt.ui.tiny.header {
-          margin-bottom: 0.25rem;
-          margin-top: 1rem;
-        }
-        dd {
-          overflow-wrap: break-word;
-        }
-      }
       .record-details-tab {
         &.ui.attached.segment {
           border: none;
@@ -949,6 +940,24 @@ html.cover-page {
         }
       }
     }
+
+    /* Sidebar warnings: CSS clamp + measured-height expand (same pattern as Descriptions). */
+    .content-warning.ui.message,
+    .ai-usage-alert.ui.message {
+      .content-warning-description.content-warning-clamped,
+      .ai-usage-description.ai-usage-clamped {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+      }
+
+      .content-warning-description.content-warning-height-animating,
+      .ai-usage-description.ai-usage-height-animating {
+        overflow: hidden;
+      }
+    }
     .ui.message.file-box-message {
       margin-bottom: 1rem !important;
       border: 1px solid @negativeBorderColor;
@@ -1043,13 +1052,6 @@ html.cover-page {
             height: 1.15em;
             width: 1.15em;
           }
-        }
-      }
-      #licenses {
-        padding: 0;
-        .license.clickable {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
         }
       }
     }
@@ -1406,6 +1408,50 @@ html.cover-page {
     color: @footerTextDarkColor;
     a {
       color: @verdigris30;
+    }
+  }
+}
+
+// Flexbox utility classes for responsive stacking
+// Usage: Add .stackable-tablet to a flex container to make it stack vertically on tablet and mobile
+
+.stackable-tablet {
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-mobile {
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-computer {
+  @media (min-width: @computerBreakpoint) {
+    flex-direction: column !important;
+  }
+}
+
+// Stack items with full width on smaller screens
+.flex-stack-tablet {
+  display: flex;
+
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+.flex-stack-mobile {
+  display: flex;
+
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
     }
   }
 }

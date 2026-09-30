@@ -69,6 +69,34 @@
   }
 }
 
+/* PublishingDetails: keep panels measurable while collapsed (no display:none)
+   so measured-height open/close can match classic SUI slide behavior.
+   Padding lives on the inner `.details-list` (layout classes), not on
+   `.content`, so animating `.content` height to 0 clips padding cleanly. */
+.ui.accordion.publishing-details-accordion {
+  /* Must apply when closed too — SUI defaults `.content` to display:none,
+     which makes open-height measurement read as 0. */
+  > .content {
+    display: block !important;
+    overflow: hidden;
+    padding: 0 !important;
+  }
+
+  > .content.active {
+    background-color: @white;
+    border: 1px solid @sidebarBorderColor;
+    border-top: 0;
+  }
+
+  > .content:not(.active):not(.details-height-animating) {
+    height: 0;
+  }
+
+  > .content.details-height-animating {
+    overflow: hidden;
+  }
+}
+
 .facet {
   .ui.accordion:not(.styled) {
     margin-top: 0;
