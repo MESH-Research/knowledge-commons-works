@@ -573,7 +573,7 @@ Similarly, the REST API can be restarted by running the following command inside
 the `kcworks-api` container:
 
 ```shell
-uwsgi --reload /tmp/uwsgi_api.pid
+uwsgi --reload /tmp/uwsgi_rest.pid
 ```
 
 But these commands should not be necessary in normal operation.
