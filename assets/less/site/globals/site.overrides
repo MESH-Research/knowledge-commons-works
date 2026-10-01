@@ -67,6 +67,10 @@
   justify-content: space-between !important;
 }
 
+.right.floated {
+  float: right !important;
+}
+
 // typography
 
 .breakable-text {
@@ -583,45 +587,10 @@ html.cover-page {
     }
   }
 
-  .ui.message {
-    @media screen and (max-width: @largestMobileScreen) {
-      padding: 1rem;
-    }
-  }
-
-  // #communities {
-  // }
   .main-record-content {
-    h2 {
-      font-size: @large;
-    }
-    @media only screen and (max-width: @largestMobileScreen) {
-      h2 {
-        font-size: @large;
-        margin-bottom: 0.5rem;
-      }
-    }
-
-    #communities {
-      .segment {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        @media screen and (max-width: @largestMobileScreen) {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
-        }
-      }
-    }
-
     #record-title-section {
       padding-top: 0.5rem;
       padding-bottom: 0.5rem;
-      @media only screen and (max-width: @largestMobileScreen) {
-        h1 {
-          font-size: 1.5rem;
-          padding-top: 1rem;
-        }
-      }
     }
 
     #creatibutors-list-section {
@@ -644,18 +613,6 @@ html.cover-page {
       }
 
       .record-details-tab {
-        &.ui.attached.segment {
-          border: none;
-          padding-left: 0;
-          padding-right: 0;
-          padding-top: 0;
-        }
-        @media screen and (max-width: @largestMobileScreen) {
-          &.segment {
-            padding-top: 0;
-          }
-        }
-
         &.Content {
           #Descriptions-tab-section {
             padding-top: 0.5rem;
@@ -664,13 +621,6 @@ html.cover-page {
             p:last-child {
               margin-bottom: 2rem;
             }
-          }
-
-          .ui.message.file-box-message {
-            margin-top: 1rem !important;
-            border: 1px solid @negativeBorderColor;
-            border-bottom-right-radius: @defaultBorderRadius !important;
-            border-bottom-left-radius: @defaultBorderRadius !important;
           }
 
           .placeholder-header-bar {
@@ -778,13 +728,6 @@ html.cover-page {
           .subject {
             background-color: #fff;
             color: @textColor;
-          }
-          h2.tiny.header {
-            margin-bottom: 1rem;
-          }
-          h3.tiny.header.mt-10 {
-            margin-top: 1.5rem !important;
-            font-size: @medium;
           }
         }
 
@@ -958,6 +901,30 @@ html.cover-page {
         overflow: hidden;
       }
     }
+
+    /*
+     * Dismiss exit for AI / content-warning alerts (same pattern as deposit
+     * FormFeedback toasts via FadeCollapse). Larger max-height than deposit
+     * toasts so expanded descriptions are not clipped while visible.
+     *
+     * Bottom spacing lives on this wrapper: the message is now last-child of
+     * `.fade-collapse-inner`, so SUI last-child margin reset no longer applies.
+     */
+    .fade-collapse.detail-alert-fade-collapse {
+      overflow: hidden;
+      max-height: 50rem;
+      margin-bottom: 1rem;
+      opacity: 1;
+      transition-property: max-height, opacity, margin, padding;
+      transition-timing-function: ease;
+
+      &.hiding {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
+    }
     .ui.message.file-box-message {
       margin-bottom: 1rem !important;
       border: 1px solid @negativeBorderColor;
@@ -969,7 +936,6 @@ html.cover-page {
       &#record-moderation {
         margin-bottom: 1rem;
         .ui.fluid.icon.button {
-          text-align: left;
           padding-left: 1rem !important;
         }
       }
@@ -977,7 +943,6 @@ html.cover-page {
         margin-bottom: 1rem;
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
-          text-align: left;
         }
       }
       #record-details-download {
@@ -1005,6 +970,11 @@ html.cover-page {
           img {
             margin-top: 0.5rem;
           }
+        }
+      }
+      &#record-licenses {
+        .title-text {
+          line-height: 1.25em;
         }
       }
       &#record-export {

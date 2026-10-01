@@ -176,7 +176,7 @@
 ------------------------------- */
 @positiveColor: @green;
 @positiveColorDown: darken(@green, 5%);
-@positiveTextColor: @green; 
+@positiveTextColor: @green;
 @positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
 @positiveBorderColor: @ivy30;
@@ -252,6 +252,7 @@
 
 @versionActiveColor: @seafoam; //#d9edf7;
 
+@mutedTextColor: #515151;
 @mutedAccordionHeaderColor: #f5f5f5;
 
 /*-------------------

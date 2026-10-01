@@ -260,7 +260,7 @@ const MainNav = ({
       <div id="rdm-burger-toggle">
         <button
           id="rdm-burger-menu-icon"
-          className="ui button transparent"
+          className="ui button transparent borderless borderless-hover"
           type="button"
           aria-label={i18next.t("Menu")}
           aria-expanded="false"
@@ -273,7 +273,7 @@ const MainNav = ({
       <div id="invenio-menu" className="ui fluid menu borderless mobile-hidden">
         <button
           id="rdm-close-burger-menu-icon"
-          className="ui button transparent"
+          className="ui button transparent borderless borderless-hover"
           type="button"
           aria-label={i18next.t("Close menu")}
         >

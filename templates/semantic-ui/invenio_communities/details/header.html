@@ -155,7 +155,7 @@
       <!-- -->
       {% if permissions.can_moderate %}
         <a href="{{ url_for('administration.communities', q='slug:'+community_ui['slug']) }}"
-           class="ui button computer tablet only icon transparent rel-mt-1 absolute-top-right mr-25">
+           class="ui button computer tablet only icon transparent borderless borderless-hover p-0 rel-mt-1 absolute-top-right mr-25">
           <i class="cog icon" aria-hidden="true"></i>
         </a>
       {% endif %}

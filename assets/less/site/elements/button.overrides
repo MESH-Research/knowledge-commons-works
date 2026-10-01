@@ -1,6 +1,17 @@
 // re-declare variables that for some reason aren't picked up
 @negativeTextColor: @redDark;
 
+// ---------------------------------------------------------------------------
+// Button ring colors (CSS custom properties)
+// Defaults on .ui.button; variants override --button-ring-* so .borderless
+// and shared box-shadow formulas compose without re-declaring shadows.
+// ---------------------------------------------------------------------------
+.ui.button {
+  --button-ring-color: @ivy20;
+  --button-ring-color-hover: darken(@ivy20, 3%);
+  --button-ring-color-disabled: @ivy30;
+}
+
 .ui.button.icon {
   &.fluid.labeled.centered {
     padding-right: 3.25em !important;
@@ -8,6 +19,11 @@
   &.right.labeled {
     padding-right: @labeledIconWidth + @horizontalPadding !important
   }
+}
+
+// Text alignment (SUI has left/right/center.aligned for headers/grid, not buttons).
+.ui.button.left.aligned {
+  text-align: left;
 }
 
 .ui.buttons.basic,
@@ -22,9 +38,11 @@
     border-left: none;
   }
   > .ui.button.active:not(.positive):not(.negative) {
+    --button-ring-color: @ivy20;
+    --button-ring-color-hover: darken(@ivy40, 3%);
     background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px @ivy20 inset,
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px @ivyRgba10 inset;
 
     &:hover,
@@ -32,7 +50,7 @@
     &:focus {
       background-color: @mint50 !important;
       color: @ivy;
-      box-shadow: 0px 0px 0px 1px darken(@ivy40, 3%) inset,
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
         0px 0em 0px 0px @ivyRgba10 inset;
     }
   }
@@ -47,47 +65,54 @@
 .ui.info.message .ui.button.icon:not(.basic) {
   background-color: @white;
   color: @ivy90;
-  box-shadow: 0px 0px 0px 1px @ivy20 inset;
+  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
 
   &:hover,
   &:active,
   &:focus {
     background-color: @mint30 !important;
     color: @ivy;
-    box-shadow: 0px 0px 0px 1px darken(@ivy20, 3%) inset;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
     cursor: pointer;
+  }
+
+  &.labeled.icon > .icon {
+    background-color: @ivy20;
   }
 
   &:disabled,
   &.disabled {
-    box-shadow: 0px 0px 0px 1px @ivy30 inset !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-disabled) inset !important;
   }
 
   &.search {
+    --button-ring-color: darken(@secondaryColor, 3%);
+    --button-ring-color-hover: darken(@secondaryColor, 10%);
     background-color: @secondaryColor;
     color: @white;
-    box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 3%) inset,
-      0px 0em 0px 0px darken(@secondaryColor, 3%) inset !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+      0px 0em 0px 0px var(--button-ring-color) inset !important;
     &:hover,
     &:active,
     &:focus {
       background-color: darken(@secondaryColor, 10%) !important;
-      border-color: darken(@secondaryColor, 10%) !important;
-      box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset,
-        0px 0em 0px 0px darken(@secondaryColor, 10%) inset !important;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
+        0px 0em 0px 0px var(--button-ring-color-hover) inset !important;
     }
   }
 
   &.primary:not(.basic):not(.inverted),
   &.primary {
+    --button-ring-color: @ivy;
+    --button-ring-color-hover: @ivy90;
     background-color: @ivy80; // @verdigrisDark;
     color: @white;
-    box-shadow: 0px 0px 0px 1px @ivy inset;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
     &:hover,
     &:active,
     &:focus {
       background-color: @ivy !important;
-      box-shadow: 0px 0px 0px 1px @ivy90 inset
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
     }
     &.labeled.icon > .icon {
       background-color: transparent;
@@ -96,20 +121,20 @@
 
   &.secondary:not(.basic):not(.inverted),
   &.secondary {
-    text-shadow: 0 2px 16px #653203;
-
+    --button-ring-color-hover: darken(@secondaryColor, 10%);
     &:hover,
     &:active,
     &:focus {
       background-color: darken(@secondaryColor, 10%) !important;
-      box-shadow: 0px 0px 0px 1px darken(@secondaryColor, 10%) inset;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
     }
   }
 
   &.negative {
+    --button-ring-color: @redDark;
     background-color: @negativeTextColor !important;
     color: @white;
-    box-shadow: 0px 0px 0px 1px @redDark inset,
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
 
     &:hover,
@@ -120,16 +145,17 @@
   }
 
   &.positive {
+    --button-ring-color: @positiveColor;
+    --button-ring-color-hover: @positiveColorDown;
     color: @white;
     background-color: @positiveColor !important;
-    box-shadow: none !important;
-    border: 1px solid @positiveColor;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
 
     &:hover,
     &:active,
     &:focus {
       background-color: @positiveColorDown !important;
-      border: 1px solid @positiveColorDown;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
     }
 
     .icon {
@@ -138,6 +164,7 @@
   }
 
   &.warning {
+    --button-ring-color-hover: @warningColorDown;
     background-color: @warningTextColor !important;
     color: @white;
 
@@ -145,8 +172,8 @@
     &:active,
     &:focus {
       background-color: @warningColorDown !important;
-      box-shadow: 0px 0px 0px 1px @warningColorDown inset
-      }
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
   }
 
   &.blue {
@@ -159,30 +186,15 @@
     }
   }
 
-  &.transparent {
-    background-color: transparent;
-    box-shadow: none;
-    color: @ivy80;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: transparent !important;
-      color: @ivy;
-    }
-  }
-
-  // &.labeled.icon > .icon {
-  //   background-color: transparent;
-  // }
-
   &.icon {
     &.close-btn {
+      --button-ring-color: #b54f1e;
       margin-top: 0;
       float: right;
       background-color: @redDark !important;
       color: @white;
-      border-color: @redDark;
-      box-shadow: 0px 0px 0px 1px #b54f1e inset, 0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
 
       &:hover,
       &:active,
@@ -209,40 +221,42 @@
 }
 
 
-// Basic 
+// Basic
 
 .ui.buttons > .ui.button.basic:not(.inverted),
 .ui.buttons.basic:not(.inverted) > .ui.button,
 .ui.button.basic {
+  --button-ring-color-hover: @ivy30;
   background-color: @white;
   color: @ivy !important;
-  box-shadow: 0px 0px 0px 1px @ivy20 inset;
+  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
   &:hover,
   &:active,
   &:focus {
     background-color: @mint30 !important;
     color: @ivy !important;
-    box-shadow: 0px 0px 0px 1px @ivy30 inset;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
     cursor: pointer;
   }
 
   &.positive {
+    --button-ring-color: @positiveBorderColor;
+    --button-ring-color-hover: @positiveBorderColor;
     color: @positiveTextColor;
     background-color: @white !important;
-    box-shadow: none !important;
-    border: 1px solid @positiveBorderColor !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
 
     &:hover,
     &:active,
     &:focus {
       background-color: @positiveBackgroundColor !important;
       color: @positiveTextColorDarker !important;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
     }
     &.active {
       background-color: @positiveTextColor !important;
       color: @positiveBackgroundColor !important;
-      box-shadow: none;
-      border: 1px solid @positiveBorderColor; 
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
     }
 
     .icon {
@@ -251,9 +265,11 @@
   }
 
   &.negative {
+    --button-ring-color: @negativeBorderColor;
+    --button-ring-color-hover: @negativeBorderColor;
     color: @redDark !important;
     background-color: @white !important;
-    box-shadow: 0px 0px 0px 1px @negativeBorderColor inset,
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
     &:hover,
     &:active,
@@ -262,38 +278,43 @@
       color: @negativeTextColorDarker !important;
     }
     &.active {
+      --button-ring-color: @negativeTextColor;
       background-color: @negativeTextColor !important;
       color: @negativeBackgroundColor !important;
-      box-shadow: 0px 0px 0px 1px @negativeTextColor inset,
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
         0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
       }
   }
 
   &.primary {
+    --button-ring-color: @verdigris60;
+    --button-ring-color-hover: @verdigris70;
     color: @ivy80; //@verdigrisDark;
     background-color: @white;
-    box-shadow: 0px 0px 0px 1px @verdigris60 inset,
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     &:hover,
     &:active,
     &:focus {
       color: @ivy80 !important;
       background-color: @seafoam !important;
-      box-shadow: 0px 0px 0px 1px @verdigris70 inset,
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
         0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     }
   }
 
   &.secondary {
+    --button-ring-color: @secondaryColor;
+    --button-ring-color-hover: @secondaryColor;
     color: @verdigrisDark !important;
     background-color: @white !important;
-    box-shadow: 0px 0px 0px 1px @secondaryColor inset;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
     &:hover,
     &:active,
     &:focus {
       color: @ivy80 !important;
       background-color: @white !important;
-      box-shadow: 0px 0px 0px 1px @secondaryColor inset,
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
         0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
     }
 
@@ -301,37 +322,64 @@
 
 }
 
-// .ui.form,
-// .ui.modal {
-//   .ui.button {
-//     font-weight: normal;
-//     &.add-btn,
-//     &.add-id-button,
-//     &.add-url-button,
-//     &.add-button {
-//       background-color: transparent;
-//       box-shadow: none;
-//       color: @linkColor;
-//       border: 1px solid transparent;
-//       &:hover,
-//       &:focus,
-//       &:active {
-//         color: darken(@linkColor, 15%);
-//         border: 1px solid @sidebarBorderColor;
-//       }
-//       &.labeled.icon {
-//         padding-left: 2.5rem !important;
-//       }
-//       .add.icon {
-//         background-color: transparent;
-//       }
-//     }
-//   }
-//   .ui.mini.ui.button {
-//     font-size: 1em;
-//   }
-//
-// }
+// affecting both basic and regular
+
+.ui.button,
+.ui.basic {
+  &.transparent {
+    background-color: transparent !important;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: transparent !important;
+      color: @ivy;
+    }
+  }
+
+  &.borderless {
+    box-shadow: none !important;
+    border: 0 !important;
+
+    // Resting only: allow theme hover chrome unless also .borderless-hover
+    &:not(.borderless-hover):hover,
+    &:not(.borderless-hover):active,
+    &:not(.borderless-hover):focus {
+      // Geometry fixed; color from --button-ring-color-hover (variants compose)
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
+      border: 0 !important;
+    }
+
+    &.borderless-hover,
+    &.borderless-hover:hover,
+    &.borderless-hover:active,
+    &.borderless-hover:focus {
+      box-shadow: none !important;
+      border: 0 !important;
+    }
+  }
+
+  &.link-button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: @linkColor;
+    font-weight: normal;
+    padding: 0;
+    vertical-align: baseline;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: transparent;
+      background-color: transparent !important;
+      box-shadow: none;
+      color: @linkHoverColor;
+      text-decoration-color: currentColor;
+    }
+  }
+}
 
 .invenio-fieldset.resource_type {
     .menu .button.item {
@@ -360,31 +408,34 @@
 
 .sidebar-container .button.ui.fluid.labeled.icon:not(.primary),
 .sidebar-container .button.ui.fluid.icon:not(.primary) {
+  --button-ring-color: @sidebarBorderColor;
   background-color: @sidebarBackgroundColor !important;
   padding-left: 1rem !important;
   font-weight: bold;
-  text-align: left;
   color: @sidebarHeaderColor !important;
-  border: 1px solid @sidebarBorderColor;
-  box-shadow: none;
+  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
   margin-right: 0;
 
   &.secondary {
+    --button-ring-color: @warningBorderColor;
     background-color: @secondaryBackgroundColor !important;
     color: @warningTextColor !important;
-    box-shadow: none !important;
-    border: 1px solid @warningBorderColor;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
   }
   &.secondary.basic {
     background-color: transparent !important;
     color: darken(@warningTextColor, 10%) !important;
     .icon {
-      color: @secondaryColor !important;
+      background-color: @warningBackgroundColor !important;
+      color: @warningTextColor !important;
     }
     &:hover,
     &:active,
     &:focus {
-      background-color: @secondaryBackgroundColor !important;
+      background-color: @warningBackgroundColor !important;
+      .icon {
+        background-color: darken(@warningBackgroundColor, 5%) !important;
+      }
     }
   }
 }
@@ -415,10 +466,6 @@
   }
 }
 
-// .facet-container div.content h2.header .button.right.floated {
-//   visibility: hidden;
-// }
-
 #detail-main-content .button.tiny.show-less {
   margin-bottom: 1rem;
 }
@@ -433,69 +480,6 @@
       padding-left: 3.6rem !important;
       padding-right: 1.5rem !important;
     }
-  }
-}
-
-// #deposit-form .ui.form .formpageWrapper fieldset.ui.segment {
-//   .add-btn {
-//     margin: -0.5em 0.5em 0 0;
-//     font-weight: normal;
-//   }
-//
-//   &.creators {
-//     .ui.form .creatibutors-identifiers-add-button {
-//       margin-top: 0;
-//       margin-bottom: 0.5rem;
-//     }
-//     .creatibutors-item-form-buttons {
-//       justify-content: space-between;
-//       background-color: @sidebarBackgroundColor;
-//     }
-//     &.error .creatibutors-item-form-buttons {
-//       border: 1px solid @errorColor;
-//       border-top: 0;
-//     }
-//
-//   }
-//
-//   &.licenses {
-//     .add-btn {
-//       margin-top: 0;
-//     }
-//   }
-//
-//   &.communities {
-//     .fields {
-//       .ui.icon.button.close-btn {
-//         margin-top: 0;
-//         float: none;
-//       }
-//       .right-btn-column {
-//         text-align: right;
-//       }
-//     }
-//   }
-// }
-
-.ui.button.link-button {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: @linkColor;
-  font-weight: normal;
-  padding: 0;
-  vertical-align: baseline;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-
-  &:hover,
-  &:focus,
-  &:active {
-    background: transparent;
-    background-color: transparent !important;
-    box-shadow: none;
-    color: @linkHoverColor;
-    text-decoration-color: currentColor;
   }
 }
 

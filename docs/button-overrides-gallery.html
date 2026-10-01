@@ -112,7 +112,14 @@
     <!-- ─────────────────────────────────────────────────────────────────── -->
     <h2 class="ui dividing header">2. Emphasis &amp; semantic colors</h2>
     <p class="override-ref">
-      Primary block + color variants in <code>button.overrides</code> lines 64–128.
+      Primary block + color variants in <code>button.overrides</code>.
+      Ring colors are CSS vars on <code>.ui.button</code>
+      (<code>--button-ring-color</code> / <code>--button-ring-color-hover</code>);
+      variants override those vars.
+      Chrome concerns are separate: <code>.transparent</code> (bg),
+      <code>.borderless</code> (resting border; hover ring restored via the CSS var),
+      <code>.borderless-hover</code> (no border on hover either),
+      and padding via utilities like <code>.p-0</code>.
     </p>
     <div class="sample-row">
       <div class="sample-cell">
@@ -141,7 +148,15 @@
       </div>
       <div class="sample-cell">
         <button class="ui transparent button" type="button">Transparent</button>
-        <span class="sample-label">.ui.transparent.button</span>
+        <span class="sample-label">.ui.transparent.button (bg only)</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui transparent borderless button" type="button">Borderless</button>
+        <span class="sample-label">+ .borderless (hover ring restored)</span>
+      </div>
+      <div class="sample-cell">
+        <button class="ui transparent borderless borderless-hover p-0 button" type="button">Ghost</button>
+        <span class="sample-label">+ .borderless-hover + .p-0</span>
       </div>
       <div class="sample-cell">
         <button class="ui search button" type="button">Search</button>
@@ -307,7 +322,7 @@
       </div>
     </div>
 
-    <p class="override-ref"><code>.ui.button.icon.fluid.labeled.centered</code> — extra right padding.</p>
+    <p class="override-ref"><code>.ui.button.icon.fluid.labeled.centered</code> — extra right padding. <code>.ui.button.left.aligned</code> — text-align left.</p>
     <div class="sample-row">
       <div class="sample-cell" style="flex: 1; min-width: 12rem; max-width: 20rem;">
         <button class="ui fluid icon labeled centered button" type="button">
@@ -315,6 +330,13 @@
           Fluid centered labeled
         </button>
         <span class="sample-label">.ui.fluid.icon.labeled.centered.button</span>
+      </div>
+      <div class="sample-cell" style="flex: 1; min-width: 12rem; max-width: 20rem;">
+        <button class="ui fluid icon left labeled left aligned button" type="button">
+          <i class="list icon"></i>
+          Fluid left aligned
+        </button>
+        <span class="sample-label">.ui.fluid.icon.left.labeled.left.aligned.button</span>
       </div>
     </div>
 
@@ -494,15 +516,15 @@
           <i class="upload icon"></i>
           Fluid primary sidebar
         </button>
-        <button class="ui fluid icon left labeled button" type="button">
+        <button class="ui fluid icon left labeled left aligned button" type="button">
           <i class="edit icon"></i>
           Fluid default sidebar
         </button>
-        <button class="ui fluid icon secondary left labeled button" type="button">
+        <button class="ui fluid icon secondary left labeled left aligned button" type="button">
           <i class="warning icon"></i>
           Fluid secondary
         </button>
-        <button class="ui fluid icon secondary basic left labeled button" type="button">
+        <button class="ui fluid icon secondary basic left labeled left aligned button" type="button">
           <i class="warning icon"></i>
           Fluid secondary basic
         </button>
@@ -536,13 +558,13 @@
       <div class="context-title">.right-sidebar #record-management / #download (site.overrides)</div>
       <div class="right-sidebar" style="max-width: 22rem;">
         <div class="sidebar-container" id="record-management">
-          <button class="ui fluid icon button" type="button">
+          <button class="ui fluid icon left aligned button" type="button">
             <i class="settings icon"></i>
             Record management
           </button>
         </div>
         <div class="sidebar-container" id="download">
-          <button class="ui fluid icon right labeled button" type="button">
+          <button class="ui fluid icon right labeled left aligned button" type="button">
             Download
             <i class="download icon"></i>
           </button>
