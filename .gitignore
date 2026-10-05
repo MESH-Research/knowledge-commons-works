@@ -170,3 +170,4 @@ biome.json
 tests/.env
 docs/knowledge_base_sync/config.yaml
 app_data/importer/user_memberships.csv
+app_data/vocabularies/fast/
