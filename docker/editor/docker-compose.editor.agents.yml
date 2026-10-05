@@ -1,0 +1,24 @@
+# Optional SSH agent-forwarding overlay for the editor service.
+#
+# Include only when the host ssh-agent socket is available::
+#
+#   export SSH_AUTH_SOCK   # already set by the agent
+#   docker compose \
+#     -p "${KCWORKS_PROJECT_NAME}-editor" \
+#     -f docker/editor/docker-compose.editor.yml \
+#     -f docker/editor/docker-compose.editor.agents.yml \
+#     up -d
+#
+# GPG/YubiKey OpenPGP forwarding is left to a further override — Docker Desktop
+# for Mac usually needs a socat bridge, so baking a bind here tends to break
+# SSH-only launches.
+
+services:
+  editor:
+    environment:
+      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+    volumes:
+      - type: bind
+        source: ${SSH_AUTH_SOCK:?SSH_AUTH_SOCK must be set when using the agents overlay}
+        target: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+        read_only: true

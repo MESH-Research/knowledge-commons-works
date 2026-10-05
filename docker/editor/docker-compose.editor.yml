@@ -1,0 +1,91 @@
+# Editor attach overlay — used by a host launcher, not by app compose.
+#
+# Contract (docs/private/dev-workspace-container-design.md):
+#   - External network  = project name (dev/app network only; not *-test)
+#   - External volume   = <project>-src → /opt/invenio/src
+#   - User              = dev (1000:1000) — project-agnostic login name
+#   - One global editor home volume (shared across projects)
+#   - One editor container instance per open project
+#
+# Launcher sketch (from the orchestrator directory)::
+#
+#   export KCWORKS_PROJECT_NAME="${KCWORKS_PROJECT_NAME:-$(basename "$PWD")}"
+#   export KCWORKS_NETWORK="${KCWORKS_NETWORK:-$KCWORKS_PROJECT_NAME}"
+#   export KCWORKS_VOLUME="${KCWORKS_VOLUME:-${KCWORKS_PROJECT_NAME}-src}"
+#   export KCWORKS_EDITOR_IMAGE="${KCWORKS_EDITOR_IMAGE:-kcworks-editor:latest}"
+#
+#   docker compose \
+#     -p "${KCWORKS_PROJECT_NAME}-editor" \
+#     -f docker/editor/docker-compose.editor.yml \
+#     up -d
+#
+#   docker compose -p "${KCWORKS_PROJECT_NAME}-editor" exec editor tmux new -A -s dev
+#
+# SSH agent forwarding: optional docker/editor/docker-compose.editor.agents.yml
+#
+# Prerequisites: the app stack is already up so network + *-src volume exist.
+
+name: ${KCWORKS_PROJECT_NAME:-kcworks-next}-editor
+
+services:
+  editor:
+    image: ${KCWORKS_EDITOR_IMAGE:-kcworks-editor:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NVIM_VERSION: ${NVIM_VERSION:-v0.12.5}
+    container_name: ${KCWORKS_PROJECT_NAME:-kcworks-next}-editor
+    user: "1000:1000"
+    working_dir: ${KCWORKS_SRC_MOUNT:-/opt/invenio/src}
+    environment:
+      HOME: /home/dev
+      EDITOR: nvim
+      VISUAL: nvim
+      SHELL: /bin/zsh
+      TERM: ${TERM:-xterm-256color}
+      NVM_DIR: /home/dev/.nvm
+      NODE_SHIM_VERSION: ${NODE_SHIM_VERSION:-v24.9.0}
+      PNPM_HOME: /home/dev/.local/share/pnpm
+      # Mutable CLI pins (entrypoint installs into the home volume)
+      GO_VERSION: ${GO_VERSION:-1.24.7}
+      GH_VERSION: ${GH_VERSION:-2.101.0}
+      LAZYGIT_VERSION: ${LAZYGIT_VERSION:-0.64.1}
+      YAZI_VERSION: ${YAZI_VERSION:-26.9.1}
+      LMS_HOST: ${LMS_HOST:-host.docker.internal}
+      LMS_PORT: ${LMS_PORT:-1234}
+      # git pull config repos on start
+      EDITOR_CONFIG_PULL: ${EDITOR_CONFIG_PULL:-0}
+      # reinstall pi/go/gh/lazygit/yazi into home on start
+      EDITOR_TOOLS_UPDATE: ${EDITOR_TOOLS_UPDATE:-0}
+    volumes:
+      # Per-project source tree (shared with workspace/apps)
+      - type: volume
+        source: src
+        target: ${KCWORKS_SRC_MOUNT:-/opt/invenio/src}
+      # Global editor home: configs, Mason/lazy, oh-my-zsh, pi, undodir, …
+      - type: volume
+        source: editor_home
+        target: /home/dev
+    networks:
+      - project
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stdin_open: true
+    tty: true
+    # No docker.sock. No sudo. No app SM secrets.
+    restart: unless-stopped
+    command: ["sleep", "infinity"]
+
+networks:
+  project:
+    external: true
+    name: ${KCWORKS_NETWORK:-${KCWORKS_PROJECT_NAME:-kcworks-next}}
+
+volumes:
+  src:
+    external: true
+    name: ${KCWORKS_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks-next}-src}
+  # Shared across projects — not prefixed by KCWORKS_PROJECT_NAME
+  editor_home:
+    name: ${KCWORKS_EDITOR_HOME_VOLUME:-editor-home}
