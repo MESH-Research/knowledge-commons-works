@@ -4,16 +4,25 @@
 # To facilitate more secure handling of secrets in local development, this script
 #
 # - Fetches a slice of keys from AWS Secrets Manager into a temporary env file
-# - Runs `docker compose up -d` with the standard *and* dev docker compose files
+# - Runs `docker compose up -d` with the standard compose file (and optionally
+#   the local-dev overlay)
 #   - Pulls secrets from the temp env file
 #   - Pulls non-secret env vars from ./.env
 #
 # Run from the repository (package) root:
-#   ./kcworks-startup.sh
+#   ./kcworks-startup.sh              # local-dev overlay (kcworks-dev + bind mounts)
+#   ./kcworks-startup.sh --prod       # Hub runtime image only (docker-compose.yml)
 #
-# This script always runs:
+# Default (no --prod):
 #   docker compose --env-file docker-compose.dev.env [--env-file .env] \
 #     --file docker-compose.yml --file docker-compose.dev.yml up -d
+#
+# With --prod (deploy-like local stack; still uses SM secrets + host port env):
+#   docker compose --env-file docker-compose.dev.env [--env-file .env] \
+#     --file docker-compose.yml up -d web-ui
+#   docker compose … up -d
+#   IMAGE_TAG defaults to unset → monotasker/kcworks:latest (no branch tag).
+#   Prefer an explicit pull first: docker pull monotasker/kcworks:latest
 #
 # Host port defaults live in docker-compose.dev.env (tracked, no secrets).
 # When .env exists, it is loaded second so your clone-specific overrides win.
@@ -29,7 +38,9 @@
 #   --allow-missing      Warn instead of failing if a listed key is absent from the secret
 #
 # Optional flags for docker compose:
+#   --prod               Base compose only (Hub monotasker/kcworks); still fetches SM secrets
 #   --image-tag TAG      Sets IMAGE_TAG for this run (same as IMAGE_TAG=TAG in the environment)
+#   --build              Pass --build to docker compose up
 #
 # Requires aws CLI be configured on the host machine
 #
@@ -43,7 +54,7 @@ cd "$REPO_ROOT"
 RUNTIME_SECRET_HOST_FILE="/tmp/kcworks-runtime-secrets.env"
 
 usage() {
-  sed -n '2,44p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,55p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
 }
 
@@ -58,6 +69,7 @@ REGION=()
 ALLOW_MISSING=0
 IMAGE_TAG_ARG=""
 BUILD_ARG=0
+PROD_MODE=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -79,6 +91,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --build)
     BUILD_ARG=1
+    shift
+    ;;
+  --prod)
+    PROD_MODE=1
     shift
     ;;
   --allow-missing)
@@ -115,8 +131,13 @@ if [[ ! -x "$VENV_PY" ]]; then
   exit 1
 fi
 
-if [[ ! -f docker-compose.yml || ! -f docker-compose.dev.yml ]]; then
-  echo "Error: expected docker-compose.yml and docker-compose.dev.yml in ${REPO_ROOT}." >&2
+if [[ ! -f docker-compose.yml ]]; then
+  echo "Error: expected docker-compose.yml in ${REPO_ROOT}." >&2
+  exit 1
+fi
+
+if [[ "$PROD_MODE" -eq 0 && ! -f docker-compose.dev.yml ]]; then
+  echo "Error: expected docker-compose.dev.yml in ${REPO_ROOT} (omit requirement with --prod)." >&2
   exit 1
 fi
 
@@ -174,12 +195,17 @@ fi
 rm -f "$RAWFILE"
 RAWFILE=""
 
-# IMAGE_TAG precedence: --image-tag flag > existing env > current git branch.
-# Mirrors CI's per-branch tagging so local builder images cache per branch
-# (monotasker/kcworks-dev:<branch>) instead of clobbering a single :latest.
+# IMAGE_TAG:
+# - --image-tag always wins
+# - --prod: leave unset unless already in the environment → compose uses :latest
+#   (Hub monotasker/kcworks:latest from main CI); do not derive from git branch
+# - default (dev overlay): --image-tag > existing env > current git branch, so
+#   local builder images cache per branch (monotasker/kcworks-dev:<branch>)
 # CI uses slash-to-dash sanitization with no SHA suffix; matched here verbatim.
 if [[ -n "$IMAGE_TAG_ARG" ]]; then
   export IMAGE_TAG="$IMAGE_TAG_ARG"
+elif [[ "$PROD_MODE" -eq 1 ]]; then
+  : # keep IMAGE_TAG from environment if set; otherwise compose defaults to latest
 elif [[ -z "${IMAGE_TAG:-}" ]]; then
   if branch=$(git -C "$REPO_ROOT" symbolic-ref --short HEAD 2>/dev/null); then
     export IMAGE_TAG="${branch//\//-}"
@@ -193,11 +219,25 @@ if [[ "$BUILD_ARG" -eq 1 ]]; then
   BUILD_FLAGS+=(--build)
 fi
 
-docker compose \
-  "${COMPOSE_ENV_FILES[@]}" \
-  --file docker-compose.yml \
-  --file docker-compose.dev.yml \
-  up -d "${BUILD_FLAGS[@]}"
+COMPOSE_FILES=(--file docker-compose.yml)
+if [[ "$PROD_MODE" -eq 0 ]]; then
+  COMPOSE_FILES+=(--file docker-compose.dev.yml)
+fi
+
+run_compose_up() {
+  docker compose \
+    "${COMPOSE_ENV_FILES[@]}" \
+    "${COMPOSE_FILES[@]}" \
+    up -d "${BUILD_FLAGS[@]}" "$@"
+}
+
+if [[ "$PROD_MODE" -eq 1 ]]; then
+  # Seed static_data via web-ui first (avoids parallel named-volume copy-up race).
+  run_compose_up web-ui
+  run_compose_up
+else
+  run_compose_up
+fi
 compose_status=$?
 
 exit "$compose_status"
