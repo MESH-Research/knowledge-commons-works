@@ -4,7 +4,7 @@
 #   builder     – full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
 #                 Python extensions and build webpack assets. No test extras.
 #   test-runner – builder + optional-dependencies.tests (pytest, …) + root
-#                 ``pnpm install`` for Jest; not copied into runtime.
+#                 `pnpm install` for Jest; not copied into runtime.
 #   runtime     – minimal Debian Bookworm image with only shared runtime libs;
 #                 no compilers, no Node, no pnpm, no uv, no test extras.
 #
@@ -106,17 +106,17 @@ RUN . .venv/bin/activate && \
 
 
 # ── Stage 1b: test-runner ─────────────────────────────────────────────────
-# Extends builder with test extras only. docker-compose.test.yml targets this
+# Extends builder with the test and docs extras. docker-compose.test.yml targets this
 # stage. Runtime still COPY --from=builder, so these packages never ship in
 # the deployed image.
 FROM builder AS test-runner
 
 RUN . .venv/bin/activate && \
-    uv sync --frozen --extra tests --compile-bytecode && \
+    uv sync --frozen --extra tests --extra docs --compile-bytecode && \
     uv clean
 
 # Root Jest suite deps (package.json / pnpm-lock.yaml from COPY). All root
-# deps live under ``devDependencies``; force development so they are not
+# deps live under `devDependencies`; force development so they are not
 # skipped. Webpack's install lives under instance assets, not this tree.
 RUN NODE_ENV=development pnpm install --frozen-lockfile \
     && test -x node_modules/.bin/jest
