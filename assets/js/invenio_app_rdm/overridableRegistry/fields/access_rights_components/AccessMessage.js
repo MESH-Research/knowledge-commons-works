@@ -16,7 +16,12 @@ import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { Icon, Message } from "semantic-ui-react";
 
-export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
+export const AccessMessage = ({
+  access,
+  metadataOnly,
+  accessCommunity,
+  attached,
+}) => {
   const recordPublic = access.record === "public";
   const filesPublic = access.files === "public";
   const communityPublic = accessCommunity === "public";
@@ -36,7 +41,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullyPublic) {
     return (
-      <Message positive visible data-testid="access-message">
+      <Message positive visible attached={attached} data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Public")}
@@ -53,7 +58,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullEmbargo) {
     return (
-      <Message warning visible data-testid="access-message">
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Embargoed access")}
@@ -71,7 +76,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullyRestricted) {
     return (
-      <Message negative visible data-testid="access-message">
+      <Message negative visible attached={attached} data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Access Restricted")}
@@ -87,7 +92,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (restrictedFiles) {
     return (
-      <Message warning visible data-testid="access-message">
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Files restricted")}
@@ -104,7 +109,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (embargoedFiles) {
     return (
-      <Message warning visible data-testid="access-message">
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
           <Message.Header className="mb-5">
             {i18next.t("Files embargoed")}
@@ -125,8 +130,10 @@ AccessMessage.propTypes = {
   access: PropTypes.object.isRequired,
   metadataOnly: PropTypes.bool,
   accessCommunity: PropTypes.string.isRequired,
+  attached: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 };
 
 AccessMessage.defaultProps = {
   metadataOnly: false,
+  attached: undefined,
 };

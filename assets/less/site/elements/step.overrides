@@ -1,11 +1,11 @@
 @stepBorderColor: @sidebarBorderColor;
 @stepBackgroundColor: @sidebarBackgroundColor;
 @stepTextColor: @sidebarHeaderColor;
-@requiredBackgroundColor: @mint30;
-@requiredBorderColor: @mint;
-@activeBackgroundColor: @mint80;
-@activeBorderColor: @verdigris40;
-@activeTextColor: @ivy;
+@requiredBackgroundColor: darken(@sidebarBackgroundColor, 5%);
+@requiredBorderColor: darken(@sidebarBackgroundColor, 18%);
+@activeBackgroundColor: @ivy80;
+@activeBorderColor: @ivy80;
+@activeTextColor: @white;
 @borderRadius: 0.25rem;
 
 #rdm-deposit-form-header .ui.steps {
@@ -13,6 +13,9 @@
     // border-color: @sidebarBorderColor;
     border-color: transparent;
     .step.link {
+      // Steps render as Buttons (`as={Button}`); kill the button inset ring so
+      // it doesn't fight the real borders the chevron `:after` needs.
+      box-shadow: none;
       transition: all 0.3s ease;
       line-height: 1.15rem;
       padding-top: @small;
@@ -73,7 +76,7 @@
           top: -2.1rem;
           height: 2rem;
           line-height: 2rem;
-          background-color: lighten(@requiredBackgroundColor, 5%);
+          background-color: @positiveBackgroundColor;
           border-top: 1px solid @positiveBorderColor;
           border-left: 1px solid @positiveBorderColor;
           border-right: 1px solid @positiveBorderColor;
@@ -84,10 +87,11 @@
         &:hover,
         &:focus,
         &:active {
-          background-color: darken(@requiredBackgroundColor, 3%) !important;
+          background-color: darken(@requiredBackgroundColor, 8%) !important;
+          box-shadow: none;
           color: @ivy;
           &::after {
-            background-color: darken(@requiredBackgroundColor, 3%) !important;
+            background-color: darken(@requiredBackgroundColor, 8%) !important;
           }
         }
       }
@@ -133,9 +137,10 @@
         &:hover,
         &:focus,
         &:active {
-          background-color: darken(@activeBackgroundColor, 7%) !important;
+          background-color: @ivy !important;
+          box-shadow: none;
           &::after {
-            background-color: darken(@activeBackgroundColor, 7%) !important;
+            background-color: @ivy !important;
           }
         }
       }

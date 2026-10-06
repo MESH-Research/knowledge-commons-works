@@ -1,338 +1,245 @@
-// re-declare variables that for some reason aren't picked up
+// re-declare variables that SUI themes/default/elements/button.variables
+// overwrites after site.variables (sets *TextColor to @invertedTextColor / white)
 @negativeTextColor: @redDark;
+@positiveTextColor: @green;
 
-// ---------------------------------------------------------------------------
-// Button ring colors (CSS custom properties)
-// Defaults on .ui.button; variants override --button-ring-* so .borderless
-// and shared box-shadow formulas compose without re-declaring shadows.
-// ---------------------------------------------------------------------------
-.ui.button {
-  --button-ring-color: @ivy20;
-  --button-ring-color-hover: darken(@ivy20, 3%);
-  --button-ring-color-disabled: @ivy30;
-}
-
-.ui.button.icon {
-  &.fluid.labeled.centered {
-    padding-right: 3.25em !important;
-  }
-  &.right.labeled {
-    padding-right: @labeledIconWidth + @horizontalPadding !important
-  }
-}
-
-// Text alignment (SUI has left/right/center.aligned for headers/grid, not buttons).
-.ui.button.left.aligned {
-  text-align: left;
-}
-
-.ui.buttons.basic,
-.ui.buttons:has(.ui.button.basic) {
-  border-color: transparent;
-  .ui.button {
-    position: relative;
-  }
-
-  .ui.button:last-child {
-    margin-left: 3px;
-    border-left: none;
-  }
-  > .ui.button.active:not(.positive):not(.negative) {
-    --button-ring-color: @ivy20;
-    --button-ring-color-hover: darken(@ivy40, 3%);
-    background-color: @mint30 !important;
-    color: @ivy;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-      0px 0em 0px 0px @ivyRgba10 inset;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @mint50 !important;
-      color: @ivy;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-        0px 0em 0px 0px @ivyRgba10 inset;
-    }
-  }
-}
-
-// Basic styles
-
-.ui.buttons > .ui.button:not(.basic):not(.inverted),
-.ui.buttons:not(.basic):not(.inverted) > .ui.button,
-.ui.button:not(.basic),
-.ui.info.message .button:not(.basic),
-.ui.info.message .ui.button.icon:not(.basic) {
-  background-color: @white;
-  color: @ivy90;
-  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-
-  &:hover,
-  &:active,
-  &:focus {
-    background-color: @mint30 !important;
-    color: @ivy;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    cursor: pointer;
-  }
-
-  &.labeled.icon > .icon {
-    background-color: @ivy20;
-  }
-
-  &:disabled,
-  &.disabled {
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color-disabled) inset !important;
-  }
-
-  &.search {
-    --button-ring-color: darken(@secondaryColor, 3%);
-    --button-ring-color-hover: darken(@secondaryColor, 10%);
-    background-color: @secondaryColor;
-    color: @white;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-      0px 0em 0px 0px var(--button-ring-color) inset !important;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken(@secondaryColor, 10%) !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-        0px 0em 0px 0px var(--button-ring-color-hover) inset !important;
-    }
-  }
-
-  &.primary:not(.basic):not(.inverted),
-  &.primary {
-    --button-ring-color: @ivy;
-    --button-ring-color-hover: @ivy90;
-    background-color: @ivy80; // @verdigrisDark;
-    color: @white;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @ivy !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    }
-    &.labeled.icon > .icon {
-      background-color: transparent;
-    }
-  }
-
-  &.secondary:not(.basic):not(.inverted),
-  &.secondary {
-    --button-ring-color-hover: darken(@secondaryColor, 10%);
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken(@secondaryColor, 10%) !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    }
-  }
-
-  &.negative {
-    --button-ring-color: @redDark;
-    background-color: @negativeTextColor !important;
-    color: @white;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @negativeTextColorDarker !important;
-    }
-  }
-
+// Outline / basic / transparent+semantic token maps (not solid fills).
+.button-outline-semantic-variants() {
   &.positive {
-    --button-ring-color: @positiveColor;
+    --button-ring-color: fade(@positiveColor, 65%);
     --button-ring-color-hover: @positiveColorDown;
-    color: @white;
-    background-color: @positiveColor !important;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @positiveColorDown !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    }
-
-    .icon {
-      color: @white;
-    }
-  }
-
-  &.warning {
-    --button-ring-color-hover: @warningColorDown;
-    background-color: @warningTextColor !important;
-    color: @white;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @warningColorDown !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    }
-  }
-
-  &.blue {
-    background-color: @blue;
-    color: @white;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken(@blue, 5%) !important;
-    }
-  }
-
-  &.icon {
-    &.close-btn {
-      --button-ring-color: #b54f1e;
-      margin-top: 0;
-      float: right;
-      background-color: @redDark !important;
-      color: @white;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-
-      &:hover,
-      &:active,
-      &:focus {
-        background-color: darken(@redDark, 5%) !important;
-      }
-    }
-    &.massive.left.fluid.labeled {
-      padding-left: 3em !important;
-    }
-  }
-}
-
-.ui.form {
-  .ui.buttons > .ui.button:not(.basic):not(.inverted),
-  .ui.buttons:not(.basic):not(.inverted) > .ui.button,
-  .ui.button:not(.basic),
-  .ui.info.message .button:not(.basic),
-  .ui.info.message .ui.button.icon:not(.basic) {
-    &.icon.close-btn:not(:has(+ label)) {
-        margin-top: 1.7rem;
-    }
-  }
-}
-
-
-// Basic
-
-.ui.buttons > .ui.button.basic:not(.inverted),
-.ui.buttons.basic:not(.inverted) > .ui.button,
-.ui.button.basic {
-  --button-ring-color-hover: @ivy30;
-  background-color: @white;
-  color: @ivy !important;
-  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-  &:hover,
-  &:active,
-  &:focus {
-    background-color: @mint30 !important;
-    color: @ivy !important;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
-    cursor: pointer;
-  }
-
-  &.positive {
-    --button-ring-color: @positiveBorderColor;
-    --button-ring-color-hover: @positiveBorderColor;
-    color: @positiveTextColor;
-    background-color: @white !important;
+    --button-text-color: @positiveTextColor;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @positiveColor;
+    --button-solid-color: @positiveColor;
+    --button-solid-color-hover: @positiveColorDown;
+    --button-labeled-icon-bg: fade(@positiveColor, 10%);
     box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
 
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @positiveBackgroundColor !important;
-      color: @positiveTextColorDarker !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
-    }
-    &.active {
-      background-color: @positiveTextColor !important;
-      color: @positiveBackgroundColor !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-    }
-
     .icon {
-      color: @white;
+      color: var(--button-text-color);
     }
   }
 
   &.negative {
     --button-ring-color: @negativeBorderColor;
-    --button-ring-color-hover: @negativeBorderColor;
-    color: @redDark !important;
-    background-color: @white !important;
+    --button-ring-color-hover: @negativeTextColorDarker;
+    --button-text-color: @redDark;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @negativeTextColor;
+    --button-solid-color: @negativeTextColor;
+    --button-solid-color-hover: @negativeTextColorDarker;
+    --button-labeled-icon-bg: fade(@negativeTextColor, 10%);
     box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @negativeBackgroundColor !important;
-      color: @negativeTextColorDarker !important;
-    }
-    &.active {
-      --button-ring-color: @negativeTextColor;
-      background-color: @negativeTextColor !important;
-      color: @negativeBackgroundColor !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-        0px 0em 0px 0px rgba(0, 0, 0, 0) inset !important;
-      }
+  }
+
+  &.warning {
+    --button-ring-color: @warningBorderColor;
+    --button-ring-color-hover: @warningColorDown;
+    --button-text-color: @warningTextColor;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @warningTextColor;
+    --button-solid-color: @warningTextColor;
+    --button-solid-color-hover: @warningColorDown;
+    --button-labeled-icon-bg: fade(@warningTextColor, 10%);
+  }
+
+  &.info,
+  &.blue {
+    --button-ring-color: fade(@blue, 40%);
+    --button-ring-color-hover: darken(@blue, 5%);
+    --button-text-color: @blue;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @blue;
+    --button-solid-color: @blue;
+    --button-solid-color-hover: darken(@blue, 5%);
+    --button-labeled-icon-bg: fade(@blue, 10%);
   }
 
   &.primary {
     --button-ring-color: @verdigris60;
-    --button-ring-color-hover: @verdigris70;
-    color: @ivy80; //@verdigrisDark;
-    background-color: @white;
+    --button-ring-color-hover: @ivy;
+    --button-text-color: @ivy80;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @ivy80;
+    --button-solid-color: @ivy80;
+    --button-solid-color-hover: @ivy;
+    --button-labeled-icon-bg: fade(@ivy80, 10%);
     box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
       0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-    &:hover,
-    &:active,
-    &:focus {
-      color: @ivy80 !important;
-      background-color: @seafoam !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-    }
   }
 
   &.secondary {
+    // @secondaryButtonTextColor — not @secondaryTextColor (SUI button theme → white)
     --button-ring-color: @secondaryColor;
-    --button-ring-color-hover: @secondaryColor;
-    color: @verdigrisDark !important;
-    background-color: @white !important;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-    &:hover,
-    &:active,
-    &:focus {
-      color: @ivy80 !important;
-      background-color: @white !important;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
-    }
-
+    --button-ring-color-hover: darken(@secondaryButtonTextColor, 10%);
+    --button-text-color: @secondaryButtonTextColor;
+    --button-text-color-hover: @white;
+    --button-bg-color: @white;
+    --button-bg-color-hover: @secondaryButtonTextColor;
+    --button-solid-color: @secondaryButtonTextColor;
+    --button-solid-color-hover: darken(@secondaryButtonTextColor, 10%);
+    --button-labeled-icon-bg: fade(@secondaryButtonTextColor, 10%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
   }
-
 }
 
-// affecting both basic and regular
+// ---------------------------------------------------------------------------
+// Button theme tokens (CSS custom properties)
+// Defaults on .ui.button; variants override --button-* so shared rules
+// (ring, text, labeled-icon, padding) compose without re-declaring formulas.
+// ---------------------------------------------------------------------------
+.ui.button {
+  --button-ring-color: @ivy20;
+  --button-ring-color-hover: @ivy80;
+  --button-ring-color-disabled: @ivy30;
+  --button-text-color: @ivy90;
+  --button-text-color-hover: @white;
+  --button-bg-color: @white;
+  --button-bg-color-hover: @ivy80;
+  --button-solid-color: @ivy80;
+  --button-solid-color-hover: @ivy;
+  // SUI button defaults; .padded uses this so amount stays overridable despite !important
+  --button-padding: @verticalPadding @horizontalPadding;
+  // Labeled-icon strip; semantic blocks below override with a 10% tint of their color
+  --button-labeled-icon-bg: @ivy20;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 
-.ui.button,
-.ui.basic {
+  // Applies to basic and non-basic (upstream SUI pattern; we only change the color)
+  &.labeled.icon > .icon {
+    background-color: var(--button-labeled-icon-bg);
+  }
+
+  &.icon {
+    &.fluid.labeled.centered {
+      padding-right: 3.25em !important;
+    }
+    &.right.labeled {
+      padding-right: @labeledIconWidth + @horizontalPadding !important;
+    }
+  }
+
+  // Text alignment (SUI has left/right/center.aligned for headers/grid, not buttons).
+  &.left.aligned {
+    text-align: left;
+  }
+
+  // Basic defaults to @basicFontWeight (normal); compose for bold labels
+  &.bold {
+    font-weight: @bold;
+  }
+
+  // Force padding where a class like .transparent zeroed it (compose: .transparent.padded).
+  // Define --button-padding here so var() resolves; callers can still override the custom property.
+  &.padded {
+    --button-padding: @verticalPadding @horizontalPadding;
+    padding: var(--button-padding) !important;
+  }
+
+  // Transparent chrome + outline semantics (same token map as .basic variants).
+  // .padded: invert to --button-solid-color; .borderless: outline only; .borderless-hover: no ring.
+  // Excluded from the .basic block below — compose .transparent.basic without white/active invert.
   &.transparent {
+    --button-bg-color: transparent;
+    --button-bg-color-hover: transparent;
+    --button-text-color: @ivy;
+    --button-text-color-hover: @ivy;
+    --button-solid-color: @ivy80;
+    --button-solid-color-hover: @ivy;
     background-color: transparent !important;
+    color: var(--button-text-color) !important;
+
+    .button-outline-semantic-variants();
+
+    // Variants set white fill + white hover text; keep transparent chrome + colored hover text
+    // until .padded:not(.borderless) opts into solid invert.
+    &:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue) {
+      --button-bg-color: transparent;
+      --button-bg-color-hover: transparent;
+      --button-text-color-hover: var(--button-text-color);
+    }
+
+    // Beat SUI .ui.basic.active.button (4 classes + !important) — accordion open state, etc.
+    &.active,
+    &.basic.active,
+    &.active:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue) {
+      background-color: transparent !important;
+      color: var(--button-text-color) !important;
+    }
+
     &:hover,
     &:active,
-    &:focus {
+    &:focus,
+    &.active:hover,
+    &.active:focus,
+    &.basic.active:hover,
+    &.basic.active:focus {
       background-color: transparent !important;
-      color: @ivy;
+      color: var(--button-text-color-hover) !important;
+    }
+
+    &.padded {
+      background-color: var(--button-bg-color);
+      color: var(--button-text-color) !important;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+
+      // Invert hover only when not .borderless
+      &:not(.borderless) {
+        --button-bg-color-hover: var(--button-solid-color);
+        --button-text-color-hover: @white;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: var(--button-bg-color-hover) !important;
+          color: var(--button-text-color-hover) !important;
+          box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+          cursor: pointer;
+        }
+      }
+
+      // .borderless without .borderless-hover: transparent fill, default outline, semantic/ivy text
+      &.borderless:not(.borderless-hover) {
+        --button-bg-color-hover: transparent;
+        --button-text-color-hover: var(--button-text-color);
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: transparent !important;
+          color: var(--button-text-color-hover) !important;
+          box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
+          cursor: pointer;
+        }
+      }
+
+      &:disabled,
+      &.disabled {
+        box-shadow: 0px 0px 0px 1px var(--button-ring-color-disabled) inset !important;
+      }
+    }
+
+    &.borderless-hover {
+      --button-bg-color-hover: transparent;
+      --button-text-color-hover: var(--button-text-color);
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: transparent !important;
+        color: var(--button-text-color-hover) !important;
+      }
     }
   }
 
@@ -347,6 +254,19 @@
       // Geometry fixed; color from --button-ring-color-hover (variants compose)
       box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
       border: 0 !important;
+    }
+
+    &.borderless-hover {
+      // Keep resting fill/text on hover
+      --button-text-color-hover: var(--button-text-color);
+      --button-bg-color-hover: var(--button-bg-color);
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: var(--button-bg-color-hover) !important;
+        color: var(--button-text-color-hover) !important;
+      }
     }
 
     &.borderless-hover,
@@ -381,60 +301,337 @@
   }
 }
 
-.invenio-fieldset.resource_type {
-    .menu .button.item {
-        color: @verdigrisDark;
-        box-shadow: none;
-        &:active,
-        &:focus,
-        &:hover {
-            background-color: @mint50 !important;
-        }
-        &.active {
-          &:active,
-          &:focus,
-          &:hover {
-              background-color: darken(@verdigrisDark, 5%) !important;
-          }
-        }
-    }
-}
-
-
-.sidebar-container .button.ui.fluid.labeled.icon.primary,
-.sidebar-container .button.ui.fluid.icon.primary {
-  padding-left: 1rem !important;
-}
-
-.sidebar-container .button.ui.fluid.labeled.icon:not(.primary),
-.sidebar-container .button.ui.fluid.icon:not(.primary) {
-  --button-ring-color: @sidebarBorderColor;
-  background-color: @sidebarBackgroundColor !important;
-  padding-left: 1rem !important;
-  font-weight: bold;
-  color: @sidebarHeaderColor !important;
+// Solid (non-basic): shared var() formulas; variants only set tokens.
+// Selector list beats SUI group / message contexts.
+.ui.buttons > .ui.button:not(.basic):not(.inverted):not(.transparent),
+.ui.buttons:not(.basic):not(.inverted) > .ui.button:not(.transparent),
+.ui.button:not(.basic):not(.transparent),
+.ui.info.message .button:not(.basic):not(.transparent),
+.ui.info.message .ui.button.icon:not(.basic):not(.transparent) {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-  margin-right: 0;
 
-  &.secondary {
-    --button-ring-color: @warningBorderColor;
-    background-color: @secondaryBackgroundColor !important;
-    color: @warningTextColor !important;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    cursor: pointer;
   }
-  &.secondary.basic {
-    background-color: transparent !important;
-    color: darken(@warningTextColor, 10%) !important;
-    .icon {
-      background-color: @warningBackgroundColor !important;
-      color: @warningTextColor !important;
-    }
+
+  &:disabled,
+  &.disabled {
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-disabled) inset !important;
+  }
+
+  &.search {
+    --button-ring-color: darken(@secondaryColor, 3%);
+    --button-ring-color-hover: darken(@secondaryColor, 10%);
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @secondaryColor;
+    --button-bg-color-hover: darken(@secondaryColor, 10%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+      0px 0em 0px 0px var(--button-ring-color) inset !important;
     &:hover,
     &:active,
     &:focus {
-      background-color: @warningBackgroundColor !important;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
+        0px 0em 0px 0px var(--button-ring-color-hover) inset !important;
+    }
+  }
+
+  &.primary:not(.basic):not(.inverted),
+  &.primary {
+    --button-ring-color: @ivy;
+    --button-ring-color-hover: @ivy90;
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @ivy80;
+    --button-bg-color-hover: @ivy;
+    --button-labeled-icon-bg: fade(darken(@ivy80, 15%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
+  }
+
+  &.secondary:not(.basic):not(.inverted),
+  &.secondary {
+    // Ivory family like deposit stepper hover, stepped a bit darker
+    --button-ring-color: @sidebarBorderColor;
+    --button-ring-color-hover: darken(@sidebarBackgroundColor, 20%);
+    --button-text-color: @mutedTextColor;
+    --button-text-color-hover: darken(@mutedTextColor, 12%);
+    --button-bg-color: darken(@sidebarBackgroundColor, 8%);
+    --button-bg-color-hover: darken(@sidebarBackgroundColor, 13%);
+    --button-labeled-icon-bg: fade(darken(@sidebarBackgroundColor, 25%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
+  }
+
+  &.negative {
+    --button-ring-color: @redDark;
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @negativeTextColor;
+    --button-bg-color-hover: @negativeTextColorDarker;
+    --button-labeled-icon-bg: fade(darken(@negativeTextColor, 15%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+      0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+  }
+
+  &.positive {
+    --button-ring-color: @positiveColor;
+    --button-ring-color-hover: @positiveColorDown;
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @positiveColor;
+    --button-bg-color-hover: @positiveColorDown;
+    --button-labeled-icon-bg: fade(darken(@positiveColor, 15%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
+
+    .icon {
+      color: @white;
+    }
+  }
+
+  &.warning {
+    --button-ring-color: @warningTextColor;
+    --button-ring-color-hover: @warningColorDown;
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @warningTextColor;
+    --button-bg-color-hover: @warningColorDown;
+    --button-labeled-icon-bg: fade(darken(@warningTextColor, 15%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
+  }
+
+  &.info,
+  &.blue {
+    --button-ring-color: @blue;
+    --button-ring-color-hover: darken(@blue, 5%);
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+    --button-bg-color: @blue;
+    --button-bg-color-hover: darken(@blue, 5%);
+    --button-labeled-icon-bg: fade(darken(@blue, 15%), 45%);
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+    }
+  }
+
+  &.icon {
+    &.close-btn {
+      --button-ring-color: #b54f1e;
+      --button-text-color: @white;
+      --button-text-color-hover: @white;
+      --button-bg-color: @redDark;
+      --button-bg-color-hover: darken(@redDark, 5%);
+      margin-top: 0;
+      float: right;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+        0px 0em 0px 0px rgba(0, 0, 0, 0.15) inset;
+    }
+    &.massive.left.fluid.labeled {
+      padding-left: 3em !important;
+    }
+  }
+}
+
+.ui.form {
+  .ui.buttons > .ui.button:not(.basic):not(.inverted),
+  .ui.buttons:not(.basic):not(.inverted) > .ui.button,
+  .ui.button:not(.basic),
+  .ui.info.message .button:not(.basic),
+  .ui.info.message .ui.button.icon:not(.basic) {
+    &.icon.close-btn:not(:has(+ label)) {
+      margin-top: 1.7rem;
+    }
+  }
+}
+
+// Basic
+// SUI sets background/color !important on .ui.basic.button and on
+// .ui.basic.{semantic}.button:hover (transparent). Shared var() formulas need
+// matching specificity + !important once; variants only set the tokens.
+
+.ui.buttons {
+  &.basic,
+  &:has(.ui.button.basic) {
+    border-color: transparent;
+    .ui.button {
+      position: relative;
+    }
+
+    .ui.button:last-child {
+      margin-left: 3px;
+      border-left: none;
+    }
+    > .ui.button.active:not(.positive):not(.negative):not(.transparent) {
+      --button-ring-color: @ivy20;
+      --button-ring-color-hover: darken(@ivy40, 3%);
+      background-color: @mint30 !important;
+      color: @ivy;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
+        0px 0em 0px 0px @ivyRgba10 inset;
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: @mint50 !important;
+        color: @ivy;
+        box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
+          0px 0em 0px 0px @ivyRgba10 inset;
+      }
+    }
+  }
+
+  // Group active child not covered by .ui.button.basic nesting below
+  &.basic .active.button:not(.transparent) {
+    background: var(--button-bg-color) !important;
+    color: var(--button-text-color) !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+  }
+}
+
+.ui.buttons > .ui.button.basic:not(.inverted):not(.transparent),
+.ui.buttons.basic:not(.inverted) > .ui.button:not(.transparent),
+.ui.button.basic:not(.transparent),
+.ui.basic.button:not(.transparent) {
+  --button-ring-color-hover: @ivy;
+  --button-text-color: @ivy;
+  --button-text-color-hover: @white;
+  --button-bg-color: @white;
+  --button-bg-color-hover: @ivy80;
+  // Solid pair (matches non-basic semantic resting/hover) for .active invert
+  --button-solid-color: @ivy80;
+  --button-solid-color-hover: @ivy;
+  background: var(--button-bg-color) !important;
+  color: var(--button-text-color) !important;
+  box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+
+  // Beat SUI .ui.basic.{semantic}.button (4 classes + !important)
+  &:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue) {
+    background: var(--button-bg-color) !important;
+    color: var(--button-text-color) !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
+  }
+
+  .button-outline-semantic-variants();
+
+  // After variant tokens: .active = solid fill; hover = solid darkened (like non-basic).
+  &.active {
+    --button-bg-color: var(--button-solid-color);
+    --button-bg-color-hover: var(--button-solid-color-hover);
+    --button-ring-color: var(--button-solid-color);
+    --button-ring-color-hover: var(--button-solid-color-hover);
+    --button-text-color: @white;
+    --button-text-color-hover: @white;
+  }
+
+  // .active resting fill (before hover so active:hover can win)
+  &.active,
+  &.active:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue) {
+    background: var(--button-bg-color) !important;
+    color: var(--button-text-color) !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
+  }
+
+  // Hover/focus — including .active:hover (darkened solid)
+  &:is(:hover, :focus),
+  &:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue):is(:hover, :focus),
+  &.active:is(:hover, :focus),
+  &.active:is(.primary, .secondary, .positive, .negative, .warning, .info, .blue):is(:hover, :focus) {
+    background: var(--button-bg-color-hover) !important;
+    color: var(--button-text-color-hover) !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
+    cursor: pointer;
+  }
+}
+
+.invenio-fieldset.resource_type {
+  .menu .button.item {
+    color: @mutedTextColor;
+    box-shadow: none;
+    border-radius: 0;
+    background-color: transparent;
+    border: 0;
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: @mint50 !important;
+    }
+    &.active {
+      background-color: @ivy80 !important;
+      &:active,
+      &:focus,
+      &:hover {
+        background-color: @ivy !important;
+      }
+    }
+  }
+}
+
+.sidebar-container {
+  .button.ui.fluid.labeled.icon.primary,
+  .button.ui.fluid.icon.primary {
+    padding-left: 1rem !important;
+  }
+
+  .button.ui.fluid.labeled.icon:not(.primary),
+  .button.ui.fluid.icon:not(.primary) {
+    --button-ring-color: @sidebarBorderColor;
+    background-color: @sidebarBackgroundColor !important;
+    padding-left: 1rem !important;
+    font-weight: bold;
+    color: @sidebarHeaderColor !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+    margin-right: 0;
+
+    &.secondary {
+      --button-ring-color: @warningBorderColor;
+      background-color: @secondaryBackgroundColor !important;
+      color: @warningTextColor !important;
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
+    }
+    &.secondary.basic {
+      background-color: transparent !important;
+      color: darken(@warningTextColor, 10%) !important;
       .icon {
-        background-color: darken(@warningBackgroundColor, 5%) !important;
+        background-color: @warningBackgroundColor !important;
+        color: @warningTextColor !important;
+      }
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: @warningBackgroundColor !important;
+        .icon {
+          background-color: darken(@warningBackgroundColor, 5%) !important;
+        }
       }
     }
   }
@@ -446,7 +643,8 @@
     padding-left: 1rem !important;
     font-weight: bold;
     color: @sidebarHeaderColor !important;
-    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset, 0px 0em 0px 0px @sidebarBorderColor inset !important;
+    box-shadow: 0px 0px 0px 1px @sidebarBorderColor inset,
+      0px 0em 0px 0px @sidebarBorderColor inset !important;
   }
   .menu button {
     width: 100%;
@@ -472,8 +670,8 @@
 
 #frontpage-search-bar {
   .ui.form .ui.input button[type="submit"] {
-      outline: 3px solid @gold;
-    }
+    outline: 3px solid @gold;
+  }
   .ui.icon.primary.button {
     outline: 3px solid @verdigrisDark;
     @media all and (max-width: 1260px) {

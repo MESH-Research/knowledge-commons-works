@@ -141,6 +141,7 @@
 @greenRgba10: rgba(122, 151, 80, 0.1);
 @peacock: #4899DB;
 @peacockRgba10: rgba(72, 153, 219, 0.1);
+@blue: #175b8f; // darker than SUI default for WCAG contrast on white text
 @white: #fff;
 @salmon: #e47719;
 @salmonDark: #b05c14;
@@ -161,7 +162,9 @@
 @primaryTextColor: @verdigrisDark !important;
 
 @secondaryColor: @gold;
-@secondaryTextColor: #8d7313; // @darkGold;
+// SUI button.variables resets @secondaryTextColor to @invertedTextColor (white).
+@secondaryTextColor: #8d7313;
+@secondaryButtonTextColor: #847231; // desaturated gold; AA on white / white-on-fill
 @secondaryBackgroundColor: @gold10;
 
 // backwards compatibility

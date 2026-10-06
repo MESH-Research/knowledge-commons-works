@@ -1,16 +1,36 @@
 .ui.header {
-  &h1 {
-    color: @ivy; // @verdigris;
+  // h1& → h1.ui.header (not &h1 → .ui.headerh1)
+  h1& {
+    color: @ivy;
     margin-top: 2rem;
-  }
-  &.secondary {
-    color: @redDark;
   }
   &.tiny {
     font-size: @tiny;
     font-weight: bold;
   }
+
+  // Semantic colors (align with button.overrides tokens)
+  &.primary {
+    color: @ivy80;
+  }
+  &.secondary {
+    color: @redDark;
+  }
+  &.positive {
+    color: @positiveTextColor;
+  }
+  &.negative {
+    color: @redDark;
+  }
+  &.warning {
+    color: @warningTextColor;
+  }
+  &.info,
+  &.blue {
+    color: @blue;
+  }
 }
+
 .deposit-form-title {
   h1.ui.header {
     margin-bottom: 0;
@@ -33,7 +53,7 @@
 
 
 h2.ui.header {
-  color: @primaryColor;
+  color: @ivy;
   &.preselected-community-header {
     color: @secondaryColor;
     margin-top: 0;

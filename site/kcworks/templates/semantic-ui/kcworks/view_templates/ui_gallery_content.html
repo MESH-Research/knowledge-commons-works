@@ -1,7 +1,7 @@
 <div class="ui container" id="button-style-gallery">
   <style>
     .invenio-page-body:has(#button-style-gallery) {
-      background-color: #faf8f5;
+      background-color: #f9f9f2; /* @sidebarBackgroundColor / @ivory60 */
       padding-top: 2rem;
     }
 
@@ -70,7 +70,7 @@
     <h1 class="ui header">UI style gallery</h1>
     <p>
       Dev page at <code>/dev/ui-gallery</code> (login required). Side-by-side samples for
-      rationalizing KC Works Semantic UI button overrides.
+      rationalizing KC Works Semantic UI overrides (headers, buttons, and related chrome).
       Each cell shows the markup classes; section notes cite the override file.
     </p>
     <div class="ui small message">
@@ -82,7 +82,156 @@
   </div>
 
   <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">1. Global default (<code>button.overrides</code>)</h2>
+  <h2 class="ui dividing header">1. Headers (<code>header.overrides</code>)</h2>
+  <p class="override-ref">
+    Global <code>.ui.header</code> / <code>h1</code>–<code>h2</code> color and size tweaks in
+    <code>header.overrides</code>. Context rules (detail page, sidebar, carousel, communities)
+    are scoped elsewhere in that file — samples below are the global / common variants.
+  </p>
+
+  <h3 class="ui dividing header">Levels</h3>
+  <p class="override-ref">Element tag sizes</p>
+  <div class="sample-row" style="align-items: flex-start; flex-direction: column;">
+    <div class="sample-cell" style="width: 100%;">
+      <h1 class="ui header">Heading level 1</h1>
+      <span class="sample-label">h1.ui.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h2 class="ui header">Heading level 2</h2>
+      <span class="sample-label">h2.ui.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h3 class="ui header">Heading level 3</h3>
+      <span class="sample-label">h3.ui.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h4 class="ui header">Heading level 4</h4>
+      <span class="sample-label">h4.ui.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h5 class="ui header">Heading level 5</h5>
+      <span class="sample-label">h5.ui.header</span>
+    </div>
+  </div>
+
+  <h3 class="ui dividing header">Size modifiers</h3>
+  <p class="override-ref">On a non-heading element</p>
+  <div class="sample-row" style="align-items: flex-end;">
+    <div class="sample-cell">
+      <div class="ui tiny header">Tiny header</div>
+      <span class="sample-label">.ui.tiny.header</span>
+    </div>
+    <div class="sample-cell">
+      <div class="ui small header">Small header</div>
+      <span class="sample-label">.ui.small.header</span>
+    </div>
+    <div class="sample-cell">
+      <div class="ui header">Default header</div>
+      <span class="sample-label">.ui.header</span>
+    </div>
+    <div class="sample-cell">
+      <div class="ui large header">Large header</div>
+      <span class="sample-label">.ui.large.header</span>
+    </div>
+    <div class="sample-cell">
+      <div class="ui huge header">Huge header</div>
+      <span class="sample-label">.ui.huge.header</span>
+    </div>
+  </div>
+
+  <h3 class="ui dividing header">Semantic colors</h3>
+  <div class="sample-row" style="align-items: flex-end;">
+    <div class="sample-cell">
+      <h3 class="ui primary header">Primary</h3>
+      <span class="sample-label">.ui.primary.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui secondary header">Secondary</h3>
+      <span class="sample-label">.ui.secondary.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui positive header">Positive</h3>
+      <span class="sample-label">.ui.positive.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui negative header">Negative</h3>
+      <span class="sample-label">.ui.negative.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui warning header">Warning</h3>
+      <span class="sample-label">.ui.warning.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui info header">Info</h3>
+      <span class="sample-label">.ui.info.header</span>
+    </div>
+    <div class="sample-cell">
+      <h3 class="ui blue header">Blue</h3>
+      <span class="sample-label">.ui.blue.header (= info)</span>
+    </div>
+  </div>
+
+  <h3 class="ui dividing header">Variations</h3>
+  <div class="sample-row" style="align-items: flex-start; flex-direction: column;">
+    <div class="sample-cell" style="width: 100%;">
+      <h2 class="ui dividing header">Dividing header</h2>
+      <span class="sample-label">h2.ui.dividing.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h2 class="ui header">
+        Header with subheader
+        <div class="sub header">Supporting line under the title</div>
+      </h2>
+      <span class="sample-label">h2.ui.header &gt; .sub.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h2 class="ui header">
+        <i class="settings icon"></i>
+        <div class="content">
+          Icon header
+          <div class="sub header">Icon + content + optional sub</div>
+        </div>
+      </h2>
+      <span class="sample-label">h2.ui.header &gt; .icon + .content</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <div class="ui icon header">
+        <i class="circular users icon"></i>
+        <div class="content">
+          Centered icon header
+          <div class="sub header">.ui.icon.header</div>
+        </div>
+      </div>
+      <span class="sample-label">.ui.icon.header</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <h3 class="ui tiny header">Tiny bold header</h3>
+      <span class="sample-label">.ui.tiny.header (header.overrides → bold @tiny)</span>
+    </div>
+    <div class="sample-cell" style="width: 100%;">
+      <div class="ui block header">Block header</div>
+      <span class="sample-label">.ui.block.header</span>
+    </div>
+  </div>
+
+  <h3 class="ui dividing header">Context</h3>
+  <div class="context-box">
+    <div class="context-title">.sidebar-container .ui.attached.header (header.overrides)</div>
+    <div class="sidebar-container" style="max-width: 22rem;">
+      <h3 class="ui top attached header">Attached sidebar header</h3>
+      <div class="ui attached segment">Sidebar body content</div>
+    </div>
+    <span class="sample-label">.ui.top.attached.header inside .sidebar-container</span>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────────── -->
+  <h2 class="ui dividing header">2. Buttons (<code>button.overrides</code>)</h2>
+  <p class="override-ref">
+    Defaults and variants via <code>--button-*</code> tokens on <code>.ui.button</code>.
+    Compare default, hover, focus, active, and disabled in the browser.
+  </p>
+
+  <h3 class="ui dividing header">Global default</h3>
   <p class="override-ref">
     <code>.ui.button</code>, <code>.ui.buttons &gt; .ui.button</code> — white fill, verdigris inset border, ivy text.
   </p>
@@ -101,17 +250,19 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">2. Emphasis &amp; semantic colors</h2>
+  <h3 class="ui dividing header">Emphasis &amp; semantic colors</h3>
   <p class="override-ref">
     Primary block + color variants in <code>button.overrides</code>.
     Ring colors are CSS vars on <code>.ui.button</code>
     (<code>--button-ring-color</code> / <code>--button-ring-color-hover</code>);
     variants override those vars.
-    Chrome concerns are separate: <code>.transparent</code> (bg),
-    <code>.borderless</code> (resting border; hover ring restored via the CSS var),
-    <code>.borderless-hover</code> (no border on hover either),
-    and padding via utilities like <code>.p-0</code>.
+    Chrome concerns are separate and compose: <code>.transparent</code>
+    (upstream: bg, padding 0), <code>.padded</code> (compose with
+    <code>.transparent</code> to restore SUI padding via
+    <code>--button-padding</code>), <code>.borderless</code> (resting border;
+    hover ring restored via the CSS var), <code>.borderless-hover</code>
+    (no border on hover either). Example:
+    <code>.transparent.padded</code>.
   </p>
   <div class="sample-row">
     <div class="sample-cell">
@@ -140,26 +291,55 @@
     </div>
     <div class="sample-cell">
       <button class="ui transparent button" type="button">Transparent</button>
-      <span class="sample-label">.ui.transparent.button (bg only)</span>
+      <span class="sample-label">.ui.transparent.button (upstream, pad 0)</span>
     </div>
     <div class="sample-cell">
-      <button class="ui transparent borderless button" type="button">Borderless</button>
-      <span class="sample-label">+ .borderless (hover ring restored)</span>
+      <button class="ui transparent padded button" type="button">Padded</button>
+      <span class="sample-label">.transparent.padded (restore SUI pad)</span>
     </div>
     <div class="sample-cell">
-      <button class="ui transparent borderless borderless-hover p-0 button" type="button">Ghost</button>
-      <span class="sample-label">+ .borderless-hover + .p-0</span>
+      <button class="ui transparent padded borderless button" type="button">Borderless</button>
+      <span class="sample-label">.transparent.padded.borderless</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui transparent borderless borderless-hover button" type="button">Ghost</button>
+      <span class="sample-label">.transparent.borderless.borderless-hover (no .padded)</span>
     </div>
     <div class="sample-cell">
       <button class="ui search button" type="button">Search</button>
       <span class="sample-label">.ui.search.button</span>
     </div>
   </div>
+  <p class="override-ref" style="margin-bottom: 0.5rem;">
+    Transparent + semantic (outline tokens; hover follows chrome compose)
+  </p>
+  <div class="sample-row">
+    <div class="sample-cell">
+      <button class="ui transparent padded primary button" type="button">Primary padded</button>
+      <span class="sample-label">.transparent.padded.primary</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui transparent padded borderless secondary button" type="button">Secondary borderless</button>
+      <span class="sample-label">.transparent.padded.borderless.secondary</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui transparent borderless borderless-hover positive button" type="button">Positive ghost</button>
+      <span class="sample-label">.transparent.borderless.borderless-hover.positive</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui transparent padded warning button" type="button">Warning padded</button>
+      <span class="sample-label">.transparent.padded.warning</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui transparent borderless borderless-hover info button" type="button">Info ghost</button>
+      <span class="sample-label">.transparent.borderless.borderless-hover.info</span>
+    </div>
+  </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">3. Basic buttons</h2>
+  <h3 class="ui dividing header">Basic buttons</h3>
   <p class="override-ref">
-    <code>.ui.basic.button</code> and basic + primary / secondary / negative — <code>button.overrides</code> ~159–225.
+    <code>.ui.basic.button</code> + semantic variants — <code>button.overrides</code>.
+    Compose with <code>.bold</code> / <code>.active</code> as needed.
   </p>
   <div class="sample-row">
     <div class="sample-cell">
@@ -167,35 +347,62 @@
       <span class="sample-label">.ui.basic.button</span>
     </div>
     <div class="sample-cell">
-      <button class="ui basic primary button" type="button">Basic primary</button>
+      <button class="ui basic primary button" type="button">Primary</button>
       <span class="sample-label">.ui.basic.primary.button</span>
     </div>
     <div class="sample-cell">
-      <button class="ui basic secondary button" type="button">Basic secondary</button>
+      <button class="ui basic secondary button" type="button">Secondary</button>
       <span class="sample-label">.ui.basic.secondary.button</span>
     </div>
     <div class="sample-cell">
-      <button class="ui basic negative button" type="button">Basic negative</button>
+      <button class="ui basic positive button" type="button">Positive</button>
+      <span class="sample-label">.ui.basic.positive.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic negative button" type="button">Negative</button>
       <span class="sample-label">.ui.basic.negative.button</span>
     </div>
     <div class="sample-cell">
-      <button class="ui basic negative active button" type="button">Basic negative active</button>
+      <button class="ui basic warning button" type="button">Warning</button>
+      <span class="sample-label">.ui.basic.warning.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic info button" type="button">Info</button>
+      <span class="sample-label">.ui.basic.info.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic blue button" type="button">Blue</button>
+      <span class="sample-label">.ui.basic.blue.button (= info)</span>
+    </div>
+  </div>
+  <div class="sample-row">
+    <div class="sample-cell">
+      <button class="ui basic primary bold button" type="button">Primary bold</button>
+      <span class="sample-label">.ui.basic.primary.bold.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic secondary bold button" type="button">Secondary bold</button>
+      <span class="sample-label">.ui.basic.secondary.bold.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic positive active button" type="button">Positive active</button>
+      <span class="sample-label">.ui.basic.positive.active.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic negative active button" type="button">Negative active</button>
       <span class="sample-label">.ui.basic.negative.active.button</span>
     </div>
-  </div>
-
-  <div class="context-box">
-    <div class="context-title">Context: .right-sidebar .ui.message (site.overrides)</div>
-    <div class="right-sidebar">
-      <div class="ui message">
-        <button class="ui basic warning button" type="button">Basic warning</button>
-      </div>
+    <div class="sample-cell">
+      <button class="ui basic warning active button" type="button">Warning active</button>
+      <span class="sample-label">.ui.basic.warning.active.button</span>
     </div>
-    <span class="sample-label">.right-sidebar .ui.message .ui.basic.warning.button</span>
+    <div class="sample-cell">
+      <button class="ui basic secondary active button" type="button">Secondary active</button>
+      <span class="sample-label">.ui.basic.secondary.active.button</span>
+    </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">4. Button groups (corner radius)</h2>
+  <h3 class="ui dividing header">Button groups (corner radius)</h3>
   <p class="override-ref">
     SUI group rules vs global <code>.ui.buttons &gt; .ui.button</code> override.
     Commented partial fix at <code>button.overrides</code> ~228–233.
@@ -272,10 +479,10 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">5. Labeled &amp; icon buttons</h2>
+  <h3 class="ui dividing header">Labeled &amp; icon buttons</h3>
   <p class="override-ref">
-    <code>&amp;.labeled.icon &gt; .icon { background-color: transparent }</code> — affects icon segment / corners.
+    <code>--button-labeled-icon-bg</code> on <code>.ui.button</code>; semantic classes override with a 10% tint.
+    Applied via <code>.ui.button.labeled.icon &gt; .icon</code> (basic and non-basic).
   </p>
   <div class="sample-row">
     <div class="sample-cell">
@@ -314,6 +521,96 @@
     </div>
   </div>
 
+  <p class="override-ref">Semantic labeled icons — non-basic (filled) and basic.</p>
+  <div class="sample-row">
+    <div class="sample-cell">
+      <button class="ui secondary icon left labeled button" type="button">
+        <i class="star icon"></i>
+        Secondary
+      </button>
+      <span class="sample-label">.ui.secondary.icon.left.labeled.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui positive icon left labeled button" type="button">
+        <i class="check icon"></i>
+        Positive
+      </button>
+      <span class="sample-label">.ui.positive.icon.left.labeled.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui negative icon left labeled button" type="button">
+        <i class="trash icon"></i>
+        Negative
+      </button>
+      <span class="sample-label">.ui.negative.icon.left.labeled.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui warning icon left labeled button" type="button">
+        <i class="exclamation triangle icon"></i>
+        Warning
+      </button>
+      <span class="sample-label">.ui.warning.icon.left.labeled.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui info icon left labeled button" type="button">
+        <i class="info circle icon"></i>
+        Info
+      </button>
+      <span class="sample-label">.ui.info.icon.left.labeled.button</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui blue icon left labeled button" type="button">
+        <i class="globe icon"></i>
+        Blue
+      </button>
+      <span class="sample-label">.ui.blue.icon.left.labeled.button</span>
+    </div>
+  </div>
+  <div class="sample-row">
+    <div class="sample-cell">
+      <button class="ui basic secondary icon left labeled button" type="button">
+        <i class="star icon"></i>
+        Secondary
+      </button>
+      <span class="sample-label">.ui.basic.secondary…labeled</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic positive icon left labeled button" type="button">
+        <i class="check icon"></i>
+        Positive
+      </button>
+      <span class="sample-label">.ui.basic.positive…labeled</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic negative icon left labeled button" type="button">
+        <i class="trash icon"></i>
+        Negative
+      </button>
+      <span class="sample-label">.ui.basic.negative…labeled</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic warning icon left labeled button" type="button">
+        <i class="exclamation triangle icon"></i>
+        Warning
+      </button>
+      <span class="sample-label">.ui.basic.warning…labeled</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic info icon left labeled button" type="button">
+        <i class="info circle icon"></i>
+        Info
+      </button>
+      <span class="sample-label">.ui.basic.info…labeled</span>
+    </div>
+    <div class="sample-cell">
+      <button class="ui basic primary icon left labeled button" type="button">
+        <i class="save icon"></i>
+        Primary
+      </button>
+      <span class="sample-label">.ui.basic.primary…labeled</span>
+    </div>
+  </div>
+
   <p class="override-ref"><code>.ui.button.icon.fluid.labeled.centered</code> — extra right padding. <code>.ui.button.left.aligned</code> — text-align left.</p>
   <div class="sample-row">
     <div class="sample-cell" style="flex: 1; min-width: 12rem; max-width: 20rem;">
@@ -332,8 +629,7 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">6. Sizes</h2>
+  <h3 class="ui dividing header">Sizes</h3>
   <div class="sample-row">
     <div class="sample-cell">
       <button class="ui mini button" type="button">Mini</button>
@@ -377,8 +673,7 @@
     <button class="ui mini button" type="button">Mini inside .ui.form</button>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">7. Project-specific button classes</h2>
+  <h3 class="ui dividing header">Project-specific button classes</h3>
 
   <p class="override-ref"><code>.close-btn</code> — red, float right, extra top margin without adjacent label.</p>
   <div class="sample-row">
@@ -446,8 +741,7 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">8. Action-input buttons (<code>input.overrides</code>)</h2>
+  <h3 class="ui dividing header">Action-input buttons (<code>input.overrides</code>)</h3>
   <p class="override-ref">
     <code>.ui.action.input &gt; .button.icon:last-child</code> — float/margin fix (vs .close-btn).
   </p>
@@ -484,8 +778,7 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">9. Context-scoped overrides</h2>
+  <h3 class="ui dividing header">Context-scoped overrides</h3>
 
   <div class="context-box">
     <div class="context-title">.ui.info.message (button.overrides)</div>
@@ -585,8 +878,7 @@
     </div>
   </div>
 
-  <!-- ─────────────────────────────────────────────────────────────────── -->
-  <h2 class="ui dividing header">10. SUI stock patterns (may inherit global overrides)</h2>
+  <h3 class="ui dividing header">SUI stock patterns</h3>
   <p class="override-ref">Useful baselines — same classes, no extra KC wrapper.</p>
   <div class="sample-row">
     <div class="sample-cell">

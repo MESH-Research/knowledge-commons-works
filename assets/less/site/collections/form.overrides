@@ -142,12 +142,54 @@ textarea {
     margin-left: auto;
   }
 
-  .access-field > #visibility-section {
-    background-color: transparent;
-    border: none !important;
-    box-shadow: none;
-    .content {
-      border-top: none;
+  /*
+   * AccessMessage (top-attached) + #visibility-section Segment (bottom-attached)
+   * share an edge. Message borders come from message.overrides state tokens;
+   * Segment defaults to @sidebarBorderColor. Match the segment to the message
+   * so the attached stack reads as one unit.
+   */
+  .access-field {
+    > .ui.message + #visibility-section {
+      border-color: @verdigris30;
+    }
+
+    > .ui.message.positive + #visibility-section {
+      border-color: @verdigris30;
+    }
+
+    > .ui.message.warning + #visibility-section {
+      border-color: @warningBorderColor;
+    }
+
+    > .ui.message.negative + #visibility-section {
+      border-color: @negativeBorderColor;
+    }
+
+    > #visibility-section {
+      background-color: transparent;
+      .content {
+        border-top: none;
+      }
+
+      /* Accordion.Title is also `.ui.button.transparent` — text color is the
+       * button token (with !important), not a plain `color` rule.
+       * Chevron stacks above the label and stays centered. */
+      .ui.accordion.measured-height > .title.ui.button.transparent.access-settings-toggle {
+        --button-text-color: @mutedTextColor;
+        --button-text-color-hover: darken(@mutedTextColor, 12%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        > .icon {
+          margin: 0 0 0.15em;
+          font-size: 0.75em;
+          float: none;
+          transform: none;
+        }
+      }
     }
   }
 

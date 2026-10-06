@@ -1,6 +1,8 @@
 /* Accordion theme overrides */
 
-.ui.accordion:not(.styled) {
+/* Form / page section accordions. Exclude `.measured-height` (e.g. access
+ * settings) so compact inline toggles keep their own title chrome. */
+.ui.accordion:not(.styled):not(.measured-height) {
   padding-bottom: 0;
   margin-top: 0.5rem;
   .title {
@@ -136,14 +138,14 @@
   }
 }
 
-.invenio-form-section.ui.accordion.invenio-accordion-field {
+.invenio-form-section.ui.accordion.invenio-accordion-field:not(.measured-height) {
   &.error {
-    .title {
+    > .title {
       background-color: transparent !important;
       color: @errorTextColor !important;
     }
   }
-  .title {
+  > .title {
     color: @primaryColor;
     font-weight: bold;
     font-size: 1.25em;
