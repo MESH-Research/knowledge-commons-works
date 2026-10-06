@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from click.testing import CliRunner
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from kcworks.cli import kcworks_communities
@@ -55,17 +54,15 @@ def test_kcworks_communities_set_parent_assigns_parent(
     assert str(child_record.parent.id) == parent.id
 
 
-def test_set_parent_links_child_to_parent(minimal_community_factory) -> None:
+def test_set_parent_links_child_to_parent(
+    minimal_community_factory, cli_runner
+) -> None:
     """Assigns a parent community to a child by slug."""
     parent = minimal_community_factory(slug="set-parent-parent")
     child = minimal_community_factory(slug="set-parent-child")
     _enable_children(parent.id)
 
-    runner = CliRunner()
-    result = runner.invoke(
-        set_parent,
-        ["set-parent-child", "set-parent-parent"],
-    )
+    result = cli_runner(set_parent, "set-parent-child", "set-parent-parent")
     assert result.exit_code == 0, result.output
     assert "Set parent of 'set-parent-child' to 'set-parent-parent'." in result.output
 
@@ -73,15 +70,18 @@ def test_set_parent_links_child_to_parent(minimal_community_factory) -> None:
     assert str(child_record.parent.id) == parent.id
 
 
-def test_set_parent_enable_children_flag(minimal_community_factory) -> None:
+def test_set_parent_enable_children_flag(
+    minimal_community_factory, cli_runner
+) -> None:
     """--enable-children turns on children.allow on the parent when needed."""
     parent = minimal_community_factory(slug="set-parent-auto-parent")
     child = minimal_community_factory(slug="set-parent-auto-child")
 
-    runner = CliRunner()
-    result = runner.invoke(
+    result = cli_runner(
         set_parent,
-        ["set-parent-auto-child", "set-parent-auto-parent", "--enable-children"],
+        "set-parent-auto-child",
+        "set-parent-auto-parent",
+        "--enable-children",
     )
     assert result.exit_code == 0, result.output
     assert "Enabled children.allow on parent 'set-parent-auto-parent'." in result.output
@@ -92,7 +92,9 @@ def test_set_parent_enable_children_flag(minimal_community_factory) -> None:
     assert str(child_record.parent.id) == parent.id
 
 
-def test_set_parent_clear_removes_parent(minimal_community_factory) -> None:
+def test_set_parent_clear_removes_parent(
+    minimal_community_factory, cli_runner
+) -> None:
     """--clear removes an existing parent link."""
     parent = minimal_community_factory(slug="set-parent-clear-parent")
     child = minimal_community_factory(slug="set-parent-clear-child")
@@ -103,8 +105,7 @@ def test_set_parent_clear_removes_parent(minimal_community_factory) -> None:
     child_data["parent"] = {"id": parent.id}
     service.update(system_identity, child.id, child_data)
 
-    runner = CliRunner()
-    result = runner.invoke(set_parent, ["set-parent-clear-child", "--clear"])
+    result = cli_runner(set_parent, "set-parent-clear-child", "--clear")
     assert result.exit_code == 0, result.output
     assert (
         "Cleared parent 'set-parent-clear-parent' from "
@@ -117,15 +118,16 @@ def test_set_parent_clear_removes_parent(minimal_community_factory) -> None:
 
 def test_set_parent_errors_when_parent_disallows_children(
     minimal_community_factory,
+    cli_runner,
 ) -> None:
     """Fails with guidance when the parent does not allow children."""
     minimal_community_factory(slug="set-parent-disallow-parent")
     minimal_community_factory(slug="set-parent-disallow-child")
 
-    runner = CliRunner()
-    result = runner.invoke(
+    result = cli_runner(
         set_parent,
-        ["set-parent-disallow-child", "set-parent-disallow-parent"],
+        "set-parent-disallow-child",
+        "set-parent-disallow-parent",
     )
     assert result.exit_code == 1, result.output
     assert "does not allow children" in result.output
@@ -134,6 +136,7 @@ def test_set_parent_errors_when_parent_disallows_children(
 
 def test_set_parent_refuses_when_child_already_has_parent(
     minimal_community_factory,
+    cli_runner,
 ) -> None:
     """Refuses to replace an existing parent unless --force is passed."""
     old_parent = minimal_community_factory(slug="set-parent-old-parent")
@@ -147,10 +150,10 @@ def test_set_parent_refuses_when_child_already_has_parent(
     child_data["parent"] = {"id": old_parent.id}
     service.update(system_identity, child.id, child_data)
 
-    runner = CliRunner()
-    result = runner.invoke(
+    result = cli_runner(
         set_parent,
-        ["set-parent-reparent-child", "set-parent-new-parent"],
+        "set-parent-reparent-child",
+        "set-parent-new-parent",
     )
     assert result.exit_code == 1, result.output
     assert "already has parent 'set-parent-old-parent'" in result.output
@@ -162,6 +165,7 @@ def test_set_parent_refuses_when_child_already_has_parent(
 
 def test_set_parent_force_replaces_existing_parent(
     minimal_community_factory,
+    cli_runner,
 ) -> None:
     """--force replaces an existing parent with a new one."""
     old_parent = minimal_community_factory(slug="set-parent-force-old")
@@ -175,10 +179,11 @@ def test_set_parent_force_replaces_existing_parent(
     child_data["parent"] = {"id": old_parent.id}
     service.update(system_identity, child.id, child_data)
 
-    runner = CliRunner()
-    result = runner.invoke(
+    result = cli_runner(
         set_parent,
-        ["set-parent-force-child", "set-parent-force-new", "--force"],
+        "set-parent-force-child",
+        "set-parent-force-new",
+        "--force",
     )
     assert result.exit_code == 0, result.output
     assert "Set parent of 'set-parent-force-child' to 'set-parent-force-new'." in (
@@ -191,6 +196,7 @@ def test_set_parent_force_replaces_existing_parent(
 
 def test_set_parent_noop_when_same_parent_already_set(
     minimal_community_factory,
+    cli_runner,
 ) -> None:
     """Succeeds without --force when the requested parent is already set."""
     parent = minimal_community_factory(slug="set-parent-same-parent")
@@ -202,10 +208,10 @@ def test_set_parent_noop_when_same_parent_already_set(
     child_data["parent"] = {"id": parent.id}
     service.update(system_identity, child.id, child_data)
 
-    runner = CliRunner()
-    result = runner.invoke(
+    result = cli_runner(
         set_parent,
-        ["set-parent-same-child", "set-parent-same-parent"],
+        "set-parent-same-child",
+        "set-parent-same-parent",
     )
     assert result.exit_code == 0, result.output
     assert "already has parent 'set-parent-same-parent'" in result.output

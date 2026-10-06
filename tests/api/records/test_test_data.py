@@ -6,13 +6,13 @@
 
 """Integration tests for the test data import functionality."""
 
-import os
 from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
 from tempfile import SpooledTemporaryFile
 from unittest.mock import patch
 
+import pytest
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -20,6 +20,7 @@ from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 from kcworks.services.records.test_data import import_test_records
+from kcworks.services.records.tokens import SAMPLE_DATA_TOKEN_CONFIG
 
 from invenio_record_importer_kcworks.types import FileData
 from tests.conftest import RunningApp
@@ -28,7 +29,9 @@ from tests.conftest import RunningApp
 def test_fetch_records(running_app: RunningApp):
     """Test fetching records from production."""
     api_url = "https://works.hcommons.org/api"
-    api_token = os.getenv("API_TOKEN_PRODUCTION")
+    api_token = running_app.app.config.get(SAMPLE_DATA_TOKEN_CONFIG)
+    if not api_token:
+        pytest.skip(f"{SAMPLE_DATA_TOKEN_CONFIG} is not configured")
     records, errors = KCWorksRecordsAPIHelper(
         api_url=api_url, api_token=api_token
     ).fetch_records(count=5)
@@ -155,7 +158,11 @@ def test_import_test_records(
             load_community_needs(identity)
 
             # Import 3 records
-            import_test_records(count=3, importer_email="test@example.com")
+            import_test_records(
+                count=3,
+                importer_email="test@example.com",
+                api_token="test-sample-data-token",
+            )
             records_service.record_cls.index.refresh()
 
             # Verify records were imported
