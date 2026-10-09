@@ -390,7 +390,10 @@ def _static_token_before_request() -> None:
         identity=Identity(user.id),  # type: ignore
     )
     # Provide the OAuth stand-in objects for the request.
-    scopes = {sid for sid, _ in current_oauth2server.scope_choices()}
+    scopes = {
+        sid
+        for sid, _ in current_oauth2server.scope_choices(exclude_internal=False)
+    }
     request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
@@ -429,11 +432,6 @@ def _check_oauth_token_scopes() -> None:
         if required is None:
             pass  # TODO: unmapped routes: audit? deny?
         elif not required.issubset(token_scopes):
-            abort(403)
-
-        required_scopes = []
-
-        if not required_scopes.issubset(token_scopes):
             abort(403)
 
 

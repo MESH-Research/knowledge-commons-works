@@ -124,17 +124,8 @@ KCWORKS_OAUTH_SCOPE_ROUTE_MAP: dict[str, dict[str, frozenset[str]]] = {
     "/groups": {
         "GET": frozenset({"groups:read"}),
     },
-    # Group collections (KCWorks)
-    "/group_collections": {
-        "GET": frozenset({"communities:read"}),
-        "POST": frozenset({"group-collections:write"}),
-    },
-    "/group_collections/<slug>": {
-        "GET": frozenset({"communities:read"}),
-        "PUT": frozenset({"group-collections:write"}),
-        "PATCH": frozenset({"group-collections:write"}),
-        "DELETE": frozenset({"group-collections:write"}),
-    },
+    # Group collections: scopes enforced on resource views
+    # (`@require_oauth_scopes` in invenio-group-collections-kcworks).
     # Webhooks (KCWorks; internal scopes)
     "/webhooks/users/update": {
         "POST": frozenset({"webhooks:user-data"}),

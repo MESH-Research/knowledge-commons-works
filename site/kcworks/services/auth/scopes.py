@@ -13,7 +13,7 @@ Register via `invenio_oauth2server.scopes` entry points in the root
 Scopes owned by other packages (not defined here):
 
 - `records:import` — invenio-record-importer-kcworks
-- `group-collections:write` — invenio-group-collections-kcworks
+- `group-collections:read` / `group-collections:write` — invenio-group-collections-kcworks
 - `webhooks:user-data`, `webhooks:logout` — invenio-remote-user-data-kcworks
 - `user:email` — invenio-oauth2server (upstream)
 - `tokens:generate` — invenio-rdm-records (upstream, internal)
