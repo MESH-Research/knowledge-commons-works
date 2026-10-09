@@ -146,15 +146,15 @@ python -c 'import secrets; print(secrets.token_hex())'
 Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:
 
 ```
-COMMONS_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
+COMMONS_PROFILES_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
 COMMONS_SEARCH_API_TOKEN=mytoken  # this must be obtained from the Commons administrators
 INVENIO_DATACITE_PASSWORD=myinveniodatacitepassword  # this must be obtained from the Commons administrators
 ```
-You will also need to enter the following variable with a dummy value and then replace it with the actual value after the instance is set up. Once you have an administrative user, you can generate a token for that user in the KC Works admin ui and enter it here:
-
-```
-API_TOKEN=myapitoken
-```
+CLI commands authorize in-process (identity + permission policies), not with a
+local API bearer. `import-test-records` still needs a caller-supplied
+`--api-token` for its **outbound** fetch from the remote instance only;
+`export-records` uses local services and needs no token. See
+[API credentials and CLI authentication](reference/api_credentials.md).
 
 #### Additional required environment variables with paths on your local file system
 

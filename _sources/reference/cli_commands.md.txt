@@ -104,9 +104,14 @@ Options:
 - `sort` (optional): the sort order for the records. Defaults to "newest".
 - `archive_format` (optional): the format of the archive file. Defaults to "zip".
 - `output_path` (optional): the path to the directory where the archive file will be saved. Defaults to the directory specified by the `RECORD_EXPORTER_DATA_DIR` configuration variable.
-- `api_token` (optional): the API token to use for the KCWorks instance. Defaults to the value of the `KC_API_TOKEN` environment variable.
-- `api_url` (optional): the API URL to use for the KCWorks instance. Defaults to the value of the `KC_API_URL` environment variable.
 - `archive_name` (optional): the name of the archive file. Defaults to "kcworks-records-export".
+
+The command runs in-process against local RDM services with `system_identity`. It
+does not take `--api-token` or `--api-url`. Authorization is
+`RecordExportPermissionPolicy` (`can_export_records`): community-scoped exports
+allow elevated community roles (owner/manager/curator); owner or contributor
+filters allow that same account; administration and system process always
+qualify. See [API credentials and CLI authentication](api_credentials.md).
 
 Example exporting a user's records from the last year:
 ```shell
@@ -116,15 +121,6 @@ invenio kcworks-records export-records --owner-id 1234567890 --start-date 2024-0
 Example exporting all of a collection's records:
 ```shell
 invenio kcworks-records export-records --community-id 1234567890
-```
-
-```{note}
-The `export-records` command is generally used to export records from the same instance on which the command is run. It is
-possible to export records from a remote KCWorks instance, but the API url and authentication token for the remote instance must be provided using the `--api-url` and `--api-token` options. When exporting from a remote instance, the archive will still be saved locally on the machine running the command.
-```
-
-```{note}
-When exporting records from a remote KCWorks instance, the filtering options by contributor are not currently supported. In other words, these options will only work if the CLI command is exporting from the same KCWorks instance as the one being exported from.
 ```
 
 #### `invenio kcworks-records import-test-records`
@@ -148,6 +144,7 @@ Options:
 - `--end-date`: the end date to import records to. Defaults to None.
 - `--spread-dates`: whether to spread the records over a range of dates. Defaults to False.
 - `--record-ids`: a comma-separated list of record IDs to import. Defaults to None.
+- `--api-token` (required): bearer for **outbound** reads from the remote instance that supplies sample data. It does not authorize the local CLI (local import is in-process). The command fails immediately if it is missing. See [API credentials and CLI authentication](api_credentials.md).
 
 ```{note}
 The `import-test-records` command is idempotent, meaning that if a result has already been imported it will not be imported again. (It may, however, be updated if changes have been made to the production record.) The command output will treat these as successful imports, although the detailed import counts presented in the command line output (before the final summary) will specify how many records were new, updated, already existed, etc.
@@ -323,6 +320,15 @@ Arguments:
 - `--user-id` (-u): the ID of the user to list groups for.
 - `--kc-id` (-k): the username of the KC user to list groups for.
 - `--collection-role` (-r): the name of the collection role to list groups for.
+
+#### `invenio kcworks-users ensure-service-capabilities`
+Idempotently creates the four inter-app capability roles (`users-sync`,
+`groups-sync`, `users-logout`, `group-collections-write`), binds each to its
+`invenio_access` action, creates the three service accounts if missing
+(`svc-commons-profiles`, `svc-commons-sso`, `svc-group-collections`), and
+assigns each account its roles. Accounts are active and confirmed with no
+password (API / token use only). See
+[API credentials and CLI authentication](api_credentials.md).
 
 ### `invenio kcworks-jobs`
 

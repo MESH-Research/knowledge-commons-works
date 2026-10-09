@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -299,6 +301,41 @@
 <p>After the first <code class="docutils literal notranslate"><span class="pre">compose</span> <span class="pre">up</span></code> (with or without <code class="docutils literal notranslate"><span class="pre">docker-compose.dev.yml</span></code>), run
 <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./scripts/build-assets.sh</span></code> in the <code class="docutils literal notranslate"><span class="pre">web-ui</span></code> container before using the
 site. Compose serves static from the <code class="docutils literal notranslate"><span class="pre">static_data</span></code> volume, which starts empty.</p>
+<p>Prefer <code class="docutils literal notranslate"><span class="pre">./kcworks-startup.sh</span></code> for day-to-day local bring-up (Secrets Manager
+slice + compose).</p>
+<section id="local-profiles-mock-sso">
+<h3>Local Profiles mock (SSO)<a class="headerlink" href="#local-profiles-mock-sso" title="Link to this heading">¶</a></h3>
+<p>For end-to-end login against a sibling
+<a class="reference external" href="https://github.com/MESH-Research/knowledge-commons-profiles-mock">knowledge-commons-profiles-mock</a>
+checkout (default: <code class="docutils literal notranslate"><span class="pre">../knowledge-commons-profiles-mock</span></code>):</p>
+<ol class="arabic">
+<li><p>On the host, install <a class="reference external" href="https://github.com/FiloSottile/mkcert">mkcert</a> once
+(see that repo’s README).</p></li>
+<li><p>Start the mock (generates TLS certs under <code class="docutils literal notranslate"><span class="pre">docker/certs/</span></code> if missing, then
+Compose + Caddy on <code class="docutils literal notranslate"><span class="pre">https://localhost:8099</span></code>):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../knowledge-commons-profiles-mock
+./profiles-mock-startup.sh<span class="w"> </span>-d
+</pre></div>
+</div>
+</li>
+<li><p>Start KCWorks with Profiles wiring:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../knowledge-commons-works
+./kcworks-startup.sh<span class="w"> </span>--mock-profiles
+</pre></div>
+</div>
+</li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">--mock-profiles</span></code> applies <code class="docutils literal notranslate"><span class="pre">docker-compose.mock-profiles.yml</span></code>: mounts the
+mock mkcert CA, runs <code class="docutils literal notranslate"><span class="pre">update-ca-certificates</span></code> in <code class="docutils literal notranslate"><span class="pre">web-ui</span></code>, <code class="docutils literal notranslate"><span class="pre">web-api</span></code>,
+<code class="docutils literal notranslate"><span class="pre">worker</span></code>, and <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>, points <code class="docutils literal notranslate"><span class="pre">requests</span></code> at the system CA bundle
+(<code class="docutils literal notranslate"><span class="pre">REQUESTS_CA_BUNDLE</span></code> / <code class="docutils literal notranslate"><span class="pre">SSL_CERT_FILE</span></code>), and sets the shared mock token
+plus split Profiles URLs (browser → <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8099</span></code>, server-side →
+<code class="docutils literal notranslate"><span class="pre">host.docker.internal:8099</span></code>).</p>
+<p>Do not keep conflicting Profiles URL or <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code> lines in
+<code class="docutils literal notranslate"><span class="pre">.env</span></code> when using the flag (the overlay <code class="docutils literal notranslate"><span class="pre">environment</span></code> wins, but leftover
+values are confusing). Override the mock checkout with <code class="docutils literal notranslate"><span class="pre">PROFILES_MOCK_ROOT</span></code>
+if it is not at <code class="docutils literal notranslate"><span class="pre">../knowledge-commons-profiles-mock</span></code>.</p>
+</section>
 </section>
 <section id="updating-the-running-kcworks-instance-with-development-changes">
 <h2>Updating the running KCWorks instance with development changes<a class="headerlink" href="#updating-the-running-kcworks-instance-with-development-changes" title="Link to this heading">¶</a></h2>
@@ -521,7 +558,10 @@ bash<span class="w"> </span>./scripts/build-assets.sh
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Development Workflow</a><ul>
-<li><a class="reference internal" href="#starting-the-kcworks-instance">Starting the KCWorks instance</a></li>
+<li><a class="reference internal" href="#starting-the-kcworks-instance">Starting the KCWorks instance</a><ul>
+<li><a class="reference internal" href="#local-profiles-mock-sso">Local Profiles mock (SSO)</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#updating-the-running-kcworks-instance-with-development-changes">Updating the running KCWorks instance with development changes</a><ul>
 <li><a class="reference internal" href="#changes-to-html-template-files">Changes to html template files</a></li>
 <li><a class="reference internal" href="#changes-to-invenio-cfg">Changes to invenio.cfg</a></li>

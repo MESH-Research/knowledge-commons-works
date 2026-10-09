@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Reference</a><input aria-label="Toggle navigation of Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">CLI Commands</a></li>
 </ul>
@@ -379,10 +381,14 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <li><p><code class="docutils literal notranslate"><span class="pre">sort</span></code> (optional): the sort order for the records. Defaults to “newest”.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">archive_format</span></code> (optional): the format of the archive file. Defaults to “zip”.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">output_path</span></code> (optional): the path to the directory where the archive file will be saved. Defaults to the directory specified by the <code class="docutils literal notranslate"><span class="pre">RECORD_EXPORTER_DATA_DIR</span></code> configuration variable.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">api_token</span></code> (optional): the API token to use for the KCWorks instance. Defaults to the value of the <code class="docutils literal notranslate"><span class="pre">KC_API_TOKEN</span></code> environment variable.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">api_url</span></code> (optional): the API URL to use for the KCWorks instance. Defaults to the value of the <code class="docutils literal notranslate"><span class="pre">KC_API_URL</span></code> environment variable.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">archive_name</span></code> (optional): the name of the archive file. Defaults to “kcworks-records-export”.</p></li>
 </ul>
+<p>The command runs in-process against local RDM services with <code class="docutils literal notranslate"><span class="pre">system_identity</span></code>. It
+does not take <code class="docutils literal notranslate"><span class="pre">--api-token</span></code> or <code class="docutils literal notranslate"><span class="pre">--api-url</span></code>. Authorization is
+<code class="docutils literal notranslate"><span class="pre">RecordExportPermissionPolicy</span></code> (<code class="docutils literal notranslate"><span class="pre">can_export_records</span></code>): community-scoped exports
+allow elevated community roles (owner/manager/curator); owner or contributor
+filters allow that same account; administration and system process always
+qualify. See <a class="reference internal" href="api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
 <p>Example exporting a user’s records from the last year:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>export-records<span class="w"> </span>--owner-id<span class="w"> </span><span class="m">1234567890</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-12-31
 </pre></div>
@@ -390,15 +396,6 @@ invenio<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;argume
 <p>Example exporting all of a collection’s records:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>export-records<span class="w"> </span>--community-id<span class="w"> </span><span class="m">1234567890</span>
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">export-records</span></code> command is generally used to export records from the same instance on which the command is run. It is
-possible to export records from a remote KCWorks instance, but the API url and authentication token for the remote instance must be provided using the <code class="docutils literal notranslate"><span class="pre">--api-url</span></code> and <code class="docutils literal notranslate"><span class="pre">--api-token</span></code> options. When exporting from a remote instance, the archive will still be saved locally on the machine running the command.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When exporting records from a remote KCWorks instance, the filtering options by contributor are not currently supported. In other words, these options will only work if the CLI command is exporting from the same KCWorks instance as the one being exported from.</p>
 </div>
 </section>
 <section id="invenio-kcworks-records-import-test-records">
@@ -419,6 +416,7 @@ possible to export records from a remote KCWorks instance, but the API url and a
 <li><p><code class="docutils literal notranslate"><span class="pre">--end-date</span></code>: the end date to import records to. Defaults to None.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--spread-dates</span></code>: whether to spread the records over a range of dates. Defaults to False.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--record-ids</span></code>: a comma-separated list of record IDs to import. Defaults to None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--api-token</span></code> (required): bearer for <strong>outbound</strong> reads from the remote instance that supplies sample data. It does not authorize the local CLI (local import is in-process). The command fails immediately if it is missing. See <a class="reference internal" href="api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -599,6 +597,16 @@ equals another user’s <code class="docutils literal notranslate"><span class="
 <li><p><code class="docutils literal notranslate"><span class="pre">--kc-id</span></code> (-k): the username of the KC user to list groups for.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--collection-role</span></code> (-r): the name of the collection role to list groups for.</p></li>
 </ul>
+</section>
+<section id="invenio-kcworks-users-ensure-service-capabilities">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">ensure-service-capabilities</span></code><a class="headerlink" href="#invenio-kcworks-users-ensure-service-capabilities" title="Link to this heading">¶</a></h4>
+<p>Idempotently creates the four inter-app capability roles (<code class="docutils literal notranslate"><span class="pre">users-sync</span></code>,
+<code class="docutils literal notranslate"><span class="pre">groups-sync</span></code>, <code class="docutils literal notranslate"><span class="pre">users-logout</span></code>, <code class="docutils literal notranslate"><span class="pre">group-collections-write</span></code>), binds each to its
+<code class="docutils literal notranslate"><span class="pre">invenio_access</span></code> action, creates the three service accounts if missing
+(<code class="docutils literal notranslate"><span class="pre">svc-commons-profiles</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-commons-sso</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-group-collections</span></code>), and
+assigns each account its roles. Accounts are active and confirmed with no
+password (API / token use only). See
+<a class="reference internal" href="api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
 </section>
 </section>
 <section id="invenio-kcworks-jobs">
@@ -973,6 +981,7 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
 <li><a class="reference internal" href="#invenio-kcworks-users-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-group-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">group-users</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-user-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-users-ensure-service-capabilities"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">ensure-service-capabilities</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#invenio-kcworks-jobs"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span></code></a><ul>

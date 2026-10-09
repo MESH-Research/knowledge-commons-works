@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -285,6 +287,29 @@
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
 <h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>jobs</p>
+<ul>
+<li><p>fixed bug preventing logs from being recorded for runs initiated by the
+scheduler or via our cli command</p></li>
+</ul>
+</li>
+<li><p>a11y and theming improvements to main navigation (desktop and mobile)</p>
+<ul>
+<li><p>stopped treating top nav as a menu for the purposes of roles and aria
+attributes</p></li>
+<li><p>stripped out some style overrides and made markup more consistent</p></li>
+<li><p>improved theming and layout of sidebar nav</p></li>
+<li><p>tweaked layout of top nav</p></li>
+</ul>
+</li>
+<li><p>infrastructure</p>
+<ul>
+<li><p>add –prod flag to kcworks_startup.sh script to simulate a production
+container environment in local dev</p></li>
+</ul>
+</li>
+</ul>
 </section>
 <section id="id1">
 <h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>

@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -889,7 +891,7 @@ docker-compose project or by running the following command inside the
 </div>
 <p>Similarly, the REST API can be restarted by running the following command inside
 the <code class="docutils literal notranslate"><span class="pre">kcworks-api</span></code> container:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_api.pid
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uwsgi<span class="w"> </span>--reload<span class="w"> </span>/tmp/uwsgi_rest.pid
 </pre></div>
 </div>
 <p>But these commands should not be necessary in normal operation.</p>
@@ -914,7 +916,6 @@ for all variables except the ones with comments:</p>
 <span class="nv">INVENIO_CSRF_SECRET_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
 <span class="nv">INVENIO_SECURITY_LOGIN_SALT</span><span class="o">=</span><span class="s1">'GENERATE_IT_AS_PER_INSTRUCTIONS'</span>
 <span class="nv">INVENIO_SECRET_KEY</span><span class="o">=</span><span class="s1">'SECRET_KEY_VERY_SECRET'</span>
-<span class="nv">API_TOKEN</span><span class="o">=</span>myapitoken<span class="w"> </span><span class="c1"># this can be generated after the instance is running, just leave as is</span>
 <span class="nv">INVENIO_LOCAL_SITE_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site<span class="w"> </span><span class="c1"># set this to `site` under the base directory of your cloned repository</span>
 <span class="nv">INVENIO_LOCAL_DEPENDENCIES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies<span class="w"> </span><span class="c1"># set this to `site/kcworks/dependencies` under the base directory of your cloned repository</span>
 <span class="nv">PYTHON_LOCAL_SITE_PACKAGES_PATH</span><span class="o">=</span>/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages<span class="w"> </span><span class="c1"># you need this for dev</span>
@@ -937,13 +938,34 @@ COMMONS_PROFILES_API_TOKEN
 SPARKPOST_USERNAME
 SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
-API_TOKEN_PRODUCTION
 </pre></div>
 </div>
+<section id="optional-local-profiles-sso-mock">
+<h4>Optional: local Profiles SSO mock<a class="headerlink" href="#optional-local-profiles-sso-mock" title="Link to this heading">¶</a></h4>
+<p>To exercise broker login without a real Profiles stack, clone
+<a class="reference external" href="https://github.com/MESH-Research/knowledge-commons-profiles-mock">knowledge-commons-profiles-mock</a>
+as a sibling of this repo, install
+<a class="reference external" href="https://github.com/FiloSottile/mkcert">mkcert</a> on the host, then:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../knowledge-commons-profiles-mock
+./profiles-mock-startup.sh<span class="w"> </span>-d<span class="w">   </span><span class="c1"># generates docker/certs if missing; HTTPS on :8099</span>
+
+<span class="nb">cd</span><span class="w"> </span>../knowledge-commons-works
+./kcworks-startup.sh<span class="w"> </span>--mock-profiles
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--mock-profiles</span></code> trusts the mock CA inside the app containers, sets the shared
+mock <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>, and splits Profiles URLs (browser
+<code class="docutils literal notranslate"><span class="pre">127.0.0.1:8099</span></code> vs server <code class="docutils literal notranslate"><span class="pre">host.docker.internal:8099</span></code>). Omit conflicting
+Profiles URL/token lines from <code class="docutils literal notranslate"><span class="pre">.env</span></code> while using that flag. Day-to-day details
+are in <a class="reference internal" href="../developing/workflow.html#local-profiles-mock-sso"><span class="std std-ref">Development workflow</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_USERNAME</span></code> and <code class="docutils literal notranslate"><span class="pre">SPARKPOST_API_KEY</span></code> are the SMTP credentials for outgoing
-mail (see <code class="docutils literal notranslate"><span class="pre">site/kcworks/config/mail.py</span></code>). <code class="docutils literal notranslate"><span class="pre">API_TOKEN_PRODUCTION</span></code> is used when
-importing test data from the production KCWorks API (see
-<a class="reference internal" href="#importing-test-data"><span class="xref myst">Importing test data</span></a>).</p>
+mail (see <code class="docutils literal notranslate"><span class="pre">site/kcworks/config/mail.py</span></code>). For server-held HTTP integration
+credentials vs in-process CLI auth, see
+<a class="reference internal" href="../reference/api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.
+Secrets Manager supplies server integration tokens only. The remote-fetch
+<code class="docutils literal notranslate"><span class="pre">--api-token</span></code> for <code class="docutils literal notranslate"><span class="pre">import-test-records</span></code> (and import-client keys) are
+caller-supplied; <code class="docutils literal notranslate"><span class="pre">export-records</span></code> needs none.</p>
+</section>
 <section id="optional-sentry-local-error-reporting">
 <h4>Optional: Sentry (local error reporting)<a class="headerlink" href="#optional-sentry-local-error-reporting" title="Link to this heading">¶</a></h4>
 <p>Sentry is <strong>optional</strong> for local development. When you want it, create a <strong>separate
@@ -993,11 +1015,10 @@ by running</p>
 </section>
 <section id="generating-an-api-token">
 <h4>Generating an API token<a class="headerlink" href="#generating-an-api-token" title="Link to this heading">¶</a></h4>
-<p>Once you are up and running, you will need to replace the dummy <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code>
-variable in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file with a genuine oAuth token that identifies you when
-you make API requests from your local instance. You can generate a token for
-yourself in the KC Works admin ui and enter it as the value of the <code class="docutils literal notranslate"><span class="pre">API_TOKEN</span></code>
-variable.</p>
+<p>Once you are up and running, you can generate an OAuth token for yourself in the
+KC Works admin UI to identify you when you make <strong>HTTP API</strong> requests against
+your local instance. That is separate from in-process <code class="docutils literal notranslate"><span class="pre">invenio</span></code> CLI auth. See
+<a class="reference internal" href="../reference/api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
 </section>
 </section>
 <section id="configuring-your-invenio-private-file">
@@ -1116,6 +1137,7 @@ and must have the “owner” role for the Knowledge Commons community.)</p>
 <li><a class="reference internal" href="#controlling-the-kcworks-flask-application">Controlling the KCWorks (Flask) application</a></li>
 <li><a class="reference internal" href="#setting-up-configuration-files">Setting up configuration files</a><ul>
 <li><a class="reference internal" href="#configuring-your-env-file">Configuring your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</a><ul>
+<li><a class="reference internal" href="#optional-local-profiles-sso-mock">Optional: local Profiles SSO mock</a></li>
 <li><a class="reference internal" href="#optional-sentry-local-error-reporting">Optional: Sentry (local error reporting)</a></li>
 <li><a class="reference internal" href="#running-a-second-instance-on-the-same-machine">Running a second instance on the same machine</a></li>
 <li><a class="reference internal" href="#generating-random-secrets">Generating random secrets</a></li>

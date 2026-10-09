@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developing/stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -409,15 +411,16 @@ PGADMIN_DEFAULT_PASSWORD=???
 <section id="additional-environment-variables-with-sensitive-information">
 <h4>Additional environment variables with sensitive information<a class="headerlink" href="#additional-environment-variables-with-sensitive-information" title="Link to this heading">¶</a></h4>
 <p>Additionally, you should add the following variables with the appropriate values obtained from the Commons administrators:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COMMONS_API_TOKEN</span><span class="o">=</span><span class="n">mytoken</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COMMONS_PROFILES_API_TOKEN</span><span class="o">=</span><span class="n">mytoken</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
 <span class="n">COMMONS_SEARCH_API_TOKEN</span><span class="o">=</span><span class="n">mytoken</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
 <span class="n">INVENIO_DATACITE_PASSWORD</span><span class="o">=</span><span class="n">myinveniodatacitepassword</span>  <span class="c1"># this must be obtained from the Commons administrators</span>
 </pre></div>
 </div>
-<p>You will also need to enter the following variable with a dummy value and then replace it with the actual value after the instance is set up. Once you have an administrative user, you can generate a token for that user in the KC Works admin ui and enter it here:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">API_TOKEN</span><span class="o">=</span><span class="n">myapitoken</span>
-</pre></div>
-</div>
+<p>CLI commands authorize in-process (identity + permission policies), not with a
+local API bearer. <code class="docutils literal notranslate"><span class="pre">import-test-records</span></code> still needs a caller-supplied
+<code class="docutils literal notranslate"><span class="pre">--api-token</span></code> for its <strong>outbound</strong> fetch from the remote instance only;
+<code class="docutils literal notranslate"><span class="pre">export-records</span></code> uses local services and needs no token. See
+<a class="reference internal" href="reference/api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
 </section>
 <section id="additional-required-environment-variables-with-paths-on-your-local-file-system">
 <h4>Additional required environment variables with paths on your local file system<a class="headerlink" href="#additional-required-environment-variables-with-paths-on-your-local-file-system" title="Link to this heading">¶</a></h4>

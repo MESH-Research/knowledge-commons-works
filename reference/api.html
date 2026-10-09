@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Outgoing Signals" href="outgoing_signals.html"><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="API credentials and CLI authentication" href="api_credentials.html"><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>API - Knowledge Commons Works 1.0.0 documentation</title>
@@ -225,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
@@ -235,6 +236,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Reference</a><input aria-label="Toggle navigation of Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_credentials.html">API credentials and CLI authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -1498,7 +1500,7 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">GROUP_COLLECTIONS_METADATA_ENDPOINTS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"knowledgeCommons"</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://hcommons-dev.org/wp-json/commons/v1/groups/</span><span class="si">{id}</span><span class="s2">"</span><span class="p">,</span>
-            <span class="s2">"token_name"</span><span class="p">:</span> <span class="s2">"COMMONS_API_TOKEN"</span><span class="p">,</span>
+            <span class="s2">"token_name"</span><span class="p">:</span> <span class="s2">"COMMONS_PROFILES_API_TOKEN"</span><span class="p">,</span>
             <span class="s2">"placeholder_avatar"</span><span class="p">:</span> <span class="s2">"mystery-group.png"</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">}</span>
@@ -2673,12 +2675,12 @@ automatically purged entirely from the database. There is also no API mechanism 
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="outgoing_signals.html">
+          <a class="next-page" href="api_credentials.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Outgoing Signals</div>
+                <div class="title">API credentials and CLI authentication</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
