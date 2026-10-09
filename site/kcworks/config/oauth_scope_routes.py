@@ -124,16 +124,8 @@ KCWORKS_OAUTH_SCOPE_ROUTE_MAP: dict[str, dict[str, frozenset[str]]] = {
     },
     # Group collections: scopes enforced on resource views
     # (`@require_oauth_scopes` in invenio-group-collections-kcworks).
-    # Webhooks (KCWorks; internal scopes)
-    "/webhooks/users/update": {
-        "POST": frozenset({"webhooks:user-data"}),
-    },
-    "/webhooks/user_data_update": {
-        "POST": frozenset({"webhooks:user-data"}),
-    },
-    "/webhooks/users/logout": {
-        "POST": frozenset({"webhooks:logout"}),
-    },
+    # Webhooks: scopes enforced on MethodView handlers
+    # (`@require_oauth_scopes` in invenio-remote-user-data-kcworks).
     # Stats
     "/stats": {
         "POST": frozenset({"stats:read"}),
