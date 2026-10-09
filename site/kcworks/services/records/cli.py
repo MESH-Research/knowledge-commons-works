@@ -80,6 +80,12 @@ def bulk_update(community_id: str, metadata_field: str, new_value: str) -> None:
 @click.option("--end-date", type=str, default=None)
 @click.option("--record-ids", type=str, default=None)
 @click.option("--spread-dates", is_flag=True, default=False)
+@click.option(
+    "--api-token",
+    type=str,
+    required=True,
+    help="API token for the instance the records are read from",
+)
 @with_appcontext
 def import_test_records_command(
     email: str,
@@ -89,6 +95,7 @@ def import_test_records_command(
     end_date: str,
     spread_dates: bool,
     record_ids: str,
+    api_token: str,
 ) -> None:
     r"""Import test records from production to a local KCWorks instance.
 
@@ -104,6 +111,8 @@ def import_test_records_command(
     --end-date TEXT      End date for the records to import
     --record-ids TEXT    Comma-separated list of record IDs to import
     --spread-dates       Whether to spread the records over a range of dates
+    --api-token TEXT     Token for the instance the records are read from
+                         (required)
 
     Raises:
         click.Abort: If email is not provided or other validation fails.
@@ -137,6 +146,7 @@ def import_test_records_command(
         end_date=end_date,
         spread_dates=spread_dates,
         record_ids=record_id_list,
+        api_token=api_token,
     )
     if results["status"] == "failure":
         click.secho(
@@ -210,12 +220,6 @@ def import_test_records_command(
 )
 @click.option("--output-path", type=str, default="", help="Path to export the records")
 @click.option(
-    "--api-token", type=str, default="", help="API token for the KCWorks REST API"
-)
-@click.option(
-    "--api-url", type=str, default="", help="API URL for the KCWorks REST API"
-)
-@click.option(
     "--archive-name",
     type=str,
     default="",
@@ -238,11 +242,9 @@ def export_records(
     sort: str,
     archive_format: str,
     output_path: str,
-    api_token: str,
-    api_url: str,
     archive_name: str,
 ) -> None:
-    """Export records from a community to a file.
+    """Export records from this KCWorks instance to a file archive.
 
     This command exports records based on various filtering criteria. Records can be
     filtered by owner, contributor, community, date range, and search terms. The
@@ -259,11 +261,6 @@ def export_records(
         - community_id
         - search_string
 
-    NOTE: The filtering options by contributor are not currently supported for
-    remote KCWorks instances. In other words, these options will only work if the
-    CLI command is exporting from the same KCWorks instance as the one being exported
-    from.
-
     The start and end dates are inclusive and may be combined with the search string.
     They may be formatted as YYYY-MM-DD.
 
@@ -274,18 +271,18 @@ def export_records(
     If not provided, the archive will be saved in the directory specified by the
     RECORD_EXPORTER_DATA_DIR configuration variable.
 
+    Runs against local RDM services with `system_identity`. With a non-system
+    identity, community-scoped exports allow elevated community roles; owner or
+    contributor filters allow that same account; otherwise administration or a
+    system process is required.
+
     Examples:
-        # Export all records from a community
-        flask export-records --community-id abc123
-
-        # Export records with specific filters
-        flask export-records --owner-email user@example.com --count 100
-
-        # Export records within a date range
-        flask export-records --start-date 2024-01-01 --end-date 2024-12-31
+        invenio kcworks-records export-records --community-id abc123
+        invenio kcworks-records export-records --owner-email user@example.com
+        invenio kcworks-records export-records --start-date 2024-01-01
 
     Raises:
-        click.Abort: If export operation fails.
+        click.Abort: If the export operation fails.
     """
     click.secho(
         f"Exporting records from community {community_id}",
@@ -312,9 +309,10 @@ def export_records(
         if v:
             click.secho(f"{k}: {v}", fg="blue")
 
-    exporter = KCWorksRecordsExporter(api_token=api_token, api_url=api_url)
+    exporter = KCWorksRecordsExporter()
+
     try:
-        export_info = exporter.export(**search_args)
+        export_info = exporter.export(system_identity, **search_args)
         click.secho(f"Records exported to {export_info['archive_path']}", fg="green")
         click.secho(
             f"Successfully exported {len(export_info['record_ids'])} records",

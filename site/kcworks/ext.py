@@ -14,7 +14,7 @@ import os
 import warnings
 from typing import cast
 
-from flask import Flask, current_app, g, request
+from flask import Flask, abort, current_app, g, request
 from flask_menu import current_menu  # type: ignore[import-untyped]
 from flask_principal import Identity, identity_changed
 from invenio_accounts.models import User
@@ -41,6 +41,10 @@ from invenio_remote_user_data_kcworks.services.components import (
     CitedNamesUpsertComponent,
 )
 from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
+from invenio_remote_user_data_kcworks.utils.static_token import (
+    resolve_static_token_route,
+)
+from kcworks.config.oauth_scope_routes import required_scopes_for
 from kcworks.services.communities.community_parent import (
     CommunityParentComponent as KCWorksCommunityParentComponent,
 )
@@ -292,11 +296,8 @@ def register_community_menu_items(app: Flask) -> None:
 
     Args:
         app: Flask UI application object (unused; runs in app context so
-            ``current_menu`` resolves to this app's menu tree).
+            `current_menu` resolves to this app's menu tree).
     """
-    app.logger.info(
-        "register_community_menu_items: applying COMMUNITIES_DETAIL_MENU_ITEMS"
-    )
     alter_menu_from_config(
         app, current_menu.submenu("communities"), "COMMUNITIES_DETAIL_MENU_ITEMS"
     )
@@ -305,9 +306,9 @@ def register_community_menu_items(app: Flask) -> None:
 def _schedule_community_menu_overrides(app: Flask) -> None:
     """Apply community menu config after every extension has registered menus.
 
-    ``invenio_base.finalize_app`` entry points run in undefined order. KCWorks
-    was running before ``invenio_app_rdm`` / ``invenio_communities`` had
-    registered ``communities`` children, so overrides targeted empty stubs and
+    `invenio_base.finalize_app` entry points run in undefined order. KCWorks
+    was running before `invenio_app_rdm` / `invenio_communities` had
+    registered `communities` children, so overrides targeted empty stubs and
     were overwritten on the next hook. Defer until the first request instead.
     """
 
@@ -316,10 +317,6 @@ def _schedule_community_menu_overrides(app: Flask) -> None:
         kcworks_ext = app.extensions.get("kcworks")
         if kcworks_ext is None or kcworks_ext._community_menu_overrides_applied:
             return
-        app.logger.info(
-            "Applying COMMUNITIES_DETAIL_MENU_ITEMS on first request "
-            "(after all finalize_app menu registration)"
-        )
         register_community_menu_items(app)
         kcworks_ext._community_menu_overrides_applied = True
 
@@ -349,45 +346,27 @@ def finalize_app(app: Flask) -> None:
     wrap_runscheduler_for_job_context(app)
 
 
-def _route_token_env_for_request(path: str, routes_map: dict[str, str]) -> str | None:
-    """Return the token env var name for path, or None.
-
-    Routes map keys are path prefixes (as seen by the API app, e.g. /webhooks/...).
-    Uses most specific match: the matching prefix with the most path segments wins.
-
-    Returns:
-        Env var name string, or None if no route matches.
-    """
-    if not routes_map:
-        return None
-    matches = [
-        (prefix, env_var)
-        for prefix, env_var in routes_map.items()
-        if path.startswith(prefix)
-    ]
-    if not matches:
-        return None
-    # Prefer the prefix with the most path segments (e.g. /webhooks/a over /webhooks).
-    most_specific = max(matches, key=lambda p: len([s for s in p[0].split("/") if s]))
-    return most_specific[1]
-
-
 def _static_token_before_request() -> None:
     """Set request.oauth when path and Bearer token match STATIC_API_TOKEN_ROUTES.
 
     When we set request.oauth and request.oauth_verify_has_run, the later
     verify_oauth_token_and_set_current_user in the before_request list will
     no-op. Otherwise we do nothing and OAuth verification runs as usual.
+
+    Each route may bind its own token env var and impersonated user id so
+    sync and logout credentials stay on separate service accounts.
     """
     if getattr(request, "oauth_verify_has_run", False):
         return
 
-    # Get the correct token for the request path.
-    routes_map = current_app.config.get("STATIC_API_TOKEN_ROUTES") or {}
-    token_env_var = _route_token_env_for_request(request.path, routes_map)
-    if not token_env_var:
+    binding = resolve_static_token_route(
+        request.path,
+        current_app.config.get("STATIC_API_TOKEN_ROUTES") or {},
+        current_app.config,
+    )
+    if binding is None or binding.user_id is None:
         return
-    static_token = os.environ.get(token_env_var)
+    static_token = os.environ.get(binding.token_env)
 
     # Check whether the token is valid.
     if not static_token:
@@ -399,11 +378,7 @@ def _static_token_before_request() -> None:
     if token != static_token:
         return
 
-    # Provide an admin user associated with the static token.
-    user_id = current_app.config.get("STATIC_API_TOKEN_USER_ID")
-    if user_id is None:
-        return
-    user = current_datastore.find_user(id=user_id)
+    user = current_datastore.find_user(id=binding.user_id)
     if not user or not user.active:
         return
 
@@ -439,6 +414,29 @@ def _setup_csrf_protected_routes() -> None:
         request.csrf_cookie_needs_reset = True  # ty: ignore[unresolved-attribute]
 
 
+def _check_oauth_token_scopes() -> None:
+    """Ensure that an oauth session's token scopes are allowed for the request.
+
+    Must run *after* invenio_oauth2server.ext.verify_oauth_token_and_set_current_user()
+    """
+    if (
+        hasattr(request, "oauth")
+        and request.oauth is not None
+        and request.url_rule is not None
+    ):
+        token_scopes = set(request.oauth.access_token.scopes)
+        required = required_scopes_for(request.url_rule.rule, request.method)
+        if required is None:
+            pass  # TODO: unmapped routes: audit? deny?
+        elif not required.issubset(token_scopes):
+            abort(403)
+
+        required_scopes = []
+
+        if not required_scopes.issubset(token_scopes):
+            abort(403)
+
+
 def api_finalize_app(app: Flask) -> None:
     """Entry point for `invenio_base.api_finalize_app` (API app).
 
@@ -448,9 +446,11 @@ def api_finalize_app(app: Flask) -> None:
     `HTTPException` and `RESTException` handling instead.
     """
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
-    static_user_id = app.config.get("STATIC_API_TOKEN_USER_ID")
-    if not routes_map or static_user_id is None:
-        return
+    prepended_funcs = []
+    if routes_map:
+        prepended_funcs = [_static_token_before_request]
 
     funcs = app.before_request_funcs.get(None, [])
-    app.before_request_funcs[None] = [_static_token_before_request] + funcs
+    app.before_request_funcs[None] = (
+        prepended_funcs + funcs + [_check_oauth_token_scopes]
+    )

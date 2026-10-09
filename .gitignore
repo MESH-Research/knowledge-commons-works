@@ -119,6 +119,10 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 .env-tests
 .envrc
 
+# Copied by kcworks-startup.sh --mock-profiles (from profiles-mock mkcert CA)
+docker/certs/*.crt
+docker/certs/*.pem
+
 # Private files
 private/
 

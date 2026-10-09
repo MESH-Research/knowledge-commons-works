@@ -13,9 +13,17 @@ from invenio_record_importer_kcworks.types import FileData
 class KCWorksRecordsAPIHelper:
     """Utility class for making records api requests."""
 
-    def __init__(self, api_token: str | None = None, api_url: str | None = None):
-        """Initialize a KCWorksRecordsAPIHelper instance."""
-        self.api_token = api_token or os.getenv("API_TOKEN")
+    def __init__(self, api_token: str, api_url: str | None = None):
+        """Initialize a KCWorksRecordsAPIHelper instance.
+
+        Args:
+            api_token (str): Bearer token for the API being queried (caller-supplied).
+                Authorization on the target instance is enforced by its permission
+                policies; this helper always sends the token on requests.
+            api_url (str | None): Base URL of the API to query. Defaults to this
+                instance's own API.
+        """
+        self.api_token = api_token
         self.api_url = api_url or app.config["SITE_API_URL"]
 
     def fetch_records(
@@ -55,9 +63,7 @@ class KCWorksRecordsAPIHelper:
         """
         start_time = time.time()
         url = self.api_url + "/records"
-        headers = {}
-        if self.api_token:
-            headers["Authorization"] = f"Bearer {self.api_token}"
+        headers = {"Authorization": f"Bearer {self.api_token}"}
 
         # Build query parts
         query_parts: list[str] = []
@@ -245,9 +251,7 @@ class KCWorksRecordsAPIHelper:
         Raises:
             ValueError: If the URL is invalid or file download fails.
         """
-        headers = {}
-        if self.api_token:
-            headers["Authorization"] = f"Bearer {self.api_token}"
+        headers = {"Authorization": f"Bearer {self.api_token}"}
         response = requests.get(url, stream=True, allow_redirects=True, headers=headers)
 
         if response.status_code == 403:
@@ -328,9 +332,7 @@ class KCWorksRecordsAPIHelper:
             if "files" in record.keys() and record["files"].get("enabled", False):
                 app.logger.info(f"Downloading files for record {record['id']}")
 
-                headers = {}
-                if self.api_token:
-                    headers["Authorization"] = f"Bearer {self.api_token}"
+                headers = {"Authorization": f"Bearer {self.api_token}"}
 
                 files_url = record["links"]["files"]
                 files_api_response = requests.get(files_url, headers=headers)

@@ -66,15 +66,15 @@ def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
 
     Detects:
 
-    - duplicate non-empty ``identifier_kc_username`` values
-    - duplicate non-empty ``identifier_orcid`` values
-    - an ``identifier_kc_username`` equal to another user's ``username``
-    - an ``identifier_kc_username`` equal to another user's ``username`` after
-      stripping the ``knowledgeCommons-`` prefix from that username
+    - duplicate non-empty `identifier_kc_username` values
+    - duplicate non-empty `identifier_orcid` values
+    - an `identifier_kc_username` equal to another user's `username`
+    - an `identifier_kc_username` equal to another user's `username` after
+      stripping the `knowledgeCommons-` prefix from that username
 
     Returns:
         Mapping of reason keys to lists of match groups. Each group is a dict
-        with ``matched_value`` and ``users`` (list of user summaries).
+        with `matched_value` and `users` (list of user summaries).
     """
     users = list(User.query.all())
     by_kc: dict[str, list[User]] = defaultdict(list)
@@ -238,7 +238,7 @@ def name_parts(
 ) -> None:
     """CLI command to update the name parts for the specified user.
 
-    After a successful update, queues ``sync_user_to_names`` so the Names
+    After a successful update, queues `sync_user_to_names` so the Names
     vocabulary entry reflects the new local split.
 
     Parameters:
@@ -364,10 +364,10 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
 def find_duplicates() -> None:
     """Find pairs of local accounts that look like duplicates.
 
-    Reports users sharing the same ``identifier_kc_username`` or
-    ``identifier_orcid``, and users where one account's
-    ``identifier_kc_username`` matches another's ``username`` (exactly or
-    after stripping a ``knowledgeCommons-`` prefix from the username).
+    Reports users sharing the same `identifier_kc_username` or
+    `identifier_orcid`, and users where one account's
+    `identifier_kc_username` matches another's `username` (exactly or
+    after stripping a `knowledgeCommons-` prefix from the username).
     """
     results = find_duplicate_accounts()
     total = sum(len(groups) for groups in results.values())
@@ -405,6 +405,45 @@ def group_users(group_name: str) -> None:
     print(f"Users for group (role) named '{group_name}':")
     pprint(users)
     print("=============")
+
+
+@click.command("ensure-service-capabilities")
+@with_appcontext
+def ensure_service_capabilities_command() -> None:
+    """Create capability roles, service accounts, and role assignments.
+
+    Idempotent. Creates the four inter-app capability roles (bound to access
+    actions) and the three service accounts (`svc-commons-profiles`,
+    `svc-commons-sso`, `svc-group-collections`) if missing, then assigns each
+    account its roles. Accounts are active and confirmed with no password.
+    """
+    from kcworks.services.auth.capabilities import (
+        SERVICE_CAPABILITIES,
+        ensure_service_capabilities,
+    )
+
+    result = ensure_service_capabilities()
+    click.echo("Ensured service capability roles:")
+    for capability in SERVICE_CAPABILITIES:
+        marker = "ok" if capability.role_name in result["roles"] else "missing"
+        click.echo(
+            f"  [{marker}] {capability.role_name} -> {capability.action.value}: "
+            f"{capability.description}"
+        )
+
+    click.echo("Ensured service accounts:")
+    for account in result["accounts"]:
+        created = "created" if account["created"] else "exists"
+        roles = ", ".join(account["role_names"])
+        added = (
+            f"; added roles: {', '.join(account['roles_added'])}"
+            if account["roles_added"]
+            else ""
+        )
+        click.echo(
+            f"  [{created}] id={account['user_id']} {account['username']} "
+            f"<{account['email']}> roles=[{roles}]{added}"
+        )
 
 
 @click.command("user-groups")

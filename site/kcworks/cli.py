@@ -41,6 +41,9 @@ from kcworks.services.records.cli import (
 )
 from kcworks.services.records.cli import export_records as export_records_command
 from kcworks.services.search.indices import delete_index
+from kcworks.services.users.cli import (
+    ensure_service_capabilities_command,
+)
 from kcworks.services.users.cli import find_duplicates as find_duplicates_command
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
@@ -74,6 +77,7 @@ kcworks_users.add_command(find_duplicates_command)
 kcworks_users.add_command(groups_command)
 kcworks_users.add_command(group_users_command)
 kcworks_users.add_command(user_groups_command)
+kcworks_users.add_command(ensure_service_capabilities_command)
 
 
 @click.group()

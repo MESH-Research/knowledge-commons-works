@@ -5,7 +5,7 @@
     ]
   },
   "description": "Root JS tests/tooling. Pins satisfy merged webpack.py dependency ranges (see .venv site-packages + site/kcworks webpack bundles); versions are chosen inside those ranges to align peers (not global minimums where a bump still satisfies ^/~ in webpack). Toolchain: Babel/Jest/Testing Library/i18next-conv/scanner/react-scripts/@internationalized/date/@reduxjs/toolkit.",
-  "packageManager": "pnpm@10.32.1+sha512-pwaTjw6JrBRWtlY+q07fHR+vM2jRGR/FxZeQ6W3JGORFarLmfWE94QQ9LoyB+HMD5rQNT/7KnfFe8a1Wc0jyvg==",
+  "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be",
   "engines": {
     "node": ">=18",
     "pnpm": ">=10.0.0"

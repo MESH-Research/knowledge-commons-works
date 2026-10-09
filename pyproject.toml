@@ -99,6 +99,18 @@ entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
 entry-points."invenio_modular_deposit_form.components_registry".kcworks = "kcworks.utils.deposit_extras:get_components_registry_js_path"
 entry-points."invenio_modular_deposit_form.transformations".kcworks = "kcworks.utils.deposit_extras:get_transformations_js_path"
 entry-points."invenio_modular_deposit_form.validator".kcworks = "kcworks.utils.deposit_extras:get_validator_js_path"
+entry-points."invenio_oauth2server.scopes".records_read = "kcworks.services.auth.scopes:records_read_scope"
+entry-points."invenio_oauth2server.scopes".records_write = "kcworks.services.auth.scopes:records_write_scope"
+entry-points."invenio_oauth2server.scopes".records_export = "kcworks.services.auth.scopes:records_export_scope"
+entry-points."invenio_oauth2server.scopes".files_write = "kcworks.services.auth.scopes:files_write_scope"
+entry-points."invenio_oauth2server.scopes".communities_read = "kcworks.services.auth.scopes:communities_read_scope"
+entry-points."invenio_oauth2server.scopes".communities_write = "kcworks.services.auth.scopes:communities_write_scope"
+entry-points."invenio_oauth2server.scopes".requests_write = "kcworks.services.auth.scopes:requests_write_scope"
+entry-points."invenio_oauth2server.scopes".users_read = "kcworks.services.auth.scopes:users_read_scope"
+entry-points."invenio_oauth2server.scopes".users_write = "kcworks.services.auth.scopes:users_write_scope"
+entry-points."invenio_oauth2server.scopes".groups_read = "kcworks.services.auth.scopes:groups_read_scope"
+entry-points."invenio_oauth2server.scopes".groups_write = "kcworks.services.auth.scopes:groups_write_scope"
+entry-points."invenio_oauth2server.scopes".stats_read = "kcworks.services.auth.scopes:stats_read_scope"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
@@ -352,13 +364,9 @@ tag = false
 allow_shell_hooks = false
 message = "Bump version: {current_version} → {new_version}"
 
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-key_path = "project.version"
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-key_path = "tool.bumpversion.current_version"
+# pyproject.toml project.version and tool.bumpversion.current_version are
+# updated automatically by bump-my-version's update_config_file; listing them
+# here double-applies a whole-file search and fails on the second entry.
 
 [[tool.bumpversion.files]]
 filename = "site/kcworks/__init__.py"

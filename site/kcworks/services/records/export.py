@@ -1,38 +1,48 @@
 """Record export functionality for KCWorks."""
 
 import json
-import os
 import shutil
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 
 import arrow
 from flask import current_app
+from flask_principal import Identity
 from invenio_accounts.proxies import current_datastore as accounts_datastore
+from invenio_communities.proxies import current_communities
 from invenio_files_rest.helpers import compute_md5_checksum
+from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_records_resources.services.base import Service
+from invenio_records_resources.services.base.config import ServiceConfig
 
-from kcworks.services.records.service import KCWorksRecordsAPIHelper
+from kcworks.services.records.permissions import RecordExportPermissionPolicy
 from kcworks.services.users.service import UserSearchHelper
 
 
-class KCWorksRecordsExporter:
-    """Exports records from KCWorks."""
+class KCWorksRecordsExporterConfig(ServiceConfig):
+    """Configuration for the records exporter service."""
 
-    def __init__(self, api_token: str | None = None, api_url: str | None = None):
+    service_id = "kcworks-records-export"
+    permission_policy_cls = RecordExportPermissionPolicy
+
+
+class KCWorksRecordsExporter(Service):
+    """Exports records from the local KCWorks instance via RDM services."""
+
+    def __init__(self, config: type[ServiceConfig] = KCWorksRecordsExporterConfig):
         """Initialize the exporter.
 
         Args:
-            api_token: API token for authentication.
-            api_url: Base URL for the KCWorks API.
+            config: Service configuration (permission policy, service id).
         """
-        self.config = current_app.config
-        self.api_helper = KCWorksRecordsAPIHelper(
-            api_token=api_token or os.getenv("API_TOKEN"),
-            api_url=api_url or self.config["SITE_API_URL"],
-        )
+        super().__init__(config)
+        self.records_service = current_rdm_records_service
+        self.files_service = current_rdm_records_service.files
 
     def export(
         self,
+        identity: Identity,
         owner_id: str = "",
         owner_email: str = "",
         contributor_id: str = "",
@@ -68,6 +78,8 @@ class KCWorksRecordsExporter:
                 id.
 
         Args:
+            identity: Identity used for permission checks and local service calls.
+                CLI commands pass `system_identity`.
             owner_id: The ID of the owner of the records.
             owner_email: The email of the owner of the records.
             contributor_id: The ID of the contributor of the records.
@@ -97,93 +109,114 @@ class KCWorksRecordsExporter:
             by year and month, with a subfolder for each record named with the record's
             id. The metadata file is stored in the root of the file archive.
         """
-        if owner_email:
-            owner_id = accounts_datastore.get_user_by_email(owner_email).id
-        if owner_id:
-            search_string = f"parent.access.owned_by.user:{owner_id}"
+        community_record = None
+        if community_id:
+            community_item = current_communities.service.read(identity, community_id)
+            community_record = community_item._record
 
-        if (
+        target_user_id: str | None = None
+        if owner_email:
+            owner_id = str(accounts_datastore.get_user_by_email(owner_email).id)
+        if owner_id:
+            target_user_id = str(owner_id)
+            search_string = f"parent.access.owned_by.user:{owner_id}"
+        elif (
             contributor_id
             or contributor_email
             or contributor_orcid
             or contributor_kc_username
         ):
-            search_string = UserSearchHelper.query_string_for_contributor(
+            contributor_user = UserSearchHelper.resolve_contributor_user(
                 contributor_id=contributor_id,
                 contributor_email=contributor_email,
                 contributor_orcid=contributor_orcid,
                 contributor_kc_username=contributor_kc_username,
             )
+            target_user_id = str(contributor_user.id)
+            search_string = UserSearchHelper.query_string_for_user(contributor_user)
 
-        if community_id:
-            search_strings = [
-                search_string,
-                f"parent.communities.ids:%22{community_id}%22",
-            ]
-            search_string = "%20AND%20".join(search_strings)
-
-        records: list[dict[str, Any]]
-        records, _fetch_errors = self.api_helper.fetch_records(
-            search_string=search_string,
-            count=int(count),
-            start_date=start_date,
-            end_date=end_date,
-            sort=sort,
+        self.require_permission(
+            identity,
+            "export_records",
+            record=community_record,
+            target_user_id=target_user_id,
         )
+
+        query_parts: list[str] = []
+        if search_string:
+            query_parts.append(search_string)
+        if community_id:
+            if community_record is not None:
+                resolved_id = str(community_record.id)
+            else:
+                resolved_id = community_id
+            query_parts.append(f'parent.communities.ids:"{resolved_id}"')
+        query_parts.append("is_published:true")
+        if start_date and end_date:
+            query_parts.append(f"created:[{start_date} TO {end_date}]")
+        elif start_date:
+            query_parts.append(f"created:>={start_date}")
+        elif end_date:
+            query_parts.append(f"created:<={end_date}")
+
+        search_result = self.records_service.search(
+            identity,
+            q=" AND ".join(query_parts),
+            params={"size": int(count), "sort": sort},
+        )
+        records: list[dict[str, Any]] = list(search_result.hits)
         current_app.logger.info(f"Fetched {len(records)} records")
 
         data_dir = (
             Path(output_path)
             if output_path
-            else Path(self.config["RECORD_EXPORTER_DATA_DIR"])
+            else Path(current_app.config["RECORD_EXPORTER_DATA_DIR"])
         )
+        archive_name = archive_name or "kcworks-records-export"
         export_label = f"{archive_name}-{arrow.utcnow().strftime('%Y-%m-%d-%H-%M-%S')}"
         export_path = data_dir / export_label
         export_path.mkdir(parents=True, exist_ok=True)
 
         successful_records: list[str] = []
         failed_records: list[str] = []
-        for r in records:
-            record_data: dict[str, Any] = r
-            files_data: dict[str, Any] = record_data["files"]
-            entries_data: dict[str, Any] = files_data.get("entries", {})
+        for record_data in records:
+            files_data: dict[str, Any] = record_data.get("files") or {}
+            entries_data: dict[str, Any] = files_data.get("entries") or {}
+            if isinstance(entries_data, list):
+                entries_data = {entry["key"]: entry for entry in entries_data}
 
-            if files_data["enabled"] and len(entries_data) > 0:
-                current_app.logger.info(
-                    f"Fetching files for record {record_data['id']}"
-                )
+            record_id: str = record_data["id"]
+            if files_data.get("enabled") and len(entries_data) > 0:
+                current_app.logger.info(f"Fetching files for record {record_id}")
                 try:
-                    record_id: str = record_data["id"]
-                    record_files, file_errors = self.api_helper.fetch_record_files(
-                        [record_data]
-                    )
-
-                    if file_errors:
-                        current_app.logger.warning(
-                            f"File errors for record {record_id}: {file_errors}"
-                        )
-
                     created_date = arrow.get(record_data["created"])
-                    year = created_date.year
-                    month = created_date.month
-                    record_dir = export_path / str(year) / str(month) / record_id
+                    record_dir = (
+                        export_path
+                        / str(created_date.year)
+                        / str(created_date.month)
+                        / record_id
+                    )
                     record_dir.mkdir(parents=True, exist_ok=True)
 
                     actual_saved_files: list[int] = []
-                    for filedata in record_files:
-                        actual_checksum = compute_md5_checksum(filedata.stream)
-                        file_entry: dict[str, Any] = entries_data[filedata.filename]
+                    for filename, file_entry in entries_data.items():
+                        file_item = self.files_service.get_file_content(
+                            identity, record_id, filename
+                        )
+                        with file_item.open_stream("rb") as stream:
+                            content = stream.read()
+                        actual_checksum = compute_md5_checksum(BytesIO(content))
                         expected_checksum = file_entry["checksum"]
                         assert expected_checksum == actual_checksum, (
-                            f"File {filedata.filename} has checksum "
+                            f"File {filename} has checksum "
                             f"{actual_checksum} but expected checksum "
                             f"{expected_checksum}"
                         )
 
-                        file_path = record_dir / filedata.filename
+                        file_path = record_dir / filename
                         with open(file_path, "wb") as f:
-                            filedata.stream.seek(0)
-                            shutil.copyfileobj(filedata.stream, f)
+                            f.write(content)
+
                         assert file_path.exists(), f"File {file_path} does not exist"
                         actual_size = file_path.stat().st_size
                         expected_size = file_entry["size"]
@@ -191,21 +224,21 @@ class KCWorksRecordsExporter:
                             f"File {file_path} has size {actual_size} but "
                             f"expected size {expected_size}"
                         )
-                        actual_saved_files.append(file_path.stat().st_size)
+                        actual_saved_files.append(actual_size)
 
                     assert len(entries_data.keys()) == len(actual_saved_files)
-                    successful_records.append(record_data["id"])
+                    successful_records.append(record_id)
                 except Exception as e:
-                    failed_records.append(record_data["id"])
+                    failed_records.append(record_id)
                     current_app.logger.error(
-                        f"Error exporting record {record_data['id']}: {e}",
+                        f"Error exporting record {record_id}: {e}",
                         exc_info=True,
                     )
             else:
                 current_app.logger.info(
-                    f"Skipping record {record_data['id']} because it has no files"
+                    f"Skipping record {record_id} because it has no files"
                 )
-                successful_records.append(record_data["id"])
+                successful_records.append(record_id)
 
         metadata_path = export_path / "records_metadata.json"
         current_app.logger.info(f"Saving metadata to {metadata_path.as_posix()}")

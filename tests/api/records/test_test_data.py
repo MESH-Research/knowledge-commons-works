@@ -6,6 +6,7 @@
 
 """Integration tests for the test data import functionality."""
 
+import os
 from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
@@ -20,18 +21,23 @@ from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 from kcworks.services.records.test_data import import_test_records
-from kcworks.services.records.tokens import SAMPLE_DATA_TOKEN_CONFIG
-
 from invenio_record_importer_kcworks.types import FileData
 from tests.conftest import RunningApp
 
 
 def test_fetch_records(running_app: RunningApp):
-    """Test fetching records from production."""
+    """Test fetching records from production.
+
+    The test is the API caller: supply a token via the process environment if you
+    want this live check to run. The application itself does not read that
+    variable.
+    """
     api_url = "https://works.hcommons.org/api"
-    api_token = running_app.app.config.get(SAMPLE_DATA_TOKEN_CONFIG)
+    api_token = os.environ.get("KCWORKS_LIVE_FETCH_API_TOKEN")
     if not api_token:
-        pytest.skip(f"{SAMPLE_DATA_TOKEN_CONFIG} is not configured")
+        pytest.skip(
+            "Set KCWORKS_LIVE_FETCH_API_TOKEN in the environment to run this live fetch"
+        )
     records, errors = KCWorksRecordsAPIHelper(
         api_url=api_url, api_token=api_token
     ).fetch_records(count=5)
