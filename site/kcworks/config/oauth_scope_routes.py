@@ -76,10 +76,8 @@ KCWORKS_OAUTH_SCOPE_ROUTE_MAP: dict[str, dict[str, frozenset[str]]] = {
     "/records/<pid_value>/draft/actions/files-import": {
         "POST": frozenset({"files:write"}),
     },
-    # Bulk import (KCWorks)
-    "/import/<community>": {
-        "POST": frozenset({"records:import"}),
-    },
+    # Bulk import: scopes enforced on the resource view
+    # (`@require_oauth_scopes` in invenio-record-importer-kcworks).
     # Communities REST (Invenio; may appear as /communities not /collections)
     "/communities": {
         "GET": frozenset({"communities:read"}),
