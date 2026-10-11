@@ -23,7 +23,7 @@ IMAGE_TAG=dev-my-feature docker compose --file docker-compose.yml --file docker-
 ```
 
 After the first ``compose up`` (with or without ``docker-compose.dev.yml``), run
-``bash ./scripts/build-assets.sh`` in the ``web-ui`` container before using the
+``bash ./scripts/build/build-assets.sh`` in the ``web-ui`` container before using the
 site. Compose serves static from the ``static_data`` volume, which starts empty.
 
 ## Updating the running KCWorks instance with development changes
@@ -55,7 +55,7 @@ Or you can restart the docker-compose project, which will also restart the uwsgi
 Invenio employs a build process for css and javascript files. Changes to these files will not be visible in the running Knowledge Commons Works instance until the build process is run. This can be done by running the following command inside the `web-ui` container:
 
 ```shell
-bash ./scripts/build-assets.sh
+bash ./scripts/build/build-assets.sh
 ```
 
 #### Rebuilding changed files on the fly (fast but limited)
@@ -109,7 +109,7 @@ theme = WebpackThemeBundle(
 If you add a new node.js package to the project, you will then need to run the build script inside the `web-ui` container to install it:
 
 ```shell
-bash ./scripts/build-assets.sh
+bash ./scripts/build/build-assets.sh
 ```
 
 ### Changes to static files
@@ -195,7 +195,7 @@ Make sure that you run this `prune` command *while the containers are running.* 
 
 ```shell
 docker exec -it kcworks-ui bash
-bash ./scripts/build-assets.sh
+bash ./scripts/build/build-assets.sh
 ```
 
 7. Then refresh your browser to see the changes.

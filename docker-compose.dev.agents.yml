@@ -1,0 +1,35 @@
+# SSH + GPG agent-forwarding overlay for the workspace service.
+#
+# Included by default via ./kcworks-startup.sh (dev). Requires host
+# KCWORKS_SSH_AUTH_SOCK (dedicated agent) and KCWORKS_GPG_AGENT_SOCK
+# (gpg-agent extra socket); the script sets both
+# (see docs/source/developing/agents-macos.md).
+#
+# Security: bind-mounts the agent *sockets* only. The container can request
+# sign/auth (git SSH, commit signing, simplesec; YubiKey touch on the host).
+# It does not receive private keys and cannot administer the agents (PINs,
+# touch policy, key management stay on the host).
+#
+# GNUPGHOME must already exist and be owned by the container user before this
+# bind runs — Docker creates missing bind-mount parents as root. The workspace
+# image creates /opt/invenio/.gnupg (mode 700, uid 1000).
+services:
+  dev-workspace:
+    environment:
+      # Host agent is mounted at SSH_AUTH_SOCK_MOUNT; entrypoint runs socat and
+      # exposes a uid-1000 socket at SSH_AUTH_SOCK (Docker Desktop often makes
+      # the bind-mounted sock root:root 660).
+      SSH_AUTH_SOCK_MOUNT: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_PROXY:-/tmp/ssh-agent-proxy}
+      # Workspace image user home is /opt/invenio (see Dockerfile).
+      GNUPGHOME: ${GNUPGHOME_CONTAINER:-/opt/invenio/.gnupg}
+      GPG_AGENT_SOCK: ${GPG_AGENT_SOCK_CONTAINER:-/opt/invenio/.gnupg/S.gpg-agent}
+    volumes:
+      - type: bind
+        source: ${KCWORKS_SSH_AUTH_SOCK:?KCWORKS_SSH_AUTH_SOCK must be set when using the agents overlay (scripts/dev-host/kcworks-ssh-agent.sh)}
+        target: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+        read_only: true
+      - type: bind
+        source: ${KCWORKS_GPG_AGENT_SOCK:?KCWORKS_GPG_AGENT_SOCK must be set when using the agents overlay (gpgconf --list-dirs agent-extra-socket)}
+        target: ${GPG_AGENT_SOCK_CONTAINER:-/opt/invenio/.gnupg/S.gpg-agent}
+        read_only: true

@@ -66,7 +66,7 @@ print(Path(docker_services_cli.__file__).parent / 'docker-services.yml')" \
 function docker_services_cli_expected_host_ports() {
   local yml ports_str script_dir helper
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  helper="${script_dir}/scripts/docker_services_cli_host_ports.py"
+  helper="${script_dir}/scripts/dev-host/docker_services_cli_host_ports.py"
   local services="${DB:-postgresql},${CACHE:-redis},${SEARCH:-opensearch},${MQ:-rabbitmq}"
 
   if ! yml="$(docker_services_cli_yml_path 2>/dev/null)"; then
@@ -259,7 +259,7 @@ function run_local_test_runner() {
   if [[ ${build_image:-0} -eq 1 ]]; then
     echo "Rebuilding test-runner image (-B/--build)..."
     local progress_script
-    progress_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/docker_build_progress.py"
+    progress_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/build/docker_build_progress.py"
     set +e
     test_compose_file_args
     BUILDKIT_PROGRESS=rawjson \
@@ -421,7 +421,7 @@ function resolve_test_env_files() {
 
   TEST_SECRET_FILE=""
   local test_secret_file
-  if test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
+  if test_secret_file=$(./scripts/dev-host/kcworks_test_secrets.sh); then
     if [ -n "$test_secret_file" ]; then
       TEST_SECRET_FILE="$test_secret_file"
       env_file_args+=(--env-file "$TEST_SECRET_FILE")

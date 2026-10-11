@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
     git \
+    gnupg \
     libxml2 \
     libxml2-dev \
     libxslt1-dev \
@@ -45,6 +46,10 @@ RUN apt-get update && apt-get install -y \
     locales \
     libpcre3 \
     libffi-dev \
+    openssh-client \
+    openssl \
+    gosu \
+    socat \
     uuid-dev \
     wget \
     vim \
@@ -64,19 +69,41 @@ RUN groupadd --gid 1000 invenio \
         --shell /bin/bash \
         invenio
 
-# pnpm via Corepack. invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
+# pnpm is installed via Corepack; `invenio webpack install` uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
+# Corepack enable must run as root
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN corepack enable 
 
 WORKDIR /opt/invenio
 USER invenio
+# Corepack prepare must run with same user as assets build command
+# Must match root package.json packageManager (Corepack form: sha512.<hex>,
+# not npm integrity sha512-<base64>).
+RUN corepack prepare pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d --activate
+# Placeholders so fresh named volumes seed as uid 1000 (not root) and
+# non-empty. Bootstrap removes src's keep file before git clone.
 RUN mkdir -p /opt/invenio/var/instance && \
-    mkdir -p /opt/invenio/src
+    mkdir -p /opt/invenio/var/import_data && \
+    mkdir -p /opt/invenio/src && \
+    touch /opt/invenio/src/.kcworks-volume \
+          /opt/invenio/var/instance/.kcworks-volume \
+          /opt/invenio/var/import_data/.kcworks-volume && \
+    # So agents overlay can bind-mount S.gpg-agent without Docker creating a
+    # root-owned parent (see docker-compose.dev.agents.yml).
+    mkdir -m 700 -p /opt/invenio/.gnupg
 
-COPY ./docker/workspace_bootstrap.sh /opt/invenio/workspace_bootstrap.sh
+COPY --chown=invenio:invenio ./docker/workspace_bootstrap.sh /opt/invenio/workspace_bootstrap.sh
 RUN chmod 0700 /opt/invenio/workspace_bootstrap.sh
 
-ENTRYPOINT ["/opt/invenio/workspace_bootstrap.sh"]
+# Entrypoint runs as root (socat proxy for SSH agent), then drops to invenio.
+USER root
+COPY ./docker/workspace_entrypoint.sh /opt/invenio/workspace_entrypoint.sh
+RUN chmod 0755 /opt/invenio/workspace_entrypoint.sh
+
+# Keep the workspace up; bootstrap on demand as invenio::
+#   docker exec -u invenio -it <project>-workspace /opt/invenio/workspace_bootstrap.sh
+ENTRYPOINT ["/opt/invenio/workspace_entrypoint.sh"]
+CMD ["sleep", "infinity"]
 
 # ── Stage 1: builder ──────────────────────────────────────────────────────
 FROM dev-workspace AS builder
@@ -84,7 +111,7 @@ FROM dev-workspace AS builder
 WORKDIR /opt/invenio/src
 USER invenio
 
-COPY . .
+COPY --chown=invenio:invenio . .
 
 # Install Python dependencies.
 RUN uv venv && \
@@ -114,18 +141,19 @@ RUN cp ./docker/uwsgi/uwsgi_rest.ini ${INVENIO_INSTANCE_PATH}/uwsgi_rest.ini && 
 # Build frontend assets. Node/pnpm are present here but won't be in the runtime image.
 # `invenio webpack ...` here routes through the rspack project + PNPMPackage that
 # invenio.cfg selects via WEBPACKEXT_PROJECT and WEBPACKEXT_NPM_PKG_CLS — see the
-# explanatory comment in scripts/build-assets.sh for details.
+# explanatory comment in scripts/build/build-assets.sh for details.
 RUN . .venv/bin/activate && \
     uv pip install -e ./site/kcworks/dependencies/invenio-stats-dashboard && \
     pybabel compile -d /opt/invenio/src/translations && \
     pybabel compile -d /opt/invenio/src/site/kcworks/translations && \
     invenio collect --verbose && \
     invenio webpack clean create && \
+    python /opt/invenio/src/scripts/build/patch-webpack-assets-pnpm-allow-builds.py && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
     cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/ && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/{custom_fields,search} && \
     invenio webpack install && \
-    invenio shell /opt/invenio/src/scripts/symlink_assets.py && \
+    invenio shell /opt/invenio/src/scripts/build/symlink_assets.py && \
     invenio webpack build
 
 ENTRYPOINT []

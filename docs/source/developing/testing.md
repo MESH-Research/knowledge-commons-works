@@ -96,7 +96,7 @@ The test environment does not use the top-level `.env` file that is used in the 
 1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
 2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
 
-The secret file is produced by `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
+The secret file is produced by `scripts/dev-host/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
 
 - `SPARKPOST_USERNAME`
 - `SPARKPOST_API_KEY`
@@ -110,7 +110,7 @@ The defaults can be overridden without editing the script:
 - `--allow-missing`: warn instead of failing when a listed key is absent from the secret.
 - `KCWORKS_TEST_SM_DISABLE=1`: skip the AWS lookup entirely; rely on `tests/.env` (used in CI, where secrets come from GitHub Actions secrets).
 
-Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
+Run `./scripts/dev-host/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
 
 ```{note}
 On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys via the `Run tests` step's `env:` block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.

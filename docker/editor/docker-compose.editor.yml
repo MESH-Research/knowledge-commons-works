@@ -2,31 +2,20 @@
 #
 # Contract (docs/private/dev-workspace-container-design.md):
 #   - External network  = project name (dev/app network only; not *-test)
-#   - External volume   = <project>-src → /opt/invenio/src
+#   - External volumes  = <project>-src_data → /opt/invenio/src
+#                         <project>-instance_data → /opt/invenio/var/instance
 #   - User              = dev (1000:1000) — project-agnostic login name
-#   - One global editor home volume (shared across projects)
+#   - Editor home volume per project (default: ${KCWORKS_PROJECT_NAME}-editor-home)
 #   - One editor container instance per open project
 #
-# Launcher sketch (from the orchestrator directory)::
+# Host launcher (preferred)::
 #
-#   export KCWORKS_PROJECT_NAME="${KCWORKS_PROJECT_NAME:-$(basename "$PWD")}"
-#   export KCWORKS_NETWORK="${KCWORKS_NETWORK:-$KCWORKS_PROJECT_NAME}"
-#   export KCWORKS_VOLUME="${KCWORKS_VOLUME:-${KCWORKS_PROJECT_NAME}-src}"
-#   export KCWORKS_EDITOR_IMAGE="${KCWORKS_EDITOR_IMAGE:-kcworks-editor:latest}"
+#   ./kcworks-project.sh              # agents + tmux attach
+#   ./kcworks-project.sh --up-only
 #
-#   docker compose \
-#     -p "${KCWORKS_PROJECT_NAME}-editor" \
-#     -f docker/editor/docker-compose.editor.yml \
-#     up -d
-#
-#   docker compose -p "${KCWORKS_PROJECT_NAME}-editor" exec editor tmux new -A -s dev
-#
-# SSH agent forwarding: optional docker/editor/docker-compose.editor.agents.yml
-#
-# Prerequisites: the app stack is already up so network + *-src volume exist.
-
-name: ${KCWORKS_PROJECT_NAME:-kcworks-next}-editor
-
+# Prerequisites: ./kcworks-startup.sh so network + src/instance volumes exist.
+# Agents overlay is always included by kcworks-project.sh.
+name: ${KCWORKS_PROJECT_NAME:-kcworks}-editor
 services:
   editor:
     image: ${KCWORKS_EDITOR_IMAGE:-kcworks-editor:latest}
@@ -35,7 +24,7 @@ services:
       dockerfile: Dockerfile
       args:
         NVIM_VERSION: ${NVIM_VERSION:-v0.12.5}
-    container_name: ${KCWORKS_PROJECT_NAME:-kcworks-next}-editor
+    container_name: ${KCWORKS_PROJECT_NAME:-kcworks}-editor
     user: "1000:1000"
     working_dir: ${KCWORKS_SRC_MOUNT:-/opt/invenio/src}
     environment:
@@ -61,8 +50,12 @@ services:
     volumes:
       # Per-project source tree (shared with workspace/apps)
       - type: volume
-        source: src
+        source: src_data
         target: ${KCWORKS_SRC_MOUNT:-/opt/invenio/src}
+      # Per-project instance path (invenio.cfg, app_data, uploads nesting, …)
+      - type: volume
+        source: instance_data
+        target: ${KCWORKS_INSTANCE_MOUNT:-/opt/invenio/var/instance}
       # Global editor home: configs, Mason/lazy, oh-my-zsh, pi, undodir, …
       - type: volume
         source: editor_home
@@ -76,16 +69,16 @@ services:
     # No docker.sock. No sudo. No app SM secrets.
     restart: unless-stopped
     command: ["sleep", "infinity"]
-
 networks:
   project:
     external: true
-    name: ${KCWORKS_NETWORK:-${KCWORKS_PROJECT_NAME:-kcworks-next}}
-
+    name: ${KCWORKS_NETWORK:-${KCWORKS_PROJECT_NAME:-kcworks}}
 volumes:
-  src:
+  src_data:
     external: true
-    name: ${KCWORKS_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks-next}-src}
-  # Shared across projects — not prefixed by KCWORKS_PROJECT_NAME
+    name: ${KCWORKS_SRC_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-src_data}
+  instance_data:
+    external: true
+    name: ${KCWORKS_INSTANCE_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-instance_data}
   editor_home:
-    name: ${KCWORKS_EDITOR_HOME_VOLUME:-editor-home}
+    name: ${KCWORKS_EDITOR_HOME_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-editor-home}

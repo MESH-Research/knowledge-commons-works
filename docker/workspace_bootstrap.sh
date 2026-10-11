@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 #
-# Dev-workspace ENTRYPOINT: bring the named-volume tree and instance data to a
-# usable state. Implemented so far:
+# Dev-workspace bootstrap (run on demand via docker exec, not as ENTRYPOINT):
+# bring the named-volume tree and instance data to a usable state. Prefer
+# upstream invenio-cli where it already owns a step.
 #
 #   1. Required infra services are reachable on the compose network
 #   2. Required volume mounts are present and writable
 #   3. Clone the project into the shared src volume (once, if empty)
 #   4. Initialize git submodules when needed (no auto-pull of the parent)
-#   5. uv sync into ${SRC_ROOT}/.venv (once, unless KCWORKS_UV_FORCE=1)
-#   6. Local config files (.invenio.private, .env from .env.example) if missing
-#   7. invenio-cli services setup -n (infra already up; no Docker)
-#   8. KCWorks overlay (extra roles, vocab job schedules / optional seeds)
-#
-# Later steps (assets, jobs, import) will plug into the same step-runner
-# scaffolding below.
+#   5. Local config files (.invenio.private, .env from .env.example) if missing
+#   6. invenio-cli install (python + symlink + assets)
+#   7. KCWorks-only startup_*.sh / uwsgi inis into instance (if missing)
+#   8. invenio-cli services setup -n (infra already up; no Docker)
+#   9. KCWorks overlay (extra roles, vocab job schedules / optional seeds)
 #
 # Service probes follow the same URL/env conventions as scripts/check_health.sh
 # in container mode (INVENIO_* / REDIS_DOMAIN). No Docker socket — we only probe
@@ -25,26 +24,29 @@
 #   KCWORKS_GIT_URL=git@github.com:MESH-Research/knowledge-commons-works.git
 #   KCWORKS_GIT_BRANCH=dev/next
 #
-# Uv::
+# Install::
 #
-#   KCWORKS_UV_FORCE=1   re-run uv sync even when .venv already exists
+#   KCWORKS_INSTALL_FORCE=1   re-run full invenio-cli install even if already done
 #
 # Services setup::
 #
 #   KCWORKS_SERVICES_SETUP_FORCE=1   pass --force to invenio-cli (destroys data)
 #
-# Usage (inside the workspace container)::
+# Usage (from the host, after the stack is up)::
+#
+#   docker exec -it <project>-workspace /opt/invenio/workspace_bootstrap.sh
+#   docker exec -it <project>-workspace /opt/invenio/workspace_bootstrap.sh --yes
+#   docker exec -it <project>-workspace /opt/invenio/workspace_bootstrap.sh --only services
+#
+# Or inside the workspace container::
 #
 #   /opt/invenio/workspace_bootstrap.sh
 #   /opt/invenio/workspace_bootstrap.sh --yes
-#   /opt/invenio/workspace_bootstrap.sh --only services
-#   /opt/invenio/workspace_bootstrap.sh --only mounts
-#   /opt/invenio/workspace_bootstrap.sh --only git
-#   /opt/invenio/workspace_bootstrap.sh --only submodules
-#   /opt/invenio/workspace_bootstrap.sh --only uv
-#   /opt/invenio/workspace_bootstrap.sh --only config
-#   /opt/invenio/workspace_bootstrap.sh --only setup
-#   /opt/invenio/workspace_bootstrap.sh --only setup-overlay
+#   /opt/invenio/workspace_bootstrap.sh --only mounts|git|submodules|config|install|setup|setup-overlay
+#
+# First SSH clone: run without --yes (host: ./kcworks-startup.sh --interactive)
+# so OpenSSH can prompt to trust github.com into ~/.ssh/known_hosts. Non-
+# interactive (--yes) refuses to clone until that host key is present.
 #
 set -euo pipefail
 
@@ -54,7 +56,7 @@ STATIC_PATH="${INSTANCE_PATH}/static"
 IMPORT_PATH="${INVENIO_RECORD_IMPORTER_DATA_DIR:-/opt/invenio/var/import_data}"
 GIT_URL="${KCWORKS_GIT_URL:-git@github.com:MESH-Research/knowledge-commons-works.git}"
 GIT_BRANCH="${KCWORKS_GIT_BRANCH:-dev/next}"
-UV_FORCE="${KCWORKS_UV_FORCE:-0}"
+INSTALL_FORCE="${KCWORKS_INSTALL_FORCE:-0}"
 SERVICES_SETUP_FORCE="${KCWORKS_SERVICES_SETUP_FORCE:-0}"
 VENV_PATH="${SRC_ROOT}/.venv"
 # Set by step_setup when invenio-cli actually runs (drives overlay -f).
@@ -79,16 +81,18 @@ Usage: workspace_bootstrap.sh [options]
 
   --yes, -y          Run without interactive confirms
   --only STEP        Run a single step: services | mounts | git | submodules |
-                     uv | config | setup | setup-overlay
+                     config | install | setup | setup-overlay
   -h, --help         Show this help
 
-Default: run services, mounts, git, submodules, uv, config, setup, then
-setup-overlay, with a confirm before each step when stdin is a TTY (unless
---yes).
+Default: preflight → git → config → invenio-cli install → services setup →
+setup-overlay. Confirm before each step when stdin is a TTY (unless --yes).
 
 Git clone uses KCWORKS_GIT_URL / KCWORKS_GIT_BRANCH (SSH by default).
-Uv sync writes to SRC .venv; set KCWORKS_UV_FORCE=1 to re-sync.
 Config creates .invenio.private / .env only when missing (never overwrites).
+install: full upstream invenio-cli install (python + symlink + assets), then
+  KCWorks-only startup_*.sh / uwsgi inis if missing.
+  Skip when .venv + instance cfg + assets look present unless
+  KCWORKS_INSTALL_FORCE=1.
 Setup runs: invenio-cli services setup -n --no-demo-data
   (KCWORKS_SERVICES_SETUP_FORCE=1 adds --force; destroys DB/index data).
 EOF
@@ -119,7 +123,7 @@ done
 banner() {
   echo >&2
   echo "================================================================================" >&2
-  echo "  workspace bootstrap — preflight → git → uv → config → setup" >&2
+  echo "  workspace bootstrap — preflight → git → config → install → setup" >&2
   echo "================================================================================" >&2
   echo "  src:      ${SRC_ROOT}" >&2
   echo "  instance: ${INSTANCE_PATH}" >&2
@@ -420,6 +424,56 @@ dir_is_empty() {
   [[ -z "$any" ]]
 }
 
+# Workspace image may seed only .kcworks-volume (uid 1000). That is "empty"
+# for clone purposes — remove the keep file so git clone can use the dir.
+src_ready_for_clone() {
+  local path="$1" entry keep=0 other=0
+  [[ -d "$path" ]] || return 0
+  while IFS= read -r -d '' entry; do
+    case "$(basename "$entry")" in
+      .kcworks-volume) keep=1 ;;
+      *) other=1 ;;
+    esac
+  done < <(find "$path" -mindepth 1 -maxdepth 1 -print0 2>/dev/null || true)
+  if [[ "$other" -eq 1 ]]; then
+    return 1
+  fi
+  if [[ "$keep" -eq 1 ]]; then
+    rm -f "${path}/.kcworks-volume"
+  fi
+  return 0
+}
+
+# Host part of an SSH git URL (git@host:path or ssh://host/...). Fails if HTTPS.
+ssh_git_host() {
+  local url="$1" rest
+  case "$url" in
+    git@*:*)
+      rest="${url#git@}"
+      printf '%s\n' "${rest%%:*}"
+      ;;
+    ssh://*)
+      # ssh://[user@]host[:port]/path
+      rest="${url#ssh://}"
+      rest="${rest%%/*}"
+      rest="${rest#*@}"
+      rest="${rest%%:*}"
+      printf '%s\n' "$rest"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+# True when ~/.ssh/known_hosts already has an entry for host.
+ssh_host_in_known_hosts() {
+  local host="$1"
+  [[ -n "$host" ]] || return 1
+  command -v ssh-keygen >/dev/null 2>&1 || return 1
+  ssh-keygen -F "$host" >/dev/null 2>&1
+}
+
 step_git() {
   echo >&2
   echo "  --- 3. Source tree (git clone) ---" >&2
@@ -442,10 +496,26 @@ step_git() {
     return
   fi
 
-  if ! dir_is_empty "$SRC_ROOT"; then
+  if ! dir_is_empty "$SRC_ROOT" && ! src_ready_for_clone "$SRC_ROOT"; then
     report_fail "git        ${SRC_ROOT} is non-empty but has no .git (refusing to clone)"
     report_info "Clear the volume or fix the tree, then re-run."
     return
+  fi
+
+  # Non-interactive clone cannot accept a new SSH host key. Require known_hosts
+  # first; interactive bootstrap (no --yes / host --interactive) can prompt.
+  local ssh_host=""
+  if ssh_host="$(ssh_git_host "$GIT_URL")"; then
+    if ! ssh_host_in_known_hosts "$ssh_host"; then
+      if [[ "$ASSUME_YES" -eq 1 ]]; then
+        report_fail "git        ${ssh_host} not in ~/.ssh/known_hosts (non-interactive)"
+        report_info "Accept the host key once, then re-run:"
+        report_info "  ./kcworks-startup.sh --interactive"
+        report_info "Or: docker exec -u invenio -it <project>-workspace ${0##*/}"
+        return
+      fi
+      report_info "${ssh_host} not in known_hosts yet — SSH will prompt to trust it."
+    fi
   fi
 
   report_info "Cloning ${GIT_URL} (branch ${GIT_BRANCH}) → ${SRC_ROOT}"
@@ -491,61 +561,11 @@ step_submodules() {
   fi
 }
 
-# --- step 5: uv sync ----------------------------------------------------------
-
-step_uv() {
-  echo >&2
-  echo "  --- 5. Python env (uv sync) ---" >&2
-
-  if ! command -v uv >/dev/null 2>&1; then
-    report_fail "uv         not installed in this image"
-    return
-  fi
-  if [[ ! -f "${SRC_ROOT}/pyproject.toml" || ! -f "${SRC_ROOT}/uv.lock" ]]; then
-    report_fail "uv         missing pyproject.toml or uv.lock under ${SRC_ROOT}"
-    report_info "Run the git (and submodules) steps first."
-    return
-  fi
-  if [[ ! -w "$SRC_ROOT" ]]; then
-    report_fail "uv         src not writable by $(id -u):$(id -g): ${SRC_ROOT}"
-    return
-  fi
-
-  if [[ -d "$VENV_PATH" && "$UV_FORCE" != "1" ]]; then
-    report_ok "uv         ${VENV_PATH} already present (skip; set KCWORKS_UV_FORCE=1 to re-sync)"
-    return
-  fi
-
-  report_info "uv sync --frozen --all-extras → ${VENV_PATH}"
-  # Match image/CI: lockfile-respecting sync with path deps from submodules.
-  if (
-    cd "$SRC_ROOT"
-    export UV_PROJECT_ENVIRONMENT="$VENV_PATH"
-    export VIRTUAL_ENV="$VENV_PATH"
-    uv sync --frozen --all-extras
-  ); then
-    # Same lxml workaround as the Dockerfile builder stage.
-    if (
-      cd "$SRC_ROOT"
-      export UV_PROJECT_ENVIRONMENT="$VENV_PATH"
-      export VIRTUAL_ENV="$VENV_PATH"
-      export CFLAGS="${CFLAGS:--Wno-error=incompatible-pointer-types}"
-      uv pip install --reinstall --no-binary=lxml "lxml==5.2.1"
-    ); then
-      report_ok "uv         synced ${VENV_PATH}"
-    else
-      report_fail "uv         sync ok but lxml reinstall failed"
-    fi
-  else
-    report_fail "uv         sync failed (need submodules + network for indexes)"
-  fi
-}
-
-# --- step 6: local config files -----------------------------------------------
+# --- step 5: local config files -----------------------------------------------
 
 step_config() {
   echo >&2
-  echo "  --- 6. Local config (.invenio / .invenio.private / .env) ---" >&2
+  echo "  --- 5. Local config (.invenio / .invenio.private / .env) ---" >&2
 
   local invenio_path="${SRC_ROOT}/.invenio"
   local private_path="${SRC_ROOT}/.invenio.private"
@@ -587,6 +607,144 @@ EOF
   fi
 }
 
+# --- invenio-cli helpers ------------------------------------------------------
+
+# Run invenio-cli from SRC_ROOT with fixed instance path.
+# Prefer the project venv binary once install has created it; otherwise
+# `uv run` (image has uv) so the first install can bootstrap the env.
+run_invenio_cli() {
+  (
+    cd "$SRC_ROOT"
+    if command -v uv >/dev/null 2>&1; then
+      uv run invenio-cli "$@"
+    else
+      echo "invenio-cli could not be run (need uv)" >&2
+      return 127
+    fi
+  )
+}
+
+# KCWorks container entrypoints / uwsgi configs — not part of upstream install.
+ensure_kcworks_instance_runtime_files() {
+  local docker_dir="${SRC_ROOT}/docker"
+  local f dest
+  mkdir -p "$INSTANCE_PATH"
+
+  if [[ ! -d "$docker_dir" ]]; then
+    report_fail "install    missing ${docker_dir} (clone incomplete?)"
+    return 1
+  fi
+
+  shopt -s nullglob
+  local startups=("${docker_dir}"/startup_*.sh)
+  shopt -u nullglob
+  if [[ ${#startups[@]} -eq 0 ]]; then
+    report_fail "install    no ${docker_dir}/startup_*.sh found"
+    return 1
+  fi
+  for f in "${startups[@]}"; do
+    dest="${INSTANCE_PATH}/$(basename "$f")"
+    if [[ -e "$dest" ]]; then
+      continue
+    fi
+    if cp "$f" "$dest" && chmod +x "$dest"; then
+      report_info "Copied $(basename "$f") → instance"
+    else
+      report_fail "install    could not copy ${f} → ${dest}"
+      return 1
+    fi
+  done
+
+  for f in uwsgi_ui.ini uwsgi_rest.ini; do
+    dest="${INSTANCE_PATH}/${f}"
+    if [[ -e "$dest" ]]; then
+      continue
+    fi
+    if [[ ! -f "${docker_dir}/uwsgi/${f}" ]]; then
+      report_fail "install    missing ${docker_dir}/uwsgi/${f}"
+      return 1
+    fi
+    if cp "${docker_dir}/uwsgi/${f}" "$dest"; then
+      report_info "Copied ${f} → instance"
+    else
+      report_fail "install    could not copy ${f}"
+      return 1
+    fi
+  done
+  return 0
+}
+
+install_already_done() {
+  [[ -d "$VENV_PATH" ]] \
+    && [[ -e "${INSTANCE_PATH}/invenio.cfg" ]] \
+    && [[ -d "${INSTANCE_PATH}/assets/node_modules" ]]
+}
+
+# --- step 6: invenio-cli install (python + symlink + assets) ------------------
+
+step_install() {
+  echo >&2
+  echo "  --- 6. invenio-cli install ---" >&2
+
+  if [[ ! -f "${SRC_ROOT}/.invenio" ]]; then
+    report_fail "install    missing ${SRC_ROOT}/.invenio"
+    return
+  fi
+  if [[ ! -f "${SRC_ROOT}/.invenio.private" ]]; then
+    report_fail "install    missing .invenio.private (run the config step first)"
+    return
+  fi
+  if [[ ! -f "${SRC_ROOT}/pyproject.toml" || ! -f "${SRC_ROOT}/uv.lock" ]]; then
+    report_fail "install    missing pyproject.toml or uv.lock under ${SRC_ROOT}"
+    return
+  fi
+  if [[ ! -w "$SRC_ROOT" || ! -w "$INSTANCE_PATH" ]]; then
+    report_fail "install    src or instance not writable"
+    return
+  fi
+  # Fresh clone has no .venv yet; uv run resolves/installs invenio-cli from the
+  # project lockfile. Do not require .venv/bin/invenio-cli up front.
+  if ! command -v uv >/dev/null 2>&1; then
+    report_fail "install    need uv in the workspace image PATH"
+    return
+  fi
+
+  # invenio-cli install loads the Flask app before it finishes symlinking.
+  # Without instance invenio.cfg, upstream COMMUNITIES_ROUTES lacks KCWorks
+  # keys (e.g. settings_theme) and blueprint registration fails.
+  local src_cfg="${SRC_ROOT}/invenio.cfg"
+  local instance_cfg="${INSTANCE_PATH}/invenio.cfg"
+  if [[ ! -f "$src_cfg" ]]; then
+    report_fail "install    missing ${src_cfg}"
+    return
+  fi
+  mkdir -p "$INSTANCE_PATH"
+  if [[ -e "$instance_cfg" || -L "$instance_cfg" ]]; then
+    report_ok "install    instance invenio.cfg already present"
+  elif ln -s "$src_cfg" "$instance_cfg"; then
+    report_ok "install    symlinked invenio.cfg → instance (pre-install)"
+  else
+    report_fail "install    could not symlink ${src_cfg} → ${instance_cfg}"
+    return
+  fi
+
+  if install_already_done && [[ "$INSTALL_FORCE" != "1" ]]; then
+    report_ok "install    .venv + instance cfg + assets present (skip; set KCWORKS_INSTALL_FORCE=1 to redo)"
+  else
+    report_info "Running: invenio-cli install (INVENIO_INSTANCE_PATH=${INSTANCE_PATH})"
+    if run_invenio_cli install; then
+      report_ok "install    invenio-cli install finished (python + symlink + assets)"
+    else
+      report_fail "install    invenio-cli install failed"
+      return
+    fi
+  fi
+
+  if ensure_kcworks_instance_runtime_files; then
+    report_ok "install    KCWorks startup/uwsgi files present under instance"
+  fi
+}
+
 # --- step 7: invenio-cli services setup ---------------------------------------
 
 # True when .invenio.private records services_setup as already done.
@@ -602,17 +760,16 @@ step_setup() {
   echo "  --- 7. invenio-cli services setup (-n) ---" >&2
   SETUP_RAN=0
 
-  local cli="${VENV_PATH}/bin/invenio-cli"
-  if [[ ! -x "$cli" ]]; then
-    report_fail "setup      missing ${cli} (run the uv step first)"
-    return
-  fi
   if [[ ! -f "${SRC_ROOT}/.invenio" ]]; then
     report_fail "setup      missing ${SRC_ROOT}/.invenio"
     return
   fi
   if [[ ! -f "${SRC_ROOT}/.invenio.private" ]]; then
     report_fail "setup      missing .invenio.private (run the config step first)"
+    return
+  fi
+  if [[ ! -e "${INSTANCE_PATH}/invenio.cfg" ]]; then
+    report_fail "setup      missing ${INSTANCE_PATH}/invenio.cfg (run install first)"
     return
   fi
 
@@ -628,14 +785,7 @@ step_setup() {
   fi
 
   report_info "Running: invenio-cli ${args[*]}"
-  if (
-    cd "$SRC_ROOT"
-    export PATH="${VENV_PATH}/bin:${PATH}"
-    export VIRTUAL_ENV="$VENV_PATH"
-    export UV_PROJECT_ENVIRONMENT="$VENV_PATH"
-    export INVENIO_INSTANCE_PATH="$INSTANCE_PATH"
-    "$cli" "${args[@]}"
-  ); then
+  if run_invenio_cli "${args[@]}"; then
     SETUP_RAN=1
     report_ok "setup      invenio-cli services setup finished"
   else
@@ -727,21 +877,18 @@ run_step git "clone project into src volume (if empty)" step_git
 run_step submodules "initialize git submodules (if needed)" step_submodules
 finish_phase "Git" "Fix git/SSH or submodules, then re-run."
 
-run_step uv "uv sync into src .venv (if missing)" step_uv
-finish_phase "Uv" "Fix the Python env / lockfile / indexes, then re-run."
-
 run_step config "create local .invenio.private / .env if missing" step_config
 finish_phase "Config" "Fix src permissions or add .env.example, then re-run."
+
+run_step install "invenio-cli install (python + symlink + assets)" step_install
+finish_phase "Install" "Fix INSTANCE_PATH / uv / .invenio.private, then re-run."
 
 run_step setup "invenio-cli services setup -n (if not already done)" step_setup
 finish_phase "Setup" "Fix DB/search reachability or .invenio.private, then re-run."
 
 run_step setup-overlay "KCWorks roles + vocab job schedules (optional -f seeds)" step_setup_overlay
-finish_phase "Setup overlay" "Fix kcworks-jobs / network for ROR seeds, then re-run." \
-  "(assets not implemented yet)"
+finish_phase "Setup overlay" "Fix kcworks-jobs / network for ROR seeds, then re-run."
 
-# Keep the workspace container alive when used as ENTRYPOINT.
-if [[ "${WORKSPACE_BOOTSTRAP_EXIT:-0}" == "1" ]]; then
-  exit 0
-fi
-exec sleep infinity
+# Container keep-alive is the image ENTRYPOINT (sleep infinity). This script
+# is meant to be run via: docker exec -it <project>-workspace …/workspace_bootstrap.sh
+exit 0

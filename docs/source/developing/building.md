@@ -36,7 +36,7 @@ InvenioRDM, the foundation for KCWorks, generally bundles its frontend asset fil
 
 ### Build script and CLI commands
 
-The full build process is handled in KCWorks by the `scripts/build-assets.sh` script, intended to be run inside the `web-ui` container. This script handles the following commands from InvenioRDM's standard build process:
+The full build process is handled in KCWorks by the `scripts/build/build-assets.sh` script, intended to be run inside the `web-ui` container. This script handles the following commands from InvenioRDM's standard build process:
 
 From the KCWorks source directory, the script runs the following commands:
 
@@ -75,7 +75,7 @@ The `clean` subcommand instructs invenio-assets to delete the existing built ass
 
 Runs the `npm install` defined in the newly assembled `package.json` file in `/opt/invenio/var/instance/assets`. Dependencies are downloaded into `/opt/invenio/var/instance/assets/node_modules`.
 
-#### 4. ``cd /opt/invenio/src && invenio shell /opt/invenio/src/scripts/symlink_assets.py``
+#### 4. ``cd /opt/invenio/src && invenio shell /opt/invenio/src/scripts/build/symlink_assets.py``
 
 <img src="../_static/static_build_process_symlink.jpg" alt="webpack symlink" width="100%"/>
 

@@ -1,0 +1,7 @@
+# Single-package workspace so pnpm 12+ project settings (allowBuilds) live here.
+# Root package.json `pnpm.onlyBuiltDependencies` is ignored on pnpm 11+.
+packages:
+  - "."
+
+allowBuilds:
+  fsevents: true

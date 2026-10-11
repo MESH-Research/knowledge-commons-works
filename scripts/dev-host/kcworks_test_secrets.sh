@@ -42,7 +42,7 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 
 # Reuses the same SM secret as kcworks-startup.sh; tests pull a different
 # (smaller) key subset by default so non-test-relevant keys don't bleed in.
@@ -131,7 +131,7 @@ if [[ ! -x "$VENV_PY" ]]; then
   exit 1
 fi
 
-FILTER_SCRIPT="${REPO_ROOT}/scripts/kcworks_sm_secret_to_envfile.py"
+FILTER_SCRIPT="${REPO_ROOT}/scripts/dev-host/kcworks_sm_secret_to_envfile.py"
 if [[ ! -f "$FILTER_SCRIPT" ]]; then
   echo "Error: missing ${FILTER_SCRIPT}" >&2
   exit 1

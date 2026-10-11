@@ -37,6 +37,9 @@ static/xsl/
 # Distribution / packaging
 .Python
 build/
+# Keep repo asset-build helpers (name collides with the pattern above).
+!scripts/build/
+!scripts/build/**
 env/
 develop-eggs/
 dist/

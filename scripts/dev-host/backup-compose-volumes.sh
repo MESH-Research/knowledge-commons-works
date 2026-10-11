@@ -9,13 +9,13 @@
 # prefix). Use ``docker volume ls`` to confirm.
 #
 # Usage (from repo root or anywhere):
-#   ./scripts/backup-compose-volumes.sh
-#   ./scripts/backup-compose-volumes.sh --prefix knowledge-commons-works
+#   ./scripts/dev-host/backup-compose-volumes.sh
+#   ./scripts/dev-host/backup-compose-volumes.sh --prefix knowledge-commons-works
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 BACKUP_ROOT="${REPO_ROOT}/private/volume-backups"
 
 # Logical volume names from docker-compose.yml (minimum for rollback).
