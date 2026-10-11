@@ -4,21 +4,20 @@
 # KCWorks is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Service-capability roles and accounts for inter-app API least privilege.
+"""Site-level stub for service-capability roles and accounts.
 
-Four capabilities isolate privileged integration surfaces that are not already
-gated by ordinary RDM / community-role policy:
+Inter-app capability roles and service accounts are owned by the packages that
+gate them:
 
-- `users-sync` / `groups-sync` → `svc-commons-profiles`
-- `users-logout` → `svc-commons-sso`
-- `group-collections-write` → `svc-group-collections`
+- `invenio-remote-user-data-kcworks.roles` — Profiles sync / SSO logout
+- `invenio-group-collections-kcworks.roles` — group-collection mutations
 
-`ensure_service_capabilities()` creates the roles (bound to access actions) and
-the three service accounts (active for API auth, no local password, confirmed),
-and assigns each account its roles. Idempotent; safe on every deploy.
+Those packages call `ensure_service_capabilities()` from their
+`finalize_app` / `api_finalize_app` hooks. This module keeps the same helpers
+and empty `SERVICE_CAPABILITIES` / `SERVICE_ACCOUNTS` tuples so KCWorks can
+register additional site-only capabilities later without inventing a second
+API. The CLI aggregates this module with the package ensures.
 """
-
-from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -28,15 +27,6 @@ from flask_principal import Need
 from invenio_access.models import ActionRoles
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
-from invenio_group_collections_kcworks.permissions import (
-    group_collections_write_action,
-)
-
-from invenio_remote_user_data_kcworks.permissions import (
-    groups_sync_action,
-    users_logout_action,
-    users_sync_action,
-)
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,56 +48,17 @@ class ServiceAccountSpec:
     description: str
 
 
-SERVICE_CAPABILITIES: tuple[ServiceCapability, ...] = (
-    ServiceCapability(
-        role_name="users-sync",
-        action=users_sync_action,
-        description="Trigger Profiles user (and association) sync webhooks",
-    ),
-    ServiceCapability(
-        role_name="groups-sync",
-        action=groups_sync_action,
-        description="Trigger Profiles group sync webhooks",
-    ),
-    ServiceCapability(
-        role_name="users-logout",
-        action=users_logout_action,
-        description="Trigger remote single-sign-out webhooks",
-    ),
-    ServiceCapability(
-        role_name="group-collections-write",
-        action=group_collections_write_action,
-        description="Create/update/delete group collections via the API",
-    ),
-)
+SERVICE_CAPABILITIES: tuple[ServiceCapability, ...] = tuple()
 
 
-SERVICE_ACCOUNTS: tuple[ServiceAccountSpec, ...] = (
-    ServiceAccountSpec(
-        username="svc-commons-profiles",
-        email="svc-commons-profiles@service.kcworks.local",
-        role_names=("users-sync", "groups-sync"),
-        description="Profiles sync webhooks (and related OAuth)",
-    ),
-    ServiceAccountSpec(
-        username="svc-commons-sso",
-        email="svc-commons-sso@service.kcworks.local",
-        role_names=("users-logout",),
-        description="SSO single-sign-out webhook (and related OAuth)",
-    ),
-    ServiceAccountSpec(
-        username="svc-group-collections",
-        email="svc-group-collections@service.kcworks.local",
-        role_names=("group-collections-write",),
-        description="Group-collection create/update/delete via OAuth",
-    ),
-)
+SERVICE_ACCOUNTS: tuple[ServiceAccountSpec, ...] = tuple()
 
 
 def ensure_service_capability_roles() -> list[str]:
     """Create capability roles and bind each to its access action.
 
-    Idempotent. Safe to run on every deploy.
+    Idempotent. Looks up each role first; creates and commits only when the
+    role or its action binding is missing.
 
     Returns:
         Role names that were ensured (created or already present).
@@ -116,17 +67,17 @@ def ensure_service_capability_roles() -> list[str]:
     ensured: list[str] = []
 
     for capability in SERVICE_CAPABILITIES:
-        role = datastore.find_or_create_role(name=capability.role_name)
-        datastore.commit()
+        role = datastore.find_role(capability.role_name)
+        if role is None:
+            role = datastore.create_role(name=capability.role_name)
+            datastore.commit()
 
         already_bound = any(
             row.role_id == role.id
             for row in ActionRoles.query_by_action(capability.action).all()
         )
         if not already_bound:
-            db.session.add(
-                ActionRoles.create(action=capability.action, role=role)
-            )
+            db.session.add(ActionRoles.create(action=capability.action, role=role))
             db.session.commit()
 
         ensured.append(capability.role_name)
@@ -194,16 +145,14 @@ def ensure_service_accounts() -> list[dict[str, Any]]:
         if roles_added:
             datastore.commit()
 
-        results.append(
-            {
-                "username": spec.username,
-                "email": spec.email,
-                "user_id": user.id,
-                "created": created,
-                "roles_added": roles_added,
-                "role_names": list(spec.role_names),
-            }
-        )
+        results.append({
+            "username": spec.username,
+            "email": spec.email,
+            "user_id": user.id,
+            "created": created,
+            "roles_added": roles_added,
+            "role_names": list(spec.role_names),
+        })
 
     return results
 

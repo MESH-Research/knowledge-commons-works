@@ -383,7 +383,9 @@ def _static_token_before_request() -> None:
         return
 
     # Same as invenio_oauth2server: set request user and notify Principal without
-    # triggering user_logged_in (no login_user()).
+    # triggering user_logged_in (no login_user()). Mark oauth2 so
+    # require_api_auth does not run JWT verification on the static bearer.
+    user.login_via_oauth2 = True
     g._login_user = user
     identity_changed.send(
         cast(LocalProxy, current_app)._get_current_object(),

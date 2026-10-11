@@ -239,36 +239,6 @@ def celery_enable_logging():
     return True
 
 
-# @pytest.fixture(scope="session")
-# def flask_celery_app(celery_config):
-#     app = Celery("invenio_app.celery")
-#     app.config_from_object(celery_config)
-#     return app
-
-
-# @pytest.fixture(scope="session")
-# def flask_celery_worker(flask_celery_app):
-#     with start_worker(flask_celery_app, perform_ping_check=False) as worker:
-#         yield worker
-
-
-# @pytest.fixture(scope="function")
-# def db_session_options():
-#     """Database session options.
-#
-#     Use to override options like ``expire_on_commit`` for the database session, which
-#     helps with ``sqlalchemy.orm.exc.DetachedInstanceError`` when models are not bound
-#     to the session between transactions/requests/service-calls.
-#
-#     .. code-block:: python
-#
-#         @pytest.fixture(scope='function')
-#         def db_session_options():
-#             return dict(expire_on_commit=False)
-#     """
-#     return {"expire_on_commit": False}
-#
-
 # This is a namedtuple that holds all the fixtures we're likely to need
 # in a single test.
 RunningApp = namedtuple(

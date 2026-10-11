@@ -46,24 +46,15 @@ ACCOUNTS_DEFAULT_USERS_VERIFIED = True
 ACCOUNTS_COVER_TEMPLATE = "invenio_theme/base_cover.html"
 
 # Static API token by route: path prefix -> token env var and impersonated user.
-# Sync and logout use separate service accounts / tokens. Dict entries take
-# `token_env` plus `user_id_config` (a config key holding the user id).
-# A bare string value still means token env var + STATIC_API_TOKEN_USER_ID.
+# Sync and logout use separate service accounts / tokens. Each entry is a dict
+# with `token_env` plus `user_id_config` (a config key holding the user id).
 # Paths are as seen by the API app; longest matching prefix wins.
-_profiles_static_uid = os.getenv("STATIC_API_TOKEN_USER_ID_PROFILES") or os.getenv(
-    "STATIC_API_TOKEN_USER_ID"
-)
+_profiles_static_uid = os.getenv("STATIC_API_TOKEN_USER_ID_PROFILES")
 _sso_static_uid = os.getenv("STATIC_API_TOKEN_USER_ID_SSO")
 STATIC_API_TOKEN_USER_ID_PROFILES = (
     int(_profiles_static_uid) if _profiles_static_uid else None
 )
 STATIC_API_TOKEN_USER_ID_SSO = int(_sso_static_uid) if _sso_static_uid else None
-# Legacy fallback used when a route entry is a bare token env-var string.
-STATIC_API_TOKEN_USER_ID = (
-    int(os.getenv("STATIC_API_TOKEN_USER_ID"))
-    if os.getenv("STATIC_API_TOKEN_USER_ID")
-    else STATIC_API_TOKEN_USER_ID_PROFILES
-)
 STATIC_API_TOKEN_ROUTES = {
     "/api/webhooks/user_data_update": {
         "token_env": "COMMONS_PROFILES_API_TOKEN",

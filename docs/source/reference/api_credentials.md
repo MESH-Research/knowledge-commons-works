@@ -30,19 +30,23 @@ present in a deployed environment for normal API/webhook traffic.
 | `COMMONS_PROFILES_API_TOKEN` | Outbound Profiles lookups (`REMOTE_USER_DATA_API_ENDPOINTS`, `GROUP_COLLECTIONS_METADATA_ENDPOINTS`) and inbound auth for the **user/group sync** webhooks (`/api/webhooks/users/update` and the deprecated `/api/webhooks/user_data_update`) | Outbound: read on members and groups at Profiles. Inbound: impersonates `STATIC_API_TOKEN_USER_ID_PROFILES` (`svc-commons-profiles`), which must hold the `users-sync` and `groups-sync` roles and must **not** hold `admin` or `users-logout` |
 | `COMMONS_SSO_LOGOUT_API_TOKEN` | Inbound auth for the **single-sign-out** webhook (`/api/webhooks/users/logout`) | Impersonates `STATIC_API_TOKEN_USER_ID_SSO` (`svc-commons-sso`), which must hold only the `users-logout` role |
 | `COMMONS_SEARCH_API_TOKEN` | Outbound provisioning of records and collections to the Commons search index (`REMOTE_API_PROVISIONER_EVENTS`) | Write on the Commons search documents endpoint |
+| `STATIC_API_TOKEN_USER_ID_PROFILES` | Numeric user id impersonated by the Profiles static bearer on sync webhook routes | Must be `svc-commons-profiles` |
+| `STATIC_API_TOKEN_USER_ID_SSO` | Numeric user id impersonated by the SSO static bearer on the logout webhook | Must be `svc-commons-sso` |
 
-Create the four capability roles, the three service accounts, and the role
-assignments with:
+Capability roles and the three service accounts
+(`svc-commons-profiles`, `svc-commons-sso`, `svc-group-collections`) are
+created automatically on app finalize by the owning packages. For an explicit
+ops run (or to print status):
 
 ```shell
 invenio kcworks-users ensure-service-capabilities
 ```
 
-That command is idempotent: `svc-commons-profiles` gets `users-sync` +
-`groups-sync`, `svc-commons-sso` gets `users-logout`, and
-`svc-group-collections` gets `group-collections-write`. Group-collection
-mutations use a normal OAuth token for that third account (not a static
-bearer).
+After the accounts exist, point `STATIC_API_TOKEN_USER_ID_PROFILES` and
+`STATIC_API_TOKEN_USER_ID_SSO` at their numeric ids. Group-collection
+mutations use a normal OAuth token for `svc-group-collections` (not a static
+bearer). Full account / role / scope inventory:
+{doc}`service_accounts_and_scopes`.
 
 ### Operator / client API credentials
 
@@ -59,13 +63,13 @@ prompting when stdin is not a terminal.
 
 ### OAuth scopes (HTTP API)
 
-Invenio persists scopes on a token and shows them in the settings UI, but no
-RDM REST endpoint consults them today — authorization derives from the
-permission policy on the token owner’s identity. The “minimum privilege”
-columns above therefore describe what each credential’s **owning account**
-should be able to do. Declarative, enforced scopes are planned separately;
-developer notes on registration and request-time access are in
-{doc}`../developing/oauth_scopes`.
+KCWorks registers OAuth scopes and enforces them in two places: a central
+API `before_request` map for many RDM REST rules, and `@require_oauth_scopes`
+on webhook / group-collections views. Unmapped routes in the central map are
+not denied today. Permission policy on the token owner’s identity still
+applies in all cases — scopes narrow the **token**, capability roles gate the
+**account**. Route inventory: {doc}`service_accounts_and_scopes`. Registration
+and request-time details: {doc}`../developing/oauth_scopes`.
 
 ## In-process CLI authentication
 
@@ -103,6 +107,7 @@ incomplete sample set is worse than a failed command, so the CLI requires
 | `KCWORKS_SAMPLE_DATA_API_TOKEN` | Removed as application/config. Pass `--api-token` on `import-test-records` |
 | `RECORD_IMPORTER_API_TOKEN` | Removed. Local importer uses in-process services |
 | `COMMONS_API_TOKEN` | Removed. Superseded by `COMMONS_PROFILES_API_TOKEN` |
+| `STATIC_API_TOKEN_USER_ID` | Removed. Use `STATIC_API_TOKEN_USER_ID_PROFILES` and `STATIC_API_TOKEN_USER_ID_SSO` |
 
 ## Local development
 

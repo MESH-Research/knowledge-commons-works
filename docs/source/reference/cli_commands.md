@@ -322,13 +322,16 @@ Arguments:
 - `--collection-role` (-r): the name of the collection role to list groups for.
 
 #### `invenio kcworks-users ensure-service-capabilities`
-Idempotently creates the four inter-app capability roles (`users-sync`,
-`groups-sync`, `users-logout`, `group-collections-write`), binds each to its
-`invenio_access` action, creates the three service accounts if missing
-(`svc-commons-profiles`, `svc-commons-sso`, `svc-group-collections`), and
-assigns each account its roles. Accounts are active and confirmed with no
-password (API / token use only). See
-[API credentials and CLI authentication](api_credentials.md).
+Idempotent aggregate of package (and empty site-stub) capability ensures:
+creates capability roles (`users-sync`, `groups-sync`, `users-logout`,
+`group-collections-write`), binds each to its `invenio_access` action, creates
+the three service accounts if missing (`svc-commons-profiles`,
+`svc-commons-sso`, `svc-group-collections`), and assigns each account its
+roles. The owning packages also run their ensures on app finalize; this
+command is for explicit deploy/ops use. Accounts are active and confirmed with
+no password (API / token use only). See
+[API credentials and CLI authentication](api_credentials.md) and
+[Service accounts and OAuth scopes](service_accounts_and_scopes.md).
 
 ### `invenio kcworks-jobs`
 

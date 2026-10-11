@@ -627,6 +627,24 @@ SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
 ```
 
+Also configure (locally or via your secret store — not all are in the startup
+script’s default SM key list):
+
+```shell
+COMMONS_SSO_LOGOUT_API_TOKEN   # inbound single-sign-out webhook bearer
+STATIC_API_TOKEN_USER_ID_PROFILES=<id of svc-commons-profiles>
+STATIC_API_TOKEN_USER_ID_SSO=<id of svc-commons-sso>
+```
+
+On first app start (UI/API finalize), the remote-user-data and
+group-collections packages create the inter-app capability roles and service
+accounts (`svc-commons-profiles`, `svc-commons-sso`, `svc-group-collections`)
+if they are missing. Set the `STATIC_API_TOKEN_USER_ID_*` values to those
+accounts’ numeric ids for inbound static webhook impersonation. You can re-run
+or inspect the ensure with `invenio kcworks-users ensure-service-capabilities`.
+Account, role, and scope inventory:
+[Service accounts and OAuth scopes](../reference/service_accounts_and_scopes.md).
+
 #### Optional: local Profiles SSO mock
 
 To exercise broker login without a real Profiles stack, clone
@@ -712,8 +730,10 @@ python -c 'import secrets; print(secrets.token_hex())'
 
 Once you are up and running, you can generate an OAuth token for yourself in the
 KC Works admin UI to identify you when you make **HTTP API** requests against
-your local instance. That is separate from in-process `invenio` CLI auth. See
-[API credentials and CLI authentication](../reference/api_credentials.md).
+your local instance. That is separate from in-process `invenio` CLI auth. For
+integration service accounts and which scopes apply to which routes, see
+[Service accounts and OAuth scopes](../reference/service_accounts_and_scopes.md)
+and [API credentials and CLI authentication](../reference/api_credentials.md).
 
 ### Configuring your `.invenio.private` file
 

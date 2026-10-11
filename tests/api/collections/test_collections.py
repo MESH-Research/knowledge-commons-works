@@ -1,5 +1,5 @@
 # Part of Knowledge Commons Works
-# Copyright (C) 2024-2025 MESH Research
+# Copyright (C) 2024-2026 MESH Research
 #
 # KCWorks is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -14,6 +14,7 @@ import arrow
 import pytest
 from invenio_access.permissions import authenticated_user
 from invenio_access.utils import get_identity
+from invenio_group_collections_kcworks.scopes import group_collections_write_scope
 
 
 def test_collection_submission_by_owner_open(
@@ -236,6 +237,121 @@ def test_collection_submission_by_curator_closed(
         assert read_response.json["id"] == draft["id"]
         assert read_response.json["is_published"]
         assert read_response.json["status"] == "published"
+
+
+def test_group_collection_create_role_and_scope_gating(
+    running_app,
+    db,
+    search_clear,
+    headers,
+    user_factory,
+    service_user_factory,
+    assign_roles,
+    requests_mock,
+    mock_send_remote_api_update_fixture,
+):
+    """POST /group_collections requires write scope and capability (or admin).
+
+    One function exercises six principals against the same create endpoint so
+    the heavy app/search setup runs once:
+
+    - admin + write scope → 201 (`Administration`)
+    - admin without write scope → 403 (OAuth scope)
+    - non-admin, neither role nor write scope → 403
+    - non-admin + role, no write scope → 403 (OAuth scope)
+    - non-admin + write scope, no role → 403 (permission policy)
+    - non-admin + role + write scope → 201
+    """
+    app = running_app.app
+    write_scope = group_collections_write_scope.id
+    metadata_url = app.config["GROUP_COLLECTIONS_METADATA_ENDPOINTS"][
+        "knowledgeCommons"
+    ]["url"]
+
+    admin_with_scope = user_factory(
+        email="gc-admin-scoped@example.org",
+        admin=True,
+        token=True,
+        oauth_src=None,
+        oauth_id=None,
+        kc_username=None,
+    )
+    admin_no_scope = user_factory(
+        email="gc-admin-noscope@example.org",
+        admin=True,
+        token=True,
+        scopes=[],
+        oauth_src=None,
+        oauth_id=None,
+        kc_username=None,
+    )
+    neither_u = service_user_factory(
+        email="gc-neither@example.org",
+        token=True,
+        scopes=[],
+    )
+    role_only_u, _role_only_id = assign_roles(
+        service_user_factory(
+            email="gc-role-only@example.org",
+            token=True,
+            scopes=[],
+        ),
+        ("group-collections-write",),
+    )
+    scope_only_u = service_user_factory(
+        email="gc-scope-only@example.org",
+        token=True,
+        scopes=[write_scope],
+    )
+    both_u, _both_id = assign_roles(
+        service_user_factory(
+            email="gc-both@example.org",
+            token=True,
+            scopes=[write_scope],
+        ),
+        ("group-collections-write",),
+    )
+
+    cases = (
+        ("admin_with_write_scope", admin_with_scope.allowed_token, 201),
+        ("admin_without_write_scope", admin_no_scope.allowed_token, 403),
+        ("nonadmin_neither", neither_u.allowed_token, 403),
+        ("nonadmin_role_only", role_only_u.allowed_token, 403),
+        ("nonadmin_scope_only", scope_only_u.allowed_token, 403),
+        ("nonadmin_role_and_scope", both_u.allowed_token, 201),
+    )
+
+    with app.test_client() as client:
+        for index, (label, token, expected_status) in enumerate(cases):
+            group_id = str(91000 + index)
+            api_response = {
+                "id": group_id,
+                "name": f"Gating Group {index}",
+                "description": "Permission matrix group",
+                "visibility": "public",
+                "url": f"https://hcommons.org/groups/gating-group-{index}/",
+                "avatar": (
+                    "https://hcommons.org/app/plugins/buddypress/bp-core/"
+                    "images/mystery-group.png"
+                ),
+                "upload_roles": ["member"],
+                "moderate_roles": ["administrator"],
+            }
+            requests_mock.get(metadata_url + group_id, json=api_response)
+            requests_mock.get(api_response["avatar"], status_code=404)
+
+            response = client.post(
+                f"{app.config['SITE_API_URL']}/group_collections/",
+                json={
+                    "commons_instance": "knowledgeCommons",
+                    "commons_group_id": group_id,
+                },
+                headers={**headers, "Authorization": f"Bearer {token}"},
+            )
+            assert response.status_code == expected_status, (
+                f"{label}: expected {expected_status}, got {response.status_code}: "
+                f"{response.get_json()}"
+            )
 
 
 def test_group_collection_read_all(
