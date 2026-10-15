@@ -33,10 +33,12 @@
 #   - assets/ + Jest config (package.json, jest.*, babel, __mocks__) for
 #     in-container ``pnpm test`` when -J / --js-only; node_modules and
 #     pnpm-lock.yaml stay baked into the test-runner image
-#   - no uv.lock / pnpm-lock.yaml (use locks baked into the test-runner image)
+#   - host uv.lock mounted with pyproject.toml (consistent pair for uv sync);
+#     pnpm-lock.yaml also mounted for Jest; image keeps baked node_modules
 #   - no .env / .invenio.private (test secrets + .env.test_connections)
 #   - tmpfs overlay for tests/fixtures/test_logs (parent ./tests is :ro)
-#   - tmpfs for site/kcworks.egg-info while ./site remains :ro
+#   - site/kcworks.egg-info RW bind over RO ./site (persist editable metadata;
+#     empty tmpfs forced a reinstall of kcworks on every container start)
 
 name: kcworks-test
 
@@ -80,9 +82,9 @@ services:
       - ./app_data:/opt/invenio/var/instance/app_data:ro
       - ./.invenio:/opt/invenio/src/.invenio:ro
       - ${INVENIO_LOCAL_SITE_PATH}:/opt/invenio/src/site:ro
-      # uv/setuptools may touch *.egg-info under RO site; overlay writable tmpfs.
-      - type: tmpfs
-        target: /opt/invenio/src/site/kcworks.egg-info
+      # uv/setuptools may touch *.egg-info under RO site; RW bind (not tmpfs)
+      # so editable metadata persists across runs and does not force reinstall.
+      - ${INVENIO_LOCAL_SITE_PATH}/kcworks.egg-info:/opt/invenio/src/site/kcworks.egg-info
       # Editable deps: RW so egg-info / translations / docs / logs write through.
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-communities:/opt/invenio/src/site/kcworks/dependencies/invenio-communities
       - ${INVENIO_LOCAL_DEPENDENCIES_PATH}/invenio-group-collections-kcworks:/opt/invenio/src/site/kcworks/dependencies/invenio-group-collections-kcworks
@@ -101,6 +103,7 @@ services:
       - ./static:/opt/invenio/src/static:ro
       - ./scripts:/opt/invenio/src/scripts:ro
       - ./pyproject.toml:/opt/invenio/src/pyproject.toml:ro
+      - ./uv.lock:/opt/invenio/src/uv.lock:ro
       # Root Jest suite (node_modules stay in the image; lockfile matches package.json)
       - ./assets:/opt/invenio/src/assets:ro
       - ./package.json:/opt/invenio/src/package.json:ro
