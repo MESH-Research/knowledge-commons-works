@@ -205,5 +205,5 @@ hook, or a custom AND-style permission wrapper)—not just another OR need.
 | Hide from UI but keep valid | `internal=True` |
 | Require scopes on a KCWorks view | `@require_api_auth()` + `@require_oauth_scopes(...)` |
 | Read token scopes in a hook | `set(request.oauth.access_token.scopes)` when `request.oauth` is set |
-| Required scopes for a route | You define them (decorator args or your own map); Invenio does not look them up |
-| Identity / role authz | Unchanged — permission policies on the service |
+| Required scopes for a route | `kcworks.config.oauth_scope_routes` and/or decorator args; see {doc}`../reference/service_accounts_and_scopes` |
+| Identity / role authz | Unchanged — permission policies on the service; service accounts listed in {doc}`../reference/service_accounts_and_scopes` |

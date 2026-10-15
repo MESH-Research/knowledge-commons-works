@@ -237,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_credentials.html">API credentials and CLI authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_accounts_and_scopes.html">Service accounts and OAuth scopes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">CLI Commands</a></li>
 </ul>
@@ -600,13 +601,16 @@ equals another user’s <code class="docutils literal notranslate"><span class="
 </section>
 <section id="invenio-kcworks-users-ensure-service-capabilities">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">ensure-service-capabilities</span></code><a class="headerlink" href="#invenio-kcworks-users-ensure-service-capabilities" title="Link to this heading">¶</a></h4>
-<p>Idempotently creates the four inter-app capability roles (<code class="docutils literal notranslate"><span class="pre">users-sync</span></code>,
-<code class="docutils literal notranslate"><span class="pre">groups-sync</span></code>, <code class="docutils literal notranslate"><span class="pre">users-logout</span></code>, <code class="docutils literal notranslate"><span class="pre">group-collections-write</span></code>), binds each to its
-<code class="docutils literal notranslate"><span class="pre">invenio_access</span></code> action, creates the three service accounts if missing
-(<code class="docutils literal notranslate"><span class="pre">svc-commons-profiles</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-commons-sso</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-group-collections</span></code>), and
-assigns each account its roles. Accounts are active and confirmed with no
-password (API / token use only). See
-<a class="reference internal" href="api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
+<p>Idempotent aggregate of package (and empty site-stub) capability ensures:
+creates capability roles (<code class="docutils literal notranslate"><span class="pre">users-sync</span></code>, <code class="docutils literal notranslate"><span class="pre">groups-sync</span></code>, <code class="docutils literal notranslate"><span class="pre">users-logout</span></code>,
+<code class="docutils literal notranslate"><span class="pre">group-collections-write</span></code>), binds each to its <code class="docutils literal notranslate"><span class="pre">invenio_access</span></code> action, creates
+the three service accounts if missing (<code class="docutils literal notranslate"><span class="pre">svc-commons-profiles</span></code>,
+<code class="docutils literal notranslate"><span class="pre">svc-commons-sso</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-group-collections</span></code>), and assigns each account its
+roles. The owning packages also run their ensures on app finalize; this
+command is for explicit deploy/ops use. Accounts are active and confirmed with
+no password (API / token use only). See
+<a class="reference internal" href="api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a> and
+<a class="reference internal" href="service_accounts_and_scopes.html"><span class="std std-doc">Service accounts and OAuth scopes</span></a>.</p>
 </section>
 </section>
 <section id="invenio-kcworks-jobs">

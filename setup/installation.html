@@ -237,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api_credentials.html">API credentials and CLI authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/service_accounts_and_scopes.html">Service accounts and OAuth scopes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -940,6 +941,21 @@ SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
 </pre></div>
 </div>
+<p>Also configure (locally or via your secret store — not all are in the startup
+script’s default SM key list):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>COMMONS_SSO_LOGOUT_API_TOKEN<span class="w">   </span><span class="c1"># inbound single-sign-out webhook bearer</span>
+<span class="nv">STATIC_API_TOKEN_USER_ID_PROFILES</span><span class="o">=</span>&lt;id<span class="w"> </span>of<span class="w"> </span>svc-commons-profiles&gt;
+<span class="nv">STATIC_API_TOKEN_USER_ID_SSO</span><span class="o">=</span>&lt;id<span class="w"> </span>of<span class="w"> </span>svc-commons-sso&gt;
+</pre></div>
+</div>
+<p>On first app start (UI/API finalize), the remote-user-data and
+group-collections packages create the inter-app capability roles and service
+accounts (<code class="docutils literal notranslate"><span class="pre">svc-commons-profiles</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-commons-sso</span></code>, <code class="docutils literal notranslate"><span class="pre">svc-group-collections</span></code>)
+if they are missing. Set the <code class="docutils literal notranslate"><span class="pre">STATIC_API_TOKEN_USER_ID_*</span></code> values to those
+accounts’ numeric ids for inbound static webhook impersonation. You can re-run
+or inspect the ensure with <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">ensure-service-capabilities</span></code>.
+Account, role, and scope inventory:
+<a class="reference internal" href="../reference/service_accounts_and_scopes.html"><span class="std std-doc">Service accounts and OAuth scopes</span></a>.</p>
 <section id="optional-local-profiles-sso-mock">
 <h4>Optional: local Profiles SSO mock<a class="headerlink" href="#optional-local-profiles-sso-mock" title="Link to this heading">¶</a></h4>
 <p>To exercise broker login without a real Profiles stack, clone
@@ -1017,8 +1033,10 @@ by running</p>
 <h4>Generating an API token<a class="headerlink" href="#generating-an-api-token" title="Link to this heading">¶</a></h4>
 <p>Once you are up and running, you can generate an OAuth token for yourself in the
 KC Works admin UI to identify you when you make <strong>HTTP API</strong> requests against
-your local instance. That is separate from in-process <code class="docutils literal notranslate"><span class="pre">invenio</span></code> CLI auth. See
-<a class="reference internal" href="../reference/api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
+your local instance. That is separate from in-process <code class="docutils literal notranslate"><span class="pre">invenio</span></code> CLI auth. For
+integration service accounts and which scopes apply to which routes, see
+<a class="reference internal" href="../reference/service_accounts_and_scopes.html"><span class="std std-doc">Service accounts and OAuth scopes</span></a>
+and <a class="reference internal" href="../reference/api_credentials.html"><span class="std std-doc">API credentials and CLI authentication</span></a>.</p>
 </section>
 </section>
 <section id="configuring-your-invenio-private-file">

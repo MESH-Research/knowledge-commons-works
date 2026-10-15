@@ -237,6 +237,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/api_credentials.html">API credentials and CLI authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/service_accounts_and_scopes.html">Service accounts and OAuth scopes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
 </ul>
@@ -535,10 +536,10 @@ hook, or a custom AND-style permission wrapper)—not just another OR need.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">set(request.oauth.access_token.scopes)</span></code> when <code class="docutils literal notranslate"><span class="pre">request.oauth</span></code> is set</p></td>
 </tr>
 <tr class="row-even"><td><p>Required scopes for a route</p></td>
-<td><p>You define them (decorator args or your own map); Invenio does not look them up</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kcworks.config.oauth_scope_routes</span></code> and/or decorator args; see <a class="reference internal" href="../reference/service_accounts_and_scopes.html"><span class="doc">Service accounts and OAuth scopes</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Identity / role authz</p></td>
-<td><p>Unchanged — permission policies on the service</p></td>
+<td><p>Unchanged — permission policies on the service; service accounts listed in <a class="reference internal" href="../reference/service_accounts_and_scopes.html"><span class="doc">Service accounts and OAuth scopes</span></a></p></td>
 </tr>
 </tbody>
 </table>
