@@ -5,15 +5,10 @@
       "en"
     ]
   },
-  "packageManager": "pnpm@10.32.1+sha512-pwaTjw6JrBRWtlY+q07fHR+vM2jRGR/FxZeQ6W3JGORFarLmfWE94QQ9LoyB+HMD5rQNT/7KnfFe8a1Wc0jyvg==",
+  "packageManager": "pnpm@12.11.2",
   "engines": {
     "node": ">=18",
     "pnpm": ">=10.0.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "fsevents"
-    ]
   },
   "devDependencies": {
     "i18next": "^20.3.0",

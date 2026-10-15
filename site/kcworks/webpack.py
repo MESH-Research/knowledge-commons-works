@@ -57,8 +57,14 @@ theme = WebpackThemeBundle(
                 "main_ui_main_nav": "./js/main_ui/main_nav.js",
             },
             "dependencies": {
+                "angular": "^1.8.3",
+                "axios": "^1.20.0",
+                "lodash": "^4.18.0",
                 "orcid-utils": "^1.2.2",
                 "yup": "^0.32.11",
+            },
+            "devDependencies": {
+                "geopattern": "^1.2.3",
             },
             "aliases": {
                 "@js/kcworks": "js",

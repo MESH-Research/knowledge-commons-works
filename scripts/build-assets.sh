@@ -58,6 +58,8 @@ echo -e "${yellow}Collecting static files...${clear}"
 invenio collect -v
 echo -e "${yellow}Building assets...${clear}"
 invenio webpack clean create
+# Older invenio-assets templates lack master pnpm allowBuilds/strictDepBuilds.
+python "$(dirname "$0")/patch-webpack-assets-pnpm-allow-builds.py"
 invenio webpack install
 invenio shell ./scripts/symlink_assets.py
 invenio webpack build
