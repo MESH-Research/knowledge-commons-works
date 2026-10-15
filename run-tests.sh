@@ -30,14 +30,22 @@ function cleanup() {
     rm -f "$TEST_SECRET_FILE"
   fi
   rm -f /tmp/kcworks-test-connections.env
-  rm -f /tmp/kcworks-test-services.env  # legacy name from earlier iterations
+  rm -f /tmp/kcworks-test-services.env # legacy name from earlier iterations
   rm -f /tmp/kcworks-test-js-only-secrets.env
   if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
     test_compose_file_args
     docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" down --remove-orphans || true
   fi
   if [[ ${keep_services:-0} -eq 0 ]] && [[ ${js_only:-0} -eq 0 ]]; then
-    eval "$(uv run docker-services-cli down --env)"
+    # `--env` opens a `: '` shell comment, runs the command, then closes the
+    # quote and prints the exports. A failed `down` never closes it, so only
+    # eval output from a run that succeeded.
+    local down_env
+    if down_env="$(uv run docker-services-cli down --env)"; then
+      eval "${down_env}"
+    else
+      echo "Warning: docker-services-cli down failed; service env left as is." >&2
+    fi
   fi
 }
 
@@ -394,6 +402,11 @@ function create_test_symlinks() {
       ln -s "../../$submodule_tests_dir/ui" "tests/ui/remote_user_data"
       echo "Created symlink: tests/ui/remote_user_data -> $submodule_tests_dir/ui"
     fi
+    if [ -d "$submodule_tests_dir/utils" ]; then
+      rm -f "tests/utils/remote_user_data"
+      ln -s "../../$submodule_tests_dir/utils" "tests/utils/remote_user_data"
+      echo "Created symlink: tests/utils/remote_user_data -> $submodule_tests_dir/utils"
+    fi
   fi
 
   submodule_tests_dir="site/kcworks/dependencies/kcworks-import-client/tests"
@@ -404,6 +417,11 @@ function create_test_symlinks() {
     ln -s "../../$submodule_tests_dir" "tests/user_scripts/import_client"
     echo "Created symlink: tests/user_scripts/import_client -> $submodule_tests_dir"
   fi
+
+  # docker-compose.test.yml mounts a tmpfs here because the parent ./tests bind
+  # is :ro. runc needs the mountpoint to exist on the host, and .gitignore keeps
+  # only the directory's contents, so a fresh clone does not have it.
+  mkdir -p "tests/fixtures/test_logs"
 }
 
 function resolve_test_env_files() {
