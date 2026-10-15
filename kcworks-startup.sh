@@ -26,6 +26,7 @@
 #   Prefer an explicit pull first: docker pull monotasker/kcworks:latest
 #
 # With --mock-profiles:
+#   Omits COMMONS_PROFILES_API_TOKEN from the SM key list (mock overlay supplies it)
 #   Copies PROFILES_MOCK_ROOT/docker/certs/profiles-mock-rootCA.pem →
 #     ./docker/certs/profiles-mock-rootCA.crt (gitignored)
 #   Adds --file docker-compose.mock-profiles.yml which:
@@ -73,9 +74,10 @@ usage() {
 }
 
 # Built-in SM defaults (CLI and KCWORKS_SM_* override these). Keys must exist in the JSON secret.
+# COMMONS_PROFILES_API_TOKEN is included by default; --mock-profiles strips it after resolve
+# so the mock overlay token is not overridden by staging SM.
 DEFAULT_SM_SECRET_ID="staging/kcworks"
-DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_SEARCH_API_TOKEN"
-# DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN"
+DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN"
 
 # Filled after option parsing: CLI --secret-id / --keys, else env, else DEFAULT_SM_* above.
 SECRET_ID=""
@@ -134,6 +136,20 @@ done
 # Precedence: non-empty CLI values, else KCWORKS_SM_*, else DEFAULT_SM_*.
 SECRET_ID="${SECRET_ID:-${KCWORKS_SM_SECRET_ID:-$DEFAULT_SM_SECRET_ID}}"
 KEYS="${KEYS:-${KCWORKS_SM_KEYS:-$DEFAULT_SM_KEYS}}"
+
+# Mock overlay sets COMMONS_PROFILES_API_TOKEN; drop it from SM fetch (including
+# explicit --keys / KCWORKS_SM_KEYS) so staging does not override the mock secret.
+if [[ "$MOCK_PROFILES" -eq 1 ]]; then
+  KEYS=$(
+    IFS=','
+    filtered=()
+    for key in $KEYS; do
+      [[ "$key" == "COMMONS_PROFILES_API_TOKEN" ]] && continue
+      filtered+=("$key")
+    done
+    (IFS=','; echo "${filtered[*]}")
+  )
+fi
 
 if [[ -z "$SECRET_ID" || -z "$KEYS" ]]; then
   echo "Error: secret id and keys list are empty (set KCWORKS_SM_SECRET_ID / KCWORKS_SM_KEYS or pass --secret-id / --keys)." >&2
