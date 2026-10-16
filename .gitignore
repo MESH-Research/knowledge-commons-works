@@ -119,6 +119,7 @@ site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
 site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
 
 # auto-symlinked during build process
+site/kcworks/assets/semantic-ui/less/site/globals/reset.overrides
 site/kcworks/assets/semantic-ui/less/site/globals/site.variables
 site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
