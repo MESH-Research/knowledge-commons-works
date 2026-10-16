@@ -283,6 +283,16 @@ textarea {
     }
   }
 
+  .metadata-creators-field,
+  .metadata-contributors-field {
+    fieldset.invenio-form-section[class*="-item-form"] {
+      background-color: @sidebarBackgroundColor;
+      legend {
+        padding-top: 0;
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 // Fade + height collapse for ephemeral sidebar toasts (FadeCollapse / FadeCollapseStack).

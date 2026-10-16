@@ -108,7 +108,7 @@
   // SUI button defaults; .padded uses this so amount stays overridable despite !important
   --button-padding: @verticalPadding @horizontalPadding;
   // Labeled-icon strip; semantic blocks below override with a 10% tint of their color
-  --button-labeled-icon-bg: @ivy20;
+  --button-labeled-icon-bg: @mint30; // @ivy20;
   transition:
     opacity 0.2s ease,
     background-color 0.2s ease,
@@ -117,8 +117,27 @@
     background 0.2s ease;
 
   // Applies to basic and non-basic (upstream SUI pattern; we only change the color)
-  &.labeled.icon > .icon {
-    background-color: var(--button-labeled-icon-bg);
+  &.labeled.icon {
+    > .icon {
+      background-color: var(--button-labeled-icon-bg);
+      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+      transition:
+        opacity 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+    &:hover,
+    &:active,
+    &:focus,
+    &.active:hover,
+    &.active:focus {
+      > .icon {
+        background-color: var(--button-bg-color-hover);
+        box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset;
+      }
+    }
   }
 
   &.icon {
@@ -126,7 +145,8 @@
       padding-right: 3.25em !important;
     }
     &.right.labeled {
-      padding-right: @labeledIconWidth + @horizontalPadding !important;
+      padding-right: @horizontalPadding + 1.75em !important;
+      padding-left: @horizontalPadding !important;
     }
   }
 
@@ -580,11 +600,7 @@
     border-radius: 0;
     background-color: transparent;
     border: 0;
-    &:active,
-    &:focus,
-    &:hover {
-      background-color: @mint50 !important;
-    }
+
     &.active {
       background-color: @ivy80 !important;
       &:active,
@@ -592,6 +608,16 @@
       &:hover {
         background-color: @ivy !important;
       }
+    }
+  }
+
+  // Per-item hover fills only without the shared sliding pill
+  // (see collections/menu.overrides `.sliding-hover-pill`).
+  .menu:not(.sliding-hover-pill) .button.item {
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: @mint50 !important;
     }
   }
 }

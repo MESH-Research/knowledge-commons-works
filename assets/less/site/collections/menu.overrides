@@ -469,3 +469,135 @@
     }
   }
 }
+
+// -----------------------------------------------------------------------------
+// Sliding hover pill for equal-width Semantic UI menus
+//
+// Opt in with `.sliding-hover-pill`. Slot count comes from the existing width
+// classes (`.two.item` … `.eight.item`).
+//
+// Selected state is a per-item fill (stays put). The shared `::before` is only
+// the hover/focus preview pill; its transform still parks under the selected
+// item while hidden so the next hover can slide from there.
+// -----------------------------------------------------------------------------
+
+@sliding-hover-pill-count-words: one, two, three, four, five, six, seven, eight;
+
+.sliding-hover-pill-checked-slots(@count, @slot) when (@slot <= @count) {
+  @tx: (@slot - 1) * 100%;
+
+  // Resting (hidden) position under the selected item — slide origin for hover
+  &:has(> :nth-child(@{slot})[aria-checked="true"])::before,
+  &:has(> :nth-child(@{slot}).active)::before {
+    transform: translateX(@tx);
+  }
+
+  .sliding-hover-pill-checked-slots(@count, @slot + 1);
+}
+
+.sliding-hover-pill-hover-slots(@count, @slot) when (@slot <= @count) {
+  @tx: (@slot - 1) * 100%;
+
+  // After checked slots so hover/focus wins while previewing another item
+  &:has(> :nth-child(@{slot}):hover)::before,
+  &:has(> :nth-child(@{slot}):focus-visible)::before {
+    transform: translateX(@tx);
+  }
+
+  .sliding-hover-pill-hover-slots(@count, @slot + 1);
+}
+
+.sliding-hover-pill-count-loop(@index, @max) when (@index <= @max) {
+  @word: extract(@sliding-hover-pill-count-words, @index);
+
+  &.@{word}.item {
+    &::before {
+      width: calc(100% / @index);
+    }
+
+    .sliding-hover-pill-checked-slots(@index, 1);
+    .sliding-hover-pill-hover-slots(@index, 1);
+  }
+
+  .sliding-hover-pill-count-loop(@index + 1, @max);
+}
+
+/**
+ * Equal-width menu: persistent selected fill + sliding hover pill.
+ *
+ * Args:
+ *   @pill-color: Selected item background (per-item, does not move on hover).
+ *   @pill-hover-color: Sliding `::before` fill while hovering/focusing an item.
+ *   @radius: Hover-pill corner radius.
+ *   @duration: Transform / opacity transition duration.
+ *   @max-items: Highest Semantic UI `N.item` count to generate (1–8).
+ */
+.sliding-hover-pill(
+  @pill-color: @ivy80;
+  @pill-hover-color: @mint50;
+  @radius: 0.5rem;
+  @duration: 0.2s;
+  @max-items: 8
+) {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 0;
+    border-radius: @radius;
+    background-color: @pill-hover-color;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform @duration ease,
+      opacity @duration ease;
+  }
+
+  // Show the sliding pill only while hovering/focusing a non-selected item so
+  // it never covers the selected fill.
+  &:has(> :hover:not([aria-checked="true"]):not(.active))::before,
+  &:has(> :focus-visible:not([aria-checked="true"]):not(.active))::before {
+    opacity: 1;
+  }
+
+  > .item {
+    position: relative;
+    z-index: 1;
+    // Rounds selected fill and the UA focus outline (no separate outline-radius)
+    border-radius: @radius !important;
+    background-color: transparent !important;
+
+    &::before {
+      background: transparent;
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      background-color: transparent !important;
+    }
+
+    &[aria-checked="true"],
+    &.active {
+      background-color: @pill-color !important;
+
+      &:hover,
+      &:focus,
+      &:focus-visible,
+      &:active {
+        background-color: @pill-color !important;
+      }
+    }
+  }
+
+  .sliding-hover-pill-count-loop(1, @max-items);
+}
+
+.ui.menu.sliding-hover-pill {
+  .sliding-hover-pill();
+}

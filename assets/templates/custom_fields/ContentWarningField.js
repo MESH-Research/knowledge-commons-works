@@ -35,7 +35,11 @@ const ContentWarningField = ({
   return (
     <Form.Field id={fieldPath} name={fieldPath} {...restProps}>
       <FieldLabel htmlFor={fieldPath} icon={icon ?? labelIcon} label={label} />
-      <Form.Group role="radiogroup" aria-labelledby="content-warning-toggle" className="inline">
+      <Form.Group
+        role="radiogroup"
+        aria-labelledby="content-warning-toggle"
+        className="inline mb-10"
+      >
         <label
           id="content-warning-toggle"
           className="invenio-field-label content-warning-toggle-label"

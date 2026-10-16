@@ -1,8 +1,8 @@
-@stepBorderColor: @sidebarBorderColor;
+@stepBorderColor: darken(@sidebarBorderColor, 10%);
 @stepBackgroundColor: @sidebarBackgroundColor;
 @stepTextColor: @sidebarHeaderColor;
 @requiredBackgroundColor: darken(@sidebarBackgroundColor, 5%);
-@requiredBorderColor: darken(@sidebarBackgroundColor, 18%);
+@requiredBorderColor: darken(@sidebarBackgroundColor, 25%);
 @activeBackgroundColor: @ivy80;
 @activeBorderColor: @ivy80;
 @activeTextColor: @white;
@@ -76,7 +76,7 @@
           top: -2.1rem;
           height: 2rem;
           line-height: 2rem;
-          background-color: @positiveBackgroundColor;
+          background-color: transparent;
           border-top: 1px solid @positiveBorderColor;
           border-left: 1px solid @positiveBorderColor;
           border-right: 1px solid @positiveBorderColor;
