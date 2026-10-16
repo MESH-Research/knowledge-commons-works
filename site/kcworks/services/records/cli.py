@@ -342,9 +342,7 @@ def export_records(
 @click.option("--new-owner-id", "-n", type=int, default=0)
 @click.option("--new-owner-email", "-e", type=str, default="")
 @with_appcontext
-def change_record_owner_command(
-    record_id, old_owner_id, new_owner_id, new_owner_email
-):
+def change_record_owner_command(record_id, old_owner_id, new_owner_id, new_owner_email):
     """Change record ownership in KCWorks.
 
     - **Single record:** `--record-id` with `--new-owner-id` or `--new-owner-email`.
@@ -429,9 +427,7 @@ def change_record_owner_command(
             )
             updated += 1
             click.secho("Update complete", fg="green")
-            click.secho(
-                f"    new record owner id: {assigned['owner_id']}", fg="green"
-            )
+            click.secho(f"    new record owner id: {assigned['owner_id']}", fg="green")
         except Exception as e:
             failed += 1
             click.secho("Something went wrong updating ownership:", fg="red")
@@ -451,8 +447,7 @@ def change_record_owner_command(
     "-o",
     required=True,
     help=(
-        "KC username currently stored on matching creator/contributor "
-        "metadata entries."
+        "KC username currently stored on matching creator/contributor metadata entries."
     ),
 )
 @click.option(
@@ -514,8 +509,10 @@ def update_contributors_username_command(
             f"Records that would update kc_username "
             f"{old_kc_username!r} -> {new_kc_username!r}:"
         )
-        matches = current_record_kc_username_sync_service.find_record_ids_for_kc_username(
-            old_kc_username
+        matches = (
+            current_record_kc_username_sync_service.find_record_ids_for_kc_username(
+                old_kc_username
+            )
         )
         total = 0
         for phase in ("published", "drafts"):
@@ -527,9 +524,7 @@ def update_contributors_username_command(
         click.echo(f"Total: {total} record(s) would be updated.")
         return
 
-    click.echo(
-        f"Rewriting kc_username {old_kc_username!r} -> {new_kc_username!r}"
-    )
+    click.echo(f"Rewriting kc_username {old_kc_username!r} -> {new_kc_username!r}")
 
     if background:
         async_result = rewrite_records_for_kc_username_change.delay(
@@ -629,7 +624,6 @@ def migrate_user_command(
 
     Raises:
         click.UsageError: When ids or usernames are invalid or flags conflict.
-        click.Abort: When either delegated step fails.
     """
     old_kc_username = old_kc_username.strip()
     new_kc_username = new_kc_username.strip()

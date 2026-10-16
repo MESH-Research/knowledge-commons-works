@@ -25,7 +25,6 @@ from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
 from .fixtures.logging import log_folder_path, test_config_logging
 
-
 set_default_os_env()
 
 
@@ -308,10 +307,12 @@ def template_loader() -> Callable:
                 template_paths.append(str(path_obj))
 
         prev_loader = app.jinja_env.loader  # Invenio_app's themed dispatch loader
-        custom_loader = jinja2.ChoiceLoader([
-            prev_loader,
-            jinja2.FileSystemLoader(template_paths),
-        ])
+        custom_loader = jinja2.ChoiceLoader(
+            [
+                prev_loader,
+                jinja2.FileSystemLoader(template_paths),
+            ]
+        )
         app.jinja_env.loader = custom_loader
 
     return load_tempates
@@ -350,9 +351,13 @@ def app(
 def search_hosts():
     """Search hosts for pytest-invenio (OpenSearch).
 
-    Prefer ``SEARCH_HOSTS`` from the environment (docker-services-cli on the
-    host → localhost; container ``.env.test_connections`` → ``opensearch`` service name).
-    Falls back to localhost for plain host runs without that env var.
+    Prefer `SEARCH_HOSTS` from the environment (docker-services-cli on the
+    host → localhost; container `.env.test_connections` → `opensearch`
+    service name). Falls back to localhost for plain host runs without that
+    env var.
+
+    Yields:
+        list[dict]: OpenSearch host dicts for the search client.
     """
     raw = os.environ.get("SEARCH_HOSTS", "").strip()
     if raw:
@@ -396,7 +401,7 @@ def app_config(app_config) -> dict:
             "COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"
         ]
 
-    # invenio-search: if SEARCH_CLIENT_CONFIG contains ``hosts``, SEARCH_HOSTS
+    # invenio-search: if SEARCH_CLIENT_CONFIG contains `hosts`, SEARCH_HOSTS
     # is ignored. Always set both from env when present.
     raw_hosts = os.environ.get("SEARCH_HOSTS", "").strip()
     if raw_hosts:

@@ -14,6 +14,8 @@ from invenio_search.proxies import current_search_client
 from invenio_record_importer_kcworks.proxies import current_record_importer_service
 from invenio_record_importer_kcworks.types import APIResponsePayload
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
+
+
 def set_up_community(importing_user: User) -> dict:
     """Set up the Knowledge Commons community.
 
@@ -221,4 +223,3 @@ def import_test_records(
         for file in file_data:
             file.stream.close()
     return result
-

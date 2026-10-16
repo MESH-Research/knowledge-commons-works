@@ -21,6 +21,7 @@ from invenio_communities.utils import load_community_needs
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from kcworks.services.records.service import KCWorksRecordsAPIHelper
 from kcworks.services.records.test_data import import_test_records
+
 from invenio_record_importer_kcworks.types import FileData
 from tests.conftest import RunningApp
 
@@ -96,9 +97,7 @@ def create_file_data(filename: str = "sample.pdf") -> FileData:
     Returns:
         FileData: The created file data object.
     """
-    myfile = (
-        Path(__file__).resolve().parents[2] / "helpers" / "sample_files" / filename
-    )
+    myfile = Path(__file__).resolve().parents[2] / "helpers" / "sample_files" / filename
     with myfile.open("rb") as file_bytes:
         temp_file = SpooledTemporaryFile()
         temp_file.write(file_bytes.read())

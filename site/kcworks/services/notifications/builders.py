@@ -25,7 +25,6 @@
 # (Guest email recipients cannot use the user-id-keyed internal unread store.)
 """
 
-from flask import current_app as app
 from invenio_accounts.models import User
 from invenio_communities.notifications.builders import (
     CommunityInvitationAcceptNotificationBuilder,
