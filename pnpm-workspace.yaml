@@ -12,4 +12,7 @@ allowBuilds:
   es5-ext: false
   fsevents: true
 
+minimumReleaseAgeExclude:
+  - qs@6.16.1
+
 strictDepBuilds: false
