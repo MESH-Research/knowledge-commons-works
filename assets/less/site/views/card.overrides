@@ -24,6 +24,47 @@
   &.transparent {
     background-color: transparent;
   }
+
+
+}
+
+.card-set-wrapper {
+  flex: 0 0 var(--carousel-item-width);
+  display: flex;
+  height: 100%;
+  &.carousel-item {
+    width: 100%;
+    margin: 0;
+    align-items: normal !important;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+
+    /* one marker per .carousel-item — content must be non-none to generate */
+    &::scroll-marker {
+      content: "";              /* or attr(data-label) for a real accessible name */
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      border: 2px solid @ivy;
+      background: transparent;
+      cursor: pointer;
+    }
+    &::scroll-marker:target-current {
+      background: @ivy; /* filled “active” dot */
+    }
+
+  }
+  .ui.card:not(.card-placeholder) {
+    transition: width 0.3s ease-in-out;
+    height: 100%;
+    &:hover,
+    &:active {
+      position: absolute;
+      width: calc(3rem + var(--carousel-item-width)) !important;
+      max-width: calc(3rem + var(--carousel-item-width)) !important;
+      transition: width 0.3s ease-in-out;
+    }
+  }
 }
 
 #Contributors-tab-section {

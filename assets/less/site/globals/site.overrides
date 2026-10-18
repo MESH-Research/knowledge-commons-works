@@ -90,6 +90,8 @@ code {
   color: @negativeTextColor;
 }
 
+// utilities for text in animated-collapse accordions
+
 .rich-input-content.description-clamped {
   overflow: hidden;
   max-height: 6.5em; /* ~4 lines at 1.6 line-height; fallback for old engines */
@@ -120,10 +122,111 @@ code {
   overflow: hidden;
 }
 
-.record-subjects .button.tiny.show-less {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+
+// Utilities for responsive stacking
+// Usage: Add .stackable-tablet to a flex container to make it stack vertically on tablet and mobile
+
+.stackable-tablet {
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+  }
 }
+
+.stackable-mobile {
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-computer {
+  @media (min-width: @computerBreakpoint) {
+    flex-direction: column !important;
+  }
+}
+
+// Stack items with full width on smaller screens
+.flex-stack-tablet {
+  display: flex;
+
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+.flex-stack-mobile {
+  display: flex;
+
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Carousel scroll utilities
+//
+//   .carousel-viewport — 12-wide column: flex row + overflow-x + snap
+//   .carousel-item     — direct child; width ≈ viewport/N via cqw
+// ---------------------------------------------------------------------------
+
+.carousel-viewport {
+  container-type: inline-size;
+  container-name: carousel;
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--carousel-gap, 1rem);
+  padding-left: 6.25% !important;
+  padding-right: 6.25% !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-marker-group: after; /* generates ::scroll-marker-group */
+  anchor-name: --carousel;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  --carousel-gap: 1rem;
+  --carousel-visible: var(--carousel-visible-desktop, 3);
+  --carousel-item-width: calc(
+    (100cqw - (var(--carousel-visible) - 1) * var(--carousel-gap)) /
+      var(--carousel-visible)
+  );
+  // End padding so first/last items can sit in the center.
+  padding-inline: calc((100cqw - var(--carousel-item-width)) / 2);
+
+  @media (max-width: @largestTabletScreen) {
+    --carousel-visible: 2;
+  }
+
+  @media (max-width: @largestMobileScreen) {
+    --carousel-visible: 1;
+  }
+
+  /* layout the group of dots */
+  &::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    position: absolute;
+    position-anchor: --carousel;
+    top: calc(anchor(bottom) + 1rem);
+    justify-self: anchor-center;
+  }
+
+}
+
 #community-detail-header {
   .breadcrumb-wrap {
     min-width: 0;
@@ -469,7 +572,7 @@ html.cover-page {
   }
 
   #frontpage-search-bar {
-    @media screen and (max-width: 991px) {
+    @media screen and (max-width: @largestTabletScreen) {
       text-align: center;
       .column:last-child {
         margin-top: 1rem;
@@ -535,7 +638,8 @@ html.cover-page {
     padding-bottom: 2.5rem !important;
     padding-top: 2.5rem !important;
     background-size: cover;
-    background-color: @mint80;
+    background-color: @ivory;
+    box-shadow: inset 0px 0px 1rem rgb(from #818166 r g b / 0.35);
     .ui.container.grid {
       max-width: 100% !important;
       h2.ui.header {
@@ -1379,46 +1483,3 @@ html.cover-page {
   }
 }
 
-// Flexbox utility classes for responsive stacking
-// Usage: Add .stackable-tablet to a flex container to make it stack vertically on tablet and mobile
-
-.stackable-tablet {
-  @media (max-width: @largestTabletScreen) {
-    flex-direction: column !important;
-  }
-}
-
-.stackable-mobile {
-  @media (max-width: @largestMobileScreen) {
-    flex-direction: column !important;
-  }
-}
-
-.stackable-computer {
-  @media (min-width: @computerBreakpoint) {
-    flex-direction: column !important;
-  }
-}
-
-// Stack items with full width on smaller screens
-.flex-stack-tablet {
-  display: flex;
-
-  @media (max-width: @largestTabletScreen) {
-    flex-direction: column !important;
-    > * {
-      width: 100% !important;
-    }
-  }
-}
-
-.flex-stack-mobile {
-  display: flex;
-
-  @media (max-width: @largestMobileScreen) {
-    flex-direction: column !important;
-    > * {
-      width: 100% !important;
-    }
-  }
-}

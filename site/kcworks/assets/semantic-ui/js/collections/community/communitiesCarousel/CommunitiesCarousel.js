@@ -2,6 +2,9 @@
  * This file is part of Invenio.
  * Copyright (C) 2016-2022 CERN.
  *
+ * Modified by Mesh Research as part of Knowledge Commons Works
+ * Copyright (C) 2024-2026 Mesh Research
+ *
  * Invenio is free software; you can redistribute it and/or modify it
  * under the terms of the MIT License; see LICENSE file for more details.
  */
@@ -12,24 +15,34 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { http, withCancel } from "react-invenio-forms";
 import Overridable from "react-overridable";
-import { Container, Grid, Header, Icon, Item, Placeholder, Transition } from "semantic-ui-react";
+import { Container, Grid, Header, Icon, Item, Placeholder } from "semantic-ui-react";
+import { CommunityCard } from "@js/kcworks/collections/community/CommunitiesCardGroup";
 import CarouselItem from "./CarouselItem";
 
 class CommunitiesCarousel extends Component {
   constructor(props) {
     super(props);
 
+    this.carouselTimer = null;
+
     this.state = {
       data: { hits: [] },
-      activeIndex: 0,
-      animationDirection: "left",
-      carouselTimer: null,
       isLoading: true,
     };
   }
 
+  /** SUI Column doesn't forward refs; the column itself is the scrollport. */
+  getViewport = () => document.querySelector("#communities-carousel .carousel-viewport");
+
   componentDidMount() {
     this.fetchData();
+  }
+
+  componentDidUpdate(_prevProps, prevState) {
+    const { isLoading, data } = this.state;
+    if (prevState.isLoading && !isLoading && !_isEmpty(data.hits)) {
+      this.startCarousel();
+    }
   }
 
   componentWillUnmount() {
@@ -37,42 +50,57 @@ class CommunitiesCarousel extends Component {
     this.stopCarousel();
   }
 
-  getDataIndex = (index) => {
-    const { itemsPerPage } = this.props;
-    const {
-      data: { hits },
-    } = this.state;
-    const i = index * parseInt(itemsPerPage);
-    if (i > hits.length - 1) return 0;
-    if (i < 0) return hits.length - 1;
-    return i;
-  };
+  /**
+   * Scroll the viewport by one item width (plus gap). Wraps at the ends.
+   *
+   * @param {number} direction - `1` for next, `-1` for previous.
+   */
+  scrollByItems = (direction) => {
+    const viewport = this.getViewport();
+    if (!viewport) return;
 
-  runCarousel = async (newIndex) => {
-    const { activeIndex } = this.state;
-    let animationDirection = newIndex < activeIndex ? "right" : "left";
-    await this.setState({ animationDirection });
-    this.setState({ activeIndex: this.getDataIndex(newIndex) });
+    const item = viewport.querySelector(".carousel-item");
+    if (!item) return;
+
+    const styles = getComputedStyle(viewport);
+    const gap = parseFloat(styles.columnGap || styles.gap) || 0;
+    const step = item.getBoundingClientRect().width + gap;
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    const epsilon = 2;
+
+    if (direction > 0 && viewport.scrollLeft >= maxScroll - epsilon) {
+      viewport.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+    if (direction < 0 && viewport.scrollLeft <= epsilon) {
+      viewport.scrollTo({ left: maxScroll, behavior: "smooth" });
+      return;
+    }
+
+    viewport.scrollBy({ left: direction * step, behavior: "smooth" });
   };
 
   setCarouselTimer = () => {
     const {
-      data: { hits: length },
-      activeIndex,
+      data: { hits },
     } = this.state;
     const { intervalDelay } = this.props;
-    this.setState({
-      carouselTimer: setInterval(() => {
-        length && this.runCarousel(activeIndex + 1);
-      }, intervalDelay),
-    });
+
+    this.stopCarousel();
+    if (_isEmpty(hits) || hits.length < 2) return;
+
+    this.carouselTimer = setInterval(() => {
+      this.scrollByItems(1);
+    }, intervalDelay);
   };
 
-  // Pause carousel when user focuses elements in the container
   stopCarousel = () => {
-    const { carouselTimer } = this.state;
-    clearInterval(carouselTimer);
+    if (this.carouselTimer) {
+      clearInterval(this.carouselTimer);
+      this.carouselTimer = null;
+    }
   };
+
   startCarousel = () => {
     this.setCarouselTimer();
   };
@@ -82,9 +110,7 @@ class CommunitiesCarousel extends Component {
     this.cancellableFetch = withCancel(http.get(fetchUrl));
     try {
       const response = await this.cancellableFetch.promise;
-      this.setState({ data: response.data.hits });
-      this.setCarouselTimer();
-      this.setState({ isLoading: false });
+      this.setState({ data: response.data.hits, isLoading: false });
     } catch (error) {
       console.error(error);
       this.setState({ isLoading: false });
@@ -144,41 +170,33 @@ class CommunitiesCarousel extends Component {
   };
 
   carouselSlides = () => {
-    const { data, activeIndex } = this.state;
-    const { defaultLogo, itemsPerPage, showUploadBtn } = this.props;
+    const { data } = this.state;
+    const { defaultLogo, showUploadBtn } = this.props;
 
-    const sliceEnd = parseInt(activeIndex) + parseInt(itemsPerPage);
-
-    const carouselSlides = data.hits
-      ?.slice(activeIndex, sliceEnd)
-      .map((community) => (
-        <CarouselItem
-          community={community}
-          defaultLogo={defaultLogo}
-          key={community.id}
-          showUploadBtn={showUploadBtn}
-        />
-      ));
-
-    return carouselSlides;
+    return data.hits?.map((community) => (
+      <CommunityCard
+        key={community.id}
+        community={community}
+        defaultLogo={defaultLogo}
+        className="carousel-item"
+      />
+    ));
   };
 
   render() {
-    const { data, animationDirection, activeIndex, isLoading } = this.state;
-    const { title, animationSpeed, itemsPerPage } = this.props;
+    const { data, isLoading } = this.state;
+    const { title, itemsPerPage } = this.props;
+    const slides = this.carouselSlides();
 
     return (
       <Overridable
         id="InvenioCommunities.CommunitiesCarousel.layout"
         data={data}
-        animationDirection={animationDirection}
-        activeIndex={activeIndex}
         title={title}
-        animationSpeed={animationSpeed}
-        carouselSlides={this.carouselSlides()}
+        carouselSlides={slides}
         stopCarousel={this.stopCarousel}
         startCarousel={this.startCarousel}
-        runCarousel={this.runCarousel}
+        scrollByItems={this.scrollByItems}
         itemsPerPage={itemsPerPage}
       >
         <>
@@ -187,7 +205,7 @@ class CommunitiesCarousel extends Component {
           {!isLoading && !_isEmpty(data.hits) && (
             <Container fluid className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
               <Grid container className="rel-mb-0">
-                <Grid.Column width="2" className="tablet computer widescreen large screen only" />
+                <Grid.Column width="2" className="tablet computer only" />
                 <Grid.Column
                   computer="12"
                   tablet="12"
@@ -198,11 +216,23 @@ class CommunitiesCarousel extends Component {
                 >
                   <Header as="h2">{title}</Header>
                 </Grid.Column>
-                <Grid.Column width="2" className="tablet computer widescreen large screen only" />
+                <Grid.Column width="2" className="tablet computer only" />
               </Grid>
 
-              <Grid container onFocus={this.stopCarousel} onBlur={this.startCarousel}>
-                <Grid.Column width="2" className="pr-0" verticalAlign="middle" textAlign="left">
+              <Grid
+                container
+                className={"rel-mb-2 carousel-wrapper"}
+                onFocus={this.stopCarousel}
+                onBlur={this.startCarousel}
+                onMouseEnter={this.stopCarousel}
+                onMouseLeave={this.startCarousel}
+              >
+                <Grid.Column
+                  width="1"
+                  className="pr-0 rel-pb-2"
+                  verticalAlign="middle"
+                  textAlign="left"
+                >
                   <Icon
                     className="carousel-arrow"
                     inverted
@@ -210,26 +240,28 @@ class CommunitiesCarousel extends Component {
                     name="angle left"
                     size="huge"
                     aria-label={i18next.t("Previous slide")}
-                    onClick={() => this.runCarousel(activeIndex - 1)}
-                    onKeyDown={(event) =>
-                      event.key === "Enter" && this.runCarousel(activeIndex - 1)
-                    }
+                    onClick={() => this.scrollByItems(-1)}
+                    onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(-1)}
                     tabIndex="0"
                   />
                 </Grid.Column>
-                <Grid.Column width="12">
-                  <Transition.Group
-                    as={Item.Group}
-                    className="carousel-items align-items-center justify-center"
-                    duration={animationSpeed}
-                    animation={`carousel-slide ${animationDirection}`}
-                    directional
-                  >
-                    {this.carouselSlides()}
-                  </Transition.Group>
+                <Grid.Column
+                  width="14"
+                  className="carousel-viewport"
+                  role="list"
+                  style={{
+                    "--carousel-visible-desktop": String(parseInt(itemsPerPage, 10) || 3),
+                  }}
+                >
+                  {slides}
                 </Grid.Column>
 
-                <Grid.Column width="2" className="pl-0" verticalAlign="middle" textAlign="right">
+                <Grid.Column
+                  width="1"
+                  className="pl-0 rel-pb-2"
+                  verticalAlign="middle"
+                  textAlign="right"
+                >
                   <Icon
                     className="carousel-arrow"
                     inverted
@@ -237,10 +269,8 @@ class CommunitiesCarousel extends Component {
                     name="angle right"
                     size="huge"
                     aria-label={i18next.t("Next slide")}
-                    onClick={() => this.runCarousel(activeIndex + 1)}
-                    onKeyDown={(event) =>
-                      event.key === "Enter" && this.runCarousel(activeIndex + 1)
-                    }
+                    onClick={() => this.scrollByItems(1)}
+                    onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(1)}
                     tabIndex="0"
                   />
                 </Grid.Column>
@@ -257,13 +287,14 @@ CommunitiesCarousel.propTypes = {
   title: PropTypes.string.isRequired,
   fetchUrl: PropTypes.string.isRequired,
   intervalDelay: PropTypes.number.isRequired,
-  animationSpeed: PropTypes.number.isRequired,
+  animationSpeed: PropTypes.number,
   defaultLogo: PropTypes.string.isRequired,
   itemsPerPage: PropTypes.string.isRequired,
   showUploadBtn: PropTypes.bool,
 };
 
 CommunitiesCarousel.defaultProps = {
+  animationSpeed: 800,
   showUploadBtn: true,
 };
 

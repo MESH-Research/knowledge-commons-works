@@ -134,6 +134,8 @@
 @ivory20: #fdfdfb;
 @ivory10: #fefefd;
 @ivoryRgba90: rgba(245, 245, 235, 0.9);
+@ivoryRgba70: rgba(245, 245, 235, 0.7);
+@ivoryRgba50: rgba(245, 245, 235, 0.5);
 
 @darkGray: #4e4e4e;
 @green: #6c7839;

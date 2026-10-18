@@ -63,29 +63,30 @@ EmptyMessage.propTypes = {
 
 class CommunityCard extends Component {
   render() {
-    const { community, defaultLogo } = this.props;
+    const { className, community, defaultLogo } = this.props;
 
     return (
-      <Card fluid href={`/collections/${community.slug}`}>
-        <Image
-          wrapped
-          centered
-          ui={false}
-          src={community.links.logo}
-          fallbackSrc={defaultLogo || "/static/images/square-placeholder.png"}
-          loadFallbackFirst
-        />
-        <Card.Content>
-          <Card.Header>
-            {_truncate(community.metadata.title, { length: 40 })}
-          </Card.Header>
-          {community.metadata.description && (
-            <Card.Description>
-              <div className="truncate-lines-2">{community.metadata.description}</div>
-            </Card.Description>
-          )}
-        </Card.Content>
-      </Card>
+      <div className={`card-set-wrapper ${className}`}>
+        <Card fluid href={`/collections/${community.slug}`} className="community">
+          <Image
+            wrapped
+            centered
+            ui={false}
+            src={community.links.logo}
+            alt={`logo for ${community.metadata.title} collection`}
+            fallbackSrc={defaultLogo || "/static/images/square-placeholder.png"}
+            loadFallbackFirst
+          />
+          <Card.Content>
+            <Card.Header>{_truncate(community.metadata.title, { length: 40 })}</Card.Header>
+            {community.metadata.description && (
+              <Card.Description>
+                <div className="truncate-lines-2">{community.metadata.description}</div>
+              </Card.Description>
+            )}
+          </Card.Content>
+        </Card>
+      </div>
     );
   }
 }
@@ -131,13 +132,7 @@ class CommunitiesCardGroup extends Component {
     const { defaultLogo } = this.props;
 
     return data.hits.map((community) => {
-      return (
-        <CommunityCard
-          key={community.id}
-          community={community}
-          defaultLogo={defaultLogo}
-        />
-      );
+      return <CommunityCard key={community.id} community={community} defaultLogo={defaultLogo} />;
     });
   }
 
@@ -149,12 +144,7 @@ class CommunitiesCardGroup extends Component {
         {data.hits.length === 0 ? (
           <EmptyMessage message={emptyMessage} />
         ) : (
-          <Card.Group
-            doubling
-            stackable
-            itemsPerRow={5}
-            className="community-frontpage-cards"
-          >
+          <Card.Group doubling stackable itemsPerRow={5} className="community-frontpage-cards">
             {this.renderCards()}
           </Card.Group>
         )}
@@ -170,3 +160,4 @@ CommunitiesCardGroup.propTypes = {
 };
 
 export default CommunitiesCardGroup;
+export { CommunityCard };
