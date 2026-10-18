@@ -144,7 +144,7 @@
 {# ------------------------------------------------------------------------ #}
 {%- if theme.primaryTextColor %}
   .theme-primary-text a,
-  .theme-primary .link-button, 
+  .theme-primary .link-button,
   .theme-primary a:not(.theme-secondary):not(.theme-tertiary) {
     color: {{ theme.primaryTextColor }} !important;
   }
@@ -164,16 +164,61 @@
 {# ------------------------------------------------------------------------ #}
 {%- if theme.secondaryColor or theme.secondaryTextColor %}
   .theme-secondary .ui.button:not(.link-button), .ui.secondary.button:not(.link-button) {
-  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
-  {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }} !important;{% endif %}
+    --button-bg-color: {{ theme.secondaryColor }};
+    --button-text-color: {{ theme.secondaryTextColor }};
   }
   .theme-secondary a:not(.button) {
   {% if theme.secondaryColor %}background-color: transparent;{% endif %}
   {% if theme.secondaryTextColor %}color: {{ theme.secondaryTextColor }};{% endif %}
   }
-  .invenio-page-body .ui.search.button {
-  {% if theme.secondaryColor %}background-color: {{ theme.secondaryColor }} !important;{% endif %}
-  {% if theme.mainHeaderBackgroundColor %}color: {{ theme.mainHeaderBackgroundColor }} !important;{% endif %}
+
+  {# Search submit — same solid path as button.overrides .search #}
+  {# ---------------------------------------------------------------------- #}
+  .invenio-page-body .ui.button.search:not(.basic):not(.transparent) {
+    {% if theme.secondaryColor %}
+    --button-bg-color: {{ theme.secondaryColor }};
+    --button-bg-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    --button-ring-color: {{ theme.secondaryColor }};
+    --button-ring-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    {% endif %}
+    {% if theme.mainHeaderBackgroundColor %}
+    --button-text-color: {{ theme.mainHeaderBackgroundColor }};
+    --button-text-color-hover: {{ theme.mainHeaderBackgroundColor }};
+    {% endif %}
+  }
+
+  {# Pending/Resolved — basic group; resting + active invert via solid tokens #}
+  {# ---------------------------------------------------------------------- #}
+  .invenio-page-body .ui.button.search:not(.basic):not(.transparent) {
+  .ui.buttons.basic > .ui.button.request-search-filter:not(.transparent) {
+    {% if theme.secondaryColor %}
+    --button-ring-color: {{ theme.secondaryColor }};
+    --button-ring-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    --button-solid-color: {{ theme.secondaryColor }};
+    --button-solid-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    {% endif %}
+    {% if theme.secondaryTextColor %}
+    --button-text-color: {{ theme.secondaryTextColor }};
+    --button-text-color-hover: {{ theme.secondaryTextColor }};
+    {% endif %}
+    --button-bg-color: transparent;
+    --button-bg-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 15%, white);
+  }
+
+  .ui.buttons.basic > .ui.button.active.request-search-filter:not(.transparent) {
+    {% if theme.secondaryColor %}
+    --button-bg-color: {{ theme.secondaryColor }};
+    --button-bg-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    --button-ring-color: {{ theme.secondaryColor }};
+    --button-ring-color-hover: color-mix(in srgb, {{ theme.secondaryColor }} 90%, black);
+    {% endif %}
+    {% if theme.mainHeaderBackgroundColor %}
+    --button-text-color: {{ theme.mainHeaderBackgroundColor }};
+    --button-text-color-hover: {{ theme.mainHeaderBackgroundColor }};
+    {% elif theme.secondaryTextColor %}
+    --button-text-color: {{ theme.secondaryTextColor }};
+    --button-text-color-hover: {{ theme.secondaryTextColor }};
+    {% endif %}
   }
 {%- endif %}
 
@@ -211,7 +256,7 @@
 {# H2 Headings #}
 {# ------------------------------------------------------------------------ #}
 {%- if theme.primaryColor %}
-  .invenio-page-body:has(#community-detail-header) h2,  
+  .invenio-page-body:has(#community-detail-header) h2,
   .theme-primary h2,
   .theme-primary-text h2 {
     color: {{ theme.primaryColor }} !important;
@@ -261,7 +306,7 @@
 {# ------------------------------------------------------------------------ #}
 .ui.card.borderless.facet {
   background-color: var(--neutralLight) !important;
-  border-color: var(--neutralMidLight) !important; 
+  border-color: var(--neutralMidLight) !important;
 }
 
 .ui.buttons.basic>.ui.button.request-search-filter {
@@ -278,7 +323,7 @@
 
 .ui.label:not(.transparent):not(type="color") {
   background-color: var(--neutralLight) !important;
-  border-color: var(--neutralMidLight) !important; 
+  border-color: var(--neutralMidLight) !important;
   color: var(--neutralText) !important;
 }
 .ui.label.transparent {
@@ -295,24 +340,24 @@
 {# Sidebar menu #}
 {# ------------------------------------------------------------------------ #}
 
-.communities-stats .ui.vertical.menu .item, 
-.communities-settings .ui.vertical.menu .item, 
+.communities-stats .ui.vertical.menu .item,
+.communities-settings .ui.vertical.menu .item,
 .communities-members .ui.vertical.menu .item {
   border-left: 2px solid #eee !important
 }
-.communities-stats .ui.vertical.menu .item.active, 
-.communities-settings .ui.vertical.menu .item.active, 
+.communities-stats .ui.vertical.menu .item.active,
+.communities-settings .ui.vertical.menu .item.active,
 .communities-members .ui.vertical.menu .item.active {
   border-left: 2px solid {{theme.primaryColor}} !important
 }
-.communities-stats .ui.vertical.menu .item:hover, 
-.communities-settings .ui.vertical.menu .item:hover, 
+.communities-stats .ui.vertical.menu .item:hover,
+.communities-settings .ui.vertical.menu .item:hover,
 .communities-members .ui.vertical.menu .item:hover {
   background-color: var(--bgMidTransparency);
 }
-.communities-stats .ui.vertical.menu .item.active:hover, 
-.communities-settings .ui.vertical.menu .item.active:hover, 
-.communities-members .ui.vertical.menu .item.active:hover, 
+.communities-stats .ui.vertical.menu .item.active:hover,
+.communities-settings .ui.vertical.menu .item.active:hover,
+.communities-members .ui.vertical.menu .item.active:hover,
 .communities-members .ui.vertical.menu .item.active:active,
 .communities-members .ui.vertical.menu .item.active:focus {
   background-color: var(--bgMidDarkTransparency) !important;
@@ -340,6 +385,7 @@
   .communities-settings .ui.vertical.menu .item:hover,
   .communities-members .ui.vertical.menu .item:hover {
     background-color: rgba(255, 255, 255, 0.3) !important;
+    border-bottom-color: var(--primaryMidTransparency) !important;
   }
 
   .communities-stats .ui.vertical.menu .item.active,
@@ -347,6 +393,7 @@
   .communities-members .ui.vertical.menu .item.active {
     border-bottom-color: {{ theme.primaryColor }} !important;
     background-color: rgba(255, 255, 255, 0.75) !important;
+    border-left: 2px solid #eee !important;
   }
 }
 
@@ -363,12 +410,12 @@
   margin-left: 5px;
 }
 
-.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox .box:before, 
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox .box:before,
 .invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox label:before {
   background-color: {{theme.mainHeaderBackgroundColor}} !important;
 }
 
-.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox input:checked ~ .box:before, 
+.invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox input:checked ~ .box:before,
 .invenio-page-body:has(#community-detail-header) .ui.toggle.checkbox input:checked ~ label:before {
   background-color: {{theme.secondaryColor}} !important;
 }

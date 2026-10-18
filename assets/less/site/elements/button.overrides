@@ -3,6 +3,8 @@
 @negativeTextColor: @redDark;
 @positiveTextColor: @green;
 
+// NOTE: base defaults begin with .button below this variants function
+
 // Outline / basic / transparent+semantic token maps (not solid fills).
 .button-outline-semantic-variants() {
   &.positive {
@@ -501,33 +503,45 @@
 
 .ui.buttons {
   &.basic,
+  &.basic:not(.inverted),
   &:has(.ui.button.basic) {
     border-color: transparent;
-    .ui.button {
+    .ui.button,
+    .ui.button:not(.transparent){
       position: relative;
-    }
-
-    .ui.button:last-child {
       margin-left: 3px;
       border-left: none;
+      // override nested states below which aren't button-set-specific
+      &:is(:hover),
+      &:is(:focus) {
+        --button-text-color-hover: @ivy;
+        --button-bg-color-hover: @mint30;
+        --button-ring-color-hover: @ivy40;
+      }
     }
-    > .ui.button.active:not(.positive):not(.negative):not(.transparent) {
-      --button-ring-color: @ivy20;
-      --button-ring-color-hover: darken(@ivy40, 3%);
-      background-color: @mint30 !important;
-      color: @ivy;
+
+    .ui.button:first-child {
+      margin-left: 0;
+      // border-left: none;
+    }
+    // > .ui.button.active:not(.positive):not(.negative):not(.transparent) {
+    //   --button-ring-color: @ivy20;
+    //   --button-ring-color-hover: darken(@ivy40, 3%);
+    //   --button-bg-color: @ivy80;
+      // background-color: @mint30 !important;
+      // color: @ivy;
       box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
         0px 0em 0px 0px @ivyRgba10 inset;
 
-      &:hover,
-      &:active,
-      &:focus {
-        background-color: @mint50 !important;
-        color: @ivy;
-        box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-          0px 0em 0px 0px @ivyRgba10 inset;
-      }
-    }
+    //   &:hover,
+    //   &:active,
+    //   &:focus {
+    //     background-color: @mint50 !important;
+    //     color: @ivy;
+    //     box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
+    //       0px 0em 0px 0px @ivyRgba10 inset;
+    //   }
+    // }
   }
 
   // Group active child not covered by .ui.button.basic nesting below
@@ -542,6 +556,8 @@
 .ui.buttons.basic:not(.inverted) > .ui.button:not(.transparent),
 .ui.button.basic:not(.transparent),
 .ui.basic.button:not(.transparent) {
+  // These defaults apply to single basic buttons *and* button sets
+  // Button set specific overrides above
   --button-ring-color-hover: @ivy;
   --button-text-color: @ivy;
   --button-text-color-hover: @white;
@@ -590,6 +606,15 @@
     color: var(--button-text-color-hover) !important;
     box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset !important;
     cursor: pointer;
+  }
+}
+
+
+#frontpage-search-bar {
+  .ui.button.labeled.icon > .icon {
+    background-color: transparent;
+    border-right: 0;
+    box-shadow: 0 0 0 transparent;
   }
 }
 

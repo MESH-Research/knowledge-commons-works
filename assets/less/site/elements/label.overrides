@@ -147,6 +147,9 @@
   }
 }
 
+.card.facet .ui.label {
+  background-color: @white;
+}
 
 
 .ui.form,

@@ -1,5 +1,11 @@
 /* Dropdown theme overrides */
 .ui.dropdown.button {
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
   .menu {
     border-top-right-radius: 0;
     border-top-left-radius: 0;
