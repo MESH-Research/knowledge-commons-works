@@ -87,6 +87,12 @@ theme = WebpackThemeBundle(
                 "@js/kcworks/collections": "js/collections",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",
+                # Intercept react-invenio-forms / Invenio ``require("tinymce/tinymce")``
+                # so TinyMCE 8+ gets ``license_key: "gpl"`` without per-entry imports.
+                # Shim: ``js/kcworks/tinymceGplShim.js``. Version bump: patch script
+                # ``scripts/patch-webpack-assets-tinymce.py`` (not declared here — major
+                # 8 conflicts with upstream ``^6.7.2`` during pywebpack merge).
+                "tinymce/tinymce": "js/kcworks/tinymceGplShim.js",
             },
         },
     },

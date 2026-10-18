@@ -98,6 +98,7 @@ RUN . .venv/bin/activate && \
     invenio collect --verbose && \
     invenio webpack clean create && \
     python /opt/invenio/src/scripts/patch-webpack-assets-pnpm-allow-builds.py && \
+    python /opt/invenio/src/scripts/patch-webpack-assets-tinymce.py && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
     cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/ && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/{custom_fields,search} && \
