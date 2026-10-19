@@ -59,12 +59,14 @@ class CommunitiesCarousel extends Component {
       requestAnimationFrame(() => {
         const overflows = this.updateCanScroll();
         this.observeViewport();
+        this.updateFlushClasses();
         if (!embedded) {
           this.scrollToCardIndex(DEFAULT_CARD_INDEX, "auto");
         }
         if (autoplay && overflows) {
           this.startCarousel(overflows);
         }
+        requestAnimationFrame(() => this.updateFlushClasses());
       });
     }
   }
@@ -74,7 +76,38 @@ class CommunitiesCarousel extends Component {
     this.stopCarousel();
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
+    const viewport = this.getViewport();
+    if (viewport && this._onViewportScroll) {
+      viewport.removeEventListener("scroll", this._onViewportScroll);
+    }
   }
+
+  /**
+   * Mark items flush to the viewport content edges for hover grow direction.
+   */
+  updateFlushClasses = () => {
+    const viewport = this.getViewport();
+    if (!viewport) return;
+
+    const items = viewport.querySelectorAll(
+      ".carousel-item:not(.loading-placeholder)"
+    );
+    if (!items.length) return;
+
+    const vRect = viewport.getBoundingClientRect();
+    const styles = getComputedStyle(viewport);
+    const padL = parseFloat(styles.paddingLeft) || 0;
+    const padR = parseFloat(styles.paddingRight) || 0;
+    const leftEdge = vRect.left + padL;
+    const rightEdge = vRect.right - padR;
+    const epsilon = 4;
+
+    items.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      el.classList.toggle("flush-start", r.left <= leftEdge + epsilon);
+      el.classList.toggle("flush-end", r.right >= rightEdge - epsilon);
+    });
+  };
 
   /**
    * @returns {boolean} True when item count exceeds `--carousel-visible`.
@@ -108,13 +141,25 @@ class CommunitiesCarousel extends Component {
   observeViewport = () => {
     this.resizeObserver?.disconnect();
     const viewport = this.getViewport();
-    if (!viewport || typeof ResizeObserver === "undefined") {
+    if (!viewport) {
       return;
     }
-    this.resizeObserver = new ResizeObserver(() => {
-      this.updateCanScroll();
+
+    if (this._onViewportScroll) {
+      viewport.removeEventListener("scroll", this._onViewportScroll);
+    }
+    this._onViewportScroll = () => this.updateFlushClasses();
+    viewport.addEventListener("scroll", this._onViewportScroll, {
+      passive: true,
     });
-    this.resizeObserver.observe(viewport);
+
+    if (typeof ResizeObserver !== "undefined") {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateCanScroll();
+        this.updateFlushClasses();
+      });
+      this.resizeObserver.observe(viewport);
+    }
   };
 
   /**
@@ -139,6 +184,11 @@ class CommunitiesCarousel extends Component {
       left: Math.max(0, Math.min(target, maxScroll)),
       behavior,
     });
+    if (behavior === "auto") {
+      this.updateFlushClasses();
+    } else {
+      window.setTimeout(() => this.updateFlushClasses(), 400);
+    }
   };
 
   /**
@@ -164,6 +214,7 @@ class CommunitiesCarousel extends Component {
     if (direction > 0 && viewport.scrollLeft >= maxScroll - epsilon) {
       if (embedded) {
         viewport.scrollTo({ left: 0, behavior: "smooth" });
+        window.setTimeout(() => this.updateFlushClasses(), 400);
       } else {
         this.scrollToCardIndex(DEFAULT_CARD_INDEX, "smooth");
       }
@@ -171,10 +222,12 @@ class CommunitiesCarousel extends Component {
     }
     if (direction < 0 && viewport.scrollLeft <= epsilon) {
       viewport.scrollTo({ left: maxScroll, behavior: "smooth" });
+      window.setTimeout(() => this.updateFlushClasses(), 400);
       return;
     }
 
     viewport.scrollBy({ left: direction * step, behavior: "smooth" });
+    window.setTimeout(() => this.updateFlushClasses(), 400);
   };
 
   /**
@@ -312,7 +365,12 @@ class CommunitiesCarousel extends Component {
   renderPlaceholder = () => {
     const { title, showTitle, embedded, itemsPerPage } = this.props;
     const count = Math.max(1, parseInt(itemsPerPage, 10) || 3);
-    const viewportClass = ["carousel-viewport", embedded ? "snap-start" : ""]
+    const viewportClass = [
+      "carousel-viewport",
+      "pt-30",
+      "pb-30",
+      embedded ? "snap-start" : "",
+    ]
       .filter(Boolean)
       .join(" ");
     const placeholders = Array.from({ length: count }, (_, index) => (
@@ -396,6 +454,8 @@ class CommunitiesCarousel extends Component {
     const slides = this.carouselSlides();
     const viewportClass = [
       "carousel-viewport",
+      "pt-30",
+      "pb-30",
       showMarkers ? "with-scroll-markers" : "",
       embedded ? "snap-start" : "",
     ]

@@ -176,6 +176,14 @@ code {
 //   .carousel-item      — direct child; width ≈ container/N via cqw
 // ---------------------------------------------------------------------------
 
+.pt-30 {
+  padding-top: 2rem !important;
+}
+
+.pb-30 {
+  padding-bottom: 2rem !important;
+}
+
 .carousel-viewport,
 .carousel-card-grid {
   container-type: inline-size;
@@ -184,7 +192,6 @@ code {
   align-items: stretch;
   width: 100%;
   gap: var(--carousel-gap, 1rem);
-  padding-block: 1.5rem;
 
   --carousel-gap: 1rem;
   --carousel-visible: var(--carousel-visible-desktop, 3);

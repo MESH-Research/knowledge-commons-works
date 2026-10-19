@@ -56,8 +56,16 @@
       background: @ivy;
     }
 
-    // Extra width on hover — just enough for the description overhang.
     --carousel-card-overhang: 2.5rem;
+    --carousel-card-hover-min-width: 22rem;
+    --carousel-card-hover-width: max(
+      calc(var(--carousel-item-width) + var(--carousel-card-overhang)),
+      var(--carousel-card-hover-min-width)
+    );
+    --carousel-card-hover-expand: calc(
+      var(--carousel-card-hover-width) - var(--carousel-item-width)
+    );
+    --carousel-card-shadow-inset: 0.9rem;
 
     // Loading skeleton: fill the logo square; no scroll markers or hover morph.
     &.loading-placeholder {
@@ -83,13 +91,17 @@
     }
 
     .ui.card.community {
+      // Always absolute in the slot so leave doesn't snap position while
+      // width/transform still ease (that read as shrink-then-slide).
+      position: absolute;
+      left: 0;
+      top: 0;
       display: flex;
       flex-direction: column;
       width: 100% !important;
       max-width: none;
       height: 100%;
       margin: 0;
-      // Animate width + transform together; do not animate `left` (auto→50% jumps).
       transition:
         width 0.35s ease,
         height 0.35s ease,
@@ -107,6 +119,7 @@
         width: 100%;
         height: var(--carousel-item-width);
         min-height: var(--carousel-item-width);
+        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
       }
 
       .community-card-logo {
@@ -134,6 +147,7 @@
           max-width: var(--carousel-item-width);
           max-height: var(--carousel-item-width);
           overflow: hidden;
+          border-top-right-radius: @defaultBorderRadius;
 
           img {
             object-fit: cover;
@@ -157,6 +171,7 @@
         opacity: 0;
         pointer-events: none;
         overflow: auto;
+        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
         color: var(--community-header-fg, #fff);
         background: linear-gradient(
           to left,
@@ -220,17 +235,24 @@
 
       &:hover,
       &:focus-within {
-        position: absolute;
-        left: 0;
         top: -0.95rem;
         z-index: 2;
-        width: calc(
-          var(--carousel-item-width) + var(--carousel-card-overhang)
-        ) !important;
+        width: var(--carousel-card-hover-width) !important;
         min-height: calc(100% + 1.9rem);
         height: auto;
-        transform: translateX(calc(var(--carousel-card-overhang) / -2));
-        box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.18);
+        overflow: visible;
+        transform: translateX(calc(var(--carousel-card-hover-expand) / -2));
+        box-shadow: 0 0 0.9rem rgba(0, 0, 0, 0.28);
+
+        .community-card-top {
+          height: calc(var(--carousel-item-width) - 1.3em);
+          min-height: calc(var(--carousel-item-width) - 1.3em);
+        }
+
+        .community-card-logo {
+          height: calc(var(--carousel-item-width) - 1.3em);
+          max-height: calc(var(--carousel-item-width) - 1.3em);
+        }
 
         .community-card-overlay {
           opacity: 1;
@@ -246,6 +268,10 @@
           padding-bottom: 1rem;
 
           .header {
+            -webkit-line-clamp: 3;
+            height: 3.9em;
+            min-height: 3.9em;
+            max-height: 3.9em;
             animation: carousel-card-title-fade 0.7s ease forwards;
           }
         }
@@ -264,15 +290,19 @@
       }
     }
 
-    // Track ends: grow inward only so the overhang isn't clipped by overflow-x.
-    &:first-of-type .ui.card.community:hover,
-    &:first-of-type .ui.card.community:focus-within {
-      transform: translateX(0);
+    // Items flush to the viewport edge (set by JS) grow inward + shadow inset.
+    &.flush-start .ui.card.community:hover,
+    &.flush-start .ui.card.community:focus-within {
+      transform: translateX(var(--carousel-card-shadow-inset));
     }
 
-    &:last-of-type:not(:first-of-type) .ui.card.community:hover,
-    &:last-of-type:not(:first-of-type) .ui.card.community:focus-within {
-      transform: translateX(calc(var(--carousel-card-overhang) * -1));
+    &.flush-end .ui.card.community:hover,
+    &.flush-end .ui.card.community:focus-within {
+      transform: translateX(
+        calc(
+          -1 * var(--carousel-card-hover-expand) - var(--carousel-card-shadow-inset)
+        )
+      );
     }
   }
 }
