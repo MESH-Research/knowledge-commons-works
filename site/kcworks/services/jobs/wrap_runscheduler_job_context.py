@@ -6,6 +6,8 @@
 
 """Wrap invenio-jobs RunScheduler so scheduled publishes carry job log context."""
 
+from typing import Any
+
 from flask import Flask
 
 _PATCHED = False
@@ -67,5 +69,5 @@ def wrap_runscheduler_for_job_context(app: Flask) -> None:
             **kwargs,
         )
 
-    RunScheduler.apply_async = apply_async_with_job_context
+    RunScheduler.apply_async: Any = apply_async_with_job_context
     _PATCHED = True
