@@ -289,13 +289,67 @@
 <section id="unreleased">
 <h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>jobs</p>
+<li><p>Authentication &amp; API security</p>
 <ul>
-<li><p>fixed bug preventing logs from being recorded for runs initiated by the
-scheduler or via our cli command</p></li>
+<li><p>Least-privilege OAuth scopes and role-based API auth</p></li>
+<li><p>Scopes for record importer, user-data API, search-provisioner bearer token</p></li>
 </ul>
 </li>
-<li><p>a11y and theming improvements to main navigation (desktop and mobile)</p>
+<li><p>Upload form</p>
+<ul>
+<li><p>Access settings moved into a collapsible panel for less visual clutter</p></li>
+<li><p>Animated accordion support in the form</p></li>
+<li><p>Widget spacing and resource-type selector UI tweaks</p></li>
+</ul>
+</li>
+<li><p>Collections UI</p>
+<ul>
+<li><p>Parent/child relationship creation UI (for collection owners/managers)</p></li>
+<li><p>Dynamic community card browse layout</p></li>
+<li><p>New featured communities carousel that’s CSS-driven for improved a11y and
+performance</p></li>
+</ul>
+</li>
+<li><p>Detail page</p>
+<ul>
+<li><p>added animations on all accordion open/close events</p></li>
+<li><p>added created and updated dates to sidebar</p></li>
+<li><p>publishing details</p>
+<ul>
+<li><p>family-based layout config for main-tab and sidebar details by resource
+type</p></li>
+<li><p>improved imprint string composition (including edition); overhauled
+details rows for journal, book, book-section, and instructional materials
+progress)</p></li>
+</ul>
+</li>
+<li><p>copyright &amp; permissions</p>
+<ul>
+<li><p>folded copyright and licenses into a single sidebar segment</p></li>
+<li><p>prepend © when the copyright statement does not already start with © or
+(c)</p></li>
+</ul>
+</li>
+<li><p>AI usage alert styling changed from warning to default message type</p></li>
+<li><p>sharing</p>
+<ul>
+<li><p>removed VK but added WeChat</p></li>
+<li><p>fixed focus problems on Mastodon sharing link</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Theming</p>
+<ul>
+<li><p>broad CSS refactor: moved overrides out of the site.overrides monolith into
+component override files</p></li>
+<li><p>button styles reworked for composition (transparent / padded / borderless /
+borderless-hover, left-aligned, shared ring and padding amounts via CSS
+variables)</p></li>
+<li><p>many other theme tweaks throughout</p></li>
+</ul>
+</li>
+<li><p>A11y and theming improvements to main navigation (desktop and mobile)</p>
 <ul>
 <li><p>stopped treating top nav as a menu for the purposes of roles and aria
 attributes</p></li>
@@ -304,10 +358,22 @@ attributes</p></li>
 <li><p>tweaked layout of top nav</p></li>
 </ul>
 </li>
-<li><p>infrastructure</p>
+<li><p>Jobs</p>
+<ul>
+<li><p>fixed bug preventing logs from being recorded for runs initiated by the
+scheduler or via our cli command</p></li>
+</ul>
+</li>
+<li><p>Infrastructure / developer tooling</p>
 <ul>
 <li><p>add –prod flag to kcworks_startup.sh script to simulate a production
 container environment in local dev</p></li>
+<li><p>update all submodules to merge their dev/next working commits into their
+main branches</p></li>
+<li><p>add script to reload Flask apps without restarting the full project</p></li>
+<li><p>make health check respect the instance’s port configuration</p></li>
+<li><p>fix docs API app pid name error</p></li>
+<li><p>support for a mock profiles API via knowledge-commons-profiles-mock</p></li>
 </ul>
 </li>
 </ul>
