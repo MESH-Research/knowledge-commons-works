@@ -1,0 +1,44 @@
+# Overlay: profiles-mock TLS trust + URL wiring for local SSO.
+#
+# Applied by `./kcworks-startup.sh --mock-profiles` after the CA PEM is copied to
+# `./docker/certs/profiles-mock-rootCA.crt`. The startup script then runs
+# `update-ca-certificates` as root in each service below.
+#
+# Browser redirects: 127.0.0.1:8099
+# Server-side calls: host.docker.internal:8099 (INVENIO_* overrides after import)
+#
+# Remove conflicting Profiles URL/token lines from ./.env when using this flag.
+
+x-mock-profiles-env: &mock-profiles-env
+  COMMONS_PROFILES_API_TOKEN: ${COMMONS_PROFILES_API_TOKEN:-dev-kc-profiles-mock-token-change-me}
+  INVENIO_KC_PROFILES_DOMAIN: 127.0.0.1:8099
+  INVENIO_KC_PROFILES_URL_BASE: https://127.0.0.1:8099/members/
+  INVENIO_SSO_BROKER_LOGIN_URL: https://127.0.0.1:8099/login/
+  INVENIO_SSO_BROKER_SILENT_LOGIN_URL: https://127.0.0.1:8099/broker/silent-login/
+  INVENIO_SSO_BROKER_VERIFY_NONCE_URL: https://host.docker.internal:8099/broker/verify-nonce/
+  INVENIO_IDMS_BASE_API_URL: https://host.docker.internal:8099/api/v1/
+  # requests/certifi ignores the system store unless pointed here (after update-ca-certificates)
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+
+services:
+  web-ui:
+    environment:
+      <<: *mock-profiles-env
+    volumes:
+      - ./docker/certs/profiles-mock-rootCA.crt:/usr/local/share/ca-certificates/profiles-mock-rootCA.crt:ro
+  web-api:
+    environment:
+      <<: *mock-profiles-env
+    volumes:
+      - ./docker/certs/profiles-mock-rootCA.crt:/usr/local/share/ca-certificates/profiles-mock-rootCA.crt:ro
+  worker:
+    environment:
+      <<: *mock-profiles-env
+    volumes:
+      - ./docker/certs/profiles-mock-rootCA.crt:/usr/local/share/ca-certificates/profiles-mock-rootCA.crt:ro
+  scheduler:
+    environment:
+      <<: *mock-profiles-env
+    volumes:
+      - ./docker/certs/profiles-mock-rootCA.crt:/usr/local/share/ca-certificates/profiles-mock-rootCA.crt:ro

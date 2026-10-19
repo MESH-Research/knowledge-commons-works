@@ -6,15 +6,16 @@
 // Copyright (C)      2021 Graz University of Technology.
 //
 // Knowledge-Commons-Works and Invenio-RDM-Records are free software; you can
-// redistribute it and/or modify it under the terms of the MIT License; see
+// redistribute them and/or modify them under the terms of the MIT License; see
 // LICENSE file for more details.
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
-import { Card, Divider, Form } from "semantic-ui-react";
+import { Accordion, Form, Icon, Segment } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
+import { useMeasuredHeightAnimation } from "@js/invenio_modular_deposit_form/util/useMeasuredHeightAnimation";
 import {
   MetadataAccess,
   FilesAccess,
@@ -23,16 +24,23 @@ import {
   AccessMessage,
 } from "./access_rights_components";
 
+const ACCORDION_INDEX = 0;
+const HEIGHT_ANIMATING_CLASS = "height-animating";
+
+/**
+ * Access settings panel: Message (top-attached) + bottom-attached Segment with
+ * a measured-height accordion wrapping the visibility controls.
+ */
 const AccessRightField = ({
   fieldPath,
   allowRecordRestriction = true,
-  icon = undefined,
-  label = i18next.t("Access Permissions"),
+  // Kept for Overridable / FieldComponentWrapper API compatibility.
+  icon: _icon = undefined,
+  label: _label = i18next.t("Access Permissions"),
   record = {},
   recordRestrictionGracePeriod = undefined,
   showMetadataAccess = undefined,
 }) => {
-  /** Top-level Access Right Component */
   const community = useSelector((s) => s.deposit.editorState.selectedCommunity);
   const files = useSelector((s) => s.files);
 
@@ -43,52 +51,79 @@ const AccessRightField = ({
   // New drafts / incomplete fixtures may omit files; treat as metadata-only.
   const isMetadataOnly = !record.files?.enabled || Object.entries(files?.entries ?? {}).length < 1;
 
+  const [open, setOpen] = useState(false);
+  const contentRef = useRef(null);
+  const { isAnimating, expand, collapse } = useMeasuredHeightAnimation(contentRef, {
+    open,
+    onOpen: () => setOpen(true),
+    onClose: () => setOpen(false),
+    // Lift CSS `height: 0` briefly so scrollHeight is the full open size.
+    openMeasure: { addClass: HEIGHT_ANIMATING_CLASS },
+  });
+  // Keep `.active` through the close tween so content stays measurable.
+  const contentActive = open || isAnimating;
+
   return (
     <>
       <AccessMessage
         access={getIn(values, fieldPath)}
         accessCommunity={communityAccess}
         metadataOnly={isMetadataOnly}
+        attached="top"
       />
-      <Card label={label} id="visibility-section" className="access-right pr-20 pl-20" fluid>
-        <Form.Field required>
-          {label ? (
-            <Card.Content className="p-0">
-              <Card.Header>
-                <label htmlFor={fieldPath} className="field-label-class invenio-field-label">
-                  {label}
-                  {icon && <i className={`${icon} icon`} />}
-                </label>
-              </Card.Header>
-            </Card.Content>
-          ) : null}
-          <Card.Content className="p-0">
-            {showMetadataAccess && (
-              <>
+      <Segment
+        id="visibility-section"
+        className="access-right pr-0 pl-0 pb-0 pt-0"
+        attached="bottom"
+      >
+        <Accordion fluid exclusive={false} className="measured-height">
+          <Accordion.Title
+            as="button"
+            active={open}
+            index={ACCORDION_INDEX}
+            className="ui button transparent basic padded borderless borderless-hover fluid access-settings-toggle pl-20 pb-5 pr-0"
+            onClick={() => (open ? collapse() : expand())}
+          >
+            {!open ? i18next.t("Change access permissions") : i18next.t("Hide settings")}
+            <Icon name={open ? "chevron up" : "chevron down"} className="mt-5" aria-hidden="true" />
+          </Accordion.Title>
+          <div
+            ref={contentRef}
+            className={`content${contentActive ? " active" : ""}${
+              isAnimating ? ` ${HEIGHT_ANIMATING_CLASS}` : ""
+            }`}
+          >
+            <Form.Field required>
+              {showMetadataAccess && (
                 <MetadataAccess
                   recordAccess={getIn(values, `${fieldPath}.record`)}
                   communityAccess={communityAccess}
                   record={record}
                   recordRestrictionGracePeriod={recordRestrictionGracePeriod}
                   allowRecordRestriction={allowRecordRestriction}
+                  className="mt-20"
                 />
-              </>
-            )}
+              )}
 
-            <FilesAccess
-              access={getIn(values, fieldPath)}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-            <EmbargoAccess
-              access={getIn(values, fieldPath)}
-              accessCommunity={communityAccess}
-              metadataOnly={isMetadataOnly}
-            />
-            <AccessRequestsAccess access={getIn(values, fieldPath)} metadataOnly={isMetadataOnly} />
-          </Card.Content>
-        </Form.Field>
-      </Card>
+              <FilesAccess
+                access={getIn(values, fieldPath)}
+                accessCommunity={communityAccess}
+                metadataOnly={isMetadataOnly}
+              />
+              <EmbargoAccess
+                access={getIn(values, fieldPath)}
+                accessCommunity={communityAccess}
+                metadataOnly={isMetadataOnly}
+              />
+              <AccessRequestsAccess
+                access={getIn(values, fieldPath)}
+                metadataOnly={isMetadataOnly}
+                className="mb-20"
+              />
+            </Form.Field>
+          </div>
+        </Accordion>
+      </Segment>
     </>
   );
 };

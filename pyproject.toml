@@ -1,10 +1,10 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["babel>2.8", "setuptools>=61", "wheel"]
+requires = ["babel>2.8", "setuptools>=83", "wheel"]
 
 [project]
 name = "kcworks"
-version = "0.8.1"
+version = "1.0.0"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
@@ -16,8 +16,8 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "cairosvg>=2.7",
-  "invenio-app-rdm[opensearch2,s3,tests]~=13.0.0",
+  "cairosvg>=2.9.1",
+  "invenio-app-rdm[opensearch2,s3]~=13.0.0",
   "invenio-communities>=19,<20",
   "invenio-group-collections-kcworks",
   "invenio-logging[sentry]>=4,<5",
@@ -29,13 +29,13 @@ dependencies = [
   "invenio-remote-user-data-kcworks",
   "invenio-s3",
   "invenio-stats-dashboard",
-  "invenio-subjects-fast>=2026.7.24",
+  "invenio-subjects-fast>=2026.9.23",
   "invenio-utilities-tuw",
   "invenio-vocabularies>=8,<9",
   "langdetect",
-  "lxml==5.2.1",
+  "lxml>=6.1.3",
   "pandas",
-  "pillow>=11",
+  "pillow>=12.3",
   "pydantic",
   "sentry-sdk[flask]>=1,<2",
   "sqlalchemy[asyncio]",
@@ -60,6 +60,7 @@ optional-dependencies.docs = [
 ]
 optional-dependencies.tests = [
   "coverage",
+  "invenio-app-rdm[tests]~=13.0.0",
   "kcworks-import-client[tests]",
   "pytest",
   "pytest-cov>=6.2.1",
@@ -99,6 +100,18 @@ entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
 entry-points."invenio_modular_deposit_form.components_registry".kcworks = "kcworks.utils.deposit_extras:get_components_registry_js_path"
 entry-points."invenio_modular_deposit_form.transformations".kcworks = "kcworks.utils.deposit_extras:get_transformations_js_path"
 entry-points."invenio_modular_deposit_form.validator".kcworks = "kcworks.utils.deposit_extras:get_validator_js_path"
+entry-points."invenio_oauth2server.scopes".communities_read = "kcworks.services.auth.scopes:communities_read_scope"
+entry-points."invenio_oauth2server.scopes".communities_write = "kcworks.services.auth.scopes:communities_write_scope"
+entry-points."invenio_oauth2server.scopes".files_write = "kcworks.services.auth.scopes:files_write_scope"
+entry-points."invenio_oauth2server.scopes".groups_read = "kcworks.services.auth.scopes:groups_read_scope"
+entry-points."invenio_oauth2server.scopes".groups_write = "kcworks.services.auth.scopes:groups_write_scope"
+entry-points."invenio_oauth2server.scopes".records_export = "kcworks.services.auth.scopes:records_export_scope"
+entry-points."invenio_oauth2server.scopes".records_read = "kcworks.services.auth.scopes:records_read_scope"
+entry-points."invenio_oauth2server.scopes".records_write = "kcworks.services.auth.scopes:records_write_scope"
+entry-points."invenio_oauth2server.scopes".requests_write = "kcworks.services.auth.scopes:requests_write_scope"
+entry-points."invenio_oauth2server.scopes".stats_read = "kcworks.services.auth.scopes:stats_read_scope"
+entry-points."invenio_oauth2server.scopes".users_read = "kcworks.services.auth.scopes:users_read_scope"
+entry-points."invenio_oauth2server.scopes".users_write = "kcworks.services.auth.scopes:users_write_scope"
 entry-points."invenio_previewer.previewers".custom_default_viewer = "kcworks.views.previewers.invenio_custom_default_viewer.custom_default_viewer"
 entry-points."invenio_previewer.previewers".custom_docx_viewer = "kcworks.views.previewers.invenio_custom_docx_viewer.custom_docx_viewer"
 entry-points."invenio_previewer.previewers".custom_latex_viewer = "kcworks.views.previewers.invenio_custom_latex_viewer.custom_latex_viewer"
@@ -341,21 +354,8 @@ run.omit = [
   "site/kcworks/views/task_results/*",
 ]
 
-[tool.babel]
-compile_catalog.directory = "translations/"
-compile_catalog.use-fuzzy = true
-extract_messages.copyright_holder = "Mesh Research"
-extract_messages.msgid_bugs_address = "scottia4@msu.edu"
-extract_messages.mapping-file = "translations/babel.ini"
-extract_messages.output-file = "translations/messages.pot"
-extract_messages.add-comments = "NOTE"
-init_catalog.input-file = "translations/messages.pot"
-init_catalog.output-dir = "translations/"
-update_catalog.input-file = "translations/messages.pot"
-update_catalog.output-dir = "translations/"
-
 [tool.bumpversion]
-current_version = "0.8.1"
+current_version = "1.0.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"
@@ -365,14 +365,9 @@ tag = false
 allow_shell_hooks = false
 message = "Bump version: {current_version} → {new_version}"
 
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-key_path = "project.version"
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-key_path = "tool.bumpversion.current_version"
-
+# pyproject.toml project.version and tool.bumpversion.current_version are
+# updated automatically by bump-my-version's update_config_file; listing them
+# here double-applies a whole-file search and fails on the second entry.
 [[tool.bumpversion.files]]
 filename = "site/kcworks/__init__.py"
 search = '__version__ = "{current_version}"'
@@ -392,6 +387,19 @@ replace = "Version {new_version}"
 filename = "docs/source/conf.py"
 search = 'release = "{current_version}"'
 replace = 'release = "{new_version}"'
+
+[tool.babel]
+compile_catalog.directory = "translations/"
+compile_catalog.use-fuzzy = true
+extract_messages.copyright_holder = "Mesh Research"
+extract_messages.msgid_bugs_address = "scottia4@msu.edu"
+extract_messages.mapping-file = "translations/babel.ini"
+extract_messages.output-file = "translations/messages.pot"
+extract_messages.add-comments = "NOTE"
+init_catalog.input-file = "translations/messages.pot"
+init_catalog.output-dir = "translations/"
+update_catalog.input-file = "translations/messages.pot"
+update_catalog.output-dir = "translations/"
 
 [tool.pylsp]
 plugins.jedi.extra_paths = [

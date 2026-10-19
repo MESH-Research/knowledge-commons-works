@@ -18,7 +18,7 @@ import { Image } from "react-invenio-forms";
 import { AccessStatusLabel } from "./labels/AccessStatusLabel";
 import { Dropdown } from "semantic-ui-react";
 import { PropTypes } from "prop-types";
-import { CollapsingMenuItem } from "../../main_ui/menu_items";
+import { CollapsingNavItem } from "../../main_ui/nav_items";
 
 // Geopattern fallback removed: backend now generates a real PNG logo for
 // every community at create time and seeds the three theme.style colors
@@ -249,7 +249,10 @@ const CommunityDetailsHeader = ({
           )}
         </div> */}
 
-      <div className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large screen only">
+      <nav
+        className="ui container secondary pointing stackable menu pl-0 pr-0 theme-primary computer tablet widescreen large screen only"
+        aria-label={i18next.t("Community navigation")}
+      >
         {menu_items.map((item) =>
           ![
             "curation policy",
@@ -268,13 +271,12 @@ const CommunityDetailsHeader = ({
                   : ""
               }`}
               href={item.url}
-              role="button"
             >
               <i aria-hidden="true" className={`${item.icon} icon`}></i>
               {item.text}
             </a>
           ) : (
-            <CollapsingMenuItem
+            <CollapsingNavItem
               key={item.name}
               text={item.text}
               icon={item.icon}
@@ -283,7 +285,7 @@ const CommunityDetailsHeader = ({
             />
           )
         )}
-      </div>
+      </nav>
     </div>
   );
 };

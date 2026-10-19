@@ -22,7 +22,7 @@ const SETTINGS_FIELD_PATH = "parent.access.settings";
  * Toggle persists immediately via ``PUT record.links.access`` (parent.access is
  * dump-only on draft save). Settings opens the share modal on the Settings tab.
  */
-export const AccessRequestsAccess = ({ access, metadataOnly }) => {
+export const AccessRequestsAccess = ({ access, metadataOnly, className }) => {
   const { values, setFieldValue } = useFormikContext();
   const record = useSelector((state) => state.deposit.record) ?? {};
   const permissions = useSelector((state) => state.deposit.permissions) ?? {};
@@ -137,7 +137,7 @@ export const AccessRequestsAccess = ({ access, metadataOnly }) => {
 
   return (
     <>
-      <Form.Field className="mb-0 rel-mt-1">
+      <Form.Field className={`mb-0 rel-mt-1 pr-20 pl-20 ${className}`}>
         <div
           style={{
             display: "flex",
@@ -189,4 +189,5 @@ AccessRequestsAccess.propTypes = {
 
 AccessRequestsAccess.defaultProps = {
   metadataOnly: false,
+  className: "",
 };

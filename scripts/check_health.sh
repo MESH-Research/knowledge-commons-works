@@ -2,9 +2,11 @@
 #
 # Liveness checks for the KC Works stack. Works in three modes:
 #
-#   local      Local Docker Compose dev stack. Reads repo-root .env for host
-#              ports/URLs and probes 127.0.0.1 (see
-#              docs/source/setup/installation.md). Runs Docker container checks.
+#   local      Local Docker Compose stack. Reads host ports/URLs from process
+#              env, then repo-root .env, then docker-compose.dev.env (same
+#              precedence as kcworks-startup.sh / compose --env-file order),
+#              and probes 127.0.0.1 (see docs/source/setup/installation.md).
+#              Runs Docker container checks.
 #   container  Inside the AWS ECS "ui" container (script baked at
 #              /opt/invenio/src/scripts/). Reads connection targets from the
 #              process environment (the INVENIO_* task-definition variables) and
@@ -24,11 +26,12 @@
 #     /opt/invenio/src; else local if the docker CLI is present and a repo .env
 #     exists; else host if the docker CLI is present; else container.
 #
-# Config resolution (all modes): each value is read from the process
-# environment first, then from the repo-root .env (when present), then a
-# built-in default. So the same script works whether config comes from the ECS
-# task definition or a local .env. Passwords parsed from connection URLs are
-# never printed.
+# Config resolution: each value is read from the process environment first,
+# then from the repo-root .env (when present), then — in local mode only —
+# from docker-compose.dev.env (tracked host-port defaults), then a built-in
+# default. So the same script works whether config comes from the ECS task
+# definition or a local .env / compose port env. Passwords parsed from
+# connection URLs are never printed.
 #
 # Optional tuning (environment variables for this process only):
 #   CHECK_HEALTH_LOAD_FAIL_MULT   1m loadavg must stay below (this × CPU cores) or count as failed (default 4; 0 disables)
@@ -52,6 +55,8 @@
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ENV_SOURCE="$REPO_ROOT/.env"
+# Tracked compose host-port defaults (no secrets). Used in local mode only.
+DEV_ENV_SOURCE="$REPO_ROOT/docker-compose.dev.env"
 CHECK_HEALTH_FAILED=0
 
 # ANSI colors for pass / warn / fail (stderr). Empty when disabled or non-interactive.
@@ -116,6 +121,9 @@ banner() {
   else
     echo "  Environment file: (none; using process environment)" >&2
   fi
+  if [[ "$MODE" == "local" && -f "$DEV_ENV_SOURCE" ]]; then
+    echo "  Compose port env: $DEV_ENV_SOURCE (.env overrides)" >&2
+  fi
   echo >&2
   echo "  Checks:" >&2
 }
@@ -163,15 +171,18 @@ summary_finish() {
   exit 0
 }
 
-# Read KEY=value from .env (last match wins). Strips optional surrounding double-quotes.
-env_value() {
-  local key="$1"
-  [[ -f "$ENV_SOURCE" ]] || return 0
-  grep -F "${key}=" "$ENV_SOURCE" 2>/dev/null | tail -n1 | cut -d= -f2- \
+# Read KEY=value from a dotenv-style file (last match wins). Strips optional
+# surrounding double-quotes. Echoes nothing if the file is missing.
+env_value_from() {
+  local file="$1" key="$2"
+  [[ -f "$file" ]] || return 0
+  grep -F "${key}=" "$file" 2>/dev/null | tail -n1 | cut -d= -f2- \
     | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/^"\(.*\)"$/\1/'
 }
 
-# Resolve a config value: process environment first, then .env, then default.
+# Resolve a config value: process environment, then .env, then (local mode)
+# docker-compose.dev.env, then default. Matches compose --env-file order where
+# .env is loaded after docker-compose.dev.env and wins on conflicts.
 cfg() {
   local key="$1" default="${2:-}"
   local v="${!key:-}"
@@ -179,10 +190,17 @@ cfg() {
     printf '%s' "$v"
     return
   fi
-  v="$(env_value "$key")"
+  v="$(env_value_from "$ENV_SOURCE" "$key")"
   if [[ -n "$v" ]]; then
     printf '%s' "$v"
     return
+  fi
+  if [[ "$MODE" == "local" ]]; then
+    v="$(env_value_from "$DEV_ENV_SOURCE" "$key")"
+    if [[ -n "$v" ]]; then
+      printf '%s' "$v"
+      return
+    fi
   fi
   printf '%s' "$default"
 }
@@ -205,6 +223,66 @@ url_hostport() {
     port=""
   fi
   printf '%s %s' "$host" "$port"
+}
+
+# Local compose often keeps INVENIO_SITE_*_URL as https://localhost (scheme
+# default port 443) while docker-compose.dev.env publishes nginx on
+# KCWORKS_NGINX_HTTPS_HOST_PORT (e.g. 8443). Rewrite loopback URLs to the
+# published host port; leave non-loopback URLs unchanged.
+local_nginx_url() {
+  local url="$1"
+  [[ -n "$url" ]] || {
+    printf '%s' "$url"
+    return
+  }
+  local scheme="${url%%://*}"
+  local rest="${url#*://}"
+  # Only plain http(s) site URLs; leave odd schemes alone.
+  case "$scheme" in
+    http | https) ;;
+    *)
+      printf '%s' "$url"
+      return
+      ;;
+  esac
+  local hostport="${rest%%/*}"
+  local path=""
+  if [[ "$rest" == */* ]]; then
+    path="/${rest#*/}"
+  fi
+  local host port
+  if [[ "$hostport" == \[* ]]; then
+    # IPv6 literals — do not rewrite
+    printf '%s' "$url"
+    return
+  fi
+  if [[ "$hostport" == *:* ]]; then
+    host="${hostport%%:*}"
+    port="${hostport##*:}"
+  else
+    host="$hostport"
+    port=""
+  fi
+  case "$host" in
+    localhost | 127.0.0.1) ;;
+    *)
+      printf '%s' "$url"
+      return
+      ;;
+  esac
+  local want effective
+  if [[ "$scheme" == "https" ]]; then
+    want="$(cfg KCWORKS_NGINX_HTTPS_HOST_PORT 443)"
+    effective="${port:-443}"
+  else
+    want="$(cfg KCWORKS_NGINX_HTTP_HOST_PORT 80)"
+    effective="${port:-80}"
+  fi
+  if [[ "$effective" == "$want" ]]; then
+    printf '%s' "$url"
+    return
+  fi
+  printf '%s://%s:%s%s' "$scheme" "$host" "$want" "$path"
 }
 
 # Echoes tab-separated "host<TAB>port<TAB>user<TAB>db" from a SQLAlchemy URI
@@ -292,40 +370,73 @@ tcp_listen_ok() {
 # HTTP GET via curl when available, else python3 (runtime image has no curl).
 # Sets HTTP_PROBE_CODE (numeric or 000) and HTTP_PROBE_BODY. TLS is not verified
 # (this is a liveness probe, not a certificate check).
+#
+# Optional third argument "nofollow": do not follow redirects (needed for Site UI
+# SSO checks — following broker redirects can loop on local return_to URLs and
+# hides the initial 302 Location). Response headers are included in
+# HTTP_PROBE_BODY so callers can match Location.
 http_probe() {
-  local url="$1" accept="${2:-}"
+  local url="$1" accept="${2:-}" nofollow=0
+  [[ "${3:-}" == "nofollow" ]] && nofollow=1
   local out=""
   if command -v curl >/dev/null 2>&1; then
-    if [[ -n "$accept" ]]; then
-      out="$(curl -sSkL --connect-timeout 5 --max-time 30 -H "Accept: $accept" -w '\n%{http_code}' "$url" 2>&1)"
+    local curl_opts=(-sSk --connect-timeout 5 --max-time 30)
+    if [[ "$nofollow" -eq 1 ]]; then
+      # Headers on stdout so Location is visible to is_ui_sso_redirect.
+      curl_opts+=(-D -)
     else
-      out="$(curl -sSkL --connect-timeout 5 --max-time 30 -w '\n%{http_code}' "$url" 2>&1)"
+      curl_opts+=(-L)
+    fi
+    if [[ -n "$accept" ]]; then
+      out="$(curl "${curl_opts[@]}" -H "Accept: $accept" -w '\n%{http_code}' "$url" 2>&1)"
+    else
+      out="$(curl "${curl_opts[@]}" -w '\n%{http_code}' "$url" 2>&1)"
     fi
   elif command -v python3 >/dev/null 2>&1; then
-    out="$(HP_URL="$url" HP_ACCEPT="$accept" python3 - <<'PY'
+    out="$(HP_URL="$url" HP_ACCEPT="$accept" HP_NOFOLLOW="$nofollow" python3 - <<'PY'
 import os, ssl, sys, urllib.request, urllib.error
+
 url = os.environ.get("HP_URL", "")
 accept = os.environ.get("HP_ACCEPT", "")
+nofollow = os.environ.get("HP_NOFOLLOW", "0") == "1"
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 req = urllib.request.Request(url)
 if accept:
     req.add_header("Accept", accept)
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
 try:
-    with urllib.request.urlopen(req, timeout=30, context=ctx) as r:
-        body = r.read(8192).decode("utf-8", "replace")
-        code = r.getcode()
+    if nofollow:
+        opener = urllib.request.build_opener(
+            _NoRedirect(),
+            urllib.request.HTTPSHandler(context=ctx),
+        )
+        with opener.open(req, timeout=30) as r:
+            hdrs = "".join(f"{k}: {v}\n" for k, v in r.headers.items())
+            body = r.read(8192).decode("utf-8", "replace")
+            code = r.getcode()
+            sys.stdout.write(hdrs + "\n" + body + "\n" + str(code))
+    else:
+        with urllib.request.urlopen(req, timeout=30, context=ctx) as r:
+            body = r.read(8192).decode("utf-8", "replace")
+            code = r.getcode()
+            sys.stdout.write(body + "\n" + str(code))
 except urllib.error.HTTPError as e:
     try:
         body = e.read(8192).decode("utf-8", "replace")
     except Exception:
         body = ""
-    code = e.code
+    hdrs = ""
+    if nofollow and e.headers is not None:
+        hdrs = "".join(f"{k}: {v}\n" for k, v in e.headers.items())
+    sys.stdout.write(hdrs + ("\n" if hdrs else "") + body + "\n" + str(e.code))
 except Exception as e:
-    body = str(e)
-    code = 0
-sys.stdout.write(body + "\n" + str(code))
+    sys.stdout.write(str(e) + "\n0")
 PY
 )"
   else
@@ -944,6 +1055,11 @@ check_site() {
   ui_url="$(cfg INVENIO_SITE_UI_URL "")"
   api_url="$(cfg INVENIO_SITE_API_URL "")"
 
+  if [[ "$MODE" == "local" ]]; then
+    ui_url="$(local_nginx_url "$ui_url")"
+    api_url="$(local_nginx_url "$api_url")"
+  fi
+
   if [[ -z "$ui_url" ]]; then
     record_fail "Site UI: missing INVENIO_SITE_UI_URL (env or ${ENV_SOURCE})"
   elif [[ "$MODE" != "local" ]]; then
@@ -955,7 +1071,7 @@ check_site() {
       report "Healthcheck" "OK - HTTP 200 /healthcheck"
       detail "${ui_url%/}/healthcheck"
     fi
-    http_probe "$ui_url"
+    http_probe "$ui_url" "" nofollow
     if [[ "$HTTP_PROBE_CODE" == "200" ]]; then
       report "Site UI" "OK - HTTP 200"
       detail "${ui_url}"
@@ -968,14 +1084,17 @@ check_site() {
       record_fail "Site UI: HTTP ${HTTP_PROBE_CODE} (expected 200 or SSO redirect). ${ui_brief}"
     fi
   else
-    http_probe "$ui_url"
-    if [[ "$HTTP_PROBE_CODE" != "200" ]]; then
-      local ui_brief
-      ui_brief="$(printf '%s' "$HTTP_PROBE_BODY" | brief_line 240)"
-      record_fail "Site UI: HTTP ${HTTP_PROBE_CODE} (expected 200). ${ui_brief}"
-    else
+    http_probe "$ui_url" "" nofollow
+    if [[ "$HTTP_PROBE_CODE" == "200" ]]; then
       report "Site UI" "OK - HTTP 200"
       detail "${ui_url}"
+    elif is_ui_sso_redirect; then
+      report "Site UI" "OK - HTTP 302 SSO redirect"
+      detail "${ui_url} (unauthenticated redirect to broker is expected)"
+    else
+      local ui_brief
+      ui_brief="$(printf '%s' "$HTTP_PROBE_BODY" | brief_line 240)"
+      record_fail "Site UI: HTTP ${HTTP_PROBE_CODE} (expected 200 or SSO redirect). ${ui_brief}"
     fi
   fi
 

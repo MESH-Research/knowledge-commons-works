@@ -102,10 +102,10 @@ describe('AccessRightField', () => {
   it('renders the component with default props', () => {
     renderComponent();
 
-    // Check for the label
-    expect(screen.getByText('Access')).toBeInTheDocument();
+    // Outer section label is the accordion title (settings collapsed by default).
+    expect(screen.getByRole('button', { name: /change access settings/i })).toBeInTheDocument();
 
-    // Check for metadata access section
+    // Check for metadata access section (still in DOM while accordion is closed).
     expect(screen.getByText('Record access')).toBeInTheDocument();
 
     // Check for files access section

@@ -1,7 +1,7 @@
 """Tests for the `backfill-default-branding` click command.
 
-Uses [`click.testing.CliRunner`][click.testing.CliRunner] to invoke the
-CLI against three fixture communities:
+Uses the shared `cli_runner` fixture to invoke the CLI against three
+fixture communities:
 
 1. `branded-full` - fully branded (logo + theme present): backfill must
    leave it alone.
@@ -11,7 +11,7 @@ CLI against three fixture communities:
 
 We also check that `--logo-only` / `--theme-only` flags isolate the
 respective operations. By default, admin-customized theme keys survive
-backfill (only missing keys are filled). Pass ``--reset-theme`` to
+backfill (only missing keys are filled). Pass `--reset-theme` to
 overwrite existing values with current service defaults.
 """
 
@@ -21,7 +21,6 @@ from io import BytesIO
 from typing import Any
 
 import pytest
-from click.testing import CliRunner
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from kcworks.services.communities.cli import backfill_default_branding
@@ -141,10 +140,11 @@ def three_communities(minimal_community_factory, search_clear):
     }
 
 
-def test_backfill_dry_run_reports_correct_counts(app, db, three_communities) -> None:
+def test_backfill_dry_run_reports_correct_counts(
+    app, db, three_communities, cli_runner
+) -> None:
     """`--dry-run` reports the right counts and writes nothing."""
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, ["--dry-run"])
+    result = cli_runner(backfill_default_branding, "--dry-run")
     assert result.exit_code == 0, result.output
     assert "Backfill summary (dry-run)" in result.output
     # logo_only: needs theme; neither: needs both. full: needs nothing.
@@ -158,10 +158,11 @@ def test_backfill_dry_run_reports_correct_counts(app, db, three_communities) -> 
     assert "theme" not in record or "style" not in (record.get("theme") or {})
 
 
-def test_backfill_inline_applies_logo_and_theme(app, db, three_communities) -> None:
+def test_backfill_inline_applies_logo_and_theme(
+    app, db, three_communities, cli_runner
+) -> None:
     """A non-dry-run pass fixes both logo and theme on the needy communities."""
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, [])
+    result = cli_runner(backfill_default_branding)
     assert result.exit_code == 0, result.output
 
     # The "neither" community should now have logo AND theme.
@@ -197,10 +198,11 @@ def test_backfill_inline_applies_logo_and_theme(app, db, three_communities) -> N
     assert style["mainHeaderBackgroundColor"] == expected["mainHeaderBackgroundColor"]
 
 
-def test_backfill_logo_only_skips_theme(app, db, three_communities) -> None:
+def test_backfill_logo_only_skips_theme(
+    app, db, three_communities, cli_runner
+) -> None:
     """`--logo-only` adds the logo on `neither` but leaves theme empty."""
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, ["--logo-only"])
+    result = cli_runner(backfill_default_branding, "--logo-only")
     assert result.exit_code == 0, result.output
 
     record = _read_record(three_communities["neither"].id)
@@ -210,10 +212,11 @@ def test_backfill_logo_only_skips_theme(app, db, three_communities) -> None:
     assert (theme.get("style") or {}) == {}
 
 
-def test_backfill_theme_only_skips_logo(app, db, three_communities) -> None:
+def test_backfill_theme_only_skips_logo(
+    app, db, three_communities, cli_runner
+) -> None:
     """`--theme-only` adds theme on `neither` but does not generate the logo."""
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, ["--theme-only"])
+    result = cli_runner(backfill_default_branding, "--theme-only")
     assert result.exit_code == 0, result.output
 
     record = _read_record(three_communities["neither"].id)
@@ -235,8 +238,9 @@ def test_backfill_preserves_admin_theme_value(
     db,
     minimal_community_factory,
     search_clear,
+    cli_runner,
 ) -> None:
-    """An admin-customized theme key survives backfill without ``--reset-theme``."""
+    """An admin-customized theme key survives backfill without `--reset-theme`."""
     community = minimal_community_factory(slug="branded-admin-custom")
     read_result = current_communities.service.read(system_identity, community.id)
     update_data = dict(read_result.data)
@@ -247,8 +251,7 @@ def test_backfill_preserves_admin_theme_value(
     current_communities.service.update(system_identity, community.id, update_data)
     current_communities.service.record_cls.index.refresh()
 
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, [])
+    result = cli_runner(backfill_default_branding)
     assert result.exit_code == 0, result.output
 
     record = _read_record(community.id)
@@ -266,8 +269,9 @@ def test_backfill_resets_admin_theme_to_defaults(
     db,
     minimal_community_factory,
     search_clear,
+    cli_runner,
 ) -> None:
-    """Backfill with ``--reset-theme`` overwrites customized theme keys."""
+    """Backfill with `--reset-theme` overwrites customized theme keys."""
     community = minimal_community_factory(slug="branded-admin-custom")
     # Push a custom primary color through the regular update path. Read via
     # the service so `update_data` is the schema-shaped payload (`slug`,
@@ -282,8 +286,7 @@ def test_backfill_resets_admin_theme_to_defaults(
     current_communities.service.update(system_identity, community.id, update_data)
     current_communities.service.record_cls.index.refresh()
 
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, ["--reset-theme"])
+    result = cli_runner(backfill_default_branding, "--reset-theme")
     assert result.exit_code == 0, result.output
 
     record = _read_record(community.id)
@@ -298,6 +301,7 @@ def test_backfill_uses_generic_theme_for_custom_logo(
     db,
     minimal_community_factory,
     search_clear,
+    cli_runner,
 ) -> None:
     """Backfill seeds generic colors when the logo is user-uploaded."""
     community = minimal_community_factory(slug="branded-custom-logo")
@@ -308,8 +312,7 @@ def test_backfill_uses_generic_theme_for_custom_logo(
     )
     _strip_theme(community.id)
 
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, [])
+    result = cli_runner(backfill_default_branding)
     assert result.exit_code == 0, result.output
 
     record = _read_record(community.id)
@@ -325,8 +328,9 @@ def test_backfill_reset_theme_preserves_custom_logo_flag(
     db,
     minimal_community_factory,
     search_clear,
+    cli_runner,
 ) -> None:
-    """``--reset-theme`` keeps ``autogeneratedLogo=false`` for custom logos."""
+    """`--reset-theme` keeps `autogeneratedLogo=false` for custom logos."""
     community = minimal_community_factory(slug="branded-custom-logo-reset")
     current_communities.service.update_logo(
         system_identity,
@@ -346,8 +350,7 @@ def test_backfill_reset_theme_preserves_custom_logo_flag(
     current_communities.service.update(system_identity, community.id, update_data)
     current_communities.service.record_cls.index.refresh()
 
-    runner = CliRunner()
-    result = runner.invoke(backfill_default_branding, ["--reset-theme"])
+    result = cli_runner(backfill_default_branding, "--reset-theme")
     assert result.exit_code == 0, result.output
 
     record = _read_record(community.id)

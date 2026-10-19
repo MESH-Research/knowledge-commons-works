@@ -134,6 +134,8 @@
 @ivory20: #fdfdfb;
 @ivory10: #fefefd;
 @ivoryRgba90: rgba(245, 245, 235, 0.9);
+@ivoryRgba70: rgba(245, 245, 235, 0.7);
+@ivoryRgba50: rgba(245, 245, 235, 0.5);
 
 @darkGray: #4e4e4e;
 @green: #6c7839;
@@ -141,6 +143,7 @@
 @greenRgba10: rgba(122, 151, 80, 0.1);
 @peacock: #4899DB;
 @peacockRgba10: rgba(72, 153, 219, 0.1);
+@blue: #175b8f; // darker than SUI default for WCAG contrast on white text
 @white: #fff;
 @salmon: #e47719;
 @salmonDark: #b05c14;
@@ -161,7 +164,9 @@
 @primaryTextColor: @verdigrisDark !important;
 
 @secondaryColor: @gold;
-@secondaryTextColor: #8d7313; // @darkGold;
+// SUI button.variables resets @secondaryTextColor to @invertedTextColor (white).
+@secondaryTextColor: #8d7313;
+@secondaryButtonTextColor: #847231; // desaturated gold; AA on white / white-on-fill
 @secondaryBackgroundColor: @gold10;
 
 // backwards compatibility
@@ -176,7 +181,7 @@
 ------------------------------- */
 @positiveColor: @green;
 @positiveColorDown: darken(@green, 5%);
-@positiveTextColor: @green; 
+@positiveTextColor: @green;
 @positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
 @positiveBorderColor: @ivy30;
@@ -252,6 +257,7 @@
 
 @versionActiveColor: @seafoam; //#d9edf7;
 
+@mutedTextColor: #515151;
 @mutedAccordionHeaderColor: #f5f5f5;
 
 /*-------------------

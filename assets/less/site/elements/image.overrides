@@ -34,7 +34,7 @@
       img {
         min-height: 2.5rem;
         min-width: 2.5rem;
-        max-width: 2.5rem;  
+        max-width: 2.5rem;
         max-height: 2.5rem;
       }
   }
@@ -89,13 +89,5 @@
   }
 }
 
-#communities-carousel .carousel .ui.items .item img {
-  object-fit: cover;
-  border-radius: @defaultBorderRadius;
-  max-width: 150px;
-  max-height: 150px;
-  min-height: 150px;
-  min-width: 150px;
-  box-shadow: 0 0 0.5rem rgb(0 0 0 / 5%);
-  border: 1px solid @sidebarBorderColor;
-}
+// Logo sizing for carousel cards lives under `.community-card-logo` in card.overrides
+// so hover can keep the image box fixed while the card widens.

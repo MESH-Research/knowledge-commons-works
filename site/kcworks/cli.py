@@ -41,6 +41,9 @@ from kcworks.services.records.cli import (
 )
 from kcworks.services.records.cli import export_records as export_records_command
 from kcworks.services.search.indices import delete_index
+from kcworks.services.users.cli import (
+    ensure_service_capabilities_command,
+)
 from kcworks.services.users.cli import find_duplicates as find_duplicates_command
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
@@ -74,6 +77,7 @@ kcworks_users.add_command(find_duplicates_command)
 kcworks_users.add_command(groups_command)
 kcworks_users.add_command(group_users_command)
 kcworks_users.add_command(user_groups_command)
+kcworks_users.add_command(ensure_service_capabilities_command)
 
 
 @click.group()
@@ -183,12 +187,12 @@ def _parse_schedule(value):
     are integers (per IntervalScheduleSchema).
 
     Returns:
-        ``None`` if ``value`` is empty, else a dict with a ``type`` key of
-        ``"crontab"`` or ``"interval"`` plus the parsed schedule fields.
+        `None` if `value` is empty, else a dict with a `type` key of
+        `"crontab"` or `"interval"` plus the parsed schedule fields.
 
     Raises:
-        click.BadParameter: if ``value`` is non-empty but cannot be parsed as
-            one of the accepted forms (wraps the underlying ``ValueError``).
+        click.BadParameter: if `value` is non-empty but cannot be parsed as
+            one of the accepted forms (wraps the underlying `ValueError`).
     """
     if not value:
         return None
@@ -280,6 +284,8 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
         click.ClickException: If the newly upserted job cannot be reloaded from the
           db session.
     """
+    from invenio_jobs.logging.jobs import set_job_context
+
     title = title or task
     payload = {"title": title, "task": task, "active": active}
     if description is not None:
@@ -306,6 +312,9 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
         # Bypassing RunsService.create() avoids its identity.id integer-FK
         # mismatch (system_identity.id is the string "system"); the scheduler
         # itself leaves started_by_id NULL, which is what we do here.
+        #
+        # TODO: Until we can update to invenio-jobs >= 6.0 we have to also
+        # wrap the apply_async with set_job_context or else job loggin fails.
         job = db.session.get(Job, result.id)
         if not job:
             raise click.ClickException(
@@ -314,12 +323,13 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
         run = Run.create(job=job, task_id=uuid.uuid4())
         db.session.add(run)
         db.session.commit()
-        execute_run.apply_async(
-            args=(str(run.id),),
-            task_id=str(run.task_id),
-            queue=job.default_queue,
-        )
-        click.echo(
-            f"Dispatched immediate run {run.id} for job {job.id} "
-            f"(task_id={run.task_id})."
-        )
+        with set_job_context({"run_id": str(run.id), "job_id": str(job.id)}):
+            execute_run.apply_async(
+                args=(str(run.id),),
+                task_id=str(run.task_id),
+                queue=job.default_queue,
+            )
+            click.echo(
+                f"Dispatched immediate run {run.id} for job {job.id} "
+                f"(task_id={run.task_id})."
+            )

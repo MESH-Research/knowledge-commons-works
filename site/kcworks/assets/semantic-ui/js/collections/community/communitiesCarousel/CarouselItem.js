@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Image } from "react-invenio-forms";
 import Overridable from "react-overridable";
-import { Button, Grid, Header, Item } from "semantic-ui-react";
+import { Button, Header, Item } from "semantic-ui-react";
 
 class CarouselItem extends Component {
   render() {
@@ -28,32 +28,25 @@ class CarouselItem extends Component {
         <Item
           className={`carousel flex align-items-center ${className}`}
           key={community.id}
+          role="listitem"
         >
           <Image
             size="small"
             src={community.links.logo}
             fallbackSrc={defaultLogo || "/static/images/square-placeholder.png"}
           />
-          <Item.Content as={Grid}>
-            <Grid.Column computer="12" tablet="16" className="pl-0 pb-0">
-              <Item.Header stackable className="rel-pb-1">
-                <Header as="a" size="medium" href={community.links.self_html}>
-                  {community.metadata.title}
-                </Header>
-              </Item.Header>
-              <Item.Description
-                content={_truncate(community.metadata.description, {
-                  length: 300,
-                })}
-              />
-            </Grid.Column>
-
-            <Grid.Column
-              computer="4"
-              tablet="16"
-              className="buttons pl-0 pb-0"
-            >
-              <div className="buttons-wrapper">
+          <Item.Content>
+            <Item.Header stackable className="rel-pb-1">
+              <Header as="a" size="medium" href={community.links.self_html}>
+                {community.metadata.title}
+              </Header>
+            </Item.Header>
+            <Item.Description
+              content={_truncate(community.metadata.description, {
+                length: 300,
+              })}
+            />
+            <div className="buttons-wrapper">
               <Button
                 size="mini"
                 href={community.links.self_html}
@@ -63,15 +56,13 @@ class CarouselItem extends Component {
               {showUploadBtn && (
                 <Button
                   size="mini"
-                  // icon="upload"
-                  // labelPosition="left"
                   primary
                   href={`/uploads/new?community=${community.slug}`}
                   content={i18next.t("Contribute")}
                   className="contribute-btn"
                 />
-              )}</div>
-            </Grid.Column>
+              )}
+            </div>
           </Item.Content>
         </Item>
       </Overridable>
@@ -91,7 +82,4 @@ CarouselItem.defaultProps = {
   showUploadBtn: true,
 };
 
-export default Overridable.component(
-  "InvenioCommunities.CarouselItem",
-  CarouselItem
-);
+export default Overridable.component("InvenioCommunities.CarouselItem", CarouselItem);

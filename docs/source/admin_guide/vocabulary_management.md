@@ -10,7 +10,9 @@ The **Names** vocabulary (people for creator/contributor lookup) is maintained
 separately — see [Names Vocabulary Lifecycle](names_vocabulary.md).
 
 Install-time seeding and default job registration are covered in
-[Installation — step 5](../setup/installation.md). This page is for ongoing
+[Installation — step 5](../setup/installation.md). For a chronological overview
+of **all** scheduled beat tasks and jobs, see
+[Scheduled events](scheduled_events.md). This page is for ongoing
 operation: seed, schedule updates, run one-off imports, and add fixture-backed
 entries (especially resource types).
 
@@ -33,6 +35,7 @@ Upstream overview:
 | Funders         | ROR dump (Zenodo) | `process_ror_funders`      | — (must exist before awards write successfully) |
 | Awards          | OpenAIRE (Zenodo) | `import_awards_openaire`   | Funders vocabulary + funder-prefix allowlist    |
 | Awards (enrich) | CORDIS XML        | `update_awards_cordis`     | Existing OpenAIRE award records                 |
+| Subjects (FAST) | OCLC updates `.mrc` | `process_fast_subject_updates` (Wed) | Initial FAST fixtures / package load |
 
 Affiliations and funders are independent of each other. Awards reference funders
 by ROR id. CORDIS does **not** create awards; it only enriches EC awards already
@@ -42,13 +45,13 @@ Default schedules (UTC, Sundays): funders 03:00 → affiliations 04:00 → OpenA
 awards 05:00 → CORDIS 06:00.
 
 **Subjects** (FAST via `invenio-subjects-fast`, plus Homosaurus) and **resource
-types** are **not** on that weekly schedule. They are seeded with
-`invenio rdm-records fixtures` from entries declared in
+types** are seeded with `invenio rdm-records fixtures` from entries declared in
 `app_data/vocabularies.yaml` (see [Installation](../setup/installation.md)).
-Subjects are refreshed with `invenio vocabularies update` when the package
-source changes—see [Subjects](#subjects-fast--homosaurus). Resource types are
-edited in YAML and applied with `invenio rdm-records add-to-fixture`—see
-[Resource types](#resource-types).
+FAST incremental updates (OCLC ISO MARC “change files”) are refreshed on a
+mid-week schedule by `process_fast_subject_updates`—see
+[Subjects](#subjects-fast--homosaurus).
+Resource types are edited in YAML and applied with
+`invenio rdm-records add-to-fixture`—see [Resource types](#resource-types).
 
 ## How do I import vocabulary data from a local file?
 
@@ -399,6 +402,50 @@ jobs above.
 Expected FAST `scheme` values are listed under
 [metadata.subjects](../reference/metadata.md#metadata-subjects).
 
+### How do I schedule FAST subject updates?
+
+OCLC publishes incremental ISO MARC (`.mrc`) **change files** on
+https://fast.oclc.org/fastChanges/ (`FASTChanges*.mrc` / `FORMChanges*.mrc`).
+The **`invenio-subjects-fast`** package registers the invenio-jobs task
+`process_fast_subject_updates` (Celery task + JobType). KCWorks schedules that
+task at deploy time:
+
+```shell
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
+    --queue celery
+```
+
+Default schedule (from `setup-services.sh`): Wednesdays 02:00 UTC.
+
+**What the job does:** download unseen `.mrc` files, convert them to per-facet
+delta JSONL, upsert into the subjects vocabulary (`update=True`), and move
+`.mrc` files to `processed/` only after a clean ingest. If any vocabulary
+writer entry errors occur, the `.mrc` files stay in the workdir so the next
+run retries them.
+
+**Workdir** (shared by the job and `invenio subjects_fast …` CLI):
+
+1. Explicit `--download-dir` (CLI only), else
+2. Flask config `SUBJECTS_FAST_UPDATES_PATH` (or env
+   `INVENIO_SUBJECTS_FAST_UPDATES_PATH`), else
+3. `<instance_path>/app_data/vocabularies/fast/`
+
+When no job `since` bookmark exists, the package anchors from local
+`FASTChanges*` / `FORMChanges*` filename dates, then full-dump mtimes, then a
+180-day lookback (same defaults as `invenio subjects_fast download-updates`).
+
+**Manual one-off** (same pipeline as the job, with app context):
+
+```shell
+invenio subjects_fast process-updates --ingest
+# optional: --since 2026-01-01  --download-dir /path/to/dir  --force
+```
+
+Details and non-ingest convert-only flows live in the `invenio-subjects-fast`
+README.
+
 ### When do I use `import` vs `update` for subjects?
 
 | Command | Use when |
@@ -423,10 +470,20 @@ rewrite existing subject terms for schemes that were already loaded.
 2. Run update for each changed file (blocks until finished; subject search is
    reindexed per updated term).
 
-   Invenio’s stock subjects CLI defaults to a **YAML** reader. FAST (and
-   Homosaurus) data is **JSONL**, so pass a datastream config with
-   `readers: [{type: jsonl}]` as `--filepath`, and the JSONL as `--origin`.
-   `invenio-subjects-fast` ships that config as
+   Invenio’s stock subjects CLI defaults to a **YAML** reader. FAST and
+   Homosaurus data is **JSONL**, so you must pass a datastream config as
+   `--filepath` and the records file as `--origin`:
+
+   | Flag | Role |
+   | ---- | ---- |
+   | `--filepath` | Datastream YAML (`readers` / `writers`). Not the records file. |
+   | `--origin` | JSONL of subject terms. |
+
+   `app_data/vocabularies.yaml` is the **fixtures** manifest
+   (`rdm-records fixtures` / `add-to-fixture`); `vocabularies import` /
+   `update` do **not** read it.
+
+   **FAST** — `invenio-subjects-fast` ships
    `vocabularies/subjects_datastream.yaml`:
 
    ```shell
@@ -436,11 +493,20 @@ rewrite existing subject terms for schemes that were already loaded.
    ```
 
    Or use the resolved site-packages paths directly. Repeat with another
-   `--origin` (same `--filepath`) for other facet files as needed. Terms are
-   matched by subject `id` (WorldCat or Homosaurus URI).
+   `--origin` (same `--filepath`) for other facet files as needed.
 
-   For Homosaurus JSONL under `app_data`, reuse the same `--filepath` from the
-   package and point `--origin` at the Homosaurus file.
+   **Homosaurus** — use the JSONL datastream config under `app_data`:
+
+   ```shell
+   invenio vocabularies update -v subjects \
+       --filepath app_data/vocabularies/homosaurus/subjects_datastream.yaml \
+       --origin app_data/vocabularies/homosaurus/subjects_homosaurus.jsonl
+   ```
+
+   (Paths relative to `/opt/invenio/src` in the UI container, or absolute
+   equivalents.) Terms are matched by subject `id` (WorldCat or Homosaurus
+   URI). Use `import` instead of `update` for create-only (existing ids are
+   not overwritten).
 
 3. If any term’s **`scheme`** field changed (see below), rebuild the records
    index so denormalized scheme values on records catch up.

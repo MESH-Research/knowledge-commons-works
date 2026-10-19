@@ -45,6 +45,9 @@ module.exports = {
     "^@js/invenio_vocabularies/(.*)$":
       "<rootDir>/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/assets/semantic-ui/$1/invenio_vocabularies/$2",
     "^@js/kcworks/(.*)$": "<rootDir>/site/kcworks/assets/semantic-ui/js/$1",
+    // Same as site/kcworks/webpack.py alias — TinyMCE 8 GPL defaults for every mount.
+    "^tinymce/tinymce$":
+      "<rootDir>/site/kcworks/assets/semantic-ui/js/kcworks/tinymceGplShim.js",
     // Prefer root installs over broken/incomplete nested trees under editable deps.
     // Duplicate formik (root vs deposit-form nested) breaks Formik context in Field.
     "^formik$": "<rootDir>/node_modules/formik",

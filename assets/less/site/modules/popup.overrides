@@ -10,6 +10,25 @@
  */
 
 /*
+ * Fade-in on open for Semantic UI React popups (portal mount) and native
+ * popover tooltips. No fade-out: portals unmount immediately on close.
+ * [data-tooltip] already transitions via Semantic UI defaults.
+ *
+ * Use longhands + fill-mode:both so the 0% keyframe applies on mount.
+ * The animation shorthand defaults fill-mode to none, which paints the
+ * popup at full opacity for a frame and makes short fades look instant.
+ * Reuse Semantic UI's existing fadeIn keyframes.
+ */
+.menu.visible.transition,
+.ui.popup.visible.transition,
+.ui.popup.native-popup-tooltip[popover]:popover-open {
+  animation-name: fadeIn;
+  animation-duration: 300ms;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+/*
  * Bridge classes to use semantic-ui styles with the native popup api
  */
 .ui.popup.native-popup-tooltip[popover]:popover-open {

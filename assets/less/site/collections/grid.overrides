@@ -1,8 +1,28 @@
 .container.carousel {
-  > .ui.grid:nth-child(2) {
-    .column:first-child,
-    .column:last-child {
-      padding-bottom: 5rem;
+  .carousel-wrapper {
+    position: relative;
+
+    &::before,
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 6.25%;
+      min-width: 2rem;
+      max-width: 3.5rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+      background: linear-gradient(to right, @ivory 0%, @ivory 25%, transparent 100%);
+    }
+
+    &::after {
+      right: 0;
+      background: linear-gradient(to left, @ivory 0%, @ivory 25%, transparent 100%);
     }
   }
 }

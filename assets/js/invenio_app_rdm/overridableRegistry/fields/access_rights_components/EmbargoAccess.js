@@ -36,7 +36,7 @@ export const EmbargoAccess = ({ access, accessCommunity, metadataOnly }) => {
 
   return (
     <>
-      <Form.Field className="mb-0 rel-mt-1">
+      <Form.Field className="mb-0 rel-mt-1 pr-20 pl-20">
         <EmbargoCheckboxField
           fieldPath="access.embargo.active"
           disabled={!embargoEnabled}

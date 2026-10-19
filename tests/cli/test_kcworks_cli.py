@@ -419,6 +419,8 @@ def test_import_test_records_command(
             "import-test-records",
             "test@example.com",
             "3",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0
@@ -517,6 +519,8 @@ def test_import_test_records_with_options(
             "2",
             "--offset",
             "1",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0
@@ -541,6 +545,8 @@ def test_import_test_records_with_options(
             "2024-01-01",
             "--end-date",
             "2024-12-31",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0
@@ -562,6 +568,8 @@ def test_import_test_records_with_options(
             "test@example.com",
             "2",
             "--spread-dates",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0
@@ -581,6 +589,8 @@ def test_import_test_records_with_options(
             "import-test-records",
             "test@example.com",
             "2",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0
@@ -600,6 +610,8 @@ def test_import_test_records_with_options(
             "import-test-records",
             "test@example.com",
             "2",
+            "--api-token",
+            "test-sample-data-token",
         )
 
         assert result.exit_code == 0

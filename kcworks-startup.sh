@@ -4,16 +4,39 @@
 # To facilitate more secure handling of secrets in local development, this script
 #
 # - Fetches a slice of keys from AWS Secrets Manager into a temporary env file
-# - Runs `docker compose up -d` with the standard *and* dev docker compose files
+# - Runs `docker compose up -d` with the standard compose file (and optionally
+#   the local-dev overlay)
 #   - Pulls secrets from the temp env file
 #   - Pulls non-secret env vars from ./.env
 #
 # Run from the repository (package) root:
-#   ./kcworks-startup.sh
+#   ./kcworks-startup.sh                 # local-dev overlay (kcworks-dev + bind mounts)
+#   ./kcworks-startup.sh --prod          # Hub runtime image only (docker-compose.yml)
+#   ./kcworks-startup.sh --mock-profiles # also trust profiles-mock mkcert CA in app containers
 #
-# This script always runs:
+# Default (no --prod):
 #   docker compose --env-file docker-compose.dev.env [--env-file .env] \
 #     --file docker-compose.yml --file docker-compose.dev.yml up -d
+#
+# With --prod (deploy-like local stack; still uses SM secrets + host port env):
+#   docker compose --env-file docker-compose.dev.env [--env-file .env] \
+#     --file docker-compose.yml up -d web-ui
+#   docker compose … up -d
+#   IMAGE_TAG defaults to unset → monotasker/kcworks:latest (no branch tag).
+#   Prefer an explicit pull first: docker pull monotasker/kcworks:latest
+#
+# With --mock-profiles:
+#   Omits COMMONS_PROFILES_API_TOKEN from the SM key list (mock overlay supplies it)
+#   Copies PROFILES_MOCK_ROOT/docker/certs/profiles-mock-rootCA.pem →
+#     ./docker/certs/profiles-mock-rootCA.crt (gitignored)
+#   Adds --file docker-compose.mock-profiles.yml which:
+#     - mounts the CA into web-ui, web-api, worker, scheduler
+#     - sets mock token + Profiles URL env:
+#         browser: https://127.0.0.1:8099/... (domain, login, silent-login, URL_BASE)
+#         server:  https://host.docker.internal:8099/... (verify-nonce, IDMS API)
+#   After compose up, runs `update-ca-certificates` as root in those services
+#   PROFILES_MOCK_ROOT defaults to ../knowledge-commons-profiles-mock
+#   Do not keep conflicting Profiles URL/token lines in ./.env when using this flag
 #
 # Host port defaults live in docker-compose.dev.env (tracked, no secrets).
 # When .env exists, it is loaded second so your clone-specific overrides win.
@@ -29,7 +52,10 @@
 #   --allow-missing      Warn instead of failing if a listed key is absent from the secret
 #
 # Optional flags for docker compose:
+#   --prod               Base compose only (Hub monotasker/kcworks); still fetches SM secrets
+#   --mock-profiles      profiles-mock CA + URL/token env + update-ca-certificates
 #   --image-tag TAG      Sets IMAGE_TAG for this run (same as IMAGE_TAG=TAG in the environment)
+#   --build              Pass --build to docker compose up
 #
 # Requires aws CLI be configured on the host machine
 #
@@ -43,13 +69,15 @@ cd "$REPO_ROOT"
 RUNTIME_SECRET_HOST_FILE="/tmp/kcworks-runtime-secrets.env"
 
 usage() {
-  sed -n '2,44p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,62p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
 }
 
 # Built-in SM defaults (CLI and KCWORKS_SM_* override these). Keys must exist in the JSON secret.
+# COMMONS_PROFILES_API_TOKEN is included by default; --mock-profiles strips it after resolve
+# so the mock overlay token is not overridden by staging SM.
 DEFAULT_SM_SECRET_ID="staging/kcworks"
-DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN,API_TOKEN_PRODUCTION"
+DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN"
 
 # Filled after option parsing: CLI --secret-id / --keys, else env, else DEFAULT_SM_* above.
 SECRET_ID=""
@@ -58,6 +86,8 @@ REGION=()
 ALLOW_MISSING=0
 IMAGE_TAG_ARG=""
 BUILD_ARG=0
+PROD_MODE=0
+MOCK_PROFILES=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -81,6 +111,14 @@ while [[ $# -gt 0 ]]; do
     BUILD_ARG=1
     shift
     ;;
+  --prod)
+    PROD_MODE=1
+    shift
+    ;;
+  --mock-profiles)
+    MOCK_PROFILES=1
+    shift
+    ;;
   --allow-missing)
     ALLOW_MISSING=1
     shift
@@ -99,6 +137,20 @@ done
 SECRET_ID="${SECRET_ID:-${KCWORKS_SM_SECRET_ID:-$DEFAULT_SM_SECRET_ID}}"
 KEYS="${KEYS:-${KCWORKS_SM_KEYS:-$DEFAULT_SM_KEYS}}"
 
+# Mock overlay sets COMMONS_PROFILES_API_TOKEN; drop it from SM fetch (including
+# explicit --keys / KCWORKS_SM_KEYS) so staging does not override the mock secret.
+if [[ "$MOCK_PROFILES" -eq 1 ]]; then
+  KEYS=$(
+    IFS=','
+    filtered=()
+    for key in $KEYS; do
+      [[ "$key" == "COMMONS_PROFILES_API_TOKEN" ]] && continue
+      filtered+=("$key")
+    done
+    (IFS=','; echo "${filtered[*]}")
+  )
+fi
+
 if [[ -z "$SECRET_ID" || -z "$KEYS" ]]; then
   echo "Error: secret id and keys list are empty (set KCWORKS_SM_SECRET_ID / KCWORKS_SM_KEYS or pass --secret-id / --keys)." >&2
   usage
@@ -115,8 +167,13 @@ if [[ ! -x "$VENV_PY" ]]; then
   exit 1
 fi
 
-if [[ ! -f docker-compose.yml || ! -f docker-compose.dev.yml ]]; then
-  echo "Error: expected docker-compose.yml and docker-compose.dev.yml in ${REPO_ROOT}." >&2
+if [[ ! -f docker-compose.yml ]]; then
+  echo "Error: expected docker-compose.yml in ${REPO_ROOT}." >&2
+  exit 1
+fi
+
+if [[ "$PROD_MODE" -eq 0 && ! -f docker-compose.dev.yml ]]; then
+  echo "Error: expected docker-compose.dev.yml in ${REPO_ROOT} (omit requirement with --prod)." >&2
   exit 1
 fi
 
@@ -174,12 +231,17 @@ fi
 rm -f "$RAWFILE"
 RAWFILE=""
 
-# IMAGE_TAG precedence: --image-tag flag > existing env > current git branch.
-# Mirrors CI's per-branch tagging so local builder images cache per branch
-# (monotasker/kcworks-dev:<branch>) instead of clobbering a single :latest.
+# IMAGE_TAG:
+# - --image-tag always wins
+# - --prod: leave unset unless already in the environment → compose uses :latest
+#   (Hub monotasker/kcworks:latest from main CI); do not derive from git branch
+# - default (dev overlay): --image-tag > existing env > current git branch, so
+#   local builder images cache per branch (monotasker/kcworks-dev:<branch>)
 # CI uses slash-to-dash sanitization with no SHA suffix; matched here verbatim.
 if [[ -n "$IMAGE_TAG_ARG" ]]; then
   export IMAGE_TAG="$IMAGE_TAG_ARG"
+elif [[ "$PROD_MODE" -eq 1 ]]; then
+  : # keep IMAGE_TAG from environment if set; otherwise compose defaults to latest
 elif [[ -z "${IMAGE_TAG:-}" ]]; then
   if branch=$(git -C "$REPO_ROOT" symbolic-ref --short HEAD 2>/dev/null); then
     export IMAGE_TAG="${branch//\//-}"
@@ -193,11 +255,60 @@ if [[ "$BUILD_ARG" -eq 1 ]]; then
   BUILD_FLAGS+=(--build)
 fi
 
-docker compose \
-  "${COMPOSE_ENV_FILES[@]}" \
-  --file docker-compose.yml \
-  --file docker-compose.dev.yml \
-  up -d "${BUILD_FLAGS[@]}"
+COMPOSE_FILES=(--file docker-compose.yml)
+if [[ "$PROD_MODE" -eq 0 ]]; then
+  COMPOSE_FILES+=(--file docker-compose.dev.yml)
+fi
+
+MOCK_PROFILES_SERVICES=(web-ui web-api worker scheduler)
+if [[ "$MOCK_PROFILES" -eq 1 ]]; then
+  if [[ ! -f docker-compose.mock-profiles.yml ]]; then
+    echo "Error: expected docker-compose.mock-profiles.yml in ${REPO_ROOT}." >&2
+    exit 1
+  fi
+  PROFILES_MOCK_ROOT="${PROFILES_MOCK_ROOT:-${REPO_ROOT}/../knowledge-commons-profiles-mock}"
+  MOCK_CA_SRC="${PROFILES_MOCK_ROOT}/docker/certs/profiles-mock-rootCA.pem"
+  MOCK_CA_DST="${REPO_ROOT}/docker/certs/profiles-mock-rootCA.crt"
+  if [[ ! -f "$MOCK_CA_SRC" ]]; then
+    echo "Error: profiles-mock CA not found at ${MOCK_CA_SRC}." >&2
+    echo "Generate it in the profiles-mock repo (scripts/generate-dev-certs.sh)," >&2
+    echo "or set PROFILES_MOCK_ROOT to that checkout." >&2
+    exit 1
+  fi
+  mkdir -p "${REPO_ROOT}/docker/certs"
+  cp "$MOCK_CA_SRC" "$MOCK_CA_DST"
+  echo "Copied profiles-mock CA → ${MOCK_CA_DST}"
+  COMPOSE_FILES+=(--file docker-compose.mock-profiles.yml)
+fi
+
+run_compose() {
+  docker compose \
+    "${COMPOSE_ENV_FILES[@]}" \
+    "${COMPOSE_FILES[@]}" \
+    "$@"
+}
+
+run_compose_up() {
+  run_compose up -d "${BUILD_FLAGS[@]}" "$@"
+}
+
+if [[ "$PROD_MODE" -eq 1 ]]; then
+  # Seed static_data via web-ui first (avoids parallel named-volume copy-up race).
+  run_compose_up web-ui
+  run_compose_up
+else
+  run_compose_up
+fi
 compose_status=$?
+
+if [[ "$compose_status" -eq 0 && "$MOCK_PROFILES" -eq 1 ]]; then
+  for svc in "${MOCK_PROFILES_SERVICES[@]}"; do
+    echo "Installing profiles-mock CA in ${svc} (update-ca-certificates)…"
+    if ! run_compose exec -u root -T "$svc" update-ca-certificates; then
+      echo "Error: update-ca-certificates failed in ${svc}." >&2
+      exit 1
+    fi
+  done
+fi
 
 exit "$compose_status"

@@ -51,12 +51,12 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 10.32.1
+          version: 12.11.2
           run_install: false
-      - name: Use Node.js 22.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: pnpm
       - name: Create config files
         run: |
@@ -72,12 +72,10 @@ jobs:
           KCWORKS_TEST_SM_DISABLE: "1"
           CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
           CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
-          COMMONS_API_TOKEN: ${{ secrets.TEST_COMMONS_API_TOKEN }}
           COMMONS_PROFILES_API_TOKEN: ${{ secrets.TEST_COMMONS_PROFILES_API_TOKEN }}
           INVENIO_ADMIN_EMAIL: ${{ secrets.TEST_INVENIO_ADMIN_EMAIL }}
           INVENIO_SITE_UI_URL: ${{ vars.INVENIO_SITE_UI_URL }}
           INVENIO_SITE_API_URL: ${{ vars.INVENIO_SITE_API_URL }}
-          INVENIO_STATIC_BEARER_TOKEN: ${{ secrets.INVENIO_STATIC_BEARER_TOKEN }}
           INVENIO_COMMONS_API_REQUEST_PROTOCOL: https
           INVENIO_MAIL_SUPPRESS_SEND: True
           SPARKPOST_API_KEY: ${{ secrets.TEST_SPARKPOST_API_KEY }}

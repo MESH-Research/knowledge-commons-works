@@ -8,9 +8,14 @@ __pycache__/
 # vi(m) swap files
 *.swp
 
-# VSCode workspace config
+# Editor workspace configs
 *.code-workspace
 *.vscode
+*.idea
+.ropeproject/autoimport.db
+.editorconfig
+biome.json
+.ropeproject/autoimport.db-journal
 
 # x.509 cert and private key
 *.crt
@@ -104,8 +109,17 @@ record_importer_failed_records*.jsonl
 record_importer_failed_records.jsonl
 record_importer_touched_records*.jsonl
 record_importer_touched_records.jsonl
+serialized_core_data.jsonl
+scripts/core-migrate/record_importer/logs/record_importer_touched_records.jsonl
+scripts/core-migrate/record_importer/logs/record_importer_created_records.jsonl
+scripts/core-migrate/record_importer/logs/record_importer.log
+scripts/core-migrate/record_importer/logs/record_importer.log.*
+scripts/core-migrate/record_importer/logs/record_importer_failed_records.jsonl
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
+site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
 
 # auto-symlinked during build process
+site/kcworks/assets/semantic-ui/less/site/globals/reset.overrides
 site/kcworks/assets/semantic-ui/less/site/globals/site.variables
 site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 
@@ -118,6 +132,11 @@ site/kcworks/assets/semantic-ui/less/site/globals/site.overrides
 .env.private
 .env-tests
 .envrc
+tests/.env
+
+# Copied by kcworks-startup.sh --mock-profiles (from profiles-mock mkcert CA)
+docker/certs/*.crt
+docker/certs/*.pem
 
 # Private files
 private/
@@ -148,25 +167,10 @@ Thumbs.db
 # app_data/people.yaml
 # app_data/users.yaml
 
-# SAML excludes
-# saml/*
-# *-saml
-# postgres_env.cfg
-# *.sql
-# *.gz
+# Instance-local application data
 subjects_fast.yaml
-serialized_core_data.jsonl
-scripts/core-migrate/record_importer/logs/record_importer_touched_records.jsonl
-scripts/core-migrate/record_importer/logs/record_importer_created_records.jsonl
-scripts/core-migrate/record_importer/logs/record_importer.log
-scripts/core-migrate/record_importer/logs/record_importer.log.*
-scripts/core-migrate/record_importer/logs/record_importer_failed_records.jsonl
-site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log
-site/kcworks/invenio_remote_api_provisioner/logs/remote_api_provisioner.log.*
-.ropeproject/autoimport.db
-.editorconfig
-biome.json
-.ropeproject/autoimport.db-journal
-tests/.env
-docs/knowledge_base_sync/config.yaml
 app_data/importer/user_memberships.csv
+app_data/vocabularies/fast
+app_data/exporter
+
+docs/knowledge_base_sync/config.yaml

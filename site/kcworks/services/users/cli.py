@@ -16,10 +16,11 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.models import Role, User, UserIdentity
 from invenio_accounts.proxies import current_accounts
 from invenio_db import db
-from invenio_remote_user_data_kcworks.tasks import sync_user_to_names
 from invenio_users_resources.proxies import current_users_service
 from kcworks.services.users.service import UserProfileService
 from sqlalchemy import select
+
+from invenio_remote_user_data_kcworks.tasks import sync_user_to_names
 
 KC_USERNAME_PREFIX = "knowledgeCommons-"
 
@@ -66,15 +67,15 @@ def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
 
     Detects:
 
-    - duplicate non-empty ``identifier_kc_username`` values
-    - duplicate non-empty ``identifier_orcid`` values
-    - an ``identifier_kc_username`` equal to another user's ``username``
-    - an ``identifier_kc_username`` equal to another user's ``username`` after
-      stripping the ``knowledgeCommons-`` prefix from that username
+    - duplicate non-empty `identifier_kc_username` values
+    - duplicate non-empty `identifier_orcid` values
+    - an `identifier_kc_username` equal to another user's `username`
+    - an `identifier_kc_username` equal to another user's `username` after
+      stripping the `knowledgeCommons-` prefix from that username
 
     Returns:
         Mapping of reason keys to lists of match groups. Each group is a dict
-        with ``matched_value`` and ``users`` (list of user summaries).
+        with `matched_value` and `users` (list of user summaries).
     """
     users = list(User.query.all())
     by_kc: dict[str, list[User]] = defaultdict(list)
@@ -108,21 +109,17 @@ def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
 
     for value, matched in by_kc.items():
         if len(matched) > 1:
-            results["duplicate_kc_username"].append(
-                {
-                    "matched_value": value,
-                    "users": [_user_summary(u) for u in matched],
-                }
-            )
+            results["duplicate_kc_username"].append({
+                "matched_value": value,
+                "users": [_user_summary(u) for u in matched],
+            })
 
     for value, matched in by_orcid.items():
         if len(matched) > 1:
-            results["duplicate_orcid"].append(
-                {
-                    "matched_value": value,
-                    "users": [_user_summary(u) for u in matched],
-                }
-            )
+            results["duplicate_orcid"].append({
+                "matched_value": value,
+                "users": [_user_summary(u) for u in matched],
+            })
 
     # Cross-field: A's identifier_kc_username == B's username (A != B).
     # Deduplicate unordered pairs so (A,B) is reported once.
@@ -137,12 +134,10 @@ def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
                 if pair_key in seen_exact:
                     continue
                 seen_exact.add(pair_key)
-                results["kc_username_equals_username"].append(
-                    {
-                        "matched_value": kc_value,
-                        "users": [_user_summary(kc_user), _user_summary(other)],
-                    }
-                )
+                results["kc_username_equals_username"].append({
+                    "matched_value": kc_value,
+                    "users": [_user_summary(kc_user), _user_summary(other)],
+                })
 
     # Cross-field: A's identifier_kc_username == strip("knowledgeCommons-", B.username)
     seen_prefixed: set[frozenset[int]] = set()
@@ -156,12 +151,10 @@ def find_duplicate_accounts() -> dict[str, list[dict[str, Any]]]:
                 if pair_key in seen_prefixed:
                     continue
                 seen_prefixed.add(pair_key)
-                results["kc_username_equals_prefixed_username"].append(
-                    {
-                        "matched_value": kc_value,
-                        "users": [_user_summary(kc_user), _user_summary(other)],
-                    }
-                )
+                results["kc_username_equals_prefixed_username"].append({
+                    "matched_value": kc_value,
+                    "users": [_user_summary(kc_user), _user_summary(other)],
+                })
 
     return results
 
@@ -238,7 +231,7 @@ def name_parts(
 ) -> None:
     """CLI command to update the name parts for the specified user.
 
-    After a successful update, queues ``sync_user_to_names`` so the Names
+    After a successful update, queues `sync_user_to_names` so the Names
     vocabulary entry reflects the new local split.
 
     Parameters:
@@ -277,8 +270,7 @@ def name_parts(
         pprint(new_user.user_profile["name_parts_local"])
         async_result = sync_user_to_names.delay(int(user_id))
         print(
-            f"Queued Names vocabulary sync for user {user_id} "
-            f"(task {async_result.id})."
+            f"Queued Names vocabulary sync for user {user_id} (task {async_result.id})."
         )
         return
 
@@ -331,9 +323,7 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
             ids = [u.id for u in matched]
             print(f"Multiple users found with KC ID {kc_id}: {ids}")
             return
-        user = current_users_service.read(
-            system_identity, id_=matched[0].id
-        ).to_dict()
+        user = current_users_service.read(system_identity, id_=matched[0].id).to_dict()
         user2 = current_accounts.datastore.get_user_by_id(user["id"])
     else:
         print("No user ID, email, or KC ID provided.")
@@ -364,10 +354,10 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
 def find_duplicates() -> None:
     """Find pairs of local accounts that look like duplicates.
 
-    Reports users sharing the same ``identifier_kc_username`` or
-    ``identifier_orcid``, and users where one account's
-    ``identifier_kc_username`` matches another's ``username`` (exactly or
-    after stripping a ``knowledgeCommons-`` prefix from the username).
+    Reports users sharing the same `identifier_kc_username` or
+    `identifier_orcid`, and users where one account's
+    `identifier_kc_username` matches another's `username` (exactly or
+    after stripping a `knowledgeCommons-` prefix from the username).
     """
     results = find_duplicate_accounts()
     total = sum(len(groups) for groups in results.values())
@@ -405,6 +395,72 @@ def group_users(group_name: str) -> None:
     print(f"Users for group (role) named '{group_name}':")
     pprint(users)
     print("=============")
+
+
+@click.command("ensure-service-capabilities")
+@with_appcontext
+def ensure_service_capabilities_command() -> None:
+    """Ensure capability roles, service accounts, and role assignments.
+
+    Idempotent aggregate of the site stub plus package ensures
+    (`invenio-remote-user-data-kcworks`, `invenio-group-collections-kcworks`).
+    Those packages also run their ensures on app finalize; this command is for
+    explicit deploy/ops use. Accounts are active and confirmed with no password.
+    """
+    from invenio_group_collections_kcworks.roles import (
+        SERVICE_CAPABILITIES as GROUP_COLLECTIONS_CAPABILITIES,
+    )
+    from invenio_group_collections_kcworks.roles import (
+        ensure_service_capabilities as ensure_group_collection_capabilities,
+    )
+    from kcworks.services.auth.capabilities import (
+        SERVICE_CAPABILITIES,
+        ensure_service_capabilities,
+    )
+
+    from invenio_remote_user_data_kcworks.roles import (
+        SERVICE_CAPABILITIES as USER_DATA_CAPABILITIES,
+    )
+    from invenio_remote_user_data_kcworks.roles import (
+        ensure_service_capabilities as ensure_user_data_capabilities,
+    )
+
+    result_kcworks = ensure_service_capabilities()
+    result_user_data = ensure_user_data_capabilities()
+    result_group_collections = ensure_group_collection_capabilities()
+    click.echo("Ensured service capability roles:")
+    result_roles = (
+        result_kcworks["roles"]
+        + result_user_data["roles"]
+        + result_group_collections["roles"]
+    )
+    for capability in (
+        SERVICE_CAPABILITIES + USER_DATA_CAPABILITIES + GROUP_COLLECTIONS_CAPABILITIES
+    ):
+        marker = "ok" if capability.role_name in result_roles else "missing"
+        click.echo(
+            f"  [{marker}] {capability.role_name} -> {capability.action.value}: "
+            f"{capability.description}"
+        )
+
+    click.echo("Ensured service accounts:")
+    result_accounts = (
+        result_kcworks["accounts"]
+        + result_user_data["accounts"]
+        + result_group_collections["accounts"]
+    )
+    for account in result_accounts:
+        created = "created" if account["created"] else "exists"
+        roles = ", ".join(account["role_names"])
+        added = (
+            f"; added roles: {', '.join(account['roles_added'])}"
+            if account["roles_added"]
+            else ""
+        )
+        click.echo(
+            f"  [{created}] id={account['user_id']} {account['username']} "
+            f"<{account['email']}> roles=[{roles}]{added}"
+        )
 
 
 @click.command("user-groups")

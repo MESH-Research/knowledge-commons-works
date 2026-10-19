@@ -63,11 +63,11 @@ instance_path = /opt/invenio/var/instance
 
 ```{note}
 The UI will not load CSS/JS correctly until step 4 builds static assets.
-Compose mounts an empty ``static_data`` volume over
-``/opt/invenio/var/instance/static`` (nginx and web-ui share it). Image-baked
-static at that path is hidden until you run ``bash ./scripts/build-assets.sh``
-in web-ui (included in ``setup-services.sh`` below). Same requirement when
-using ``docker-compose.dev.yml``.
+Compose mounts an empty `static_data` volume over
+`/opt/invenio/var/instance/static` (nginx and web-ui share it). Image-baked
+static at that path is hidden until you run `bash ./scripts/build-assets.sh`
+in web-ui (included in `setup-services.sh` below). Same requirement when
+using `docker-compose.dev.yml`.
 ```
 
 ### 4. Initialize the database and other services, and build asset files
@@ -196,6 +196,10 @@ invenio kcworks-jobs upsert update_awards_cordis \
     --title "Update Awards CORDIS" \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
     --queue celery
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
+    --queue celery
 invenio kcworks-jobs upsert merge_names_orcid_duplicates \
     --title "Merge Names ORCID duplicates" \
     --schedule "crontab:minute=0,hour=7,day_of_week=0" \
@@ -212,6 +216,11 @@ invenio kcworks-jobs upsert sync_names_missing_users \
 
 The Names jobs (hours 7–9) are documented in
 [Names Vocabulary Lifecycle](../admin_guide/names_vocabulary.md#scheduled-jobs-invenio-jobs).
+FAST subject updates (`process_fast_subject_updates`, Wednesdays) are provided
+by `invenio-subjects-fast` and scheduled from `setup-services.sh`; see
+[Vocabulary Management — Subjects](../admin_guide/vocabulary_management.md#how-do-i-schedule-fast-subject-updates).
+Chronological overview of all beat tasks and jobs:
+[Scheduled events](../admin_guide/scheduled_events.md).
 
 ```{note}
 The container running the seed step needs network egress to `doi.org` and
@@ -294,6 +303,10 @@ invenio kcworks-jobs upsert import_awards_openaire \
 invenio kcworks-jobs upsert update_awards_cordis \
     --title "Update Awards CORDIS" \
     --schedule "crontab:minute=0,hour=6,day_of_week=0" \
+    --queue celery
+invenio kcworks-jobs upsert process_fast_subject_updates \
+    --title "Update FAST subjects" \
+    --schedule "crontab:minute=0,hour=2,day_of_week=3" \
     --queue celery
 invenio kcworks-jobs upsert merge_names_orcid_duplicates \
     --title "Merge Names ORCID duplicates" \
@@ -560,7 +573,7 @@ Similarly, the REST API can be restarted by running the following command inside
 the `kcworks-api` container:
 
 ```shell
-uwsgi --reload /tmp/uwsgi_api.pid
+uwsgi --reload /tmp/uwsgi_rest.pid
 ```
 
 But these commands should not be necessary in normal operation.
@@ -588,7 +601,6 @@ POSTGRES_PASSWORD=PASSWORDHERE
 INVENIO_CSRF_SECRET_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECURITY_LOGIN_SALT='GENERATE_IT_AS_PER_INSTRUCTIONS'
 INVENIO_SECRET_KEY='SECRET_KEY_VERY_SECRET'
-API_TOKEN=myapitoken # this can be generated after the instance is running, just leave as is
 INVENIO_LOCAL_SITE_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site # set this to `site` under the base directory of your cloned repository
 INVENIO_LOCAL_DEPENDENCIES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/site/kcworks/dependencies # set this to `site/kcworks/dependencies` under the base directory of your cloned repository
 PYTHON_LOCAL_SITE_PACKAGES_PATH=/local/path/to/cloned/repository/knowledge-commons-works/.venv/lib/python3.12/site-packages # you need this for dev
@@ -613,13 +625,54 @@ COMMONS_PROFILES_API_TOKEN
 SPARKPOST_USERNAME
 SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
-API_TOKEN_PRODUCTION
 ```
 
+Also configure (locally or via your secret store — not all are in the startup
+script’s default SM key list):
+
+```shell
+COMMONS_SSO_LOGOUT_API_TOKEN   # inbound single-sign-out webhook bearer
+STATIC_API_TOKEN_USER_ID_PROFILES=<id of svc-commons-profiles>
+STATIC_API_TOKEN_USER_ID_SSO=<id of svc-commons-sso>
+```
+
+On first app start (UI/API finalize), the remote-user-data and
+group-collections packages create the inter-app capability roles and service
+accounts (`svc-commons-profiles`, `svc-commons-sso`, `svc-group-collections`)
+if they are missing. Set the `STATIC_API_TOKEN_USER_ID_*` values to those
+accounts’ numeric ids for inbound static webhook impersonation. You can re-run
+or inspect the ensure with `invenio kcworks-users ensure-service-capabilities`.
+Account, role, and scope inventory:
+[Service accounts and OAuth scopes](../reference/service_accounts_and_scopes.md).
+
+#### Optional: local Profiles SSO mock
+
+To exercise broker login without a real Profiles stack, clone
+[knowledge-commons-profiles-mock](https://github.com/MESH-Research/knowledge-commons-profiles-mock)
+as a sibling of this repo, install
+[mkcert](https://github.com/FiloSottile/mkcert) on the host, then:
+
+```shell
+cd ../knowledge-commons-profiles-mock
+./profiles-mock-startup.sh -d   # generates docker/certs if missing; HTTPS on :8099
+
+cd ../knowledge-commons-works
+./kcworks-startup.sh --mock-profiles
+```
+
+`--mock-profiles` trusts the mock CA inside the app containers, sets the shared
+mock `COMMONS_PROFILES_API_TOKEN`, and splits Profiles URLs (browser
+`127.0.0.1:8099` vs server `host.docker.internal:8099`). Omit conflicting
+Profiles URL/token lines from `.env` while using that flag. Day-to-day details
+are in [Development workflow](../developing/workflow.md#local-profiles-mock-sso).
+
 `SPARKPOST_USERNAME` and `SPARKPOST_API_KEY` are the SMTP credentials for outgoing
-mail (see `site/kcworks/config/mail.py`). `API_TOKEN_PRODUCTION` is used when
-importing test data from the production KCWorks API (see
-[Importing test data](#importing-test-data)).
+mail (see `site/kcworks/config/mail.py`). For server-held HTTP integration
+credentials vs in-process CLI auth, see
+[API credentials and CLI authentication](../reference/api_credentials.md).
+Secrets Manager supplies server integration tokens only. The remote-fetch
+`--api-token` for `import-test-records` (and import-client keys) are
+caller-supplied; `export-records` needs none.
 
 #### Optional: Sentry (local error reporting)
 
@@ -675,11 +728,12 @@ python -c 'import secrets; print(secrets.token_hex())'
 
 #### Generating an API token
 
-Once you are up and running, you will need to replace the dummy `API_TOKEN`
-variable in your `.env` file with a genuine oAuth token that identifies you when
-you make API requests from your local instance. You can generate a token for
-yourself in the KC Works admin ui and enter it as the value of the `API_TOKEN`
-variable.
+Once you are up and running, you can generate an OAuth token for yourself in the
+KC Works admin UI to identify you when you make **HTTP API** requests against
+your local instance. That is separate from in-process `invenio` CLI auth. For
+integration service accounts and which scopes apply to which routes, see
+[Service accounts and OAuth scopes](../reference/service_accounts_and_scopes.md)
+and [API credentials and CLI authentication](../reference/api_credentials.md).
 
 ### Configuring your `.invenio.private` file
 

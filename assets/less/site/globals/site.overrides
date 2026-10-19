@@ -1,6 +1,12 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
+// Inline code: same blue as .ui.info/.ui.blue buttons, pale tint behind text
+code {
+  color: @blue;
+  background-color: fade(@blue, 8%);
+}
+
 // Responsive classes
 
 :not(.ui.grid).only {
@@ -67,6 +73,10 @@
   justify-content: space-between !important;
 }
 
+.right.floated {
+  float: right !important;
+}
+
 // typography
 
 .breakable-text {
@@ -79,6 +89,8 @@
 .warning.text {
   color: @negativeTextColor;
 }
+
+// utilities for text in animated-collapse accordions
 
 .rich-input-content.description-clamped {
   overflow: hidden;
@@ -110,10 +122,170 @@
   overflow: hidden;
 }
 
-.record-subjects .button.tiny.show-less {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+
+// Utilities for responsive stacking
+// Usage: Add .stackable-tablet to a flex container to make it stack vertically on tablet and mobile
+
+.stackable-tablet {
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+  }
 }
+
+.stackable-mobile {
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-computer {
+  @media (min-width: @computerBreakpoint) {
+    flex-direction: column !important;
+  }
+}
+
+// Stack items with full width on smaller screens
+.flex-stack-tablet {
+  display: flex;
+
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+.flex-stack-mobile {
+  display: flex;
+
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Carousel / card-grid utilities (shared item sizing via cqw)
+//
+//   .carousel-wrapper   — track chrome; chevrons overhang its edges
+//   .carousel-viewport  — horizontal scroll + snap
+//   .carousel-card-grid — wrapping stack; same --carousel-item-width math
+//   .carousel-item      — direct child; width ≈ container/N via cqw
+// ---------------------------------------------------------------------------
+
+.carousel-viewport,
+.carousel-card-grid {
+  container-type: inline-size;
+  display: flex !important;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  gap: var(--carousel-gap, 1rem);
+  padding-block: 1.5rem;
+
+  --carousel-gap: 1rem;
+  --carousel-visible: var(--carousel-visible-desktop, 3);
+  --carousel-item-width: calc(
+    (100cqw - (var(--carousel-visible) - 1) * var(--carousel-gap)) /
+      var(--carousel-visible)
+  );
+
+  @media (max-width: @largestTabletScreen) {
+    --carousel-visible: var(
+      --carousel-visible-tablet,
+      var(--carousel-visible-desktop, 3)
+    );
+  }
+
+  @media (max-width: @largestMobileScreen) {
+    --carousel-visible: var(--carousel-visible-mobile, 2);
+  }
+}
+
+.carousel-viewport {
+  container-name: carousel;
+  flex-wrap: nowrap;
+  // Side gutters so 3 cards sit inward of the wrapper fade gradients.
+  padding-left: 6.25% !important;
+  padding-right: 6.25% !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  --carousel-edge-spacer: calc((100cqw - var(--carousel-item-width)) / 2);
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 0 0 var(--carousel-edge-spacer);
+    width: var(--carousel-edge-spacer);
+  }
+
+  &::before {
+    margin-inline-end: calc(-1 * var(--carousel-gap, 1rem));
+  }
+
+  &::after {
+    margin-inline-start: calc(-1 * var(--carousel-gap, 1rem));
+  }
+
+  &.snap-start {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    &::before,
+    &::after {
+      content: none;
+      flex: none;
+      width: 0;
+      margin: 0;
+    }
+
+    .carousel-item {
+      scroll-snap-align: start;
+    }
+  }
+
+  &.with-scroll-markers {
+    scroll-marker-group: after;
+    anchor-name: --carousel;
+
+    &::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      position: absolute;
+      position-anchor: --carousel;
+      top: calc(anchor(bottom) + 1rem);
+      justify-self: anchor-center;
+    }
+  }
+}
+
+.carousel-card-grid {
+  container-name: carousel-grid;
+  flex-wrap: wrap;
+  overflow: visible;
+
+  .carousel-item {
+    scroll-snap-align: none;
+
+    &::scroll-marker {
+      display: none;
+    }
+  }
+}
+
 #community-detail-header {
   .breadcrumb-wrap {
     min-width: 0;
@@ -459,7 +631,7 @@ html.cover-page {
   }
 
   #frontpage-search-bar {
-    @media screen and (max-width: 991px) {
+    @media screen and (max-width: @largestTabletScreen) {
       text-align: center;
       .column:last-child {
         margin-top: 1rem;
@@ -525,7 +697,8 @@ html.cover-page {
     padding-bottom: 2.5rem !important;
     padding-top: 2.5rem !important;
     background-size: cover;
-    background-color: @mint80;
+    background-color: @ivory;
+    box-shadow: inset 0px 0px 1rem rgb(from #818166 r g b / 0.35);
     .ui.container.grid {
       max-width: 100% !important;
       h2.ui.header {
@@ -583,45 +756,10 @@ html.cover-page {
     }
   }
 
-  .ui.message {
-    @media screen and (max-width: @largestMobileScreen) {
-      padding: 1rem;
-    }
-  }
-
-  // #communities {
-  // }
   .main-record-content {
-    h2 {
-      font-size: @large;
-    }
-    @media only screen and (max-width: @largestMobileScreen) {
-      h2 {
-        font-size: @large;
-        margin-bottom: 0.5rem;
-      }
-    }
-
-    #communities {
-      .segment {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        @media screen and (max-width: @largestMobileScreen) {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
-        }
-      }
-    }
-
     #record-title-section {
       padding-top: 0.5rem;
       padding-bottom: 0.5rem;
-      @media only screen and (max-width: @largestMobileScreen) {
-        h1 {
-          font-size: 1.5rem;
-          padding-top: 1rem;
-        }
-      }
     }
 
     #creatibutors-list-section {
@@ -643,28 +781,7 @@ html.cover-page {
         box-shadow: none;
       }
 
-      dl.details-list {
-        dt.ui.tiny.header {
-          margin-bottom: 0.25rem;
-          margin-top: 1rem;
-        }
-        dd {
-          overflow-wrap: break-word;
-        }
-      }
       .record-details-tab {
-        &.ui.attached.segment {
-          border: none;
-          padding-left: 0;
-          padding-right: 0;
-          padding-top: 0;
-        }
-        @media screen and (max-width: @largestMobileScreen) {
-          &.segment {
-            padding-top: 0;
-          }
-        }
-
         &.Content {
           #Descriptions-tab-section {
             padding-top: 0.5rem;
@@ -673,13 +790,6 @@ html.cover-page {
             p:last-child {
               margin-bottom: 2rem;
             }
-          }
-
-          .ui.message.file-box-message {
-            margin-top: 1rem !important;
-            border: 1px solid @negativeBorderColor;
-            border-bottom-right-radius: @defaultBorderRadius !important;
-            border-bottom-left-radius: @defaultBorderRadius !important;
           }
 
           .placeholder-header-bar {
@@ -787,13 +897,6 @@ html.cover-page {
           .subject {
             background-color: #fff;
             color: @textColor;
-          }
-          h2.tiny.header {
-            margin-bottom: 1rem;
-          }
-          h3.tiny.header.mt-10 {
-            margin-top: 1.5rem !important;
-            font-size: @medium;
           }
         }
 
@@ -939,14 +1042,47 @@ html.cover-page {
         justify-content: flex-end;
         margin-top: -0.5rem;
       }
-      .ui.button.basic.warning {
-        color: @warningTextColor !important;
-        box-shadow: none !important;
-        &:hover,
-        &:focus {
-          background-color: transparent !important;
-          box-shadow: 0px 0em 0px 1px rgba(87, 58, 8, 0.2) inset !important;
-        }
+    }
+
+    /* Sidebar warnings: CSS clamp + measured-height expand (same pattern as Descriptions). */
+    .content-warning.ui.message,
+    .ai-usage-alert.ui.message {
+      .content-warning-description.content-warning-clamped,
+      .ai-usage-description.ai-usage-clamped {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+      }
+
+      .content-warning-description.content-warning-height-animating,
+      .ai-usage-description.ai-usage-height-animating {
+        overflow: hidden;
+      }
+    }
+
+    /*
+     * Dismiss exit for AI / content-warning alerts (same pattern as deposit
+     * FormFeedback toasts via FadeCollapse). Larger max-height than deposit
+     * toasts so expanded descriptions are not clipped while visible.
+     *
+     * Bottom spacing lives on this wrapper: the message is now last-child of
+     * `.fade-collapse-inner`, so SUI last-child margin reset no longer applies.
+     */
+    .fade-collapse.detail-alert-fade-collapse {
+      overflow: hidden;
+      max-height: 50rem;
+      margin-bottom: 1rem;
+      opacity: 1;
+      transition-property: max-height, opacity, margin, padding;
+      transition-timing-function: ease;
+
+      &.hiding {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
       }
     }
     .ui.message.file-box-message {
@@ -960,7 +1096,6 @@ html.cover-page {
       &#record-moderation {
         margin-bottom: 1rem;
         .ui.fluid.icon.button {
-          text-align: left;
           padding-left: 1rem !important;
         }
       }
@@ -968,7 +1103,6 @@ html.cover-page {
         margin-bottom: 1rem;
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
-          text-align: left;
         }
       }
       #record-details-download {
@@ -998,28 +1132,34 @@ html.cover-page {
           }
         }
       }
+      &#record-licenses {
+        .title-text {
+          line-height: 1.25em;
+        }
+      }
       &#record-export {
         margin-bottom: 1rem;
       }
       &#social-sharing {
+        .sharing-icons {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+          gap: 0.5rem;
+          justify-items: center;
+          align-items: center;
+        }
+        .sharing-icon {
+          position: relative;
+          display: inline-flex;
+        }
         .button {
-          margin-bottom: 0.25rem;
+          margin: 0;
           .icon {
-            color: @primaryTextColor;
+            color: inherit;
             svg {
               height: 1em;
               width: 1em;
-              fill: @primaryTextColor;
-            }
-          }
-          &:hover,
-          &:focus,
-          &:active {
-            .icon {
-              color: @ivy !important;
-              svg {
-                fill: @ivy !important;
-              }
+              fill: currentColor;
             }
           }
         }
@@ -1043,13 +1183,6 @@ html.cover-page {
             height: 1.15em;
             width: 1.15em;
           }
-        }
-      }
-      #licenses {
-        padding: 0;
-        .license.clickable {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
         }
       }
     }
@@ -1409,3 +1542,4 @@ html.cover-page {
     }
   }
 }
+

@@ -1,4 +1,23 @@
+/* Part of Knowledge Commons Works
+ * Copyright (C) 2023-2026, MESH Research
+ *
+ * Knowledge Commons Works is an instance of InvenioRDM, which is
+ * Copyright (c) 2019-2026, CERN
+ *
+ * Knowledge Commons Works and InvenioRDM are both free software;
+ * You can redistribute and/or modify them under the terms of the
+ * MIT License; see LICENSE file for more details.
+ */
+
+
 /* List theme overrides */
+
+dl.details-list {
+  dd {
+    overflow-wrap: break-word;
+  }
+}
+
 .ui.list > .deposit-drag-listitem {
   i.icon.drag-anchor {
     padding-top: 0.35em;

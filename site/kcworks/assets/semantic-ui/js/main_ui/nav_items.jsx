@@ -1,34 +1,44 @@
+// Part of Knowledge Commons Works
+// Copyright (C) 2023-2026, MESH Research
+//
+// Knowledge Commons Works is an instance of InvenioRDM, which is
+// Copyright (c) 2019-2026, CERN
+//
+// Knowledge Commons Works and InvenioRDM are both free software;
+// You can redistribute and/or modify them under the terms of the
+// MIT License; see LICENSE file for more details.
+
+// biome-ignore lint/correctness/noUnusedImports: classic JSX
 import React from "react";
-// import { i18next } from "@translations/kcworks/i18next";
 import { Label, Popup } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
-const MenuItem = ({ text, icon, url, tabIndex }) => {
+const NavItem = ({ text, icon, url, tabIndex, className = "" }) => {
   return (
-    <a role="menuitem" href={url} className="ui " tabIndex={tabIndex}>
+    <a href={url} className={`ui pl-15 pr-15 ${className}`} tabIndex={tabIndex}>
       <i className={`${icon} icon fitted`}></i>
       <span className="inline">{text}</span>
     </a>
   );
 };
 
-MenuItem.propTypes = {
+NavItem.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.string,
   url: PropTypes.string,
   tabIndex: PropTypes.number,
+  className: PropTypes.string,
 };
 
-const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
+const IconNavItem = ({ text, icon, url, badge, tabIndex, className = "" }) => {
   return (
     <>
       <Popup
         content={text}
         trigger={
           <a
-            role="menuitem"
             href={url}
-            className="ui computer widescreen large screen only"
+            className={`ui pl-15 pr-15 computer widescreen large screen only ${className}`}
             tabIndex={tabIndex}
             aria-label={text}
           >
@@ -43,11 +53,9 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
       />
 
       <a
-        role="menuitem"
         href={url}
-        className="ui tablet mobile only"
+        className={`ui pl-15 pr-15 tablet mobile only ${className}`}
         tabIndex={tabIndex}
-        aria-label={text}
       >
         <i className={`${icon} icon fitted`}></i>
         <span className="inline">{text}</span>
@@ -56,25 +64,26 @@ const IconMenuItem = ({ text, icon, url, badge, tabIndex }) => {
   );
 };
 
-IconMenuItem.propTypes = {
+IconNavItem.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.string,
-  badge: PropTypes.string,
+  badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   url: PropTypes.string,
   tabIndex: PropTypes.number,
+  className: PropTypes.string,
 };
 
-const CollapsingMenuItem = ({ text, icon, url, tabIndex, classnames, breakAt = "computer" }) => {
+const CollapsingNavItem = ({ text, icon, url, tabIndex, classnames, breakAt = "computer" }) => {
   return (
     <>
       <Popup
         content={text}
         trigger={
           <a
-            role="button"
             href={url}
             className={`ui mobile tablet only ${classnames} collapsing`}
             tabIndex={tabIndex}
+            aria-label={text}
           >
             <i className={`${icon} icon fitted`}></i>
           </a>
@@ -86,29 +95,23 @@ const CollapsingMenuItem = ({ text, icon, url, tabIndex, classnames, breakAt = "
           content={text}
           trigger={
             <a
-              role="button"
               href={url}
               className={`computer only ${classnames} collapsing`}
               tabIndex={tabIndex}
+              aria-label={text}
             >
               <i className={`${icon} icon fitted`}></i>
             </a>
           }
         />
       ) : (
-        <a
-          role="button"
-          href={url}
-          className={`computer only ${classnames} collapsing`}
-          tabIndex={tabIndex}
-        >
+        <a href={url} className={`computer only ${classnames} collapsing`} tabIndex={tabIndex}>
           <i className={`${icon} icon`}></i>
           <span className="inline">{text}</span>
         </a>
       )}
 
       <a
-        role="button"
         href={url}
         className={`ui widescreen large screen only ${classnames} collapsing`}
         tabIndex={tabIndex}
@@ -120,11 +123,13 @@ const CollapsingMenuItem = ({ text, icon, url, tabIndex, classnames, breakAt = "
   );
 };
 
-CollapsingMenuItem.propTypes = {
+CollapsingNavItem.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.string,
   url: PropTypes.string,
   tabIndex: PropTypes.number,
+  classnames: PropTypes.string,
+  breakAt: PropTypes.string,
 };
 
-export { MenuItem, IconMenuItem, CollapsingMenuItem };
+export { NavItem, IconNavItem, CollapsingNavItem };

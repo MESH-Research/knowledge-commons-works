@@ -474,11 +474,16 @@ class InternalNotificationService(Service):
         if not request_id or not request_status:
             return
 
+        # Filter None at construction: set.discard(None) does not narrow
+        # set[str | None] for the type checker.
         party_ids = {
-            _resolved_user_id(request_ctx.get("created_by")),
-            _resolved_user_id(request_ctx.get("receiver")),
+            uid
+            for uid in (
+                _resolved_user_id(request_ctx.get("created_by")),
+                _resolved_user_id(request_ctx.get("receiver")),
+            )
+            if uid is not None
         }
-        party_ids.discard(None)
         party_ids.discard(str(primary_user_id))
 
         for party_id in party_ids:

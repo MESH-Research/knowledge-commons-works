@@ -17,6 +17,11 @@ import { i18next } from "@translations/kcworks/i18next";
 
 import CommunitiesCardGroup from "./CommunitiesCardGroup";
 
+const SECTION_PAGE_SIZE = 12;
+const SECTION_VISIBLE_DESKTOP = 5;
+const SECTION_VISIBLE_TABLET = 4;
+const SECTION_VISIBLE_MOBILE = 2;
+
 const subCommunitiesContainer = document.getElementById("subcommunities-container");
 const apiEndpoint = subCommunitiesContainer
   ? _get(subCommunitiesContainer.dataset, "apiEndpoint")
@@ -25,9 +30,13 @@ const apiEndpoint = subCommunitiesContainer
 if (subCommunitiesContainer && apiEndpoint) {
   ReactDOM.render(
     <CommunitiesCardGroup
-      fetchDataUrl={`${apiEndpoint}?sort=oldest&page=1&size=5`}
+      fetchDataUrl={`${apiEndpoint}?sort=oldest&page=1&size=${SECTION_PAGE_SIZE}`}
       emptyMessage={i18next.t("This community has no subcommunities")}
       defaultLogo="/static/images/square-placeholder.png"
+      carouselCards
+      itemsPerPage={SECTION_VISIBLE_DESKTOP}
+      itemsPerPageTablet={SECTION_VISIBLE_TABLET}
+      itemsPerPageMobile={SECTION_VISIBLE_MOBILE}
     />,
     subCommunitiesContainer
   );

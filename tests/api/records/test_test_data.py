@@ -13,6 +13,7 @@ from pathlib import Path
 from tempfile import SpooledTemporaryFile
 from unittest.mock import patch
 
+import pytest
 from flask_sqlalchemy import SQLAlchemy
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -26,9 +27,18 @@ from tests.conftest import RunningApp
 
 
 def test_fetch_records(running_app: RunningApp):
-    """Test fetching records from production."""
+    """Test fetching records from production.
+
+    The test is the API caller: supply a token via the process environment if you
+    want this live check to run. The application itself does not read that
+    variable.
+    """
     api_url = "https://works.hcommons.org/api"
-    api_token = os.getenv("API_TOKEN_PRODUCTION")
+    api_token = os.environ.get("KCWORKS_LIVE_FETCH_API_TOKEN")
+    if not api_token:
+        pytest.skip(
+            "Set KCWORKS_LIVE_FETCH_API_TOKEN in the environment to run this live fetch"
+        )
     records, errors = KCWorksRecordsAPIHelper(
         api_url=api_url, api_token=api_token
     ).fetch_records(count=5)
@@ -87,9 +97,7 @@ def create_file_data(filename: str = "sample.pdf") -> FileData:
     Returns:
         FileData: The created file data object.
     """
-    myfile = (
-        Path(__file__).resolve().parents[2] / "helpers" / "sample_files" / filename
-    )
+    myfile = Path(__file__).resolve().parents[2] / "helpers" / "sample_files" / filename
     with myfile.open("rb") as file_bytes:
         temp_file = SpooledTemporaryFile()
         temp_file.write(file_bytes.read())
@@ -155,7 +163,11 @@ def test_import_test_records(
             load_community_needs(identity)
 
             # Import 3 records
-            import_test_records(count=3, importer_email="test@example.com")
+            import_test_records(
+                count=3,
+                importer_email="test@example.com",
+                api_token="test-sample-data-token",
+            )
             records_service.record_cls.index.refresh()
 
             # Verify records were imported

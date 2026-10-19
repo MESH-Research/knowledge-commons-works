@@ -18,7 +18,7 @@ from collections.abc import Sequence
 from functools import reduce
 from typing import cast
 
-from flask_principal import Need
+from flask_principal import Need, UserNeed
 from invenio_access.permissions import Permission, system_identity
 from invenio_administration.generators import Administration
 from invenio_communities.generators import (
@@ -29,6 +29,7 @@ from invenio_communities.generators import (
 )
 from invenio_communities.proxies import current_communities
 from invenio_records_permissions.generators import Generator, SystemProcess
+from invenio_records_permissions.policies import BasePermissionPolicy
 
 community_role_generators = {
     "reader": CommunityMembers,
@@ -36,6 +37,66 @@ community_role_generators = {
     "manager": CommunityManagers,
     "owner": CommunityOwners,
 }
+
+
+class ElevatedCommunityRolesForExport(Generator):
+    """Owners, managers, and curators of a community; no-op without a community."""
+
+    def needs(self, record=None, **kwargs):
+        """Enabling needs for elevated community roles.
+
+        Args:
+            record: Community record being exported from, if any.
+            **kwargs: Passed through to the community role generators.
+
+        Returns:
+            Needs for owner/manager/curator when `record` is set; otherwise
+            an empty list so non-community exports stay admin/system only.
+        """
+        if record is None:
+            return []
+        needs: list[Need] = []
+        for generator in (
+            CommunityOwners(),
+            CommunityManagers(),
+            CommunityCurators(),
+        ):
+            needs.extend(generator.needs(record=record, **kwargs))
+        return needs
+
+
+class ExportSubjectUser(Generator):
+    """Allow the subject user to export their own uploads; no-op if unset."""
+
+    def needs(self, target_user_id: str | int | None = None, **kwargs):
+        """Enabling need for the identified owner/contributor account.
+
+        Args:
+            target_user_id: Local user id whose uploads are being exported.
+            **kwargs: Ignored; accepted for policy `over` compatibility.
+
+        Returns:
+            `[UserNeed(...)]` when `target_user_id` is set; otherwise `[]`.
+        """
+        if target_user_id is None or target_user_id == "":
+            return []
+        return [UserNeed(int(target_user_id))]
+
+
+class RecordExportPermissionPolicy(BasePermissionPolicy):
+    """Who may run a local records export.
+
+    Allows elevated community roles when scoped to a community, the subject
+    user when an owner/contributor filter identifies their account, plus
+    administration and system process.
+    """
+
+    can_export_records = [
+        ElevatedCommunityRolesForExport(),
+        ExportSubjectUser(),
+        Administration(),
+        SystemProcess(),
+    ]
 
 
 def per_field_edit_permission_factory(

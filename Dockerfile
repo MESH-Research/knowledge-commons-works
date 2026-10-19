@@ -4,7 +4,7 @@
 #   builder     – full toolchain (uv, Node, pnpm, gcc, *-dev libs) to compile
 #                 Python extensions and build webpack assets. No test extras.
 #   test-runner – builder + optional-dependencies.tests (pytest, …) + root
-#                 ``pnpm install`` for Jest; not copied into runtime.
+#                 `pnpm install` for Jest; not copied into runtime.
 #   runtime     – minimal Debian Bookworm image with only shared runtime libs;
 #                 no compilers, no Node, no pnpm, no uv, no test extras.
 #
@@ -51,14 +51,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # pnpm via Corepack. invenio webpack install uses PNPMPackage (WEBPACKEXT_NPM_PKG_CLS).
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN corepack enable && corepack prepare pnpm@12.11.2 --activate
 
 COPY . .
 
@@ -66,8 +66,8 @@ COPY . .
 RUN uv venv && \
     . .venv/bin/activate && \
     uv sync --frozen --compile-bytecode && \
-    export CFLAGS="-Wno-error=incompatible-pointer-types" && \
-    uv pip install --reinstall --no-binary=lxml "lxml==5.2.1" && \
+    # export CFLAGS="-Wno-error=incompatible-pointer-types" && \
+    # uv pip install --reinstall --no-binary=lxml "lxml==5.2.1" && \
     uv clean
 
 RUN echo "[cli]" >> .invenio.private && \
@@ -97,6 +97,8 @@ RUN . .venv/bin/activate && \
     pybabel compile -d /opt/invenio/src/site/kcworks/translations && \
     invenio collect --verbose && \
     invenio webpack clean create && \
+    python /opt/invenio/src/scripts/patch-webpack-assets-pnpm-allow-builds.py && \
+    python /opt/invenio/src/scripts/patch-webpack-assets-tinymce.py && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/less && \
     cp ./assets/less/theme.config ${INVENIO_INSTANCE_PATH}/assets/less/ && \
     mkdir -p ${INVENIO_INSTANCE_PATH}/assets/templates/{custom_fields,search} && \
@@ -106,17 +108,17 @@ RUN . .venv/bin/activate && \
 
 
 # ── Stage 1b: test-runner ─────────────────────────────────────────────────
-# Extends builder with test extras only. docker-compose.test.yml targets this
+# Extends builder with the test and docs extras. docker-compose.test.yml targets this
 # stage. Runtime still COPY --from=builder, so these packages never ship in
 # the deployed image.
 FROM builder AS test-runner
 
 RUN . .venv/bin/activate && \
-    uv sync --frozen --extra tests --compile-bytecode && \
+    uv sync --frozen --extra tests --extra docs --compile-bytecode && \
     uv clean
 
 # Root Jest suite deps (package.json / pnpm-lock.yaml from COPY). All root
-# deps live under ``devDependencies``; force development so they are not
+# deps live under `devDependencies`; force development so they are not
 # skipped. Webpack's install lives under instance assets, not this tree.
 RUN NODE_ENV=development pnpm install --frozen-lockfile \
     && test -x node_modules/.bin/jest

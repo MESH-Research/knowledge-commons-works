@@ -25,7 +25,6 @@ from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
 from .fixtures.logging import log_folder_path, test_config_logging
 
-
 set_default_os_env()
 
 
@@ -239,36 +238,6 @@ def celery_enable_logging():
     return True
 
 
-# @pytest.fixture(scope="session")
-# def flask_celery_app(celery_config):
-#     app = Celery("invenio_app.celery")
-#     app.config_from_object(celery_config)
-#     return app
-
-
-# @pytest.fixture(scope="session")
-# def flask_celery_worker(flask_celery_app):
-#     with start_worker(flask_celery_app, perform_ping_check=False) as worker:
-#         yield worker
-
-
-# @pytest.fixture(scope="function")
-# def db_session_options():
-#     """Database session options.
-#
-#     Use to override options like ``expire_on_commit`` for the database session, which
-#     helps with ``sqlalchemy.orm.exc.DetachedInstanceError`` when models are not bound
-#     to the session between transactions/requests/service-calls.
-#
-#     .. code-block:: python
-#
-#         @pytest.fixture(scope='function')
-#         def db_session_options():
-#             return dict(expire_on_commit=False)
-#     """
-#     return {"expire_on_commit": False}
-#
-
 # This is a namedtuple that holds all the fixtures we're likely to need
 # in a single test.
 RunningApp = namedtuple(
@@ -338,10 +307,12 @@ def template_loader() -> Callable:
                 template_paths.append(str(path_obj))
 
         prev_loader = app.jinja_env.loader  # Invenio_app's themed dispatch loader
-        custom_loader = jinja2.ChoiceLoader([
-            prev_loader,
-            jinja2.FileSystemLoader(template_paths),
-        ])
+        custom_loader = jinja2.ChoiceLoader(
+            [
+                prev_loader,
+                jinja2.FileSystemLoader(template_paths),
+            ]
+        )
         app.jinja_env.loader = custom_loader
 
     return load_tempates
@@ -380,9 +351,13 @@ def app(
 def search_hosts():
     """Search hosts for pytest-invenio (OpenSearch).
 
-    Prefer ``SEARCH_HOSTS`` from the environment (docker-services-cli on the
-    host → localhost; container ``.env.test_connections`` → ``opensearch`` service name).
-    Falls back to localhost for plain host runs without that env var.
+    Prefer `SEARCH_HOSTS` from the environment (docker-services-cli on the
+    host → localhost; container `.env.test_connections` → `opensearch`
+    service name). Falls back to localhost for plain host runs without that
+    env var.
+
+    Yields:
+        list[dict]: OpenSearch host dicts for the search client.
     """
     raw = os.environ.get("SEARCH_HOSTS", "").strip()
     if raw:
@@ -426,7 +401,7 @@ def app_config(app_config) -> dict:
             "COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"
         ]
 
-    # invenio-search: if SEARCH_CLIENT_CONFIG contains ``hosts``, SEARCH_HOSTS
+    # invenio-search: if SEARCH_CLIENT_CONFIG contains `hosts`, SEARCH_HOSTS
     # is ignored. Always set both from env when present.
     raw_hosts = os.environ.get("SEARCH_HOSTS", "").strip()
     if raw_hosts:

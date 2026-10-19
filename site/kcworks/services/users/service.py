@@ -130,22 +130,28 @@ class UserSearchHelper:
     """Helper for searching users."""
 
     @classmethod
-    def query_string_for_contributor(
+    def resolve_contributor_user(
         cls,
-        contributor_id: str,
-        contributor_email: str,
-        contributor_orcid: str,
-        contributor_kc_username: str,
-    ) -> str:
-        """Returns a search string for all works by a contributor.
+        contributor_id: str = "",
+        contributor_email: str = "",
+        contributor_orcid: str = "",
+        contributor_kc_username: str = "",
+    ) -> User:
+        """Resolve a single local user from contributor identifiers.
+
+        Args:
+            contributor_id: Local user id.
+            contributor_email: User email.
+            contributor_orcid: ORCID stored on the user profile.
+            contributor_kc_username: KC username stored on the user profile.
 
         Returns:
-            str: Search string for contributor's works.
+            The matching `User`.
 
         Raises:
-            ValueError: If contributor information is invalid.
+            ValueError: If no user matches the given identifiers.
         """
-        search_string = ""
+        user_object: User | None = None
         if contributor_id:
             user_object = current_accounts.datastore.get_user_by_id(contributor_id)
         elif contributor_email:
@@ -157,12 +163,10 @@ class UserSearchHelper:
                 User._user_profile.op("->>")("identifier_orcid") == contributor_orcid
             ).one_or_none()
         elif contributor_kc_username:
-            kc_username_match = User.query.filter(
+            user_object = User.query.filter(
                 User._user_profile.op("->>")("identifier_kc_username")
                 == contributor_kc_username
             ).one_or_none()
-            if kc_username_match:
-                user_object = kc_username_match
 
         if not user_object:
             raise ValueError(
@@ -171,7 +175,18 @@ class UserSearchHelper:
                 f"{contributor_orcid}, "
                 f"contributor_kc_username: {contributor_kc_username}"
             )
+        return user_object
 
+    @classmethod
+    def _contributor_match_clauses(cls, user_object: User) -> list[str]:
+        """Build Lucene match clauses for a user's creator/contributor identity.
+
+        Args:
+            user_object: Local user whose works to match.
+
+        Returns:
+            Clauses such as `metadata.creators.person_or_org.name:"…"`.
+        """
         profile = user_object.user_profile
         name_variants = UserProfileService.get_user_name_variants(
             user_object.id, profile
@@ -182,35 +197,93 @@ class UserSearchHelper:
             "metadata.creators.person_or_org",
             "metadata.contributors.person_or_org",
         ]
-        search_string = ""
+        clauses: list[str] = []
         for person_path in person_paths:
-            search_string = (
-                f"{search_string}%20OR%20{person_path}.name:"
-                f"%22{profile.get('full_name')}%22"
-            )
+            if profile.get("full_name"):
+                clauses.append(f'{person_path}.name:"{profile.get("full_name")}"')
             if profile.get("full_name_alt"):
-                search_string = (
-                    f"{search_string}%20OR%20{person_path}.name:"
-                    f"%22{profile.get('full_name_alt')}%22"
-                )
+                clauses.append(f'{person_path}.name:"{profile.get("full_name_alt")}"')
             if profile.get("full_name_alt_b"):
-                search_string = (
-                    f"{search_string}%20OR%20{person_path}.name:"
-                    f"%22{profile.get('full_name_alt_b')}%22"
+                clauses.append(
+                    f'{person_path}.name:"{profile.get("full_name_alt_b")}"'
                 )
             if profile.get("identifier_orcid"):
-                search_string = (
-                    f"{search_string}%20OR%20{person_path}.identifiers.identifier:"
-                    f"%22{profile.get('identifier_orcid')}%22"
+                clauses.append(
+                    f'{person_path}.identifiers.identifier:'
+                    f'"{profile.get("identifier_orcid")}"'
                 )
             if profile.get("identifier_kc_username"):
-                search_string = (
-                    f"{search_string}%20OR%20{person_path}.identifiers.identifier:"
-                    f"%22{profile.get('identifier_kc_username')}%22"
+                clauses.append(
+                    f'{person_path}.identifiers.identifier:'
+                    f'"{profile.get("identifier_kc_username")}"'
                 )
             if profile.get("identifier_email"):
-                search_string = (
-                    f"{search_string}%20OR%20{person_path}.identifiers.identifier:"
-                    f"%22{profile.get('identifier_email')}%22"
+                clauses.append(
+                    f'{person_path}.identifiers.identifier:'
+                    f'"{profile.get("identifier_email")}"'
                 )
-        return search_string
+        return clauses
+
+    @classmethod
+    def query_string_for_user(cls, user_object: User) -> str:
+        """Build a non-encoded contributor query for local service search.
+
+        Args:
+            user_object: Local user whose creator/contributor works to match.
+
+        Returns:
+            Query string with literal spaces and quotes.
+        """
+        return " OR ".join(cls._contributor_match_clauses(user_object))
+
+    @classmethod
+    def query_string_for_user_url_encoded(cls, user_object: User) -> str:
+        """Build a URL-encoded contributor query for REST `q` parameters.
+
+        Encodes only ASCII quotes and ` OR ` joiners (same shape as the former
+        helper), leaving spaces inside quoted values alone.
+
+        Args:
+            user_object: Local user whose creator/contributor works to match.
+
+        Returns:
+            Query fragment suitable for an HTTP query string.
+        """
+        encoded_clauses = [
+            clause.replace('"', "%22")
+            for clause in cls._contributor_match_clauses(user_object)
+        ]
+        return "%20OR%20".join(encoded_clauses)
+
+    @classmethod
+    def query_string_for_contributor(
+        cls,
+        contributor_id: str,
+        contributor_email: str,
+        contributor_orcid: str,
+        contributor_kc_username: str,
+        *,
+        url_encode: bool = True,
+    ) -> str:
+        """Returns a search string for all works by a contributor.
+
+        Args:
+            contributor_id: Local user id.
+            contributor_email: User email.
+            contributor_orcid: ORCID on the user profile.
+            contributor_kc_username: KC username on the user profile.
+            url_encode: When True (default), return the REST-oriented encoded
+                form; when False, return a literal query for local search.
+
+        Returns:
+            Search string for contributor's works.
+        """
+        user_object = cls.resolve_contributor_user(
+            contributor_id=contributor_id,
+            contributor_email=contributor_email,
+            contributor_orcid=contributor_orcid,
+            contributor_kc_username=contributor_kc_username,
+        )
+        if url_encode:
+            return cls.query_string_for_user_url_encoded(user_object)
+        return cls.query_string_for_user(user_object)

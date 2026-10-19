@@ -1,3 +1,37 @@
+/* Part of Knowledge Commons Works
+ * Copyright (C) 2023-2026, MESH Research
+ *
+ * Knowledge Commons Works is an instance of InvenioRDM, which is
+ * Copyright (c) 2019-2026, CERN
+ *
+ * Knowledge Commons Works and InvenioRDM are both free software;
+ * You can redistribute and/or modify them under the terms of the
+ * MIT License; see LICENSE file for more details.
+ */
+
+
+#detail-main-content {
+  .ui.message {
+    @media screen and (max-width: @largestMobileScreen) {
+      padding: 1rem;
+    }
+  }
+
+  #detail-main-tabs {
+    .record-details-tab {
+      &.Content {
+        .ui.message.file-box-message {
+          margin-top: 1rem !important;
+          border: 1px solid @negativeBorderColor;
+          border-bottom-right-radius: @defaultBorderRadius !important;
+          border-bottom-left-radius: @defaultBorderRadius !important;
+        }
+      }
+    }
+  }
+
+}
+
 .ui.message {
   background-color: @seafoam50;
   border: 1px solid @verdigris30;

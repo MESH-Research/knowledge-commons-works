@@ -26,6 +26,44 @@ After the first ``compose up`` (with or without ``docker-compose.dev.yml``), run
 ``bash ./scripts/build-assets.sh`` in the ``web-ui`` container before using the
 site. Compose serves static from the ``static_data`` volume, which starts empty.
 
+Prefer ``./kcworks-startup.sh`` for day-to-day local bring-up (Secrets Manager
+slice + compose).
+
+### Local Profiles mock (SSO)
+
+For end-to-end login against a sibling
+[knowledge-commons-profiles-mock](https://github.com/MESH-Research/knowledge-commons-profiles-mock)
+checkout (default: ``../knowledge-commons-profiles-mock``):
+
+1. On the host, install [mkcert](https://github.com/FiloSottile/mkcert) once
+   (see that repo’s README).
+2. Start the mock (generates TLS certs under ``docker/certs/`` if missing, then
+   Compose + Caddy on ``https://localhost:8099``):
+
+   ```shell
+   cd ../knowledge-commons-profiles-mock
+   ./profiles-mock-startup.sh -d
+   ```
+
+3. Start KCWorks with Profiles wiring:
+
+   ```shell
+   cd ../knowledge-commons-works
+   ./kcworks-startup.sh --mock-profiles
+   ```
+
+``--mock-profiles`` applies ``docker-compose.mock-profiles.yml``: mounts the
+mock mkcert CA, runs ``update-ca-certificates`` in ``web-ui``, ``web-api``,
+``worker``, and ``scheduler``, points ``requests`` at the system CA bundle
+(``REQUESTS_CA_BUNDLE`` / ``SSL_CERT_FILE``), and sets the shared mock token
+plus split Profiles URLs (browser → ``127.0.0.1:8099``, server-side →
+``host.docker.internal:8099``).
+
+Do not keep conflicting Profiles URL or ``COMMONS_PROFILES_API_TOKEN`` lines in
+``.env`` when using the flag (the overlay ``environment`` wins, but leftover
+values are confusing). Override the mock checkout with ``PROFILES_MOCK_ROOT``
+if it is not at ``../knowledge-commons-profiles-mock``.
+
 ## Updating the running KCWorks instance with development changes
 
 ### Changes to html template files
