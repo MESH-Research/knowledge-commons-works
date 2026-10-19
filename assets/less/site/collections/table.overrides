@@ -1,40 +1,50 @@
 
 .ui.table {
-    thead th {
-        background-color: @seafoam50;
-        color: @ivy80;
-        line-height: 1.15rem;
-    }
-    tr.active,
-    tr td.active {
-        background-color: @mint50 !important;
-        color: @ivy;
-    }
-    &.striped tbody tr:nth-child(even) {
-        background-color: @seafoam50;
-    }
-    &.definition {
-        // thead:not(.full-width) th:nth-child(2) {
-        //     background-color: @ivory;
-        // }
-        tr {
-            td:first-child:not(.ignored) {
-            background-color: @seafoam50;
-            color: @ivy80;
-            font-weight: normal;
-            }
-            td:nth-child(2) {
-                border-color: @borderColor;
-            }
-        }
-    }
+  thead th {
+      background-color: @sidebarBackgroundColor;  // @seafoam50;
+      color: @ivy80;
+      line-height: 1.15rem;
+  }
+  tr.active,
+  tr td.active {
+      background-color: darken(@ivory, 2.0%) !important;
+      color: @ivy;
+  }
+  &.striped tbody tr:nth-child(even) {
+      background-color: @ivory;
+  }
+  &.definition {
+      // thead:not(.full-width) th:nth-child(2) {
+      //     background-color: @ivory;
+      // }
+      tr {
+          td:first-child:not(.ignored) {
+          background-color: transparent; // @seafoam50;
+          color: @ivy80;
+          font-weight: normal;
+          }
+          // td:nth-child(2) {
+          //     border-color: transparent; // @borderColor;
+          // }
+      }
+  }
+  &:not(.unstackable) {  // stacking behaviour
+    @media all and (max-width: @largestTabletScreen) {
+          .ui.image.avatar.rel-ml-1 {
+            margin-left: 0 !important;
+          }
+          tbody tr td:not(:first-child) {
+            padding-top: 0 !important;
+          }
+      }
+  }
 }
 
 .info {
     .ui.table {
         border-color: @infoBorderColor;
         thead th {
-            background-color: #edfdfd;
+            background-color: @ivory;
             color: @infoTextColor;
             border-color: @infoBorderColor;
         }

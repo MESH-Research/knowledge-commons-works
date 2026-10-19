@@ -1,16 +1,32 @@
 import React from "react";
-import { Segment } from "semantic-ui-react";
-// import { CustomFieldSectionInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
-const AdminMetadataComponent = ({ ...extraProps }) => {
-  return (
-    <span>Not implemented</span>
-    // <CustomFieldSectionInjector
-    //   sectionName="Commons admin info"
-    //   idString="AdminMetadataFields"
-    //   {...extraProps}
-    // />
-  );
-};
+/**
+ * Renders the Commons admin info custom fields (commons domain, submitter email,
+ * submitter username). Uses CustomField so widget and props come from
+ * custom_fields.ui (Commons admin info section).
+ */
+const AdminMetadataComponent = ({ ...extraProps }) => (
+  <>
+    <CustomField
+      fieldName="kcr:commons_domain"
+      idString="CommonsDomainField"
+      description=""
+      {...extraProps}
+    />
+    <CustomField
+      fieldName="kcr:submitter_email"
+      idString="SubmitterEmailField"
+      description=""
+      {...extraProps}
+    />
+    <CustomField
+      fieldName="kcr:submitter_username"
+      idString="SubmitterUsernameField"
+      description=""
+      {...extraProps}
+    />
+  </>
+);
 
 export { AdminMetadataComponent };

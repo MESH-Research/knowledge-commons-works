@@ -31,11 +31,11 @@
       Breakpoints
 --------------------*/
 
-@mobileBreakpoint: 320px;
-@tabletBreakpoint: 768px;
-@computerBreakpoint: 992px;
-@largeMonitorBreakpoint: 1200px;
-@widescreenMonitorBreakpoint: 1920px;
+// @mobileBreakpoint: 320px;
+// @tabletBreakpoint: 768px;
+// @computerBreakpoint: 1024px; // 992px;  // stock 1280px
+// @largeMonitorBreakpoint: 1400px;  // stock 1680px
+// @widescreenMonitorBreakpoint: 1920px;
 
 /*-------------------
       Spacing
@@ -54,6 +54,7 @@
 @mint: #c9e3db;
 @seafoam: #f0faf5;
 @ivory: #f5f5eb;
+@cream: #faf8f5;
 
 @ivy90: #33534a;
 @ivy80: #49665e;
@@ -133,6 +134,8 @@
 @ivory20: #fdfdfb;
 @ivory10: #fefefd;
 @ivoryRgba90: rgba(245, 245, 235, 0.9);
+@ivoryRgba70: rgba(245, 245, 235, 0.7);
+@ivoryRgba50: rgba(245, 245, 235, 0.5);
 
 @darkGray: #4e4e4e;
 @green: #6c7839;
@@ -140,10 +143,12 @@
 @greenRgba10: rgba(122, 151, 80, 0.1);
 @peacock: #4899DB;
 @peacockRgba10: rgba(72, 153, 219, 0.1);
+@blue: #175b8f; // darker than SUI default for WCAG contrast on white text
 @white: #fff;
 @salmon: #e47719;
 @salmonDark: #b05c14;
-@red: #db6228;
+@orange: #db6228;
+@red: #c26133;
 @redDark: #b54f1e;
 @yellow: @gold;
 @infoBlue: #276F86;
@@ -159,7 +164,9 @@
 @primaryTextColor: @verdigrisDark !important;
 
 @secondaryColor: @gold;
-@secondaryTextColor: #8d7313; // @darkGold;
+// SUI button.variables resets @secondaryTextColor to @invertedTextColor (white).
+@secondaryTextColor: #8d7313;
+@secondaryButtonTextColor: #847231; // desaturated gold; AA on white / white-on-fill
 @secondaryBackgroundColor: @gold10;
 
 // backwards compatibility
@@ -172,16 +179,12 @@
 /* ----------------------------
       Semantic state colors
 ------------------------------- */
-@warningColor: @gold;
-@warningTextColor: darken(#8d7313, 10%); // @darkGold;
-@warningBackgroundColor: @gold10;
-@warningBorderColor: @gold40;
-@warningColorDown: darken(@gold, 10%);
-
 @positiveColor: @green;
-@positiveTextColor: @green; // darken(@green, 10%);
+@positiveColorDown: darken(@green, 5%);
+@positiveTextColor: @green;
+@positiveTextColorDarker: darken(@green, 10%);
 @positiveBackgroundColor: @seafoam60;
-@positiveBorderColor: @seafoam;
+@positiveBorderColor: @ivy30;
 
 @negativeColor: @red;
 @negativeTextColor: @redDark;
@@ -189,6 +192,14 @@
 @negativeBackgroundColor: #fff6f6;
 @negativeBorderColor: #e0b4b4;
 @negativeBorderColorLight: #f8e4e4;
+
+@warningColor: @negativeColor;
+@warningColorDown: darken(@redDark, 10%);
+@warningTextColor: @redDark;
+@warningBackgroundColor: @negativeBackgroundColor;
+@warningTextColorDarker: @negativeTextColorDarker;
+@warningBorderColor: @negativeBorderColor;
+@warningBorderColorLight: @negativeBorderColorLight;
 
 @errorTextColor: @negativeTextColor; // @salmonDark; // @negativeColor; // = @red
 @errorColor: @negativeColor; // = @red // @salmon;
@@ -206,13 +217,13 @@
       Site Colors
 --------------------*/
 
-@sidebarBackgroundColor: @mint30; // #f9f9f9;
+@sidebarBackgroundColor: @ivory60; // @mint30; // #f9f9f9;
 @sidebarHeaderColor: @ivy80;
-@sidebarBorderColor: @mint60; // @verdigris20;
+@sidebarBorderColor: #efe9d5; // #ddd5b9; // @gold40; // @mint60; // @verdigris20;
 
 @formInputBackgroundColor: @white;
 @formButtonColor: @sidebarBackgroundColor;
-@formInputBorderColor: @ivy30;
+@formInputBorderColor: #e1dac3;
 @focusedFormBorderColor: #2185d0;
 @focusedFormMutedBorderColor: #2185d0;
 
@@ -246,6 +257,7 @@
 
 @versionActiveColor: @seafoam; //#d9edf7;
 
+@mutedTextColor: #515151;
 @mutedAccordionHeaderColor: #f5f5f5;
 
 /*-------------------

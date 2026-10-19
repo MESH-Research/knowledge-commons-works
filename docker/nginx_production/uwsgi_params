@@ -17,7 +17,7 @@ uwsgi_param  SERVER_NAME        $server_name;
 
 uwsgi_param  Host               $host;
 uwsgi_param  X-Forwarded-For    $proxy_add_x_forwarded_for;
-uwsgi_param  X-Forwarded-Proto  $scheme;
+uwsgi_param  X-Forwarded-Proto  $pass_forwarded_proto;
 
     # Pass request id to the api server
 uwsgi_param  X-Request-ID       $request_id;

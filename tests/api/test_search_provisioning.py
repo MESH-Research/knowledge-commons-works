@@ -296,6 +296,7 @@ def test_trigger_search_provisioning(
             "total_bytes": 0,
         },
         "id": read_new_version.data["id"],
+        "internal_notes": [],
         "is_draft": False,
         "is_published": True,
         "media_files": {
@@ -335,7 +336,7 @@ def test_trigger_search_provisioning(
             "access": {
                 "grants": [],
                 "links": [],
-                "owned_by": None,
+                "owned_by": {"user": "system"},
                 "settings": {
                     "accept_conditions_text": None,
                     "allow_guest_requests": False,
@@ -345,6 +346,7 @@ def test_trigger_search_provisioning(
             },
             "communities": {},
             "id": read_new_version.data["parent"]["id"],
+            "is_verified": True,
             "pids": {
                 "doi": {
                     "client": "datacite",

@@ -1,0 +1,25 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Knowledge Commons Works.
+  Copyright (C) 2023-2026 Mesh Research.
+
+  Knowledge Commons Works is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% macro community_type_icon(type) %}
+  {% if type == "commons" %}
+    <i class="globe icon fitted" aria-hidden="true"></i>
+  {% elif type == "organization" %}
+    <i class="building icon fitted" aria-hidden="true"></i>
+  {% elif type == "event" %}
+    <i class="calendar alternate icon fitted" aria-hidden="true"></i>
+  {% elif type == "journal" %}
+    <i class="book icon fitted" aria-hidden="true"></i>
+  {% elif type == "project" %}
+    <i class="tasks icon fitted" aria-hidden="true"></i>
+  {% elif type == "topic" %}
+    <i class="hashtag icon fitted" aria-hidden="true"></i>
+  {% else %}
+    <i class="tag icon fitted" aria-hidden="true"></i>
+  {% endif %}
+{% endmacro %}

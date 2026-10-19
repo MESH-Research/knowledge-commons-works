@@ -1,29 +1,34 @@
 @import (css)
   url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
+// Inline code: same blue as .ui.info/.ui.blue buttons, pale tint behind text
+code {
+  color: @blue;
+  background-color: fade(@blue, 8%);
+}
+
 // Responsive classes
 
 :not(.ui.grid).only {
-  &.large-monitor:not(.computer) {
+  &[class*="large screen"]:not(.computer) {
     @media all and (max-width: @largeMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.widescreen:not(.large-monitor):not(.computer) {
+  &.widescreen:not([class*="large screen"]):not(.computer) {
     @media all and (max-width: @widescreenMonitorBreakpoint) {
       display: none !important;
     }
   }
 
-  &.computer:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+  &.computer-strict:not([class*="large screen"]):not(.widescreen):not(.tablet):not(.mobile) {
     @media all and (max-width: @computerBreakpoint) {
       display: none !important;
     }
-    // FIXME: allow for hiding on larger screens
-    // @media all and (min-width: @widescreenMonitorBreakpoint) {
-    //   display: none !important;
-    // }
+    @media all and (min-width: @widescreenMonitorBreakpoint) {
+      display: none !important;
+    }
   }
 }
 
@@ -41,13 +46,39 @@
   }
 }
 
+// Spacing
+
+@media all and (max-width: @largestMobileScreen) {
+  .ml-0-mobile {
+    margin-left: 0 !important;
+  }
+
+  .mr-0-mobile {
+    margin-right: 0 !important;
+  }
+}
+
+// positioning
+
+.absolute-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
 // alignments
 
 .justify-space-between {
   justify-content: space-between !important;
 }
 
+.right.floated {
+  float: right !important;
+}
+
 // typography
+
 .breakable-text {
   word-break: break-all;
   white-space: normal;
@@ -57,6 +88,387 @@
 
 .warning.text {
   color: @negativeTextColor;
+}
+
+// utilities for text in animated-collapse accordions
+
+.rich-input-content.description-clamped {
+  overflow: hidden;
+  max-height: 6.5em; /* ~4 lines at 1.6 line-height; fallback for old engines */
+}
+
+@supports (-webkit-line-clamp: 4) or (line-clamp: 4) {
+  .rich-input-content.description-clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    max-height: none; /* let line-clamp own the height when available */
+  }
+}
+
+/* Measured-height expand/collapse; transition duration is set inline from JS. */
+.rich-input-content.description-height-animating {
+  overflow: hidden;
+}
+
+/* Sidebar subjects / keywords height clamp (~8rem) with animated expand. */
+.record-subjects .subjects-collapsible-content.subjects-clamped {
+  overflow: hidden;
+  max-height: 8rem;
+}
+
+.record-subjects .subjects-collapsible-content.subjects-height-animating {
+  overflow: hidden;
+}
+
+
+// Utilities for responsive stacking
+// Usage: Add .stackable-tablet to a flex container to make it stack vertically on tablet and mobile
+
+.stackable-tablet {
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-mobile {
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+  }
+}
+
+.stackable-computer {
+  @media (min-width: @computerBreakpoint) {
+    flex-direction: column !important;
+  }
+}
+
+// Stack items with full width on smaller screens
+.flex-stack-tablet {
+  display: flex;
+
+  @media (max-width: @largestTabletScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+.flex-stack-mobile {
+  display: flex;
+
+  @media (max-width: @largestMobileScreen) {
+    flex-direction: column !important;
+    > * {
+      width: 100% !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Carousel / card-grid utilities (shared item sizing via cqw)
+//
+//   .carousel-wrapper   — track chrome; chevrons overhang its edges
+//   .carousel-viewport  — horizontal scroll + snap
+//   .carousel-card-grid — wrapping stack; same --carousel-item-width math
+//   .carousel-item      — direct child; width ≈ container/N via cqw
+// ---------------------------------------------------------------------------
+
+.carousel-viewport,
+.carousel-card-grid {
+  container-type: inline-size;
+  display: flex !important;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  gap: var(--carousel-gap, 1rem);
+  padding-block: 1.5rem;
+
+  --carousel-gap: 1rem;
+  --carousel-visible: var(--carousel-visible-desktop, 3);
+  --carousel-item-width: calc(
+    (100cqw - (var(--carousel-visible) - 1) * var(--carousel-gap)) /
+      var(--carousel-visible)
+  );
+
+  @media (max-width: @largestTabletScreen) {
+    --carousel-visible: var(
+      --carousel-visible-tablet,
+      var(--carousel-visible-desktop, 3)
+    );
+  }
+
+  @media (max-width: @largestMobileScreen) {
+    --carousel-visible: var(--carousel-visible-mobile, 2);
+  }
+}
+
+.carousel-viewport {
+  container-name: carousel;
+  flex-wrap: nowrap;
+  // Side gutters so 3 cards sit inward of the wrapper fade gradients.
+  padding-left: 6.25% !important;
+  padding-right: 6.25% !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  --carousel-edge-spacer: calc((100cqw - var(--carousel-item-width)) / 2);
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 0 0 var(--carousel-edge-spacer);
+    width: var(--carousel-edge-spacer);
+  }
+
+  &::before {
+    margin-inline-end: calc(-1 * var(--carousel-gap, 1rem));
+  }
+
+  &::after {
+    margin-inline-start: calc(-1 * var(--carousel-gap, 1rem));
+  }
+
+  &.snap-start {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    &::before,
+    &::after {
+      content: none;
+      flex: none;
+      width: 0;
+      margin: 0;
+    }
+
+    .carousel-item {
+      scroll-snap-align: start;
+    }
+  }
+
+  &.with-scroll-markers {
+    scroll-marker-group: after;
+    anchor-name: --carousel;
+
+    &::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      position: absolute;
+      position-anchor: --carousel;
+      top: calc(anchor(bottom) + 1rem);
+      justify-self: anchor-center;
+    }
+  }
+}
+
+.carousel-card-grid {
+  container-name: carousel-grid;
+  flex-wrap: wrap;
+  overflow: visible;
+
+  .carousel-item {
+    scroll-snap-align: none;
+
+    &::scroll-marker {
+      display: none;
+    }
+  }
+}
+
+#community-detail-header {
+  .breadcrumb-wrap {
+    min-width: 0;
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+
+  .ui.breadcrumb {
+    max-width: 100%;
+    overflow: visible;
+
+    a.section {
+      position: relative;
+      overflow: visible;
+      vertical-align: bottom;
+
+      .section-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.ellipsis {
+        max-width: none;
+      }
+    }
+
+    &.truncate-1 {
+      a.section:not(.ellipsis) {
+        max-width: min(50cqi, 28ch);
+      }
+    }
+
+    &.truncate-2 a.section:not(.ellipsis) {
+      max-width: clamp(6ch, 25cqi, 18ch);
+    }
+
+    &.truncate-many a.section:not(.ellipsis) {
+      max-width: clamp(6ch, 12cqi, 10ch);
+    }
+  }
+}
+
+@media all and (min-width: @computerBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-1 a.section:not(.ellipsis) {
+    max-width: min(55cqi, 40ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-2 a.section:not(.ellipsis) {
+    max-width: clamp(14ch, 30cqi, 24ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(6ch, 12cqi, 12ch);
+  }
+}
+
+@media all and (min-width: @largeMonitorBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-1 a.section:not(.ellipsis) {
+    max-width: min(60cqi, 50ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-2 a.section:not(.ellipsis) {
+    max-width: clamp(16ch, 35cqi, 32ch);
+  }
+
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(8ch, 14cqi, 14ch);
+  }
+}
+
+@media all and (min-width: @widescreenMonitorBreakpoint) {
+  #community-detail-header .ui.breadcrumb.truncate-many a.section:not(.ellipsis) {
+    max-width: clamp(10ch, 16cqi, 16ch);
+  }
+}
+
+// CSS-only tooltips for menu items
+//
+// Semantic UI ships `[data-tooltip]` styles globally (via `popup.less`), so
+// tooltips work out of the box on most elements (e.g. `.ui.label`). They
+// break inside `.ui.menu .item` because the menu's own `:before`/`:after`
+// rules (item separators, the pointing-menu active indicator, etc.) outrank
+// the tooltip pseudo-elements on specificity and stomp critical properties
+// like `top`, `width`, `border`, and `transform`.
+//
+// The block below resets the menu-imposed properties at matching specificity
+// and renders a clean white tooltip above the menu item. Values are kept
+// minimal; we only handle the "above" position used in the community detail
+// header. Extend if other positions are needed later.
+
+.ui.menu .item[data-tooltip],
+#community-detail-header .ui.breadcrumb a.section[data-tooltip] {
+  position: relative;
+
+  &:before,
+  &:after {
+    display: block !important;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease, visibility 0.1s ease;
+  }
+
+  &:hover:before,
+  &:hover:after,
+  &:focus-visible:before,
+  &:focus-visible:after {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // Tooltip bubble
+  &:after {
+    content: attr(data-tooltip) !important;
+    position: absolute !important;
+    z-index: 100;
+    bottom: 100% !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 16rem;
+    margin: 0 0 0 0 !important;
+    padding: 0.5em 0.75em !important;
+    background: #fff !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    border: 1px solid #d4d4d5 !important;
+    border-radius: 0.25rem !important;
+    box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12),
+      0 2px 10px 0 rgba(34, 36, 38, 0.15) !important;
+    font-size: 0.85714rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    text-align: center;
+    text-transform: none;
+    white-space: nowrap;
+    transform: translateX(-50%) !important;
+  }
+
+  // Arrow
+  &:before {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 101;
+    bottom: 90% !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    width: 0.5rem !important;
+    height: 0.5rem !important;
+    margin: 0 0 0.3125rem 0 !important;
+    background: #fff !important;
+    border: 1px solid #d4d4d5 !important;
+    border-top: none !important;
+    border-left: none !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) rotate(45deg) !important;
+  }
+}
+
+#community-detail-header {
+  .community-header > .row {
+    overflow: visible;
+  }
+
+  .ui.breadcrumb a.section[data-tooltip] {
+    &:after {
+      bottom: calc(100% + 0.5625rem) !important;
+      max-width: none !important;
+      width: max-content !important;
+      white-space: nowrap !important;
+      word-break: normal !important;
+    }
+
+    &:before {
+      bottom: calc(100% + 0.125rem) !important;
+      margin: 0 !important;
+    }
+  }
 }
 
 // links
@@ -76,12 +488,6 @@ a {
     padding: 0.25rem 0.5rem;
   }
 }
-.creatibutors {
-  a[class$="-icon-link"] {
-    display: flex;
-    align-items: center;
-  }
-}
 
 .login.segment {
   .ui.button {
@@ -96,6 +502,23 @@ a {
 }
 
 // basic page structure
+
+@supports (view-transition-name: none) {
+  @view-transition {
+    navigation: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #community-detail-header {
+      view-transition-name: community-detail-header;
+      contain: layout;
+    }
+    ::view-transition-old(community-detail-header),
+    ::view-transition-new(community-detail-header) {
+      animation-duration: 180ms;
+      animation-timing-function: ease-out;
+    }
+  }
+}
 
 #main {
   flex-grow: 1;
@@ -208,7 +631,7 @@ html.cover-page {
   }
 
   #frontpage-search-bar {
-    @media screen and (max-width: 991px) {
+    @media screen and (max-width: @largestTabletScreen) {
       text-align: center;
       .column:last-child {
         margin-top: 1rem;
@@ -220,9 +643,9 @@ html.cover-page {
     margin-bottom: 0;
     margin-top: 3rem !important;
     padding: 5rem 0;
-    background-color: @ivy80;
+    background-color: @ivy90;
     background-size: cover;
-    background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivy_800.png");
+    // background-image: url("../../../../static/images/textured_bgs/KCommons_assets_Ivy_800.png");
     .column {
       cursor: pointer;
       background-color: transparent;
@@ -274,7 +697,8 @@ html.cover-page {
     padding-bottom: 2.5rem !important;
     padding-top: 2.5rem !important;
     background-size: cover;
-    background-color: @mint80;
+    background-color: @ivory;
+    box-shadow: inset 0px 0px 1rem rgb(from #818166 r g b / 0.35);
     .ui.container.grid {
       max-width: 100% !important;
       h2.ui.header {
@@ -332,45 +756,10 @@ html.cover-page {
     }
   }
 
-  .ui.message {
-    @media screen and (max-width: @largestMobileScreen) {
-      padding: 1rem;
-    }
-  }
-
-  // #communities {
-  // }
   .main-record-content {
-    h2 {
-      font-size: @large;
-    }
-    @media only screen and (max-width: @largestMobileScreen) {
-      h2 {
-        font-size: @large;
-        margin-bottom: 0.5rem;
-      }
-    }
-
-    #communities {
-      .segment {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        @media screen and (max-width: @largestMobileScreen) {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
-        }
-      }
-    }
-
     #record-title-section {
       padding-top: 0.5rem;
       padding-bottom: 0.5rem;
-      @media only screen and (max-width: @largestMobileScreen) {
-        h1 {
-          font-size: 1.5rem;
-          padding-top: 1rem;
-        }
-      }
     }
 
     #creatibutors-list-section {
@@ -392,28 +781,7 @@ html.cover-page {
         box-shadow: none;
       }
 
-      dl.details-list {
-        dt.ui.tiny.header {
-          margin-bottom: 0.25rem;
-          margin-top: 1rem;
-        }
-        dd {
-          overflow-wrap: break-word;
-        }
-      }
       .record-details-tab {
-        &.ui.attached.segment {
-          border: none;
-          padding-left: 0;
-          padding-right: 0;
-          padding-top: 0;
-        }
-        @media screen and (max-width: @largestMobileScreen) {
-          &.segment {
-            padding-top: 0;
-          }
-        }
-
         &.Content {
           #Descriptions-tab-section {
             padding-top: 0.5rem;
@@ -422,13 +790,6 @@ html.cover-page {
             p:last-child {
               margin-bottom: 2rem;
             }
-          }
-
-          .ui.message.file-box-message {
-            margin-top: 1rem !important;
-            border: 1px solid @negativeBorderColor;
-            border-bottom-right-radius: @defaultBorderRadius !important;
-            border-bottom-left-radius: @defaultBorderRadius !important;
           }
 
           .placeholder-header-bar {
@@ -536,13 +897,6 @@ html.cover-page {
           .subject {
             background-color: #fff;
             color: @textColor;
-          }
-          h2.tiny.header {
-            margin-bottom: 1rem;
-          }
-          h3.tiny.header.mt-10 {
-            margin-top: 1.5rem !important;
-            font-size: @medium;
           }
         }
 
@@ -688,14 +1042,47 @@ html.cover-page {
         justify-content: flex-end;
         margin-top: -0.5rem;
       }
-      .ui.button.basic.warning {
-        color: @warningTextColor !important;
-        box-shadow: none !important;
-        &:hover,
-        &:focus {
-          background-color: transparent !important;
-          box-shadow: 0px 0em 0px 1px rgba(87, 58, 8, 0.2) inset !important;
-        }
+    }
+
+    /* Sidebar warnings: CSS clamp + measured-height expand (same pattern as Descriptions). */
+    .content-warning.ui.message,
+    .ai-usage-alert.ui.message {
+      .content-warning-description.content-warning-clamped,
+      .ai-usage-description.ai-usage-clamped {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+      }
+
+      .content-warning-description.content-warning-height-animating,
+      .ai-usage-description.ai-usage-height-animating {
+        overflow: hidden;
+      }
+    }
+
+    /*
+     * Dismiss exit for AI / content-warning alerts (same pattern as deposit
+     * FormFeedback toasts via FadeCollapse). Larger max-height than deposit
+     * toasts so expanded descriptions are not clipped while visible.
+     *
+     * Bottom spacing lives on this wrapper: the message is now last-child of
+     * `.fade-collapse-inner`, so SUI last-child margin reset no longer applies.
+     */
+    .fade-collapse.detail-alert-fade-collapse {
+      overflow: hidden;
+      max-height: 50rem;
+      margin-bottom: 1rem;
+      opacity: 1;
+      transition-property: max-height, opacity, margin, padding;
+      transition-timing-function: ease;
+
+      &.hiding {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
       }
     }
     .ui.message.file-box-message {
@@ -705,10 +1092,10 @@ html.cover-page {
       border-bottom-left-radius: @defaultBorderRadius !important;
     }
     .sidebar-container {
-      &#record-management {
+      &#record-management,
+      &#record-moderation {
         margin-bottom: 1rem;
         .ui.fluid.icon.button {
-          text-align: left;
           padding-left: 1rem !important;
         }
       }
@@ -716,7 +1103,6 @@ html.cover-page {
         margin-bottom: 1rem;
         .ui.button.icon.right.labeled {
           padding-left: 1rem !important;
-          text-align: left;
         }
       }
       #record-details-download {
@@ -746,28 +1132,34 @@ html.cover-page {
           }
         }
       }
+      &#record-licenses {
+        .title-text {
+          line-height: 1.25em;
+        }
+      }
       &#record-export {
         margin-bottom: 1rem;
       }
       &#social-sharing {
+        .sharing-icons {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+          gap: 0.5rem;
+          justify-items: center;
+          align-items: center;
+        }
+        .sharing-icon {
+          position: relative;
+          display: inline-flex;
+        }
         .button {
-          margin-bottom: 0.25rem;
+          margin: 0;
           .icon {
-            color: @primaryTextColor;
+            color: inherit;
             svg {
               height: 1em;
               width: 1em;
-              fill: @primaryTextColor;
-            }
-          }
-          &:hover,
-          &:focus,
-          &:active {
-            .icon {
-              color: @ivy !important;
-              svg {
-                fill: @ivy !important;
-              }
+              fill: currentColor;
             }
           }
         }
@@ -791,13 +1183,6 @@ html.cover-page {
             height: 1.15em;
             width: 1.15em;
           }
-        }
-      }
-      #licenses {
-        padding: 0;
-        .license.clickable {
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
         }
       }
     }
@@ -908,8 +1293,9 @@ html.cover-page {
 
 // Communities/Collections Interface
 
-#community-detail-header {
-  .ui.secondary.menu.page-subheader {
+.community-header-menus {
+  .ui.secondary.menu.page-subheader,
+  .ui.secondary.menu.community-header-menu {
     @media all and (max-width: @largeMonitorBreakpoint) {
       margin-left: 0 !important;
       width: 100%;
@@ -1156,3 +1542,4 @@ html.cover-page {
     }
   }
 }
+

@@ -85,9 +85,7 @@ class CommunityCreateForm extends Component {
     try {
       const response = await this.cancellableCreate.promise;
       setSubmitting(false);
-      // TODO: Can we update this url with "collections" on the back end?
-      const settingsUrl = response.data.links.settings_html.replace("communities", "collections");
-      window.location.href = settingsUrl;
+      window.location.href = response.data.links.settings_html;
     } catch (error) {
       if (error === "UNMOUNTED") return;
 

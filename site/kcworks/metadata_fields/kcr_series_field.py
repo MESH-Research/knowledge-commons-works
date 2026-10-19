@@ -65,7 +65,7 @@ KCR_SERIES_FIELDS_UI = {
                     "placeholder": "",
                     "description": "",
                 },
-                "icon": "",
+                "icon": "list",
                 "description": "",
             },
         }

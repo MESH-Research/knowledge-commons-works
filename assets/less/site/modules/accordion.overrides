@@ -1,6 +1,8 @@
 /* Accordion theme overrides */
 
-.ui.accordion:not(.styled) {
+/* Form / page section accordions. Exclude `.measured-height` (e.g. access
+ * settings) so compact inline toggles keep their own title chrome. */
+.ui.accordion:not(.styled):not(.measured-height) {
   padding-bottom: 0;
   margin-top: 0.5rem;
   .title {
@@ -13,8 +15,21 @@
     background-color: transparent;
     text-align: left;
     width: 100%;
-    i.icon.dropdown {
-      float: right;
+    i.icon {
+      &.dropdown, &.caret {
+        float: right;
+      }
+      &:not(.dropdown):not(.caret) {
+        float: unset;
+        transform: unset;
+        margin-right: 0.5em;
+        font-size: 1em;
+        &.small {
+          font-size: 0.75em;
+          top: -1px;
+          position: relative;
+        }
+      }
     }
     @media screen and (max-width: @largestMobileScreen) {
       font-size: @large;
@@ -56,6 +71,34 @@
   }
 }
 
+/* PublishingDetails: keep panels measurable while collapsed (no display:none)
+   so measured-height open/close can match classic SUI slide behavior.
+   Padding lives on the inner `.details-list` (layout classes), not on
+   `.content`, so animating `.content` height to 0 clips padding cleanly. */
+.ui.accordion.publishing-details-accordion {
+  /* Must apply when closed too — SUI defaults `.content` to display:none,
+     which makes open-height measurement read as 0. */
+  > .content {
+    display: block !important;
+    overflow: hidden;
+    padding: 0 !important;
+  }
+
+  > .content.active {
+    background-color: @white;
+    border: 1px solid @sidebarBorderColor;
+    border-top: 0;
+  }
+
+  > .content:not(.active):not(.details-height-animating) {
+    height: 0;
+  }
+
+  > .content.details-height-animating {
+    overflow: hidden;
+  }
+}
+
 .facet {
   .ui.accordion:not(.styled) {
     margin-top: 0;
@@ -72,19 +115,40 @@
   }
 }
 
-.file-type-message {
+#rdm-deposit-form .invenio-form-section.file_type_message {
+  .ui.message.danger {
+    border-radius: 0;
+  }
   .ui.accordion:not(.styled) {
-    margin-top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
     .title {
       font-size: 1rem;
       font-weight: normal;
-      color: @infoTextColor;
       border-bottom: none;
-      padding: 0;
     }
     .content.active {
-      padding-top: 1rem;
+      border-top: 1px solid @borderColor;
+      padding-bottom: 1rem;
+      .list {
+        padding-left: 1.5rem;
+        padding-top: 0;
+      }
     }
+  }
+}
+
+.invenio-form-section.ui.accordion.invenio-accordion-field:not(.measured-height) {
+  &.error {
+    > .title {
+      background-color: transparent !important;
+      color: @errorTextColor !important;
+    }
+  }
+  > .title {
+    color: @primaryColor;
+    font-weight: bold;
+    font-size: 1.25em;
   }
 }
 
@@ -97,6 +161,16 @@
       font-weight: bold;
       color: @textColor;
       padding-left: 0.75rem;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    &[data-label="Linked Commons Group"] {
+      .content.active {
+        padding-left: 1rem;
+      }
     }
   }
 }
+
+

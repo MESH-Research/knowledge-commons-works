@@ -109,7 +109,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -327,7 +327,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -531,7 +531,7 @@ sample_metadata_conference_proceedings_pdf = {
                         "identifiers": [
                             {
                                 "identifier": "woutdillen",
-                                "scheme": "hc_username",
+                                "scheme": "kc_username",
                             }
                         ],
                         "name": "Dillen, Wout",
@@ -620,7 +620,7 @@ sample_metadata_conference_proceedings_pdf = {
                 },
                 {
                     "id": "http://id.worldcat.org/fast/883762",
-                    "subject": "Criticism, textual",
+                    "subject": "Criticism, Textual",
                     "scheme": "FAST-topical",
                 },
             ],

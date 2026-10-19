@@ -13,13 +13,13 @@ import Overridable from "react-overridable";
 import { Form, Icon } from "semantic-ui-react";
 
 export const MetadataAccess = (props) => {
-  const { recordAccess, communityAccess } = props;
+  const { className, recordAccess, communityAccess } = props;
   const publicMetadata = recordAccess === "public";
   const publicCommunity = communityAccess === "public";
 
   return (
     <Overridable id="ReactInvenioDeposit.MetadataAccess.layout" {...props}>
-      <Form.Field>
+      <Form.Field className={`pr-20 pl-20 ${props.className}`}>
         <label htmlFor="access.record" className="invenio-field-label" id="access.record.label">
           <Icon name="lock" />
           {i18next.t("Record access")}

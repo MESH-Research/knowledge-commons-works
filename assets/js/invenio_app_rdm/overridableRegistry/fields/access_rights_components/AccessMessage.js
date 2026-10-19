@@ -16,7 +16,12 @@ import { i18next } from "@translations/i18next";
 import { Trans } from "react-i18next";
 import { Icon, Message } from "semantic-ui-react";
 
-export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
+export const AccessMessage = ({
+  access,
+  metadataOnly,
+  accessCommunity,
+  attached,
+}) => {
   const recordPublic = access.record === "public";
   const filesPublic = access.files === "public";
   const communityPublic = accessCommunity === "public";
@@ -24,8 +29,7 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   // restriction logic
   const fullyRestricted = !communityPublic || (!recordPublic && !embargoActive);
-  const fullyPublic =
-    communityPublic && recordPublic && (metadataOnly || filesPublic);
+  const fullyPublic = communityPublic && recordPublic && (metadataOnly || filesPublic);
 
   const embargoedFiles = embargoActive && !filesPublic && recordPublic;
   const restrictedFiles = !embargoActive && !filesPublic && recordPublic;
@@ -37,10 +41,13 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullyPublic) {
     return (
-      <Message icon positive visible data-testid="access-message">
-        <Icon name="lock open" />
+      <Message positive visible attached={attached} data-testid="access-message">
         <Message.Content>
-          <Message.Header>{i18next.t("Public")}</Message.Header>
+          <Message.Header className="mb-5">
+            {i18next.t("Public")}
+            <Icon name="lock open" className="ml-10" />
+          </Message.Header>
+
           {metadataOnly
             ? i18next.t("The record is publicly accessible.")
             : i18next.t("The record and files are publicly accessible.")}
@@ -51,11 +58,11 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullEmbargo) {
     return (
-      <Message icon warning visible data-testid="access-message">
-        <Icon name="lock" />
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
-          <Message.Header>
-            {i18next.t("Embargoed (full record)")}
+          <Message.Header className="mb-5">
+            {i18next.t("Embargoed access")}
+            <Icon name="lock" className="ml-10" />
           </Message.Header>
           <Trans
             defaults="On <bold>{{fmtDate}}</bold> the record will automatically be made publicly accessible. Until then, the record can <bold>only</bold> be accessed by <bold>users specified</bold> in the permissions."
@@ -69,13 +76,14 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (fullyRestricted) {
     return (
-      <Message icon negative visible data-testid="access-message">
-        <Icon name="lock" />
+      <Message negative visible attached={attached} data-testid="access-message">
         <Message.Content>
-          <Message.Header>{i18next.t("Restricted")}</Message.Header>
+          <Message.Header className="mb-5">
+            {i18next.t("Access Restricted")}
+            <Icon name="lock" className="ml-10" />
+          </Message.Header>
           <Trans>
-            The record can <b>only</b> be accessed by <b>users specified</b> in
-            the permissions.
+            The record can <b>only</b> be accessed by <b>users specified</b> in the permissions.
           </Trans>
         </Message.Content>
       </Message>
@@ -84,15 +92,15 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (restrictedFiles) {
     return (
-      <Message icon warning visible data-testid="access-message">
-        <Icon name="lock" />
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
-          <Message.Header>
-            {i18next.t("Public with restricted files")}
+          <Message.Header className="mb-5">
+            {i18next.t("Files restricted")}
+            <Icon name="lock" className="ml-10" />
           </Message.Header>
           <Trans>
-            The record is publicly accessible. The files can <b>only</b> be
-            accessed by <b>users specified</b> in the permissions.
+            The record is publicly accessible. The files can <b>only</b> be accessed by{" "}
+            <b>users specified</b> in the permissions.
           </Trans>
         </Message.Content>
       </Message>
@@ -101,10 +109,12 @@ export const AccessMessage = ({ access, metadataOnly, accessCommunity }) => {
 
   if (embargoedFiles) {
     return (
-      <Message icon warning visible data-testid="access-message">
-        <Icon name="lock" />
+      <Message warning visible attached={attached} data-testid="access-message">
         <Message.Content>
-          <Message.Header>{i18next.t("Embargoed (files-only)")}</Message.Header>
+          <Message.Header className="mb-5">
+            {i18next.t("Files embargoed")}
+            <Icon name="lock" className="ml-10" />
+          </Message.Header>
           <Trans
             defaults="The record is publicly accessible. On <bold>{{ date }}</bold> the files will automatically be made publicly accessible. Until then, the files can <bold>only</bold> be accessed by <bold>users specified</bold> in the permissions."
             values={{ date: fmtDate }}
@@ -120,8 +130,10 @@ AccessMessage.propTypes = {
   access: PropTypes.object.isRequired,
   metadataOnly: PropTypes.bool,
   accessCommunity: PropTypes.string.isRequired,
+  attached: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 };
 
 AccessMessage.defaultProps = {
   metadataOnly: false,
+  attached: undefined,
 };

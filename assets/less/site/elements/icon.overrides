@@ -8,6 +8,33 @@
   }
 }
 
+.identifier-icon-link {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  &.email-icon-link {
+    i {
+      margin: 0;
+      height: auto;
+    }
+  }
+}
+
+// in detail-page metadata-only preview link display
+.metadata-only-content-message .icon.external.alternate {
+  position: relative;
+  top: -0.15rem;
+}
+
+// Short-list only: drop trailing icon margin before .separated semicolon
+// (!important to override Invenio .mr-5 spacing helper)
+#creatibutors-list-section {
+  .creatibutor-wrap a.identifier-icon-link:last-child .inline-id-icon,
+  .creatibutor-wrap a[class$="-icon-link"]:last-child .inline-id-icon {
+    margin-right: 0 !important;
+  }
+}
+
 .sidebar-container {
   &#record-versions {
     .ui.header.version-label {
@@ -46,5 +73,13 @@
 .error-page {
   .icon.huge {
     color: @gold50;
+  }
+}
+
+.creatibutors-list {
+  .icon.mail {
+    margin-bottom: 2px;
+    padding-left: 1px;
+    display: inline-block;
   }
 }

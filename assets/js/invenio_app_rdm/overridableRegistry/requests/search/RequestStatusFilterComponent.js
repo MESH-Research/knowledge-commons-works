@@ -4,6 +4,10 @@
 // Invenio is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import {
+  getUnreadNotificationsFromStorage,
+  UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+} from "@js/kcworks/notifications/unreadNotifications";
 import { i18next } from "@translations/invenio_requests/i18next";
 import PropTypes from "prop-types";
 import React, { useState, useEffect, useCallback } from "react";
@@ -60,28 +64,29 @@ const RequestStatusFilterComponent = ({
   );
 
   const updateUnreadNotifications = () => {
-    const storedNotifications = sessionStorage.getItem("unreadNotifications");
-    if (storedNotifications && storedNotifications !== "[]") {
-      const unread = JSON.parse(storedNotifications);
-      const pendingUnread = unread.filter(
-        (notification) =>
-          REQUEST_STATUSES.PENDING.includes(notification.request_status)
-      );
-      setPendingUnreadNotifications(pendingUnread);
-      const resolvedUnread = unread.filter(
-        (notification) =>
-          REQUEST_STATUSES.RESOLVED.includes(notification.request_status)
-      );
-      setResolvedUnreadNotifications(resolvedUnread);
-    }
+    const unread = getUnreadNotificationsFromStorage();
+    const pendingUnread = unread.filter((notification) =>
+      REQUEST_STATUSES.PENDING.includes(notification.request_status)
+    );
+    setPendingUnreadNotifications(pendingUnread);
+    const resolvedUnread = unread.filter((notification) =>
+      REQUEST_STATUSES.RESOLVED.includes(notification.request_status)
+    );
+    setResolvedUnreadNotifications(resolvedUnread);
   };
 
   useEffect(() => {
     updateUnreadNotifications();
-    window.addEventListener("storage", updateUnreadNotifications);
+    window.addEventListener(
+      UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+      updateUnreadNotifications
+    );
 
     return () => {
-      window.removeEventListener("storage", updateUnreadNotifications);
+      window.removeEventListener(
+        UNREAD_NOTIFICATIONS_UPDATED_EVENT,
+        updateUnreadNotifications
+      );
     };
   }, []);
 

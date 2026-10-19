@@ -1,32 +1,43 @@
 /*
-* This file is part of Knowledge Commons Works.
-*   Copyright (C) 2024 Mesh Research.
-*
-* Knowledge Commons Works is based on InvenioRDM, and
-* this file is based on code from InvenioRDM. InvenioRDM is
-*   Copyright (C) 2020-2024 CERN.
-*   Copyright (C) 2020-2024 Northwestern University.
-*   Copyright (C) 2020-2024 T U Wien.
-*
-* InvenioRDM and Knowledge Commons Works are both free software;
-* you can redistribute and/or modify them under the terms of the
-* MIT License; see LICENSE file for more details.
-*/
+ * This file is part of Knowledge Commons Works.
+ *   Copyright (C) 2024 Mesh Research.
+ *
+ * Knowledge Commons Works is based on InvenioRDM, and
+ * this file is based on code from InvenioRDM. InvenioRDM is
+ *   Copyright (C) 2020-2024 CERN.
+ *   Copyright (C) 2020-2024 Northwestern University.
+ *   Copyright (C) 2020-2024 T U Wien.
+ *
+ * InvenioRDM and Knowledge Commons Works are both free software;
+ * you can redistribute and/or modify them under the terms of the
+ * MIT License; see LICENSE file for more details.
+ */
 
-import {
-  SearchAppFacets,
-  SearchAppResultsPane,
-} from "@js/invenio_search_ui/components";
+import { reconcileUnreadNotifications } from "@js/kcworks/notifications/unreadNotifications";
+import { SearchAppFacets, SearchAppResultsPane } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/invenio_requests/i18next";
 import { RequestStatusFilter } from "./RequestStatusFilterComponent";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { SearchBar } from "react-searchkit";
 import { Button, Container, Grid } from "semantic-ui-react";
 
-export const RequestsSearchLayout = ({ config, appName }) => {
-  const [sidebarVisible, setSidebarVisible] = React.useState(false);
+export const RequestsSearchLayout = ({
+  config,
+  appName,
+  reconcileUnreadOnMount,
+}) => {
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  useEffect(() => {
+    if (reconcileUnreadOnMount) {
+      reconcileUnreadNotifications().catch((error) => {
+        console.error("Error reconciling unread notifications:", error);
+      });
+    }
+  }, [reconcileUnreadOnMount]);
+
   return (
     <Container>
       <Grid>
@@ -42,33 +53,24 @@ export const RequestsSearchLayout = ({ config, appName }) => {
             />
           </Grid.Column>
 
-          <Grid.Column
-            mobile={13}
-            tablet={5}
-            computer={4}
-            className="text-align-right-mobile"
-          >
+          <Grid.Column mobile={13} tablet={5} computer={4} className="text-align-right-mobile">
             <RequestStatusFilter className="rel-mb-1" />
           </Grid.Column>
 
           <Grid.Column mobile={16} tablet={10} computer={8}>
             <SearchBar placeholder={i18next.t("Search in my requests...")} />
           </Grid.Column>
-
         </Grid.Row>
 
         <Grid.Row>
           <Grid.Column mobile={16} tablet={16} computer={12}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-            />
+            <SearchAppResultsPane layoutOptions={config.layoutOptions} appName={appName} />
           </Grid.Column>
           <GridResponsiveSidebarColumn
             width={4}
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
-            className="widescreen large-monitor only"
+            className="widescreen large screen only"
           >
             <SearchAppFacets aggs={config.aggs} appName={appName} />
           </GridResponsiveSidebarColumn>
@@ -81,8 +83,10 @@ export const RequestsSearchLayout = ({ config, appName }) => {
 RequestsSearchLayout.propTypes = {
   config: PropTypes.object.isRequired,
   appName: PropTypes.string,
+  reconcileUnreadOnMount: PropTypes.bool,
 };
 
 RequestsSearchLayout.defaultProps = {
   appName: undefined,
+  reconcileUnreadOnMount: false,
 };

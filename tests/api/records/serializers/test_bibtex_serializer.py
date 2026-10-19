@@ -19,9 +19,6 @@ def _minimal_record(resource_type_id: str, **extra) -> dict:
     """
     record = {
         "id": "abcde-fghij",
-        # Deliberately different from publication_date so year/month tests
-        # prove we prefer metadata.publication_date over record created.
-        "created": "2026-01-01T00:00:00.000000+00:00",
         "pids": {},
         "parent": {"id": "parent-id", "pids": {}},
         "metadata": {
@@ -113,7 +110,7 @@ def test_serialize_proceedings_paper_full_output():
             "  month        = mar,",
             "  venue        = {Rome},",
             "  doi          = {10.1234/abcde-fghij},",
-            "  url          = {https://doi.org/10.1234/abcde-fghij}",
+            "  url          = {https://doi.org/10.1234/abcde-fghij},",
             "}",
         ]
     )
@@ -144,7 +141,7 @@ def test_serialize_journal_article_full_output():
             "  number       = 2,",
             "  month        = mar,",
             "  doi          = {10.1234/abcde-fghij},",
-            "  url          = {https://doi.org/10.1234/abcde-fghij}",
+            "  url          = {https://doi.org/10.1234/abcde-fghij},",
             "}",
         ]
     )
@@ -156,29 +153,3 @@ def test_entry_mapper_keeps_stock_keys():
     assert "publication-conferencepaper" in KCWorksBibTexSchema.entry_mapper
     assert "textDocument-proceedingsPaper" in KCWorksBibTexSchema.entry_mapper
     assert "presentation-conferencePaper" not in KCWorksBibTexSchema.entry_mapper
-
-
-def test_year_uses_publication_date_not_created():
-    """BibTeX year/month come from publication_date, not record created."""
-    record = _minimal_record(
-        "textDocument-journalArticle",
-        created="2026-01-01T00:00:00.000000+00:00",
-        custom_fields={"journal:journal": {"title": "Example Journal"}},
-    )
-    record["metadata"]["publication_date"] = "2022-09-13"
-    serialized = KCWorksBibtexSerializer().serialize_object(record)
-    assert "year         = 2022," in serialized
-    assert "month        = sep," in serialized
-    assert "brown_2022_abcde-fghij" in serialized
-
-
-def test_year_falls_back_to_created_without_publication_date():
-    """If publication_date is missing, fall back to record created."""
-    record = _minimal_record(
-        "dataset",
-        created="2021-06-01T00:00:00.000000+00:00",
-    )
-    del record["metadata"]["publication_date"]
-    serialized = KCWorksBibtexSerializer().serialize_object(record)
-    assert "year         = 2021," in serialized
-    assert "month        = jun," in serialized

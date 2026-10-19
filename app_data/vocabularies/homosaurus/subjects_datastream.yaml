@@ -1,0 +1,7 @@
+# Datastream config for `invenio vocabularies import|update -v subjects`.
+# Homosaurus records are JSONL; the stock subjects default uses a YAML reader.
+subjects:
+  readers:
+    - type: jsonl
+  writers:
+    - type: subjects-service

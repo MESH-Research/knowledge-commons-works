@@ -1,8 +1,37 @@
-h1.ui.header {
-  color: @verdigris;
-  margin-top: 2rem;
+.ui.header {
+  // h1& → h1.ui.header (not &h1 → .ui.headerh1)
+  h1& {
+    color: @ivy;
+    margin-top: 2rem;
+  }
+  &.tiny {
+    font-size: @tiny;
+    font-weight: bold;
+  }
+
+  // Semantic colors (align with button.overrides tokens)
+  &.primary {
+    color: @ivy80;
+  }
+  &.secondary {
+    color: @redDark;
+  }
+  &.positive {
+    color: @positiveTextColor;
+  }
+  &.negative {
+    color: @redDark;
+  }
+  &.warning {
+    color: @warningTextColor;
+  }
+  &.info,
+  &.blue {
+    color: @blue;
+  }
 }
-.deposit-form-header {
+
+.deposit-form-title {
   h1.ui.header {
     margin-bottom: 0;
   }
@@ -24,13 +53,23 @@ h1.ui.header {
 
 
 h2.ui.header {
-  color: @primaryColor;
+  color: @ivy;
   &.preselected-community-header {
     color: @secondaryColor;
     margin-top: 0;
   }
   @media (max-width: @largestMobileScreen) {
     font-size: 1.5rem;
+  }
+}
+
+dl.details-list {
+  dt.ui.tiny.header {
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+  }
+  dd {
+    overflow-wrap: break-word;
   }
 }
 
@@ -47,12 +86,62 @@ h2.ui.header {
   }
 }
 
+
+.communities-settings h2.ui.small.header {
+  font-size: @big;
+  font-weight: bold;
+
+  &:first-of-type {
+    margin-top: 0.25em;
+  }
+
+  .sub.header {
+    font-style: italic;
+  }
+}
+
 #detail-main-content {
   h1.ui.header {
     margin-top: 0;
-    // font-weight: normal;
-    color: @primaryColor;
+    color: @ivy80;
   }
+
+  .main-record-content {
+    #record-title-section {
+      @media only screen and (max-width: @largestMobileScreen) {
+        h1 {
+          font-size: 1.5rem;
+          padding-top: 1rem;
+        }
+      }
+    }
+
+    h2 {
+      font-size: @large;
+    }
+    @media only screen and (max-width: @largestMobileScreen) {
+      h2 {
+        font-size: @large;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    #detail-main-tabs {
+      .record-details-tab {
+        &.Subjects {
+          h2.tiny.header {
+            margin-bottom: 1rem;
+          }
+          h3.tiny.header.mt-10 {
+            margin-top: 1.5rem !important;
+            font-size: @medium;
+          }
+        }
+      }
+    }
+  }
+
+
   .sidebar-container {
     h2.ui.header {
       color: @sidebarHeaderColor;
@@ -71,7 +160,6 @@ h2.ui.header {
     &.top {
       border-bottom: 0;
       padding-bottom: 0.5rem;
-      font-size: @medium;
       background-color: @sidebarBackgroundColor;
     }
   }
@@ -109,6 +197,7 @@ h2.ui.header {
     }
   }
 }
+
 
 .request-detail-page > .computer-flex-header.rel-mt-2 {
   margin-top: 1rem !important;

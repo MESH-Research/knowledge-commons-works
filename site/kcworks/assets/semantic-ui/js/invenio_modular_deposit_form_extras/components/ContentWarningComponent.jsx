@@ -1,29 +1,26 @@
 import React from "react";
-import { CustomFieldInjector } from "@js/invenio_modular_deposit_form/field_components/CustomFieldInjector";
+import { CustomField } from "@js/invenio_modular_deposit_form/field_components/CustomField";
 
-const ContentWarningComponent = ({ ...extraProps }) => {
-  return (
-    <CustomFieldInjector
-      fieldName="kcr:content_warning"
-      sectionName="Content warning"
-      idString="ContentWarning"
-      editorConfig={{
-        removePlugins: [
-          "Image",
-          "ImageCaption",
-          "ImageStyle",
-          "ImageToolbar",
-          "ImageUpload",
-          "MediaEmbed",
-          "Table",
-          "TableToolbar",
-          "TableProperties",
-          "TableCellProperties",
-        ],
-      }}
-      {...extraProps}
-    />
-  );
-};
+const ContentWarningComponent = ({ ...extraProps }) => (
+  <CustomField
+    fieldName="kcr:content_warning"
+    idString="ContentWarning"
+    editorConfig={{
+      removePlugins: [
+        "Image",
+        "ImageCaption",
+        "ImageStyle",
+        "ImageToolbar",
+        "ImageUpload",
+        "MediaEmbed",
+        "Table",
+        "TableToolbar",
+        "TableProperties",
+        "TableCellProperties",
+      ],
+    }}
+    {...extraProps}
+  />
+);
 
 export { ContentWarningComponent };

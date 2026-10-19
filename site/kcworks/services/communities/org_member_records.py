@@ -175,7 +175,7 @@ class OrgMemberRecordIncluder:
 
             if not member_dict or "id" not in member_dict:
                 current_app.logger.warning(
-                    f"No valid user found for KC username {username}."
+                    f"No valid user found for {username} across all idps."
                 )
                 continue
 

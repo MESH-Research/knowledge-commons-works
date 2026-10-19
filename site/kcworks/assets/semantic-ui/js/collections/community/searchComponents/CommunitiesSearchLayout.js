@@ -1,7 +1,4 @@
-import {
-  SearchAppFacets,
-  SearchAppResultsPane,
-} from "@js/invenio_search_ui/components";
+import { SearchAppFacets, SearchAppResultsPane } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/kcworks/i18next";
 import PropTypes from "prop-types";
 import React from "react";
@@ -9,30 +6,24 @@ import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { SearchBar, Sort } from "react-searchkit";
 import { Button, Container, Grid, Icon } from "semantic-ui-react";
 
-export const CommunitiesSearchLayout = ({ config, appName }) => {
+export const CommunitiesSearchLayout = ({
+  config,
+  appName,
+  searchBarPlaceholder = i18next.t("Search collections..."),
+}) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   return (
     <Container>
       <Grid>
         {/* Mobile/tablet search header */}
         <Grid.Row className="mobile tablet only">
-          <Grid.Column
-            mobile={16}
-            tablet={16}
-            floated="right"
-            className="mt-10"
-          >
-            <SearchBar placeholder={i18next.t("Search collections...")} />
+          <Grid.Column mobile={16} tablet={16} floated="right" className="mt-10">
+            <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
         </Grid.Row>
 
         <Grid.Row className="mobile tablet only">
-          <Grid.Column
-            mobile={2}
-            tablet={1}
-            verticalAlign="middle"
-            className=""
-          >
+          <Grid.Column mobile={2} tablet={1} verticalAlign="middle" className="">
             <Button
               basic
               icon="sliders"
@@ -58,14 +49,14 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
         {/* End mobile/tablet search header */}
 
         {/* Desktop search header */}
-        <Grid.Row className="computer widescreen large-monitor only communities-search-bar">
+        <Grid.Row className="computer widescreen large screen only communities-search-bar">
           <Grid.Column width={12}>
-            <SearchBar placeholder={i18next.t("Search collections...")} />
+            <SearchBar placeholder={searchBarPlaceholder} />
           </Grid.Column>
           <Grid.Column width={4} />
         </Grid.Row>
         {config.sortOptions && (
-          <Grid.Row className="computer widescreen large-monitor only communities-search-options">
+          <Grid.Row className="computer widescreen large screen only communities-search-options">
             <Grid.Column width={12}>
               <Sort
                 values={config.sortOptions}
@@ -85,10 +76,7 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
 
         <Grid.Row>
           <Grid.Column mobile={16} tablet={16} computer={12}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-            />
+            <SearchAppResultsPane layoutOptions={config.layoutOptions} appName={appName} />
           </Grid.Column>
           <GridResponsiveSidebarColumn
             width={4}
@@ -111,8 +99,10 @@ export const CommunitiesSearchLayout = ({ config, appName }) => {
 CommunitiesSearchLayout.propTypes = {
   config: PropTypes.object.isRequired,
   appName: PropTypes.string,
+  searchBarPlaceholder: PropTypes.string,
 };
 
 CommunitiesSearchLayout.defaultProps = {
   appName: "",
+  searchBarPlaceholder: i18next.t("Search collections..."),
 };

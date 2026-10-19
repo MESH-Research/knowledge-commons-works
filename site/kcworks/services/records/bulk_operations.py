@@ -24,6 +24,35 @@ class UpdateResult(TypedDict):
     errors: list[str]
 
 
+_PERSON_ORG_NAME_PARTS = frozenset({"family_name", "given_name"})
+
+
+def _clear_person_or_org_name_if_updating_name_part(
+    metadata_field: str, draft_data: dict
+) -> dict:
+    """Clear a stale composed ``name`` after a surgical name-part bulk update.
+
+    KCWorks preserves a non-empty ``person_or_org.name`` on schema load. When
+    bulk-update changes only ``family_name`` or ``given_name``, drop the
+    display name so validation can recompose it from the updated parts.
+
+    Args:
+        metadata_field: Dot-separated metadata path being updated.
+        draft_data: Draft payload about to be sent to ``update_draft``.
+
+    Returns:
+        The draft payload, with ``name`` cleared when applicable.
+    """
+    part = metadata_field.rsplit(".", 1)[-1]
+    if part not in _PERSON_ORG_NAME_PARTS or ".person_or_org." not in metadata_field:
+        return draft_data
+
+    name_field = f"{metadata_field.rsplit('.', 1)[0]}.name"
+    return replace_value_in_nested_dict(
+        draft_data, name_field.replace(".", "|"), ""
+    )
+
+
 def update_community_records_metadata(
     community_id: str, metadata_field: str, new_value: Any
 ) -> UpdateResult:
@@ -78,6 +107,9 @@ def update_community_records_metadata(
             old_value = get_value_by_path(draft_data, metadata_field)
             draft_data = replace_value_in_nested_dict(
                 draft_data, metadata_field.replace(".", "|"), new_value
+            )
+            draft_data = _clear_person_or_org_name_if_updating_name_part(
+                metadata_field, draft_data
             )
             current_rdm_records_service.update_draft(
                 system_identity, draft.id, draft_data

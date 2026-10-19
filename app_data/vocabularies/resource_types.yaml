@@ -903,7 +903,7 @@
     - depositable
     - linkable
 - id: textDocument-book
-  icon: file alternate
+  icon: book
   props:
     coar: book
     coar_type: c_2f33

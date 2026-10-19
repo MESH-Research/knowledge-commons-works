@@ -24,6 +24,8 @@
   "Controls whether the collection is visible to anyone or to members only.": "Controls whether the collection is visible to anyone or to members only.",
   "Members visibility": "Members visibility",
   "Controls whether the members tab is visible to anyone or to members only.": "Controls whether the members tab is visible to anyone or to members only.",
+  "Members in your community are only visible to other members of the community.": "Members in your collection are only visible to other members of the collection.",
+  "The <bold>{{collection}}</bold> community does not allow you to set a different primary display collection. Please contact the collection owner or managers for assistance.": "The <bold>{{collection}}</bold> collection does not allow you to set a different primary display collection. Please contact the collection owner or managers for assistance.",
   "Danger zone": "Danger zone",
   "Change identifier": "Change identifier",
   "Changing your collection's unique identifier can have unintended side effects.": "Changing your collection's unique identifier can have unintended side effects.",

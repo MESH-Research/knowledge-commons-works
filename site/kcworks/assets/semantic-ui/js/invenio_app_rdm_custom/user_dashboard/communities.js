@@ -10,12 +10,13 @@
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import { i18next } from "@translations/kcworks/i18next";
 import {
+  CommunitiesSearchLayout,
   ResultsGridItemTemplate,
   CommunitiesEmptySearchResults,
 } from "../../collections/community/searchComponents";
 import { CommunityItem } from "../../collections/community/communitiesItems/CommunityItem";
 import { RDMRecordSearchBarElement } from "../search/components";
-import { DashboardResultView, DashboardSearchLayoutHOC } from "./base";
+import { DashboardResultView } from "./base";
 import {
   ContribSearchAppFacets,
   ContribBucketAggregationElement,
@@ -25,9 +26,9 @@ import { overrideStore, parametrize } from "react-overridable";
 
 export const appName = "InvenioAppRdm.DashboardCommunities";
 
-export const DashboardCommunitiesSearchLayout = DashboardSearchLayoutHOC({
-  searchBarPlaceholder: i18next.t("Search in my collections..."),
+export const DashboardCommunitiesSearchLayout = parametrize(CommunitiesSearchLayout, {
   appName: appName,
+  searchBarPlaceholder: i18next.t("Search in my collections..."),
 });
 
 const DashboardResultViewWAppName = parametrize(DashboardResultView, {

@@ -1,0 +1,10 @@
+/* (via container.variables) */
+/* override because we changed breakpoints */
+// @computerMinimumGutter: (@emSize  * 1.5);
+// @computerWidth: @computerBreakpoint - (@computerMinimumGutter * 2) - @scrollbarWidth + 268px;
+// @computerGutter: auto;
+//
+// @largeMonitorMinimumGutter: (@emSize  * 2);
+// @largeMonitorWidth: @largeMonitorBreakpoint - (@largeMonitorMinimumGutter * 2) - @scrollbarWidth + 460px;
+// @largeMonitorGutter: auto;
+

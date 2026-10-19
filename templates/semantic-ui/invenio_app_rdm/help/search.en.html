@@ -1,0 +1,446 @@
+{#
+  Copyright (C) 2021 CERN.
+  Copyright (C) 2021 Northwestern University.
+  Copyright (C) 2026 MESH Research / Knowledge Commons Works.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+
+  KCWorks override: field aliases section and short-name field search examples.
+#}
+{%- set title = _("Search guide") %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_body %}
+<div class="ui container mt-25">
+  <h1>Search guide</h1>
+  <p>
+    This guide explains how to write advanced search queries using easy
+    to understand examples.
+  </p>
+  <h3>Simple search (one or multiple terms)</h3>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=open%20science"
+      ><code>open science</code></a
+    >
+  </p>
+  <p>
+    Results will match records with the <em>terms</em> <code>open</code>
+    <em>or</em> <code>science</code> in <em>any field</em>. Note that stemming
+    is applied so e.g. <code>science</code> will also match
+    <code>sciences</code>. Search results are ranked according to an algorithm
+    that takes your query terms into account.
+  </p>
+  <p>
+    You can require <em>presence</em> of both terms using either the
+    <code>+</code> or <code>AND</code> operator:
+  </p>
+  <p>
+    <strong>Examples:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=%2Bopen%20%2Bscience"
+      ><code>+open +science</code></a
+    >
+    or
+    <a href="/search?page=1&amp;size=20&amp;q=open%20AND%20science"
+      ><code>open AND science</code></a
+    >
+  </p>
+  <p>
+    You can require <em>absence</em> of one or more terms using either the
+    <code>-</code> or <code>NOT</code> operator:
+  </p>
+  <p>
+    <strong>Examples:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=-open%20%2Bscience"
+      ><code>-open +science</code></a
+    >
+    or
+    <a href="/search?page=1&amp;size=20&amp;q=NOT%20open%20AND%20science"
+      ><code>NOT open AND science</code></a
+    >
+  </p>
+  <h3>Phrase search</h3>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=%22open%20science%22"
+      ><code>"open science"</code></a
+    >
+  </p>
+  <p>
+    Results will match records with the <em>phrase</em>
+    <code>open science</code> in <em>any field</em>: those words in order and
+    next to each other. Phrase queries still use text analysis (for example,
+    stemming may apply); they are not character-for-character exact matches.
+  </p>
+  <p>
+    For a <em>single</em> word, quoting usually does not change which records
+    match. <code>draw</code> and <code>"draw"</code> (or
+    <code>title:draw</code> and <code>title:"draw"</code>) typically return the
+    same hit set, because a one-term phrase query and a term query both require
+    that analyzed token. Quotes matter mainly for multi-word phrases. The same
+    applies with field aliases such as
+    <code>title:"open science"</code>.
+  </p>
+  <h3>Field search</h3>
+  <p>
+    Prefer short <em>aliases</em> for common fields. For example:
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=title:open"
+      ><code>title:open</code></a
+    >
+  </p>
+  <p>
+    Results will match records with the <em>term</em> <code>open</code> in the
+    title (including additional titles). Full OpenSearch paths still work
+    (e.g. <code>metadata.title:open</code>). If you want to search for multiple
+    terms in a field you must <strong>group the terms</strong> using
+    parenthesis:
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=title:(open%20science%29"
+      ><code>title:(open science)</code></a
+    >
+    or, for a phrase in the title only:
+    <a href="/search?page=1&amp;size=20&amp;q=title:%22open%20science%22"
+      ><code>title:"open science"</code></a
+    >
+  </p>
+  <p>
+    <strong>Quotes:</strong> Use quotes for multi-word phrases on a field
+    (words in order, adjacent). For a single word, quoted and unquoted forms
+    usually match the same records. Quotes do not require a character-for-character
+    match of the stored value. For precise identifier lookups, use field aliases
+    such as <code>doi:</code> or <code>issn:</code>.
+  </p>
+  <p>
+    See the <a href="#field-aliases">field aliases</a> list below. For the full
+    indexed metadata schema, see
+    <a href="https://inveniordm.docs.cern.ch/reference/metadata/#metadata"
+      >the InvenioRDM documentation</a
+    >.
+  </p>
+  <h3 id="field-aliases">Field aliases</h3>
+  <p>
+    These short names are rewritten to the underlying indexed fields before the
+    query is sent to OpenSearch. Some aliases search more than one field and
+    match if <em>any</em> of those fields hit (for example
+    <code>title</code>, <code>author</code>, <code>url</code>,
+    <code>collection</code>).
+  </p>
+  <p>
+    <strong>Examples:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=author:smith"
+      ><code>author:smith</code></a
+    >,
+    <a href="/search?page=1&amp;size=20&amp;q=keyword:methodology"
+      ><code>keyword:methodology</code></a
+    >,
+    <a href="/search?page=1&amp;size=20&amp;q=collection:humanities"
+      ><code>collection:humanities</code></a
+    >,
+    <a href="/search?page=1&amp;size=20&amp;q=doi:10.1234%2Fexample"
+      ><code>doi:10.1234/example</code></a
+    >.
+  </p>
+  <table class="ui celled striped table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Aliases</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Identifiers</td>
+        <td>
+          <code>id</code>, <code>recid</code>, <code>doi</code>,
+          <code>identifier</code>, <code>identifiers</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Access</td>
+        <td>
+          <code>owner</code>, <code>access</code>, <code>access_status</code>,
+          <code>published</code>, <code>is_published</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Bibliographic</td>
+        <td>
+          <code>title</code>, <code>description</code>, <code>abstract</code>,
+          <code>additional_description</code>,
+          <code>additional_descriptions</code>, <code>publisher</code>,
+          <code>publication_date</code>, <code>date</code>,
+          <code>version</code>, <code>language</code>, <code>languages</code>,
+          <code>format</code>, <code>formats</code>, <code>size</code>,
+          <code>sizes</code>, <code>reference</code>, <code>references</code>,
+          <code>place</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Type</td>
+        <td><code>type</code>, <code>resource_type</code></td>
+      </tr>
+      <tr>
+        <td>URLs</td>
+        <td>
+          <code>url</code>, <code>alternate_url</code>,
+          <code>identifier_url</code>, <code>related_url</code>,
+          <code>publication_url</code>, <code>meeting_url</code>,
+          <code>repository_url</code>, <code>repository</code>
+        </td>
+      </tr>
+      <tr>
+        <td>People / organizations</td>
+        <td>
+          <code>contributor</code>, <code>contributors</code>,
+          <code>creator</code>, <code>creators</code>, <code>author</code>,
+          <code>authors</code>, <code>affiliation</code>,
+          <code>affiliations</code>, <code>funder</code>, <code>funding</code>,
+          <code>award</code>, <code>ror</code>, <code>organization</code>,
+          <code>institution</code>, <code>university</code>,
+          <code>sponsoring_institution</code>, <code>sponsor</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Subjects / tags</td>
+        <td>
+          <code>subject</code>, <code>subjects</code> (controlled subjects);
+          <code>keyword</code>, <code>keywords</code> (depositor-defined tags)
+        </td>
+      </tr>
+      <tr>
+        <td>Thesis / degree</td>
+        <td>
+          <code>degree</code>, <code>thesis_type</code>,
+          <code>department</code>, <code>thesis_department</code>,
+          <code>discipline</code>, <code>thesis_university</code>
+          (there is no one-word <code>thesis</code> alias)
+        </td>
+      </tr>
+      <tr>
+        <td>Files</td>
+        <td>
+          <code>file</code>, <code>filename</code>, <code>file_type</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Collections</td>
+        <td><code>collection</code>, <code>collections</code></td>
+      </tr>
+      <tr>
+        <td>Journal</td>
+        <td>
+          <code>journal</code>, <code>journal_title</code>,
+          <code>journal_volume</code>, <code>journal_issue</code>,
+          <code>issn</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Meeting / conference</td>
+        <td>
+          <code>meeting</code>, <code>meeting_title</code>,
+          <code>meeting_acronym</code>, <code>meeting_dates</code>,
+          <code>conference</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Imprint / book</td>
+        <td>
+          <code>imprint</code>, <code>book_title</code>, <code>book</code>,
+          <code>isbn</code>, <code>edition</code>
+          (imprint edition and <code>custom_fields.kcr:edition</code>),
+          <code>chapter</code>, <code>series</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Software (CodeMeta)</td>
+        <td>
+          <code>code_repository</code>, <code>repository</code>,
+          <code>programming_language</code>,
+          <code>development_status</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Other</td>
+        <td>
+          <code>note</code>, <code>notes</code>, <code>course</code>,
+          <code>project</code>, <code>ai</code>, <code>ai_used</code>,
+          <code>ai_description</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Combined simple, phrase or field search</h3>
+  <p>
+    <strong>Example:</strong>
+    <a
+      href="/search?page=1&amp;size=20&amp;q=%2Btitle:%22open%20science%22%20-title:policy"
+      ><code>+title:"open science" -title:policy</code></a
+    >
+    or e.g.
+    <a href="/search?page=1&amp;size=20&amp;q=title:(-open%20%2Bscience%29"
+      ><code>title:(-open +science)</code></a
+    >
+  </p>
+  <p>
+    You can combine simple, phrase and field search to construct advanced search
+    queries.
+  </p>
+  <h3>Range search</h3>
+  <p>
+    <strong>Example:</strong>
+    <a
+      href="/search?page=1&amp;size=20&amp;q=metadata.publication_date:%5B2017%20TO%202018%5D"
+      ><code>metadata.publication_date:[2017 TO 2018]</code></a
+    >
+    (note, you must capitalize <code>TO</code>).
+  </p>
+  <p>
+    Results will match any record with a publication date between 2017-01-01 and
+    2018-01-01 (both dates inclusive).
+  </p>
+  <p>Note that, partial dates are expanded to full dates, e.g.:</p>
+  <ul>
+    <li>2017 is expanded to 2017-01-01</li>
+    <li>2017-06 is expanded to 2017-06-01</li>
+  </ul>
+  <p>
+    Use square brackets (<code>[]</code>) for <em>inclusive</em> ranges and use
+    curly brackets (<code>{}</code>) for <em>exclusive</em> ranges, e.g.:
+  </p>
+  <ul>
+    <li>
+      <code>[2017 TO 2018}</code> is equivalent to
+      <code>[2017-01-01 TO 2017-12-31]</code> because of date expansion and
+      exclusive upper bound.
+    </li>
+  </ul>
+  <p>Examples of other ranges:</p>
+  <ul>
+    <li>
+      <code>metadata.publication_date:{* TO 2017-01-01}</code>: All days until 2017.
+    </li>
+    <li>
+      <code>metadata.publication_date:[2017-01-01 TO *]</code>: All days from 2017.
+    </li>
+  </ul>
+  <h3>Ranking/Sorting</h3>
+  <p>
+    By default all searches are sorted according to an internal ranking
+    algorithm that scores each match against your query. In both the user
+    interface and REST API, it's possible to sort the results by:
+  </p>
+  <ul>
+    <li>Most recent</li>
+    <li>Best match</li>
+    <li>Oldest</li>
+    <li>Most viewed</li>
+    <li>Most downloaded</li>
+  </ul>
+  <h3>Regular expressions</h3>
+  <p>
+    Regular expressions are a powerful pattern matching language that allow to
+    search for specific patterns in a field. For instance if we wanted to find
+    all records with a DOI-prefix 10.5281 we could use a regular expression
+    search:
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=metadata.subjects.identifier:%2F03yrm5c2%5B1%2C6%5D%2F"
+      ><code>metadata.subjects.identifier:/03yrm5c2[1,6]/</code></a
+    >
+  </p>
+  <p>
+    Careful, the regular expression must match the <em>entire</em> field value.
+    See the
+    <a
+      href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html#regexp-syntax"
+      >regular expression syntax</a
+    >
+    for further details.
+  </p>
+  <h3>Missing values</h3>
+  <p>
+    It is possible to search for records that either are missing a value or have
+    a value in a specific field using the <code>_exists_</code> and
+    <code>NOT _exists_</code> field names.
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=NOT%20_exists_:metadata.additional_titles">
+      <code>NOT _exists_:metadata.additional_titles</code>
+    </a>
+    (all records without metadata.additional_titles)
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=_exists_:metadata.creators"
+      ><code>_exists_:metadata.creators</code></a
+    >
+    (all records with metadata.creators)
+  </p>
+  <h3>Advanced concepts</h3>
+  <h4>Boosting</h4>
+  <p>
+    You can use the boost operator <code>^</code> when one term is more relevant
+    than another. For instance, you can search for all records with the phrase
+    <em>open science</em> in either <em>title</em> or
+    <em>description</em> field, but rank records with the phrase in the
+    <em>title</em> field higher:
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a
+      href="/search?page=1&amp;size=20&amp;q=title:%22open%20science%22%5E5%20description:%22open%20science%22"
+      ><code>title:"open science"^5 description:"open science"</code></a
+    >
+  </p>
+  <h4>Fuzziness</h4>
+  <p>
+    You can search for terms similar to but not exactly like your search term
+    using the fuzzy operator <code>~</code>.
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=oepn~"><code>oepn~</code></a>
+  </p>
+  <p>
+    Results will match records with terms similar to <code>oepn</code> which
+    would e.g. also match <code>open</code>.
+  </p>
+  <h4>Proximity searches</h4>
+  <p>
+    A phrase search like <code>"open science"</code> by default expect all terms
+    in exactly the same order, and thus for instance would not match a record
+    containing the phrase <em>"open access and science"</em>. A proximity search
+    allows that the terms are not in the exact order and may include other terms
+    in between. The degree of flexibility is specified by an integer afterwards:
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=%22open%20science%22~5"
+      ><code>"open science"~5</code></a
+    >
+  </p>
+  <h4>Wildcards</h4>
+  <p>
+    You can use wildcards in search terms to replace a single character (using
+    <code>?</code> operator) or zero or more characters (using
+    <code>*</code> operator).
+  </p>
+  <p>
+    <strong>Example:</strong>
+    <a href="/search?page=1&amp;size=20&amp;q=ope%3F%20scien*"
+      ><code>ope? scien*</code></a
+    >
+  </p>
+  <p>
+    Wildcard searches can be slow and should normally be avoided if possible.
+  </p>
+</div>
+{%- endblock page_body%}

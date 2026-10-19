@@ -1,38 +1,52 @@
-.ui.menu.pagination {
-  box-shadow: none;
-  border: 1px solid @formInputBorderColor;
-  .item {
-    border-top: none;
-    border-bottom: none;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @mint80;
-    }
-    &.active {
-      background-color: @sidebarBackgroundColor;
-      & + .item {
-        &::before {
-          background: @sidebarBorderColor;
+.ui.menu {
+  &.secondary.pointing {
+    &> .item {
+      &:has(.label),
+      &:has(.label) + .item{
+        line-height: 1.5rem;
+        .icon {
+          line-height: 1rem;
         }
       }
-      &::before {
-        background: @sidebarBorderColor;
-      }
+    }
+  }
+
+  &.pagination {
+    box-shadow: none;
+    border: 1px solid @formInputBorderColor;
+    .item {
+      border-top: none;
+      border-bottom: none;
       &:hover,
       &:active,
       &:focus {
         background-color: @mint80;
       }
-    }
+      &.active {
+        background-color: @sidebarBackgroundColor;
+        & + .item {
+          &::before {
+            background: @sidebarBorderColor;
+          }
+        }
+        &::before {
+          background: @sidebarBorderColor;
+        }
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: @mint80;
+        }
+      }
 
-    &[type*="ellipsisItem"],
-    &[type*="prevItem"],
-    &[type*="nextItem"] {
-      @media all and (max-width: @largestMobileScreen) {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        min-width: 1.5rem;
+      &[type*="ellipsisItem"],
+      &[type*="prevItem"],
+      &[type*="nextItem"] {
+        @media all and (max-width: @largestMobileScreen) {
+          padding-left: 0.5rem;
+          padding-right: 0.5rem;
+          min-width: 1.5rem;
+        }
       }
     }
   }
@@ -42,12 +56,14 @@
   border-color: transparent;
   background-color: transparent;
 
+  // Main page top navigation
   #invenio-nav.ui.menu {
     @media screen and (max-width: @largestMobileScreen) {
       height: 3.5rem;
     }
     box-shadow: none;
 
+    // mobile menu toggle
     #rdm-burger-toggle {
       #rdm-burger-menu-icon {
         padding-top: 1.7rem;
@@ -55,194 +71,226 @@
       }
     }
 
-    &.active {
-      h2.header {
-        @media all and (max-width: @largestTabletScreen) {
-          margin-top: 0;
-          color: @primaryColor;
-        }
-      }
+    &.active {  // mobile menu when open
+
       #invenio-menu.ui.menu {
         @media all and (max-width: @largestTabletScreen) {
-          z-index: 1000;
+          background-color: @sidebarBackgroundColor;
+          padding-left: 0;
+          padding-right: 0;
+          padding-top: 1.5rem;
+          z-index: 1010 !important;
           top: 0;
           overflow-y: auto;
           overflow-x: hidden;
+          h2.header {
+              margin-top: 1rem;
+              margin-bottom: 0.5rem;
+              color: @ivy;
+          }
+          .item:not(.logo) {
+              padding: 0;
+          }
+
+          a:not(.ui.button) {
+            padding: 0.75rem 1.5rem;
+            padding-left: 25px !important; // pl-25
+            width: 100%;
+            border-left: 2px solid transparent;
+            color: @ivy80;
+
+            &:hover,
+            &:focus,
+            &:active {
+              background-color: darken(@sidebarBackgroundColor, 5%);
+              border-left: 2px solid @secondaryColor;
+              &::after {
+                display: none;
+              }
+            }
+          }
+          // Drawer: stack account links; don't keep desktop row flex
+          .right.menu.item {
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            background-color: darken(@sidebarBackgroundColor, 3%) !important;
+
+            > .item {
+              height: auto;
+              width: 100%;
+              display: block;
+              background-color: darken(@sidebarBackgroundColor, 3%) !important;
+
+              &:hover,
+              &:focus,
+              &:active {
+              background-color: darken(@sidebarBackgroundColor, 5%);
+                border-left: 2px solid @ivy;
+              }
+
+            }
+
+            a:not(.ui.button) {
+              height: auto;
+              width: 100%;
+              background-color: darken(@sidebarBackgroundColor, 3%) !important;
+
+              &:hover,
+              &:focus,
+              &:active {
+                background-color: darken(@sidebarBackgroundColor, 5%) !important;
+              }
+
+              &.restricted {
+                background-color: @ivy80 !important;
+                color: @white !important;
+                &:hover,
+                &:focus,
+                &:active {
+                  background-color: darken(@ivy80, 5%) !important;
+                  border-left: 2px solid @ivy;
+                }
+              }
+            }
+          }
+          #rdm-close-burger-menu-icon {
+              margin-right: 1rem;
+              margin-bottom: 0;
+          }
         }
         @media all and (min-width: @largestMobileScreen) and (max-width: @largestTabletScreen) {
           max-width: 40vw;
         }
-        .item {
-          @media screen and (max-width: @largestTabletScreen) {
-            padding: 0;
-          }
-        }
-        #rdm-close-burger-menu-icon {
-          @media screen and (max-width: @largestTabletScreen) {
-            margin-right: 1rem;
-            margin-bottom: 0;
-          }
-        }
       }
     }
     #invenio-menu.ui.menu {
-      @media screen and (max-width: @largestTabletScreen) {
-        background-color: @sidebarBackgroundColor;
-        padding-left: 0;
-        padding-right: 0;
-        padding-top: 1.5rem;
-      }
       > .item:not(.logo) {
-        line-height: 1.3rem;
-        @media screen and (max-width: @largestTabletScreen) {
-          padding: 0;
-        }
+        // Vertical align: SUI .item stretch/center — no magic vertical pad on links
         &:hover,
         &:focus,
         &:active {
           z-index: 100;
         }
-        & > span {
-          padding-left: 1.5rem;
-          padding-right: 1.5rem;
-        }
-        hr {
-          width: 100%;
-          background: @sidebarBorderColor;
-          background-color: @sidebarBorderColor;
-          border-color: @sidebarBorderColor;
-          height: 1px;
-          color: @sidebarBorderColor;
-          &::before {
-            content: none;
-          }
-          &::after {
-            content: none;
-          }
-        }
-        &:nth-last-child(2) {
-          margin-right: 1rem;
-          a:not(.ui.button) {
-            color: @primaryColor;
-          }
-        }
-        &:nth-last-child(3) {
-          a:not(.ui.button) {
-            color: @primaryColor;
-          }
-        }
-        a:not(.ui.button),
-        a,
-        div[role="menuitem"] {
+
+        a {
           position: relative;
-          padding: 1.7rem 1rem;
           color: @ivy80;
-          @media screen and (max-width: @largestTabletScreen) {
-            padding: 1.25rem 1.5rem;
-            width: 100%;
-            border-left: 2px solid transparent;
+          // horizontal spacing from pl-15 / pr-15 on the markup
+
+          // Fill bar height only on desktop — not in the mobile sidebar
+          @media screen and (min-width: (@largestTabletScreen + 1)) {
+            height: 100%;
+            display: flex;
+            align-items: center;
           }
+
           &::after {
             content: "";
             position: absolute;
             width: 100%;
             transform: scaleX(0);
             height: 2px;
-            bottom: 0rem;
+            bottom: 0;
             left: 0;
             background-color: @primaryColor;
             transform-origin: bottom right;
             transition: transform 0.1s ease-out;
           }
+
           .inline {
             margin-left: 0.5rem;
           }
-        }
-        a:not(.ui.button):hover,
-        a:not(.ui.button):focus,
-        a:not(.ui.button):active,
-        div[role="menuitem"]:hover,
-        div[role="menuitem"]:focus,
-        div[role="menuitem"]:active {
-          color: darken(@primaryTextColor, 10%);
-          background-color: @seafoam;
-          &::after {
-            transform: scaleX(1);
-            transform-origin: center;
-          }
 
-          @media screen and (max-width: @largestTabletScreen) {
-            background-color: @mint80 !important;
-            border-left: 2px solid @primaryColor;
+          &:hover,
+          &:focus,
+          &:active {
+            color: darken(@primaryTextColor, 10%);
+            background-color: @seafoam;
+
             &::after {
-              display: none;
+              transform: scaleX(1);
+              transform-origin: center;
             }
           }
         }
-        a.ui.button.basic {
-          box-shadow: none;
-        }
-        &.right.menu {
-          border-right: 0.5rem solid @mint;
-          border-left: 0.5rem solid @mint;
+
+        &.right.menu.item {
           background-color: @mint;
-          @media screen and (max-width: @largestTabletScreen) {
-            border-right: 0;
-            border-left: 0;
-            margin-top: 1.5rem;
-            padding: 1.5rem 0;
+
+          // Desktop bar only — row + vertical center (Invenio drawer wants column)
+          @media screen and (min-width: (@largestTabletScreen + 1)) {
+            display: flex;
+            align-items: center;
+
+            > .item {
+              height: 100%;
+              display: flex;
+              align-items: center;
+            }
+
+            a {
+              height: 100%;
+              display: flex;
+              align-items: center;
+            }
           }
+
           &.logged-out:hover,
           &.logged-out:focus,
           &.logged-out:active {
             background-color: @mint60;
             border-color: @mint60;
           }
-          &> .item {
-            height: 100%;
-            @media screen and (max-width: @largestTabletScreen) {
-              height: unset;
-            }
-          }
-          a,
-          div[role="menuitem"] {
+
+          a {
             background-color: @mint !important;
-            height: 100%;
-            display: flex;
-            align-items: center;
+
             &:hover,
             &:focus,
             &:active {
-              background-color: @mint60 !important;
+              background-color: darken(@mint, 5%) !important;
               z-index: 100;
               @media screen and (max-width: @largestTabletScreen) {
                 background-color: @mint80 !important;
               }
             }
           }
+
           a,
-          a:hover,
-          .item > span {
+          a:hover {
             color: @ivy80 !important;
-          }
-          > form > a.ui.button.basic {
-            color: @ivy80 !important;
-            i {
-              margin-right: 0.5rem !important;
-            }
           }
         }
+
         #user-profile-dropdown {
           margin-right: 0;
           width: auto;
+
+          #user-profile-dropdown-btn {
+            display: flex;
+            align-items: center;
+            height: 100%;
+          }
+
+          &:hover,
+          &:focus,
+          &:active,
+          #user-profile-dropdown-btn:hover,
+          #user-profile-dropdown-btn:focus,
+          #user-profile-dropdown-btn:active {
+            background-color: darken(@mint, 5%) !important;
+          }
         }
-        #user-profile-menu {
+
+        #user-profile-nav {
           background-color: @mint;
           border: 1px solid @mint;
-          a {
-            &::after {
-              background-color: transparent;
-            }
+
+          a::after {
+            background-color: transparent;
           }
         }
       }
@@ -255,57 +303,12 @@
       display: flex;
       align-items: center;
 
-      // &::after {
-      //   content: "BETA";
-      //   position: absolute;
-      //   top: 4px;
-      //   right: 12px;
-      //   color: @white;
-      //   font-size: 0.8rem;
-      //   font-weight: bold;
-      //   background-color: @orange;
-      //   padding: 0.1rem 0.4rem;
-      //   letter-spacing: 0.05rem;
-      //   @media screen and (max-width: @largestMobileScreen) {
-      //     right: unset;
-      //     left: 9rem;
-      //   }
-      // }
       .rdm-logo {
         width: auto;
         max-height: 4rem;
         @media screen and (max-width: @largestMobileScreen) {
           max-height: 3rem;
           margin-top: 0.25rem;
-        }
-      }
-      .title-wrapper {
-        margin-left: 1rem;
-        h1 {
-          margin-top: 0.3rem;
-          margin-bottom: 0;
-          letter-spacing: 0.05rem;
-          font-size: 3rem;
-          line-height: 3rem;
-          color: @primaryColor;
-          @media screen and (max-width: @largestMobileScreen) {
-            margin-top: 0.5rem;
-            font-size: 2rem;
-            line-height: 2rem;
-          }
-        }
-        .subtitle {
-          font-size: 1rem;
-          font-weight: bold;
-          text-transform: uppercase;
-          display: block;
-          margin-top: 0;
-          line-height: 1rem;
-          letter-spacing: 0.1rem;
-          font-weight: normal;
-          @media screen and (max-width: @largestMobileScreen) {
-            font-size: 0.85rem;
-          }
         }
       }
     }
@@ -334,8 +337,43 @@
     border: 1px solid transparent;
     box-shadow: none;
 
+    // Structural horizontal chrome when SUI flips this menu to tablet/mobile.
+    // Per-community colors are overridden in community_theme_template.css.
+    @media all and (max-width: @largestTabletScreen) {
+      border-radius: 0.5em !important;
+      border-width: 2px;
+      border-style: solid;
+      border-color: @sidebarBorderColor;
+      background-color: @sidebarBackgroundColor !important;
+      box-shadow: 0 0 10px 0 @sidebarBorderColor;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .item {
       border-left: 2px solid @sidebarBorderColor;
+
+      @media all and (max-width: @largestTabletScreen) {
+        border-left-width: 0 !important;
+        border-left-color: transparent !important;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: @sidebarBorderColor !important;
+        background-color: @sidebarBackgroundColor !important;
+        margin-bottom: -2px;
+        min-width: 0;
+
+        &:first-child,
+        &.active:first-child {
+          border-radius: 0.5em 0 0 0.5em;
+        }
+
+        &:last-child,
+        &.active:last-child {
+          border-radius: 0 0.5em 0.5em 0;
+        }
+      }
+
       &.active {
         background-color: transparent;
         border-left: 2px solid @primaryColor;
@@ -344,9 +382,10 @@
         &:last-child {
           border-radius: 0;
         }
-        @media all and (max-width: @largestMobileScreen) {
-          border-left: none;
-          border-bottom: 2px solid @secondaryColor;
+        @media all and (max-width: @largestTabletScreen) {
+          border-left-color: transparent !important;
+          border-bottom-color: @secondaryColor !important;
+          background-color: @sidebarBackgroundColor !important;
         }
       }
       &:before {
@@ -428,10 +467,142 @@
 // Collapsing menu items - hide computer only elements above 1200px
 .menu {
   .item.collapsing {
-    &.computer.only:not(.large-monitor):not(.widescreen):not(.tablet):not(.mobile) {
+    &.computer.only:not([class*="large screen"]):not(.widescreen):not(.tablet):not(.mobile) {
       @media all and (min-width: @largeMonitorBreakpoint) {
         display: none !important;
       }
     }
   }
+}
+
+// -----------------------------------------------------------------------------
+// Sliding hover pill for equal-width Semantic UI menus
+//
+// Opt in with `.sliding-hover-pill`. Slot count comes from the existing width
+// classes (`.two.item` … `.eight.item`).
+//
+// Selected state is a per-item fill (stays put). The shared `::before` is only
+// the hover/focus preview pill; its transform still parks under the selected
+// item while hidden so the next hover can slide from there.
+// -----------------------------------------------------------------------------
+
+@sliding-hover-pill-count-words: one, two, three, four, five, six, seven, eight;
+
+.sliding-hover-pill-checked-slots(@count, @slot) when (@slot <= @count) {
+  @tx: (@slot - 1) * 100%;
+
+  // Resting (hidden) position under the selected item — slide origin for hover
+  &:has(> :nth-child(@{slot})[aria-checked="true"])::before,
+  &:has(> :nth-child(@{slot}).active)::before {
+    transform: translateX(@tx);
+  }
+
+  .sliding-hover-pill-checked-slots(@count, @slot + 1);
+}
+
+.sliding-hover-pill-hover-slots(@count, @slot) when (@slot <= @count) {
+  @tx: (@slot - 1) * 100%;
+
+  // After checked slots so hover/focus wins while previewing another item
+  &:has(> :nth-child(@{slot}):hover)::before,
+  &:has(> :nth-child(@{slot}):focus-visible)::before {
+    transform: translateX(@tx);
+  }
+
+  .sliding-hover-pill-hover-slots(@count, @slot + 1);
+}
+
+.sliding-hover-pill-count-loop(@index, @max) when (@index <= @max) {
+  @word: extract(@sliding-hover-pill-count-words, @index);
+
+  &.@{word}.item {
+    &::before {
+      width: calc(100% / @index);
+    }
+
+    .sliding-hover-pill-checked-slots(@index, 1);
+    .sliding-hover-pill-hover-slots(@index, 1);
+  }
+
+  .sliding-hover-pill-count-loop(@index + 1, @max);
+}
+
+/**
+ * Equal-width menu: persistent selected fill + sliding hover pill.
+ *
+ * Args:
+ *   @pill-color: Selected item background (per-item, does not move on hover).
+ *   @pill-hover-color: Sliding `::before` fill while hovering/focusing an item.
+ *   @radius: Hover-pill corner radius.
+ *   @duration: Transform / opacity transition duration.
+ *   @max-items: Highest Semantic UI `N.item` count to generate (1–8).
+ */
+.sliding-hover-pill(
+  @pill-color: @ivy80;
+  @pill-hover-color: @mint50;
+  @radius: 0.5rem;
+  @duration: 0.2s;
+  @max-items: 8
+) {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 0;
+    border-radius: @radius;
+    background-color: @pill-hover-color;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform @duration ease,
+      opacity @duration ease;
+  }
+
+  // Show the sliding pill only while hovering/focusing a non-selected item so
+  // it never covers the selected fill.
+  &:has(> :hover:not([aria-checked="true"]):not(.active))::before,
+  &:has(> :focus-visible:not([aria-checked="true"]):not(.active))::before {
+    opacity: 1;
+  }
+
+  > .item {
+    position: relative;
+    z-index: 1;
+    // Rounds selected fill and the UA focus outline (no separate outline-radius)
+    border-radius: @radius !important;
+    background-color: transparent !important;
+
+    &::before {
+      background: transparent;
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      background-color: transparent !important;
+    }
+
+    &[aria-checked="true"],
+    &.active {
+      background-color: @pill-color !important;
+
+      &:hover,
+      &:focus,
+      &:focus-visible,
+      &:active {
+        background-color: @pill-color !important;
+      }
+    }
+  }
+
+  .sliding-hover-pill-count-loop(1, @max-items);
+}
+
+.ui.menu.sliding-hover-pill {
+  .sliding-hover-pill();
 }

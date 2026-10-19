@@ -1,7 +1,5 @@
 """Utilities for importing test records from live site."""
 
-import os
-
 from flask import current_app as app
 from invenio_access.permissions import authenticated_user, system_identity
 from invenio_access.utils import get_identity
@@ -40,7 +38,7 @@ def set_up_community(importing_user: User) -> dict:
             "access": {
                 "visibility": "public",
                 "member_policy": "open",
-                "record_policy": "open",
+                "record_submission_policy": "open",
                 "review_policy": "closed",
                 "members_visibility": "public",
             },
@@ -108,6 +106,8 @@ def import_test_records(
     record_ids: list[str] | None = None,
     community_id: str | None = None,
     importer_email: str = "test@example.com",
+    *,
+    api_token: str,
 ):
     """Import test records from production into the local instance.
 
@@ -131,6 +131,8 @@ def import_test_records(
             "test@example.com".
         community_id (str): ID of the community to import the records to. If not
             provided, the records will be imported to the Knowledge Commons community.
+        api_token (str): Bearer token for reads from the remote instance
+            (caller-supplied).
 
     Returns:
         list: List of record metadata dictionaries. Each one is a APIResponsePayload
@@ -145,10 +147,11 @@ def import_test_records(
 
     # Fetch records from production
     api_url = "https://works.hcommons.org/api"
-    api_token = os.getenv("API_TOKEN_PRODUCTION")
-    records, fetch_errors = KCWorksRecordsAPIHelper(
-        api_url=api_url, api_token=api_token
-    ).fetch_records(
+    api_helper = KCWorksRecordsAPIHelper(
+        api_url=api_url,
+        api_token=api_token,
+    )
+    records, fetch_errors = api_helper.fetch_records(
         count=count,
         offset=offset,
         start_date=start_date,
@@ -178,8 +181,9 @@ def import_test_records(
         importing_identity.provides.add(CommunityRoleNeed(community_id, role))
     importing_identity.provides.add(authenticated_user)
 
-    # Assemble file data for all records
-    file_data, file_errors = KCWorksRecordsAPIHelper().fetch_record_files(records)
+    # Assemble file data for all records. The file urls belong to the remote
+    # instance the records came from, so reuse that instance's credential.
+    file_data, file_errors = api_helper.fetch_record_files(records)
 
     # Collect all errors from fetching
     all_errors = []
@@ -219,7 +223,3 @@ def import_test_records(
         for file in file_data:
             file.stream.close()
     return result
-
-
-if __name__ == "__main__":
-    import_test_records()
