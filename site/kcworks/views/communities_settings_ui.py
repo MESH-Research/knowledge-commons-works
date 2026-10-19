@@ -16,6 +16,9 @@ from invenio_communities.views.ui import (
 from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
 from invenio_records_resources.services.errors import PermissionDenied
 
+from kcworks.views.communities_subcollections_settings import (
+    communities_settings_subcollections,
+)
 from kcworks.views.communities_theme_settings import communities_settings_theme
 
 
@@ -38,6 +41,10 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         routes["settings_theme"],
         view_func=communities_settings_theme,
+    )
+    blueprint.add_url_rule(
+        routes["settings_subcollections"],
+        view_func=communities_settings_subcollections,
     )
 
     blueprint.register_error_handler(PermissionDenied, record_permission_denied_error)

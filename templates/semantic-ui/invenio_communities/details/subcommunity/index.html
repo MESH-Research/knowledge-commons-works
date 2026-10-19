@@ -22,9 +22,17 @@
 {%- block page_body %}
   {{ super() }}
   <div class="ui container theme-font rel-mt-3">
-    <h2 class="ui medium header mb-0 align-self-center">
-      {{ config.get("APP_RDM_SUBCOMMUNITIES_LABEL", _("Subcommunities") ) }}
-    </h2>
+    <div class="flex align-items-center justify-space-between">
+      <h2 class="ui medium header mb-0 align-self-center">
+        {{ config.get("APP_RDM_SUBCOMMUNITIES_LABEL", _("Subcommunities") ) }}
+      </h2>
+      {% if community["children"]["allow"] and current_user.is_authenticated %}
+        <a class="ui small button primary"
+           href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community['slug']) }}">
+          {{ _("New subcollection") }}
+        </a>
+      {% endif %}
+    </div>
   </div>
   <!-- Breadcrumbs -->
   <!-- <div class="ui container mb-0"> -->

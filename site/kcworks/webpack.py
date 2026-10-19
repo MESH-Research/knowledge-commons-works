@@ -33,6 +33,9 @@ theme = WebpackThemeBundle(
                 "invenio-communities-subcommunities-custom": (
                     "./js/collections/community/subcommunitySearch.js"
                 ),
+                "invenio-communities-subcommunities-new-custom": (
+                    "./js/collections/community/subcommunityNew.js"
+                ),
                 "invenio-communities-carousel-custom": (
                     "./js/collections/community/communitiesCarousel/index.js"
                 ),
@@ -47,6 +50,9 @@ theme = WebpackThemeBundle(
                 ),
                 "invenio-communities-theme-custom": (
                     "./js/collections/community/settings/theme/index.js"
+                ),
+                "invenio-communities-subcollections-settings-custom": (
+                    "./js/collections/community/settings/subcollections/index.js"
                 ),
                 "invenio-app-rdm-frontpage-custom": (
                     "./js/invenio_app_rdm_custom/frontpage/index.js"

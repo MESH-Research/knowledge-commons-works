@@ -1,0 +1,25 @@
+{# -*- coding: utf-8 -*-
+
+  Knowledge Commons Works
+  Copyright (C) 2026 Mesh Research
+
+  Knowledge Commons Works is free software; you can redistribute and/or
+  modify it under the terms of the MIT License; see LICENSE file for more details.
+#}
+{% extends "invenio_communities/details/settings/base.html" %}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-communities-subcollections-settings-custom.js'] }}
+{%- endblock javascript %}
+
+{% set active_settings_menu_item = 'subcollections' %}
+{% set active_community_header_menu_item = 'settings' %}
+
+{%- block settings_body %}
+  <div
+    id="app"
+    data-community='{{ community_ui | tojson }}'
+  >
+  </div>
+{%- endblock settings_body %}

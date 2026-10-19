@@ -20,6 +20,7 @@
             'profile': (_('Basic'), url_for('invenio_communities.communities_settings', pid_value=community_ui["slug"])),
             'privileges': (_('Visibility'), url_for('invenio_communities.communities_settings_privileges', pid_value=community_ui['slug'])),
             'submission_policy': (_('Policies'), url_for('invenio_communities.communities_settings_submission_policy', pid_value=community_ui['slug'])),
+            'subcollections': (_('Subcollections'), url_for('kcworks_communities_settings.communities_settings_subcollections', pid_value=community_ui['slug'])),
             'pages': (_('Pages'), url_for('invenio_communities.communities_settings_pages', pid_value=community_ui["slug"])),
             } %}
       {%- if community_ui | community_theme_settings_menu_visible %}
