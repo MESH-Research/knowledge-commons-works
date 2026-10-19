@@ -5,18 +5,60 @@
 
 ## Unreleased
 
-- jobs
-  - fixed bug preventing logs from being recorded for runs initiated by the
-    scheduler or via our cli command
-- a11y and theming improvements to main navigation (desktop and mobile)
+- Authentication & API security
+  - Least-privilege OAuth scopes and role-based API auth
+  - Scopes for record importer, user-data API, search-provisioner bearer token
+- Upload form
+  - Access settings moved into a collapsible panel for less visual clutter
+  - Animated accordion support in the form
+  - Widget spacing and resource-type selector UI tweaks
+- Collections UI
+  - Parent/child relationship creation UI (for collection owners/managers)
+  - Dynamic community card browse layout
+  - New featured communities carousel that's CSS-driven for improved a11y and
+    performance
+- Detail page
+  - added animations on all accordion open/close events
+  - added created and updated dates to sidebar
+  - publishing details
+    - family-based layout config for main-tab and sidebar details by resource
+      type
+    - improved imprint string composition (including edition); overhauled
+      details rows for journal, book, book-section, and instructional materials
+      progress)
+  - copyright & permissions
+    - folded copyright and licenses into a single sidebar segment
+    - prepend © when the copyright statement does not already start with © or
+      (c)
+  - AI usage alert styling changed from warning to default message type
+  - sharing
+    - removed VK but added WeChat
+    - fixed focus problems on Mastodon sharing link
+- Theming
+  - broad CSS refactor: moved overrides out of the site.overrides monolith into
+    component override files
+  - button styles reworked for composition (transparent / padded / borderless /
+    borderless-hover, left-aligned, shared ring and padding amounts via CSS
+    variables)
+  - many other theme tweaks throughout
+- A11y and theming improvements to main navigation (desktop and mobile)
   - stopped treating top nav as a menu for the purposes of roles and aria
     attributes
   - stripped out some style overrides and made markup more consistent
   - improved theming and layout of sidebar nav
   - tweaked layout of top nav
-- infrastructure
+- Jobs
+  - fixed bug preventing logs from being recorded for runs initiated by the
+    scheduler or via our cli command
+- Infrastructure / developer tooling
   - add --prod flag to kcworks_startup.sh script to simulate a production
     container environment in local dev
+  - update all submodules to merge their dev/next working commits into their
+    main branches
+  - add script to reload Flask apps without restarting the full project
+  - make health check respect the instance's port configuration
+  - fix docs API app pid name error
+  - support for a mock profiles API via knowledge-commons-profiles-mock
 
 ## 1.0.0 (2026-09-24)
 
