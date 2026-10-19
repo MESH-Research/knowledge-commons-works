@@ -296,7 +296,7 @@ class CommunitiesCardGroup extends Component {
         {data.hits.length === 0 ? (
           <EmptyMessage message={emptyMessage} />
         ) : carouselCards ? (
-          <div className="carousel-card-grid" style={this.visibleCountStyle()}>
+          <div className="carousel-card-grid pt-30 pb-30" style={this.visibleCountStyle()}>
             {this.renderCards()}
           </div>
         ) : (
