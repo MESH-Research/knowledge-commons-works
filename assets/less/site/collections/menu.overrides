@@ -1,48 +1,52 @@
-.ui.secondary.pointing.menu > .item {
-  &:has(.label),
-  &:has(.label) + .item{
-    line-height: 1.5rem;
-    .icon {
-      line-height: 1rem;
-    }
-  }
-}
-
-.ui.menu.pagination {
-  box-shadow: none;
-  border: 1px solid @formInputBorderColor;
-  .item {
-    border-top: none;
-    border-bottom: none;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: @mint80;
-    }
-    &.active {
-      background-color: @sidebarBackgroundColor;
-      & + .item {
-        &::before {
-          background: @sidebarBorderColor;
+.ui.menu {
+  &.secondary.pointing {
+    &> .item {
+      &:has(.label),
+      &:has(.label) + .item{
+        line-height: 1.5rem;
+        .icon {
+          line-height: 1rem;
         }
       }
-      &::before {
-        background: @sidebarBorderColor;
-      }
+    }
+  }
+
+  &.pagination {
+    box-shadow: none;
+    border: 1px solid @formInputBorderColor;
+    .item {
+      border-top: none;
+      border-bottom: none;
       &:hover,
       &:active,
       &:focus {
         background-color: @mint80;
       }
-    }
+      &.active {
+        background-color: @sidebarBackgroundColor;
+        & + .item {
+          &::before {
+            background: @sidebarBorderColor;
+          }
+        }
+        &::before {
+          background: @sidebarBorderColor;
+        }
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: @mint80;
+        }
+      }
 
-    &[type*="ellipsisItem"],
-    &[type*="prevItem"],
-    &[type*="nextItem"] {
-      @media all and (max-width: @largestMobileScreen) {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        min-width: 1.5rem;
+      &[type*="ellipsisItem"],
+      &[type*="prevItem"],
+      &[type*="nextItem"] {
+        @media all and (max-width: @largestMobileScreen) {
+          padding-left: 0.5rem;
+          padding-right: 0.5rem;
+          min-width: 1.5rem;
+        }
       }
     }
   }
@@ -357,6 +361,7 @@
         border-bottom-color: @sidebarBorderColor !important;
         background-color: @sidebarBackgroundColor !important;
         margin-bottom: -2px;
+        min-width: 0;
 
         &:first-child,
         &.active:first-child {

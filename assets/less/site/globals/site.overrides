@@ -168,20 +168,47 @@ code {
 }
 
 // ---------------------------------------------------------------------------
-// Carousel scroll utilities
+// Carousel / card-grid utilities (shared item sizing via cqw)
 //
-//   .carousel-viewport — 12-wide column: flex row + overflow-x + snap
-//   .carousel-item     — direct child; width ≈ viewport/N via cqw
+//   .carousel-wrapper   — track chrome; chevrons overhang its edges
+//   .carousel-viewport  — horizontal scroll + snap
+//   .carousel-card-grid — wrapping stack; same --carousel-item-width math
+//   .carousel-item      — direct child; width ≈ container/N via cqw
 // ---------------------------------------------------------------------------
 
-.carousel-viewport {
+.carousel-viewport,
+.carousel-card-grid {
   container-type: inline-size;
-  container-name: carousel;
   display: flex !important;
   flex-direction: row;
-  flex-wrap: nowrap;
   align-items: stretch;
+  width: 100%;
   gap: var(--carousel-gap, 1rem);
+  padding-block: 1.5rem;
+
+  --carousel-gap: 1rem;
+  --carousel-visible: var(--carousel-visible-desktop, 3);
+  --carousel-item-width: calc(
+    (100cqw - (var(--carousel-visible) - 1) * var(--carousel-gap)) /
+      var(--carousel-visible)
+  );
+
+  @media (max-width: @largestTabletScreen) {
+    --carousel-visible: var(
+      --carousel-visible-tablet,
+      var(--carousel-visible-desktop, 3)
+    );
+  }
+
+  @media (max-width: @largestMobileScreen) {
+    --carousel-visible: var(--carousel-visible-mobile, 2);
+  }
+}
+
+.carousel-viewport {
+  container-name: carousel;
+  flex-wrap: nowrap;
+  // Side gutters so 3 cards sit inward of the wrapper fade gradients.
   padding-left: 6.25% !important;
   padding-right: 6.25% !important;
   overflow-x: auto;
@@ -190,41 +217,73 @@ code {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-marker-group: after; /* generates ::scroll-marker-group */
-  anchor-name: --carousel;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  --carousel-gap: 1rem;
-  --carousel-visible: var(--carousel-visible-desktop, 3);
-  --carousel-item-width: calc(
-    (100cqw - (var(--carousel-visible) - 1) * var(--carousel-gap)) /
-      var(--carousel-visible)
-  );
-  // End padding so first/last items can sit in the center.
-  padding-inline: calc((100cqw - var(--carousel-item-width)) / 2);
+  --carousel-edge-spacer: calc((100cqw - var(--carousel-item-width)) / 2);
 
-  @media (max-width: @largestTabletScreen) {
-    --carousel-visible: 2;
+  &::before,
+  &::after {
+    content: "";
+    flex: 0 0 var(--carousel-edge-spacer);
+    width: var(--carousel-edge-spacer);
   }
 
-  @media (max-width: @largestMobileScreen) {
-    --carousel-visible: 1;
+  &::before {
+    margin-inline-end: calc(-1 * var(--carousel-gap, 1rem));
   }
 
-  /* layout the group of dots */
-  &::scroll-marker-group {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    position: absolute;
-    position-anchor: --carousel;
-    top: calc(anchor(bottom) + 1rem);
-    justify-self: anchor-center;
+  &::after {
+    margin-inline-start: calc(-1 * var(--carousel-gap, 1rem));
   }
 
+  &.snap-start {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    &::before,
+    &::after {
+      content: none;
+      flex: none;
+      width: 0;
+      margin: 0;
+    }
+
+    .carousel-item {
+      scroll-snap-align: start;
+    }
+  }
+
+  &.with-scroll-markers {
+    scroll-marker-group: after;
+    anchor-name: --carousel;
+
+    &::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      position: absolute;
+      position-anchor: --carousel;
+      top: calc(anchor(bottom) + 1rem);
+      justify-self: anchor-center;
+    }
+  }
+}
+
+.carousel-card-grid {
+  container-name: carousel-grid;
+  flex-wrap: wrap;
+  overflow: visible;
+
+  .carousel-item {
+    scroll-snap-align: none;
+
+    &::scroll-marker {
+      display: none;
+    }
+  }
 }
 
 #community-detail-header {
@@ -1082,24 +1141,25 @@ html.cover-page {
         margin-bottom: 1rem;
       }
       &#social-sharing {
+        .sharing-icons {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+          gap: 0.5rem;
+          justify-items: center;
+          align-items: center;
+        }
+        .sharing-icon {
+          position: relative;
+          display: inline-flex;
+        }
         .button {
-          margin-bottom: 0.25rem;
+          margin: 0;
           .icon {
-            color: @primaryTextColor;
+            color: inherit;
             svg {
               height: 1em;
               width: 1em;
-              fill: @primaryTextColor;
-            }
-          }
-          &:hover,
-          &:focus,
-          &:active {
-            .icon {
-              color: @ivy !important;
-              svg {
-                fill: @ivy !important;
-              }
+              fill: currentColor;
             }
           }
         }

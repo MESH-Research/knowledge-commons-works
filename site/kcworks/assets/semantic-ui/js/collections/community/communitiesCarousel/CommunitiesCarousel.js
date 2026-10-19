@@ -12,46 +12,138 @@
 import { i18next } from "@translations/kcworks/i18next";
 import _isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import { http, withCancel } from "react-invenio-forms";
 import Overridable from "react-overridable";
-import { Container, Grid, Header, Icon, Item, Placeholder } from "semantic-ui-react";
+import { Container, Grid, Header, Icon, Message, Placeholder } from "semantic-ui-react";
 import { CommunityCard } from "@js/kcworks/collections/community/CommunitiesCardGroup";
-import CarouselItem from "./CarouselItem";
+
+/** 0-based index of the default focused card (card 2). */
+const DEFAULT_CARD_INDEX = 1;
 
 class CommunitiesCarousel extends Component {
   constructor(props) {
     super(props);
 
+    this.rootRef = createRef();
     this.carouselTimer = null;
+    this.resizeObserver = null;
 
     this.state = {
       data: { hits: [] },
       isLoading: true,
+      canScroll: false,
     };
   }
 
-  /** SUI Column doesn't forward refs; the column itself is the scrollport. */
-  getViewport = () => document.querySelector("#communities-carousel .carousel-viewport");
+  /** Resolve the scrollport within this instance (supports multiple carousels). */
+  getViewport = () => this.rootRef.current?.querySelector(".carousel-viewport") ?? null;
 
   componentDidMount() {
     this.fetchData();
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { isLoading, data } = this.state;
-    if (prevState.isLoading && !isLoading && !_isEmpty(data.hits)) {
+    const { isLoading, data, canScroll } = this.state;
+    const { autoplay, embedded } = this.props;
+
+    if (prevState.canScroll && !canScroll) {
+      this.stopCarousel();
+    } else if (!prevState.canScroll && canScroll && autoplay && !isLoading) {
       this.startCarousel();
+    }
+
+    if (prevState.isLoading && !isLoading && !_isEmpty(data.hits)) {
+      // Featured (center snap): wait for layout, then land on card 2.
+      // Embedded (start snap): leave scroll at 0 (first card flush left).
+      requestAnimationFrame(() => {
+        const overflows = this.updateCanScroll();
+        this.observeViewport();
+        if (!embedded) {
+          this.scrollToCardIndex(DEFAULT_CARD_INDEX, "auto");
+        }
+        if (autoplay && overflows) {
+          this.startCarousel(overflows);
+        }
+      });
     }
   }
 
   componentWillUnmount() {
     this.cancellableFetch && this.cancellableFetch.cancel();
     this.stopCarousel();
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
   }
 
   /**
+   * @returns {boolean} True when item count exceeds `--carousel-visible`.
+   */
+  updateCanScroll = () => {
+    const viewport = this.getViewport();
+    if (!viewport) {
+      if (this.state.canScroll) {
+        this.setState({ canScroll: false });
+      }
+      return false;
+    }
+
+    const items = viewport.querySelectorAll(".carousel-item:not(.loading-placeholder)");
+    if (!items.length) {
+      if (this.state.canScroll) {
+        this.setState({ canScroll: false });
+      }
+      return false;
+    }
+
+    const visible =
+      parseFloat(getComputedStyle(viewport).getPropertyValue("--carousel-visible").trim()) || 3;
+    const next = items.length > visible;
+    if (next !== this.state.canScroll) {
+      this.setState({ canScroll: next });
+    }
+    return next;
+  };
+
+  observeViewport = () => {
+    this.resizeObserver?.disconnect();
+    const viewport = this.getViewport();
+    if (!viewport || typeof ResizeObserver === "undefined") {
+      return;
+    }
+    this.resizeObserver = new ResizeObserver(() => {
+      this.updateCanScroll();
+    });
+    this.resizeObserver.observe(viewport);
+  };
+
+  /**
+   * Center a carousel card in the viewport.
+   *
+   * @param {number} index - 0-based card index.
+   * @param {ScrollBehavior} [behavior="smooth"]
+   */
+  scrollToCardIndex = (index, behavior = "smooth") => {
+    const viewport = this.getViewport();
+    if (!viewport) return;
+
+    const items = viewport.querySelectorAll(".carousel-item");
+    if (!items.length) return;
+
+    const clamped = Math.max(0, Math.min(index, items.length - 1));
+    const item = items[clamped];
+    const target = item.offsetLeft + item.offsetWidth / 2 - viewport.clientWidth / 2;
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+
+    viewport.scrollTo({
+      left: Math.max(0, Math.min(target, maxScroll)),
+      behavior,
+    });
+  };
+
+  /**
    * Scroll the viewport by one item width (plus gap). Wraps at the ends.
+   * Featured (center): forward wrap returns to card 2. Embedded (start): to 0.
    *
    * @param {number} direction - `1` for next, `-1` for previous.
    */
@@ -62,6 +154,7 @@ class CommunitiesCarousel extends Component {
     const item = viewport.querySelector(".carousel-item");
     if (!item) return;
 
+    const { embedded } = this.props;
     const styles = getComputedStyle(viewport);
     const gap = parseFloat(styles.columnGap || styles.gap) || 0;
     const step = item.getBoundingClientRect().width + gap;
@@ -69,7 +162,11 @@ class CommunitiesCarousel extends Component {
     const epsilon = 2;
 
     if (direction > 0 && viewport.scrollLeft >= maxScroll - epsilon) {
-      viewport.scrollTo({ left: 0, behavior: "smooth" });
+      if (embedded) {
+        viewport.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        this.scrollToCardIndex(DEFAULT_CARD_INDEX, "smooth");
+      }
       return;
     }
     if (direction < 0 && viewport.scrollLeft <= epsilon) {
@@ -80,14 +177,19 @@ class CommunitiesCarousel extends Component {
     viewport.scrollBy({ left: direction * step, behavior: "smooth" });
   };
 
-  setCarouselTimer = () => {
+  /**
+   * @param {boolean} [canScrollOverride] - Use when state has not flushed yet.
+   */
+  setCarouselTimer = (canScrollOverride) => {
     const {
       data: { hits },
+      canScroll,
     } = this.state;
-    const { intervalDelay } = this.props;
+    const { intervalDelay, autoplay } = this.props;
+    const overflows = typeof canScrollOverride === "boolean" ? canScrollOverride : canScroll;
 
     this.stopCarousel();
-    if (_isEmpty(hits) || hits.length < 2) return;
+    if (!autoplay || !overflows || _isEmpty(hits) || hits.length < 2) return;
 
     this.carouselTimer = setInterval(() => {
       this.scrollByItems(1);
@@ -101,8 +203,11 @@ class CommunitiesCarousel extends Component {
     }
   };
 
-  startCarousel = () => {
-    this.setCarouselTimer();
+  /**
+   * @param {boolean} [canScrollOverride]
+   */
+  startCarousel = (canScrollOverride) => {
+    this.setCarouselTimer(canScrollOverride);
   };
 
   fetchData = async () => {
@@ -117,61 +222,162 @@ class CommunitiesCarousel extends Component {
     }
   };
 
+  /**
+   * Inline CSS vars for visible card counts per breakpoint.
+   *
+   * @returns {{ [key: string]: string }}
+   */
+  visibleCountStyle = () => {
+    const { itemsPerPage, itemsPerPageTablet, itemsPerPageMobile } = this.props;
+    const desktop = Math.max(1, parseInt(itemsPerPage, 10) || 3);
+    const style = {
+      "--carousel-visible-desktop": String(desktop),
+    };
+    if (itemsPerPageTablet != null && itemsPerPageTablet !== "") {
+      style["--carousel-visible-tablet"] = String(
+        Math.max(1, parseInt(itemsPerPageTablet, 10) || desktop)
+      );
+    }
+    if (itemsPerPageMobile != null && itemsPerPageMobile !== "") {
+      style["--carousel-visible-mobile"] = String(
+        Math.max(1, parseInt(itemsPerPageMobile, 10) || 2)
+      );
+    }
+    return style;
+  };
+
+  /**
+   * Full-width viewport with overhanging prev/next chevrons (no arrow columns).
+   *
+   * @param {object} options
+   * @param {React.ReactNode} options.children
+   * @param {string} options.viewportClass
+   * @param {object} [options.pauseHandlers]
+   * @param {boolean} [options.showArrows=true]
+   * @returns {JSX.Element}
+   */
+  renderTrack = ({ children, viewportClass, pauseHandlers = {}, showArrows = true }) => (
+    <div className="carousel-wrapper" {...pauseHandlers}>
+      {showArrows && (
+        <Icon
+          className="carousel-arrow carousel-arrow-prev"
+          role="button"
+          name="angle left"
+          size="huge"
+          aria-label={i18next.t("Previous slide")}
+          onClick={() => this.scrollByItems(-1)}
+          onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(-1)}
+          tabIndex="0"
+        />
+      )}
+      <div className={viewportClass} role="list" style={this.visibleCountStyle()}>
+        {children}
+      </div>
+      {showArrows && (
+        <Icon
+          className="carousel-arrow carousel-arrow-next"
+          role="button"
+          name="angle right"
+          size="huge"
+          aria-label={i18next.t("Next slide")}
+          onClick={() => this.scrollByItems(1)}
+          onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(1)}
+          tabIndex="0"
+        />
+      )}
+    </div>
+  );
+
+  /**
+   * Featured carousel only: 1+14+1 side spacers.
+   *
+   * @param {React.ReactNode} track
+   * @returns {JSX.Element}
+   */
+  renderFeaturedWidthShell = (track) => (
+    <Grid container className="rel-mb-2 carousel-width-shell">
+      <Grid.Column width="1" className="computer only" />
+      <Grid.Column computer="14" tablet="16" mobile="16">
+        {track}
+      </Grid.Column>
+      <Grid.Column width="1" className="computer only" />
+    </Grid>
+  );
+
+  /**
+   * Skeleton cards in the same viewport layout as the hydrated carousel.
+   *
+   * @returns {JSX.Element}
+   */
   renderPlaceholder = () => {
-    const { title } = this.props;
+    const { title, showTitle, embedded, itemsPerPage } = this.props;
+    const count = Math.max(1, parseInt(itemsPerPage, 10) || 3);
+    const viewportClass = ["carousel-viewport", embedded ? "snap-start" : ""]
+      .filter(Boolean)
+      .join(" ");
+    const placeholders = Array.from({ length: count }, (_, index) => (
+      <div
+        key={`carousel-placeholder-${index}`}
+        className="card-set-wrapper carousel-item loading-placeholder"
+        aria-hidden="true"
+      >
+        <div className="ui fluid card community">
+          <div className="community-card-top">
+            <Placeholder fluid>
+              <Placeholder.Image square />
+            </Placeholder>
+          </div>
+          <div className="content community-card-footer">
+            <Placeholder>
+              <Placeholder.Header>
+                <Placeholder.Line />
+              </Placeholder.Header>
+              <Placeholder.Paragraph>
+                <Placeholder.Line />
+                <Placeholder.Line />
+              </Placeholder.Paragraph>
+            </Placeholder>
+          </div>
+        </div>
+      </div>
+    ));
+
+    const track = this.renderTrack({
+      children: placeholders,
+      viewportClass,
+      showArrows: false,
+    });
+
+    if (embedded) {
+      return track;
+    }
+
     return (
-      <Container fluid className="rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
-        <Grid container className="carousel-header-container">
-          <Grid.Column width="2" />
-          <Grid.Column width="12">
-            <Header as="h2" className="rel-mb-1">
-              {title}
-            </Header>
-          </Grid.Column>
-          <Grid.Column width="2" />
-        </Grid>
-        <Grid container className="carousel-items-container">
-          <Grid.Column width="2" />
-          <Grid.Column width="12">
-            <Item.Group>
-              <Item>
-                <Item.Image>
-                  <Placeholder>
-                    <Placeholder.Image square />
-                  </Placeholder>
-                </Item.Image>
-
-                <Item.Content>
-                  <Item.Header className="mt-5 rel-mb-2">
-                    <Placeholder>
-                      <Placeholder.Header>
-                        <Placeholder.Line />
-                      </Placeholder.Header>
-                    </Placeholder>
-                  </Item.Header>
-
-                  <Item.Description>
-                    <Placeholder>
-                      <Placeholder.Paragraph>
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                      </Placeholder.Paragraph>
-                    </Placeholder>
-                  </Item.Description>
-                </Item.Content>
-              </Item>
-            </Item.Group>
-          </Grid.Column>
-          <Grid.Column width="2" />
-        </Grid>
+      <Container fluid className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
+        {showTitle && title && (
+          <Grid container className="rel-mb-0">
+            <Grid.Column width="2" className="computer only" />
+            <Grid.Column
+              computer="12"
+              tablet="16"
+              mobile="16"
+              widescreen="12"
+              largeMonitor="12"
+              className="fourteen wide large screen mb-15"
+            >
+              <Header as="h2">{title}</Header>
+            </Grid.Column>
+            <Grid.Column width="2" className="computer only" />
+          </Grid>
+        )}
+        {this.renderFeaturedWidthShell(track)}
       </Container>
     );
   };
 
   carouselSlides = () => {
     const { data } = this.state;
-    const { defaultLogo, showUploadBtn } = this.props;
+    const { defaultLogo } = this.props;
 
     return data.hits?.map((community) => (
       <CommunityCard
@@ -184,9 +390,34 @@ class CommunitiesCarousel extends Component {
   };
 
   render() {
-    const { data, isLoading } = this.state;
-    const { title, itemsPerPage } = this.props;
+    const { data, isLoading, canScroll } = this.state;
+    const { title, itemsPerPage, showTitle, showMarkers, autoplay, embedded, emptyMessage } =
+      this.props;
     const slides = this.carouselSlides();
+    const viewportClass = [
+      "carousel-viewport",
+      showMarkers ? "with-scroll-markers" : "",
+      embedded ? "snap-start" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const pauseHandlers =
+      autoplay && canScroll
+        ? {
+            onFocus: this.stopCarousel,
+            onBlur: this.startCarousel,
+            onMouseEnter: this.stopCarousel,
+            onMouseLeave: this.startCarousel,
+          }
+        : {};
+
+    const track = this.renderTrack({
+      children: slides,
+      viewportClass,
+      pauseHandlers,
+      showArrows: canScroll,
+    });
 
     return (
       <Overridable
@@ -199,103 +430,78 @@ class CommunitiesCarousel extends Component {
         scrollByItems={this.scrollByItems}
         itemsPerPage={itemsPerPage}
       >
-        <>
+        <div ref={this.rootRef} className="communities-carousel-root">
           {isLoading && this.renderPlaceholder()}
 
-          {!isLoading && !_isEmpty(data.hits) && (
-            <Container fluid className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
-              <Grid container className="rel-mb-0">
-                <Grid.Column width="2" className="tablet computer only" />
-                <Grid.Column
-                  computer="12"
-                  tablet="12"
-                  mobile="16"
-                  widescreen="12"
-                  largeMonitor="12"
-                  className="twelve wide large screen mb-15"
-                >
-                  <Header as="h2">{title}</Header>
-                </Grid.Column>
-                <Grid.Column width="2" className="tablet computer only" />
-              </Grid>
-
-              <Grid
-                container
-                className={"rel-mb-2 carousel-wrapper"}
-                onFocus={this.stopCarousel}
-                onBlur={this.startCarousel}
-                onMouseEnter={this.stopCarousel}
-                onMouseLeave={this.startCarousel}
-              >
-                <Grid.Column
-                  width="1"
-                  className="pr-0 rel-pb-2"
-                  verticalAlign="middle"
-                  textAlign="left"
-                >
-                  <Icon
-                    className="carousel-arrow"
-                    inverted
-                    role="button"
-                    name="angle left"
-                    size="huge"
-                    aria-label={i18next.t("Previous slide")}
-                    onClick={() => this.scrollByItems(-1)}
-                    onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(-1)}
-                    tabIndex="0"
-                  />
-                </Grid.Column>
-                <Grid.Column
-                  width="14"
-                  className="carousel-viewport"
-                  role="list"
-                  style={{
-                    "--carousel-visible-desktop": String(parseInt(itemsPerPage, 10) || 3),
-                  }}
-                >
-                  {slides}
-                </Grid.Column>
-
-                <Grid.Column
-                  width="1"
-                  className="pl-0 rel-pb-2"
-                  verticalAlign="middle"
-                  textAlign="right"
-                >
-                  <Icon
-                    className="carousel-arrow"
-                    inverted
-                    role="button"
-                    name="angle right"
-                    size="huge"
-                    aria-label={i18next.t("Next slide")}
-                    onClick={() => this.scrollByItems(1)}
-                    onKeyDown={(event) => event.key === "Enter" && this.scrollByItems(1)}
-                    tabIndex="0"
-                  />
-                </Grid.Column>
-              </Grid>
-            </Container>
+          {!isLoading && _isEmpty(data.hits) && emptyMessage && (
+            <Message icon="info" header={emptyMessage} />
           )}
-        </>
+
+          {!isLoading &&
+            !_isEmpty(data.hits) &&
+            (embedded ? (
+              track
+            ) : (
+              <Container fluid className="carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
+                {showTitle && title && (
+                  <Grid container className="rel-mb-0">
+                    <Grid.Column width="2" className="computer only" />
+                    <Grid.Column
+                      computer="12"
+                      tablet="16"
+                      mobile="16"
+                      widescreen="12"
+                      largeMonitor="12"
+                      className="fourteen wide large screen mb-15"
+                    >
+                      <Header as="h2">{title}</Header>
+                    </Grid.Column>
+                    <Grid.Column width="2" className="computer only" />
+                  </Grid>
+                )}
+                {this.renderFeaturedWidthShell(track)}
+              </Container>
+            ))}
+        </div>
       </Overridable>
     );
   }
 }
 
 CommunitiesCarousel.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   fetchUrl: PropTypes.string.isRequired,
-  intervalDelay: PropTypes.number.isRequired,
+  intervalDelay: PropTypes.number,
   animationSpeed: PropTypes.number,
   defaultLogo: PropTypes.string.isRequired,
-  itemsPerPage: PropTypes.string.isRequired,
+  /** Desktop visible count → `--carousel-visible-desktop`. */
+  itemsPerPage: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Tablet visible count → `--carousel-visible-tablet` (falls back to desktop). */
+  itemsPerPageTablet: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Mobile visible count → `--carousel-visible-mobile` (CSS default 2). */
+  itemsPerPageMobile: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   showUploadBtn: PropTypes.bool,
+  showTitle: PropTypes.bool,
+  showMarkers: PropTypes.bool,
+  autoplay: PropTypes.bool,
+  /** Compact mount for section slots (titles live in the page template). */
+  embedded: PropTypes.bool,
+  emptyMessage: PropTypes.string,
 };
 
 CommunitiesCarousel.defaultProps = {
+  title: "",
+  intervalDelay: 10000,
   animationSpeed: 800,
+  itemsPerPage: "3",
+  itemsPerPageTablet: undefined,
+  itemsPerPageMobile: undefined,
   showUploadBtn: true,
+  showTitle: true,
+  showMarkers: true,
+  autoplay: true,
+  embedded: false,
+  emptyMessage: "",
 };
 
 export default Overridable.component("InvenioCommunities.CommunitiesCarousel", CommunitiesCarousel);

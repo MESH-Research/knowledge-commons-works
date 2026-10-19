@@ -146,9 +146,36 @@
     &.fluid.labeled.centered {
       padding-right: 3.25em !important;
     }
-    &.right.labeled {
+    &.right:not(.floated) {
+      position: relative;
       padding-right: @horizontalPadding + 1.75em !important;
       padding-left: @horizontalPadding !important;
+
+      &:not(.labeled) > .icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: auto;
+        height: 100%;
+        margin: 0;
+        width: 1em + (@verticalPadding * 2);
+        background-color: transparent;
+        box-shadow: none;
+        text-align: center;
+        border-radius: 0;
+        border-top-right-radius: inherit;
+        border-bottom-right-radius: inherit;
+
+        &::before,
+        &::after {
+          display: block;
+          position: absolute;
+          width: 100%;
+          top: 50%;
+          text-align: center;
+          transform: translateY(-50%);
+        }
+      }
     }
   }
 
@@ -501,57 +528,6 @@
 // .ui.basic.{semantic}.button:hover (transparent). Shared var() formulas need
 // matching specificity + !important once; variants only set the tokens.
 
-.ui.buttons {
-  &.basic,
-  &.basic:not(.inverted),
-  &:has(.ui.button.basic) {
-    border-color: transparent;
-    .ui.button,
-    .ui.button:not(.transparent){
-      position: relative;
-      margin-left: 3px;
-      border-left: none;
-      // override nested states below which aren't button-set-specific
-      &:is(:hover),
-      &:is(:focus) {
-        --button-text-color-hover: @ivy;
-        --button-bg-color-hover: @mint30;
-        --button-ring-color-hover: @ivy40;
-      }
-    }
-
-    .ui.button:first-child {
-      margin-left: 0;
-      // border-left: none;
-    }
-    // > .ui.button.active:not(.positive):not(.negative):not(.transparent) {
-    //   --button-ring-color: @ivy20;
-    //   --button-ring-color-hover: darken(@ivy40, 3%);
-    //   --button-bg-color: @ivy80;
-      // background-color: @mint30 !important;
-      // color: @ivy;
-      box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset,
-        0px 0em 0px 0px @ivyRgba10 inset;
-
-    //   &:hover,
-    //   &:active,
-    //   &:focus {
-    //     background-color: @mint50 !important;
-    //     color: @ivy;
-    //     box-shadow: 0px 0px 0px 1px var(--button-ring-color-hover) inset,
-    //       0px 0em 0px 0px @ivyRgba10 inset;
-    //   }
-    // }
-  }
-
-  // Group active child not covered by .ui.button.basic nesting below
-  &.basic .active.button:not(.transparent) {
-    background: var(--button-bg-color) !important;
-    color: var(--button-text-color) !important;
-    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
-  }
-}
-
 .ui.buttons > .ui.button.basic:not(.inverted):not(.transparent),
 .ui.buttons.basic:not(.inverted) > .ui.button:not(.transparent),
 .ui.button.basic:not(.transparent),
@@ -561,7 +537,7 @@
   --button-ring-color-hover: @ivy;
   --button-text-color: @ivy;
   --button-text-color-hover: @white;
-  --button-bg-color: @white;
+  --button-bg-color: transparent;
   --button-bg-color-hover: @ivy80;
   // Solid pair (matches non-basic semantic resting/hover) for .active invert
   --button-solid-color: @ivy80;
@@ -609,6 +585,33 @@
   }
 }
 
+.ui.buttons {
+  &.basic,
+  &.basic:not(.inverted),
+  &:has(.ui.button.basic) {
+    border-color: transparent;
+    .ui.button,
+    .ui.button:not(.transparent){
+      --button-text-color-hover: @ivy;
+      --button-bg-color-hover: @mint30;
+      --button-ring-color-hover: @ivy40;
+      position: relative;
+      margin-left: 3px;
+      border-left: none;
+    }
+
+    .ui.button:first-child {
+      margin-left: 0;
+    }
+  }
+
+  // Group active child not covered by .ui.button.basic nesting below
+  &.basic .active.button:not(.transparent) {
+    background: var(--button-bg-color) !important;
+    color: var(--button-text-color) !important;
+    box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset;
+  }
+}
 
 #frontpage-search-bar {
   .ui.button.labeled.icon > .icon {
@@ -617,6 +620,37 @@
     box-shadow: 0 0 0 transparent;
   }
 }
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+
+  > i.icon.carousel-arrow {
+    position: absolute !important;
+    top: 50%;
+    z-index: 21;
+    margin: 0 !important;
+    cursor: pointer;
+    color: @verdigrisRgba50 !important;
+    text-shadow: none;
+
+    &:hover,
+    &:focus {
+      color: @ivy !important;
+    }
+
+    &.carousel-arrow-prev {
+      left: -3rem;
+      transform: translate(-50%, -50%);
+    }
+
+    &.carousel-arrow-next {
+      right: -3rem;
+      transform: translate(50%, -50%);
+    }
+  }
+}
+
 
 .invenio-fieldset.resource_type {
   .menu .button.item {
@@ -670,22 +704,20 @@
       box-shadow: 0px 0px 0px 1px var(--button-ring-color) inset !important;
     }
     &.secondary.basic {
+      --button-labeled-icon-bg: transparent;
       background-color: transparent !important;
       color: darken(@warningTextColor, 10%) !important;
-      .icon {
-        background-color: @warningBackgroundColor !important;
-        color: @warningTextColor !important;
-      }
       &:hover,
       &:active,
       &:focus {
         background-color: @warningBackgroundColor !important;
-        .icon {
-          background-color: darken(@warningBackgroundColor, 5%) !important;
-        }
       }
     }
   }
+}
+
+#versions-dropdown {
+  border-radius: 0 @borderRadius @borderRadius 0;
 }
 
 #record-export {

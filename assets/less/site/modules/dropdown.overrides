@@ -81,23 +81,23 @@
 
 .ui.dropdown.sidebar-secondary {
   .menu {
-    background-color: @gold10;
-    border-color: @gold;
+    border-color: @warningTextColor;
+    background-color: @white;
     margin-top: 1rem !important;
     .item {
       color: darken(@warningTextColor, 10%);
-      background-color: @gold10;
+      background-color:  @white;
       z-index: 100;
       &.selected,
       &:active,
       &:focus,
       &:hover {
-        background-color: @gold30;
+        background-color: @ivory;
         color: darken(@warningTextColor, 10%);
         z-index: 100;
       }
       &:hover {
-        background-color: @gold20;
+        background-color: darken(@ivory, 10%);
       }
       &:first-child {
         border-top-left-radius: @defaultBorderRadius;
@@ -215,7 +215,6 @@
   &#communities {
     .row.manage-communities {
       > .dropdown > .icon {
-        color: @secondaryColor !important;
         float: right;
       }
     }

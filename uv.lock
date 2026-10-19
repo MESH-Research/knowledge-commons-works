@@ -3110,7 +3110,7 @@ requires-dist = [
     { name = "kcworks", editable = "." },
     { name = "langdetect" },
     { name = "pydantic" },
-    { name = "pytest", marker = "extra == 'test'" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8.4.2" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=6.2.1" },
     { name = "pytest-invenio", marker = "extra == 'test'", specifier = ">=3.3,<4" },
     { name = "pytest-isort", marker = "extra == 'test'", specifier = ">=4" },

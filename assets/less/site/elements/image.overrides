@@ -89,13 +89,5 @@
   }
 }
 
-#communities-carousel .carousel-item .image {
-  aspect-ratio: 1;
-  position: relative;
-  overflow: hidden;
-  img {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-  }
-}
+// Logo sizing for carousel cards lives under `.community-card-logo` in card.overrides
+// so hover can keep the image box fixed while the card widens.

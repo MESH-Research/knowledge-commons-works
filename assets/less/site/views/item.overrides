@@ -116,22 +116,7 @@
   }
 }
 
-// Community carousel item content
-.carousel-viewport .carousel-item {
-  display: flex;
-  align-items: center;
-
-  .buttons-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-
-    .button:first-child {
-      margin-bottom: 0;
-    }
-  }
-}
+// Carousel slides are `.card-set-wrapper.carousel-item` (see card.overrides).
 
 #communities-search {
   .ui.items {

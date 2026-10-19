@@ -27,46 +27,46 @@
        data-default-logo="{{ default_logo }}"
        data-items-per-page="{{ items_per_page }}"
        data-show-upload-btn="{{ showUploadBtn | tojson }}">
-    <div class="ui fluid container rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
-      <div class="ui grid container">
-        <div class="two wide column"></div>
-        <div class="twelve wide column">
-          <h2 class="ui header rel-mb-1">{{ title }}</h2>
+    <div class="ui fluid container carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
+      <div class="ui grid container rel-mb-0">
+        <div class="one wide computer only column"></div>
+        <div class="sixteen wide mobile sixteen wide tablet fourteen wide computer column mb-15">
+          <h2 class="ui header">{{ title }}</h2>
         </div>
-        <div class="two wide column"></div>
+        <div class="one wide computer only column"></div>
       </div>
-      <div class="ui grid container">
-        <div class="two wide column"></div>
-        <div class="twelve wide column">
-          <div class="ui items">
-            <div class="item">
-              <div class="image">
-                <div class="ui placeholder">
-                  <div class="square image"></div>
-                </div>
-              </div>
-              <div class="content">
-                <div class="header mt-5 rel-mb-2">
-                  <div class="ui placeholder">
-                    <div class="header">
-                      <div class="line"></div>
+      <div class="ui grid container rel-mb-2 carousel-width-shell">
+        <div class="one wide computer only column"></div>
+        <div class="sixteen wide mobile sixteen wide tablet fourteen wide computer column">
+          <div class="carousel-wrapper">
+            <div class="carousel-viewport"
+                 style="--carousel-visible-desktop: {{ items_per_page }};">
+              {% for _ in range(items_per_page | int) %}
+                <div class="card-set-wrapper carousel-item loading-placeholder" aria-hidden="true">
+                  <div class="ui fluid card community">
+                    <div class="community-card-top">
+                      <div class="ui fluid placeholder">
+                        <div class="square image"></div>
+                      </div>
+                    </div>
+                    <div class="content community-card-footer">
+                      <div class="ui placeholder">
+                        <div class="header">
+                          <div class="line"></div>
+                        </div>
+                        <div class="paragraph">
+                          <div class="line"></div>
+                          <div class="line"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="description">
-                  <div class="ui placeholder">
-                    <div class="paragraph">
-                      <div class="line"></div>
-                      <div class="line"></div>
-                      <div class="line"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
         </div>
-        <div class="two wide column"></div>
+        <div class="one wide computer only column"></div>
       </div>
     </div>
   </div>

@@ -134,7 +134,7 @@
 {# Default links #}
 {# ------------------------------------------------------------------------ #}
 {%- if theme.secondaryTextColor %}
-  .invenio-page-body:has(#community-detail-header) a {
+  .invenio-page-body:has(#community-detail-header) a:not(.ui.button) {
     color: {{ theme.secondaryTextColor }} !important;
   }
 {%- endif %}
@@ -143,9 +143,9 @@
 {# Primary buttons, links #}
 {# ------------------------------------------------------------------------ #}
 {%- if theme.primaryTextColor %}
-  .theme-primary-text a,
+  .theme-primary-text a:not(.ui.button),
   .theme-primary .link-button,
-  .theme-primary a:not(.theme-secondary):not(.theme-tertiary) {
+  .theme-primary a:not(.theme-secondary):not(.theme-tertiary):not(.ui.button) {
     color: {{ theme.primaryTextColor }} !important;
   }
 {%- endif %}

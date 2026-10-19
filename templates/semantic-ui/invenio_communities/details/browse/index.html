@@ -50,6 +50,12 @@
            href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community_slug) }}">
           {{ _("See all") }}
         </a>
+        {% if current_user.is_authenticated %}
+          <a class="ui mini button primary align-self-center rel-ml-1"
+             href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community_slug) }}">
+            {{ _("New subcollection") }}
+          </a>
+        {% endif %}
       {% endif %}
     </div>
     {% if can_have_children %}
