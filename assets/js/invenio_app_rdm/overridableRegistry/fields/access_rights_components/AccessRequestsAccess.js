@@ -160,6 +160,7 @@ export const AccessRequestsAccess = ({ access, metadataOnly, className }) => {
             icon="cog"
             disabled={controlsDisabled}
             onClick={() => setModalOpen(true)}
+            aria-label={i18next.t("Access request settings")}
             aria-haspopup="dialog"
             className="ml-5"
           />
