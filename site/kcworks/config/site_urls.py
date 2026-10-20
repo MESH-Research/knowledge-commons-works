@@ -45,7 +45,7 @@ FRONTPAGE_GUIDE_LINKS = [
     ),
     (
         _("Collect"),
-        f"{KC_HELP_URL}/what-is-a-collection/",
+        f"{KC_HELP_URL}/viewing-and-using-collections",
         "copy outline",
     ),
     (

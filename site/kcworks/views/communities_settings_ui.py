@@ -37,13 +37,16 @@ def create_blueprint(app):
         template_folder="../templates",
     )
 
-    routes = app.config["COMMUNITIES_ROUTES"]
+    # KCWorks-only keys; may be absent when create_ui boots without invenio.cfg
+    # (e.g. `from invenio_app.celery import celery` during pytest collection on CI).
+    routes = app.config.get("COMMUNITIES_ROUTES", {})
+    settings_path = routes.get("settings", "/communities/<pid_value>/settings")
     blueprint.add_url_rule(
-        routes["settings_theme"],
+        routes.get("settings_theme", f"{settings_path}/theme"),
         view_func=communities_settings_theme,
     )
     blueprint.add_url_rule(
-        routes["settings_subcollections"],
+        routes.get("settings_subcollections", f"{settings_path}/subcollections"),
         view_func=communities_settings_subcollections,
     )
 

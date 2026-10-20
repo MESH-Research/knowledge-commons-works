@@ -1,8 +1,7 @@
 import React from "react";
-import { screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik, useFormikContext } from "formik";
-import { render } from "@testing-library/react";
 import { EmbargoCheckboxField } from "./EmbargoCheckboxField";
 
 const ValuesProbe = () => {
@@ -144,15 +143,17 @@ describe("EmbargoCheckboxField", () => {
     );
 
     // Simulate accepting a localStorage snapshot with public files enabled.
-    resetFormFn({
-      values: {
-        access: {
-          record: "public",
-          files: "public",
-          embargo: { active: false },
+    act(() => {
+      resetFormFn({
+        values: {
+          access: {
+            record: "public",
+            files: "public",
+            embargo: { active: false },
+          },
+          files: { enabled: true },
         },
-        files: { enabled: true },
-      },
+      });
     });
 
     await waitFor(() => {

@@ -3,7 +3,7 @@
 
 # Changes
 
-## Unreleased
+## 1.1.0 (2026-10-20)
 
 - Authentication & API security
   - Least-privilege OAuth scopes and role-based API auth
@@ -59,6 +59,9 @@
   - make health check respect the instance's port configuration
   - fix docs API app pid name error
   - support for a mock profiles API via knowledge-commons-profiles-mock
+- Security updates
+  - updates for several dependency libraries that have published CVEs, as well
+    as for certifi (which drops some compromised CA certificates).
 
 ## 1.0.0 (2026-09-24)
 
