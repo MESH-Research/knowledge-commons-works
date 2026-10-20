@@ -246,9 +246,18 @@ code {
     margin-inline-start: calc(-1 * var(--carousel-gap, 1rem));
   }
 
+  // Featured: end spacer is a real "Find more" card instead of ::after.
+  &.has-find-more::after {
+    content: none;
+    flex: none;
+    width: 0;
+    margin: 0;
+  }
+
   &.snap-start {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    // Room for resting card drop shadows (0 0.1rem 0.35rem).
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
 
     &::before,
     &::after {
@@ -1146,51 +1155,6 @@ html.cover-page {
       }
       &#record-export {
         margin-bottom: 1rem;
-      }
-      &#social-sharing {
-        .sharing-icons {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
-          gap: 0.5rem;
-          justify-items: center;
-          align-items: center;
-        }
-        .sharing-icon {
-          position: relative;
-          display: inline-flex;
-        }
-        .button {
-          margin: 0;
-          .icon {
-            color: inherit;
-            svg {
-              height: 1em;
-              width: 1em;
-              fill: currentColor;
-            }
-          }
-        }
-        .mastodon-popup {
-          width: 2.75rem;
-          height: 0.25rem;
-          display: inline-block;
-          position: absolute;
-          background-color: transparent;
-        }
-        .icon.bluesky {
-          svg {
-            position: relative;
-            top: 1.5px;
-          }
-        }
-        .icon.mastodon {
-          svg {
-            position: relative;
-            top: -0.5px;
-            height: 1.15em;
-            width: 1.15em;
-          }
-        }
       }
     }
   }

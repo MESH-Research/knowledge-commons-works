@@ -36,8 +36,11 @@
     position: relative;
     flex: 0 0 var(--carousel-item-width);
     width: var(--carousel-item-width);
-    // Logo square + fixed 2-line title band (+ card content padding).
-    min-height: calc(var(--carousel-item-width) + 2.6em + 2rem);
+    // Logo square + 2-line title band + padding (incl. space below title).
+    --carousel-card-rest-min-height: calc(
+      var(--carousel-item-width) + 2.6em + 3rem
+    );
+    min-height: var(--carousel-card-rest-min-height);
     margin: 0;
     align-items: stretch;
     scroll-snap-align: center;
@@ -66,6 +69,42 @@
       var(--carousel-card-hover-width) - var(--carousel-item-width)
     );
     --carousel-card-shadow-inset: 0.9rem;
+
+    // CTA after featured cards; fill the slot like community cards (absolute).
+    &.carousel-find-more {
+      &::scroll-marker {
+        display: none;
+      }
+
+      .carousel-find-more-link {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 1.25rem;
+        border: none;
+        border-radius: @defaultBorderRadius;
+        color: @ivy60;
+        font-size: 1.1rem;
+        font-weight: @bold;
+        line-height: 1.35;
+        text-align: center;
+        text-decoration: none;
+        background: transparent;
+        box-shadow: inset 0 0 0.35rem @ivy40;
+        transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover,
+        &:focus {
+          background-color: darken(@ivory, 2%);
+          color: @ivy80;
+          box-shadow: inset 0 0 0.4rem @ivy60;
+          text-decoration: none;
+        }
+      }
+    }
 
     // Loading skeleton: fill the logo square; no scroll markers or hover morph.
     &.loading-placeholder {
@@ -123,8 +162,7 @@
       }
 
       .community-card-logo {
-        // Fixed to slot size at rest and on expand — must not scale with card width.
-        // Right-aligned so the description overlay overhangs to the left.
+        // Slot-sized square at rest; must not scale with card width on expand.
         position: absolute;
         top: 0;
         right: 0;
@@ -132,7 +170,6 @@
         max-width: var(--carousel-item-width);
         height: var(--carousel-item-width);
         max-height: var(--carousel-item-width);
-        flex: 0 0 var(--carousel-item-width);
 
         > a {
           display: block;
@@ -196,7 +233,8 @@
       }
 
       .community-card-footer {
-        flex: 0 0 auto;
+        // Absorbs leftover slot height so short titles don't leave a gap.
+        flex: 1 0 auto;
         position: relative;
 
         .header {
@@ -206,8 +244,7 @@
           overflow: hidden;
           margin-bottom: 0;
           line-height: 1.3;
-          height: 2.6em;
-          min-height: 2.6em;
+          height: auto;
           max-height: 2.6em;
           opacity: 1;
         }
@@ -238,20 +275,33 @@
         top: -0.95rem;
         z-index: 2;
         width: var(--carousel-card-hover-width) !important;
-        min-height: calc(100% + 1.9rem);
-        height: auto;
+        // Fixed shell ≥ resting floor; footer steals from image, not card height.
+        --carousel-card-hover-min-height: max(
+          var(--carousel-card-rest-min-height),
+          calc(100% + 1.9rem)
+        );
+        height: var(--carousel-card-hover-min-height);
+        min-height: var(--carousel-card-hover-min-height);
         overflow: visible;
         transform: translateX(calc(var(--carousel-card-hover-expand) / -2));
         box-shadow: 0 0 0.9rem rgba(0, 0, 0, 0.28);
 
         .community-card-top {
-          height: calc(var(--carousel-item-width) - 1.3em);
-          min-height: calc(var(--carousel-item-width) - 1.3em);
+          flex: 1 1 auto;
+          min-height: 0;
+          height: auto;
         }
 
         .community-card-logo {
-          height: calc(var(--carousel-item-width) - 1.3em);
-          max-height: calc(var(--carousel-item-width) - 1.3em);
+          height: 100%;
+          max-height: 100%;
+          width: auto;
+          aspect-ratio: 1;
+          max-width: var(--carousel-item-width);
+
+          .image {
+            max-height: 100%;
+          }
         }
 
         .community-card-overlay {
@@ -265,12 +315,11 @@
         }
 
         .community-card-footer {
+          flex: 0 0 auto;
           padding-bottom: 1rem;
 
           .header {
             -webkit-line-clamp: 3;
-            height: 3.9em;
-            min-height: 3.9em;
             max-height: 3.9em;
             animation: carousel-card-title-fade 0.7s ease forwards;
           }
