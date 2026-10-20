@@ -246,9 +246,18 @@ code {
     margin-inline-start: calc(-1 * var(--carousel-gap, 1rem));
   }
 
+  // Featured: end spacer is a real "Find more" card instead of ::after.
+  &.has-find-more::after {
+    content: none;
+    flex: none;
+    width: 0;
+    margin: 0;
+  }
+
   &.snap-start {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    // Room for resting card drop shadows (0 0.1rem 0.35rem).
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
 
     &::before,
     &::after {
