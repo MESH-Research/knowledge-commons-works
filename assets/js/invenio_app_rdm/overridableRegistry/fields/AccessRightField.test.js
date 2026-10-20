@@ -103,7 +103,7 @@ describe('AccessRightField', () => {
     renderComponent();
 
     // Outer section label is the accordion title (settings collapsed by default).
-    expect(screen.getByRole('button', { name: /change access settings/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /change access permissions/i })).toBeInTheDocument();
 
     // Check for metadata access section (still in DOM while accordion is closed).
     expect(screen.getByText('Record access')).toBeInTheDocument();
