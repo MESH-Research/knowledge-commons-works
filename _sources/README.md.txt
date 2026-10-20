@@ -9,7 +9,7 @@
 
 ![KCWorks logo](../../static/images/kc_works_logos/SVG/kc_works_logo_wordmark.svg)
 
-Version 1.0.0
+Version 1.1.0
 
 Knowledge Commons Works is a collaborative platform for storing and sharing
 academic research. It is part of
