@@ -16,6 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
+  "aiohttp>=3.14.4,<4",
   "cairosvg>=2.9.1",
   "invenio-app-rdm[opensearch2,s3]~=13.0.0",
   "invenio-communities>=19,<20",
