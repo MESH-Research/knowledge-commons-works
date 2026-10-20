@@ -3,7 +3,6 @@
 
 import json
 from pathlib import Path
-from pprint import pformat
 from typing import Any
 
 import pandas as pd
@@ -148,12 +147,15 @@ class OrgMemberRecordIncluder:
             org_dict[column_name] = community_service.read(
                 system_identity, community_slug
             )
-        current_app.logger.info(f"org_dict {org_dict}")
+        current_app.logger.info(
+            "Loaded org communities: %s",
+            sorted(str(slug) for slug in column_to_slug_map.values()),
+        )
 
         for row in member_rows.itertuples():
             # row[0] is the index, row[1] is the username (first column)
-            current_app.logger.info(f"Handling row: {row}")
             username = row[1]
+            current_app.logger.info("Handling org member username=%s", username)
             member_dict: dict[str, Any] = {}
             members_search: dict[str, Any] = current_search_client.search(
                 index=prefix_index("users"),
@@ -162,15 +164,21 @@ class OrgMemberRecordIncluder:
             try:
                 hits = members_search["hits"]["hits"]
                 if not hits:
-                    current_app.logger.warning(f"No users match {row}")
+                    current_app.logger.warning(
+                        "No users match username=%s", username
+                    )
                     continue
                 member_hit: dict[str, Any] = hits[0]
                 member_dict = member_hit.get("_source", {})
                 if not member_dict or "id" not in member_dict:
-                    current_app.logger.warning(f"No user data in hit matching {row}")
+                    current_app.logger.warning(
+                        "No user data in hit matching username=%s", username
+                    )
                     continue
             except (KeyError, IndexError):
-                current_app.logger.warning(f"No users match {row}")
+                current_app.logger.warning(
+                    "No users match username=%s", username
+                )
                 continue
 
             if not member_dict or "id" not in member_dict:
@@ -200,10 +208,14 @@ class OrgMemberRecordIncluder:
 
             member_record_results = member_record_query["hits"]["hits"]
 
-            current_app.logger.info(f"Filter clauses for {username}: {filter_clauses}")
+            current_app.logger.debug(
+                "Filter clauses for username=%s: %s", username, filter_clauses
+            )
             current_app.logger.info(
-                f"Member_record_results: "
-                f"{pformat([r['_source']['id'] for r in member_record_results])}"
+                "Member_record_results for username=%s: count=%s ids=%s",
+                username,
+                len(member_record_results),
+                [r["_source"]["id"] for r in member_record_results],
             )
             if len(member_record_results) == 0:
                 current_app.logger.warning(

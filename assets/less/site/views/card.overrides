@@ -36,8 +36,11 @@
     position: relative;
     flex: 0 0 var(--carousel-item-width);
     width: var(--carousel-item-width);
-    // Logo square + fixed 2-line title band (+ card content padding).
-    min-height: calc(var(--carousel-item-width) + 2.6em + 2rem);
+    // Logo square + 2-line title band + padding (incl. space below title).
+    --carousel-card-rest-min-height: calc(
+      var(--carousel-item-width) + 2.6em + 3rem
+    );
+    min-height: var(--carousel-card-rest-min-height);
     margin: 0;
     align-items: stretch;
     scroll-snap-align: center;
@@ -56,8 +59,52 @@
       background: @ivy;
     }
 
-    // Extra width on hover — just enough for the description overhang.
     --carousel-card-overhang: 2.5rem;
+    --carousel-card-hover-min-width: 22rem;
+    --carousel-card-hover-width: max(
+      calc(var(--carousel-item-width) + var(--carousel-card-overhang)),
+      var(--carousel-card-hover-min-width)
+    );
+    --carousel-card-hover-expand: calc(
+      var(--carousel-card-hover-width) - var(--carousel-item-width)
+    );
+    --carousel-card-shadow-inset: 0.9rem;
+
+    // CTA after featured cards; fill the slot like community cards (absolute).
+    &.carousel-find-more {
+      &::scroll-marker {
+        display: none;
+      }
+
+      .carousel-find-more-link {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 1.25rem;
+        border: none;
+        border-radius: @defaultBorderRadius;
+        color: @ivy60;
+        font-size: 1.1rem;
+        font-weight: @bold;
+        line-height: 1.35;
+        text-align: center;
+        text-decoration: none;
+        background: transparent;
+        box-shadow: inset 0 0 0.35rem @ivy40;
+        transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover,
+        &:focus {
+          background-color: darken(@ivory, 2%);
+          color: @ivy80;
+          box-shadow: inset 0 0 0.4rem @ivy60;
+          text-decoration: none;
+        }
+      }
+    }
 
     // Loading skeleton: fill the logo square; no scroll markers or hover morph.
     &.loading-placeholder {
@@ -83,13 +130,17 @@
     }
 
     .ui.card.community {
+      // Always absolute in the slot so leave doesn't snap position while
+      // width/transform still ease (that read as shrink-then-slide).
+      position: absolute;
+      left: 0;
+      top: 0;
       display: flex;
       flex-direction: column;
       width: 100% !important;
       max-width: none;
       height: 100%;
       margin: 0;
-      // Animate width + transform together; do not animate `left` (auto→50% jumps).
       transition:
         width 0.35s ease,
         height 0.35s ease,
@@ -107,11 +158,11 @@
         width: 100%;
         height: var(--carousel-item-width);
         min-height: var(--carousel-item-width);
+        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
       }
 
       .community-card-logo {
-        // Fixed to slot size at rest and on expand — must not scale with card width.
-        // Right-aligned so the description overlay overhangs to the left.
+        // Slot-sized square at rest; must not scale with card width on expand.
         position: absolute;
         top: 0;
         right: 0;
@@ -119,7 +170,6 @@
         max-width: var(--carousel-item-width);
         height: var(--carousel-item-width);
         max-height: var(--carousel-item-width);
-        flex: 0 0 var(--carousel-item-width);
 
         > a {
           display: block;
@@ -134,6 +184,7 @@
           max-width: var(--carousel-item-width);
           max-height: var(--carousel-item-width);
           overflow: hidden;
+          border-top-right-radius: @defaultBorderRadius;
 
           img {
             object-fit: cover;
@@ -157,6 +208,7 @@
         opacity: 0;
         pointer-events: none;
         overflow: auto;
+        border-radius: @defaultBorderRadius @defaultBorderRadius 0 0;
         color: var(--community-header-fg, #fff);
         background: linear-gradient(
           to left,
@@ -181,7 +233,8 @@
       }
 
       .community-card-footer {
-        flex: 0 0 auto;
+        // Absorbs leftover slot height so short titles don't leave a gap.
+        flex: 1 0 auto;
         position: relative;
 
         .header {
@@ -191,8 +244,7 @@
           overflow: hidden;
           margin-bottom: 0;
           line-height: 1.3;
-          height: 2.6em;
-          min-height: 2.6em;
+          height: auto;
           max-height: 2.6em;
           opacity: 1;
         }
@@ -220,17 +272,37 @@
 
       &:hover,
       &:focus-within {
-        position: absolute;
-        left: 0;
         top: -0.95rem;
         z-index: 2;
-        width: calc(
-          var(--carousel-item-width) + var(--carousel-card-overhang)
-        ) !important;
-        min-height: calc(100% + 1.9rem);
-        height: auto;
-        transform: translateX(calc(var(--carousel-card-overhang) / -2));
-        box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.18);
+        width: var(--carousel-card-hover-width) !important;
+        // Fixed shell ≥ resting floor; footer steals from image, not card height.
+        --carousel-card-hover-min-height: max(
+          var(--carousel-card-rest-min-height),
+          calc(100% + 1.9rem)
+        );
+        height: var(--carousel-card-hover-min-height);
+        min-height: var(--carousel-card-hover-min-height);
+        overflow: visible;
+        transform: translateX(calc(var(--carousel-card-hover-expand) / -2));
+        box-shadow: 0 0 0.9rem rgba(0, 0, 0, 0.28);
+
+        .community-card-top {
+          flex: 1 1 auto;
+          min-height: 0;
+          height: auto;
+        }
+
+        .community-card-logo {
+          height: 100%;
+          max-height: 100%;
+          width: auto;
+          aspect-ratio: 1;
+          max-width: var(--carousel-item-width);
+
+          .image {
+            max-height: 100%;
+          }
+        }
 
         .community-card-overlay {
           opacity: 1;
@@ -243,9 +315,12 @@
         }
 
         .community-card-footer {
+          flex: 0 0 auto;
           padding-bottom: 1rem;
 
           .header {
+            -webkit-line-clamp: 3;
+            max-height: 3.9em;
             animation: carousel-card-title-fade 0.7s ease forwards;
           }
         }
@@ -264,15 +339,19 @@
       }
     }
 
-    // Track ends: grow inward only so the overhang isn't clipped by overflow-x.
-    &:first-of-type .ui.card.community:hover,
-    &:first-of-type .ui.card.community:focus-within {
-      transform: translateX(0);
+    // Items flush to the viewport edge (set by JS) grow inward + shadow inset.
+    &.flush-start .ui.card.community:hover,
+    &.flush-start .ui.card.community:focus-within {
+      transform: translateX(var(--carousel-card-shadow-inset));
     }
 
-    &:last-of-type:not(:first-of-type) .ui.card.community:hover,
-    &:last-of-type:not(:first-of-type) .ui.card.community:focus-within {
-      transform: translateX(calc(var(--carousel-card-overhang) * -1));
+    &.flush-end .ui.card.community:hover,
+    &.flush-end .ui.card.community:focus-within {
+      transform: translateX(
+        calc(
+          -1 * var(--carousel-card-hover-expand) - var(--carousel-card-shadow-inset)
+        )
+      );
     }
   }
 }

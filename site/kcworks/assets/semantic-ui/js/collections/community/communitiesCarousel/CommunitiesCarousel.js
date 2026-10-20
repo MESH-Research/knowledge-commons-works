@@ -59,12 +59,14 @@ class CommunitiesCarousel extends Component {
       requestAnimationFrame(() => {
         const overflows = this.updateCanScroll();
         this.observeViewport();
+        this.updateFlushClasses();
         if (!embedded) {
           this.scrollToCardIndex(DEFAULT_CARD_INDEX, "auto");
         }
         if (autoplay && overflows) {
           this.startCarousel(overflows);
         }
+        requestAnimationFrame(() => this.updateFlushClasses());
       });
     }
   }
@@ -74,7 +76,65 @@ class CommunitiesCarousel extends Component {
     this.stopCarousel();
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
+    const viewport = this.getViewport();
+    if (viewport && this._onViewportScroll) {
+      viewport.removeEventListener("scroll", this._onViewportScroll);
+    }
   }
+
+  /**
+   * Mark leftmost/rightmost visible items for hover grow direction.
+   *
+   * Uses visibility (not pixel-edge proximity): subpixel gaps from the
+   * item-width math often miss a small epsilon, so flush-* never stuck.
+   */
+  updateFlushClasses = () => {
+    const viewport = this.getViewport();
+    if (!viewport) return;
+
+    const items = [
+      ...viewport.querySelectorAll(".carousel-item:not(.loading-placeholder)"),
+    ];
+    if (!items.length) return;
+
+    const vRect = viewport.getBoundingClientRect();
+    const styles = getComputedStyle(viewport);
+    const padL = parseFloat(styles.paddingLeft) || 0;
+    const padR = parseFloat(styles.paddingRight) || 0;
+    const leftEdge = vRect.left + padL;
+    const rightEdge = vRect.right - padR;
+
+    const visible = items.filter((el) => {
+      const r = el.getBoundingClientRect();
+      const overlap = Math.min(r.right, rightEdge) - Math.max(r.left, leftEdge);
+      return overlap > r.width * 0.5;
+    });
+
+    items.forEach((el) => {
+      el.classList.remove("flush-start", "flush-end");
+    });
+
+    if (!visible.length) return;
+
+    visible.sort(
+      (a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left
+    );
+
+    const start = visible[0];
+    const end = visible[visible.length - 1];
+    // CTA has no hover morph; only community cards take flush classes.
+    if (!start.classList.contains("carousel-find-more")) {
+      start.classList.add("flush-start");
+    }
+    // Alone in the viewport: keep centered expand, not flush-end shift.
+    if (
+      visible.length > 1 &&
+      end !== start &&
+      !end.classList.contains("carousel-find-more")
+    ) {
+      end.classList.add("flush-end");
+    }
+  };
 
   /**
    * @returns {boolean} True when item count exceeds `--carousel-visible`.
@@ -108,13 +168,25 @@ class CommunitiesCarousel extends Component {
   observeViewport = () => {
     this.resizeObserver?.disconnect();
     const viewport = this.getViewport();
-    if (!viewport || typeof ResizeObserver === "undefined") {
+    if (!viewport) {
       return;
     }
-    this.resizeObserver = new ResizeObserver(() => {
-      this.updateCanScroll();
+
+    if (this._onViewportScroll) {
+      viewport.removeEventListener("scroll", this._onViewportScroll);
+    }
+    this._onViewportScroll = () => this.updateFlushClasses();
+    viewport.addEventListener("scroll", this._onViewportScroll, {
+      passive: true,
     });
-    this.resizeObserver.observe(viewport);
+
+    if (typeof ResizeObserver !== "undefined") {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateCanScroll();
+        this.updateFlushClasses();
+      });
+      this.resizeObserver.observe(viewport);
+    }
   };
 
   /**
@@ -139,6 +211,11 @@ class CommunitiesCarousel extends Component {
       left: Math.max(0, Math.min(target, maxScroll)),
       behavior,
     });
+    if (behavior === "auto") {
+      this.updateFlushClasses();
+    } else {
+      window.setTimeout(() => this.updateFlushClasses(), 400);
+    }
   };
 
   /**
@@ -164,6 +241,7 @@ class CommunitiesCarousel extends Component {
     if (direction > 0 && viewport.scrollLeft >= maxScroll - epsilon) {
       if (embedded) {
         viewport.scrollTo({ left: 0, behavior: "smooth" });
+        window.setTimeout(() => this.updateFlushClasses(), 400);
       } else {
         this.scrollToCardIndex(DEFAULT_CARD_INDEX, "smooth");
       }
@@ -171,10 +249,12 @@ class CommunitiesCarousel extends Component {
     }
     if (direction < 0 && viewport.scrollLeft <= epsilon) {
       viewport.scrollTo({ left: maxScroll, behavior: "smooth" });
+      window.setTimeout(() => this.updateFlushClasses(), 400);
       return;
     }
 
     viewport.scrollBy({ left: direction * step, behavior: "smooth" });
+    window.setTimeout(() => this.updateFlushClasses(), 400);
   };
 
   /**
@@ -305,17 +385,14 @@ class CommunitiesCarousel extends Component {
   );
 
   /**
-   * Skeleton cards in the same viewport layout as the hydrated carousel.
+   * Skeleton cards matching the SSR Jinja placeholders.
    *
-   * @returns {JSX.Element}
+   * @returns {JSX.Element[]}
    */
-  renderPlaceholder = () => {
-    const { title, showTitle, embedded, itemsPerPage } = this.props;
+  renderPlaceholderItems = () => {
+    const { itemsPerPage } = this.props;
     const count = Math.max(1, parseInt(itemsPerPage, 10) || 3);
-    const viewportClass = ["carousel-viewport", embedded ? "snap-start" : ""]
-      .filter(Boolean)
-      .join(" ");
-    const placeholders = Array.from({ length: count }, (_, index) => (
+    return Array.from({ length: count }, (_, index) => (
       <div
         key={`carousel-placeholder-${index}`}
         className="card-set-wrapper carousel-item loading-placeholder"
@@ -341,9 +418,26 @@ class CommunitiesCarousel extends Component {
         </div>
       </div>
     ));
+  };
+
+  /**
+   * Skeleton row in the same viewport layout as the hydrated carousel.
+   *
+   * @returns {JSX.Element}
+   */
+  renderPlaceholder = () => {
+    const { title, showTitle, embedded } = this.props;
+    const viewportClass = [
+      "carousel-viewport",
+      "pt-30",
+      "pb-30",
+      embedded ? "snap-start" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     const track = this.renderTrack({
-      children: placeholders,
+      children: this.renderPlaceholderItems(),
       viewportClass,
       showArrows: false,
     });
@@ -375,29 +469,64 @@ class CommunitiesCarousel extends Component {
     );
   };
 
+  /**
+   * Empty-results state: message (if any) plus a full placeholder row.
+   *
+   * @returns {JSX.Element}
+   */
+  renderEmpty = () => {
+    const { emptyMessage } = this.props;
+    return (
+      <>
+        {emptyMessage && <Message icon="info" header={emptyMessage} />}
+        {this.renderPlaceholder()}
+      </>
+    );
+  };
+
   carouselSlides = () => {
     const { data } = this.state;
-    const { defaultLogo } = this.props;
+    const { defaultLogo, embedded } = this.props;
 
-    return data.hits?.map((community) => (
-      <CommunityCard
-        key={community.id}
-        community={community}
-        defaultLogo={defaultLogo}
-        className="carousel-item"
-      />
-    ));
+    const cards =
+      data.hits?.map((community) => (
+        <CommunityCard
+          key={community.id}
+          community={community}
+          defaultLogo={defaultLogo}
+          className="carousel-item"
+        />
+      )) ?? [];
+
+    // Featured only: replace the end edge spacer with a collections CTA card.
+    if (!embedded && cards.length > 0) {
+      cards.push(
+        <div
+          key="carousel-find-more"
+          className="card-set-wrapper carousel-item carousel-find-more"
+          role="listitem"
+        >
+          <a className="carousel-find-more-link" href="/collections">
+            {i18next.t("Find more collections...")}
+          </a>
+        </div>
+      );
+    }
+
+    return cards;
   };
 
   render() {
     const { data, isLoading, canScroll } = this.state;
-    const { title, itemsPerPage, showTitle, showMarkers, autoplay, embedded, emptyMessage } =
-      this.props;
+    const { title, itemsPerPage, showTitle, showMarkers, autoplay, embedded } = this.props;
     const slides = this.carouselSlides();
     const viewportClass = [
       "carousel-viewport",
+      "pt-30",
+      "pb-30",
       showMarkers ? "with-scroll-markers" : "",
       embedded ? "snap-start" : "",
+      !embedded && !_isEmpty(data.hits) ? "has-find-more" : "",
     ]
       .filter(Boolean)
       .join(" ");
@@ -433,9 +562,7 @@ class CommunitiesCarousel extends Component {
         <div ref={this.rootRef} className="communities-carousel-root">
           {isLoading && this.renderPlaceholder()}
 
-          {!isLoading && _isEmpty(data.hits) && emptyMessage && (
-            <Message icon="info" header={emptyMessage} />
-          )}
+          {!isLoading && _isEmpty(data.hits) && this.renderEmpty()}
 
           {!isLoading &&
             !_isEmpty(data.hits) &&

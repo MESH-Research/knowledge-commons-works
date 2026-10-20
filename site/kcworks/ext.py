@@ -424,12 +424,9 @@ def _check_oauth_token_scopes() -> None:
 
     Must run *after* invenio_oauth2server.ext.verify_oauth_token_and_set_current_user()
     """
-    if (
-        hasattr(request, "oauth")
-        and request.oauth is not None
-        and request.url_rule is not None
-    ):
-        token_scopes = set(request.oauth.access_token.scopes)
+    oauth = getattr(request, "oauth", None)
+    if oauth is not None and request.url_rule is not None:
+        token_scopes = set(oauth.access_token.scopes)
         required = required_scopes_for(request.url_rule.rule, request.method)
         if required is None:
             pass  # TODO: unmapped routes: audit? deny?

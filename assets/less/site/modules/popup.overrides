@@ -44,3 +44,49 @@
   overflow: visible;
 }
 
+/* Shared social button grid (sidebar + mobile share popup content) */
+.sharing-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+  gap: 0.5rem;
+  justify-items: center;
+  align-items: center;
+
+  .sharing-icon {
+    position: relative;
+    display: inline-flex;
+  }
+  .button {
+    margin: 0;
+    .icon {
+      color: inherit;
+      svg {
+        height: 1em;
+        width: 1em;
+        fill: currentColor;
+      }
+    }
+  }
+  .mastodon-popup {
+    width: 2.75rem;
+    height: 0.25rem;
+    display: inline-block;
+    position: absolute;
+    background-color: transparent;
+  }
+  .icon.bluesky {
+    svg {
+      position: relative;
+      top: 1.5px;
+    }
+  }
+  .icon.mastodon {
+    svg {
+      position: relative;
+      top: -0.5px;
+      height: 1.15em;
+      width: 1.15em;
+    }
+  }
+}
+

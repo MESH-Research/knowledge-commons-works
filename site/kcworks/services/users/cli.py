@@ -279,14 +279,27 @@ def name_parts(
 @click.option("-u", "--user-id", type=str, required=False)
 @click.option("-e", "--email", type=str, required=False)
 @click.option("-k", "--kc-id", type=str, required=False)
+@click.option(
+    "-v",
+    "--verbose",
+    is_flag=True,
+    default=False,
+    help="Print the full user record including email.",
+)
 @with_appcontext
-def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
+def read(
+    user_id: str | None,
+    email: str | None,
+    kc_id: str | None,
+    verbose: bool,
+) -> None:
     """CLI command to read user data for a user.
 
     Parameters:
         user_id (str | None): The ID of the user to read.
         email (str | None): The email of the user to read.
         kc_id (str | None): The KC ID of the user to read.
+        verbose (bool): When set, print the full user record including email.
     """
     print("=============")
     if user_id:
@@ -329,11 +342,18 @@ def read(user_id: str | None, email: str | None, kc_id: str | None) -> None:
         print("No user ID, email, or KC ID provided.")
         return
     kc_username = user2.user_profile.get("identifier_kc_username", None)
+    email_domain = ""
+    if user.get("email") and "@" in user["email"]:
+        email_domain = user["email"].partition("@")[2]
     print(
-        f"User data for user: {user['id']}, email: {user['email']}, "
+        f"User data for user: {user['id']}, "
+        f"email_domain: {email_domain or '[unknown]'}, "
         f"KC username: {kc_username}"
     )
-    pprint(user)
+    if verbose:
+        pprint(user)
+    else:
+        print("(pass --verbose for full user record including email)")
     print("=============")
     pprint(f"kc_username: {kc_username}")
     print("=============")
@@ -381,19 +401,31 @@ def groups() -> None:
 
 @click.command("group-users")
 @click.argument("group_name", type=str, required=True)
+@click.option(
+    "-v",
+    "--verbose",
+    is_flag=True,
+    default=False,
+    help="Include user emails in the listing.",
+)
 @with_appcontext
-def group_users(group_name: str) -> None:
+def group_users(group_name: str, verbose: bool) -> None:
     """CLI command to list all users for a group (role).
 
     Parameters:
         group_name (str): The name of the group (role) to list users for.
+        verbose (bool): When set, include emails; otherwise ids only.
     """
     my_group_role = current_accounts.datastore.find_role(group_name)
-    # app.logger.debug(f"got group role {my_group_role}")
-    users = [(user.id, user.email) for user in my_group_role.users]
+    if verbose:
+        users: list[Any] = [(user.id, user.email) for user in my_group_role.users]
+    else:
+        users = [user.id for user in my_group_role.users]
     print("=============")
     print(f"Users for group (role) named '{group_name}':")
     pprint(users)
+    if not verbose:
+        print("(pass --verbose to include emails)")
     print("=============")
 
 

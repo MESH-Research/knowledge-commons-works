@@ -31,12 +31,12 @@ under the terms of the MIT License; see LICENSE file for more details.
           &nbsp;{{ _("and") }}&nbsp;
           <button popovertarget="expanded-orgs-{{ instance }}"
                   popovertargetaction="toggle"
-                  class="computer only ui button link-button">
+                  class="computer only ui button link-button transparent">
             {{ _("%(count)s more organizations", count=(organizations | length - 1) ) }}
           </button>
           <button popovertarget="expanded-orgs-{{ instance }}"
                   popovertargetaction="toggle"
-                  class="mobile tablet only ui button link-button">
+                  class="mobile tablet only ui button link-button transparent">
             {{ _("%(count)s more", count=(organizations | length - 1) ) }}
           </button>
         </span>
