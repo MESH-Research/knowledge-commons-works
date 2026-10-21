@@ -3,6 +3,10 @@
 
 # Changes
 
+## Unreleased
+
+- update pillow, cryptography, mistune, pyjwt, tornado
+
 ## 1.1.0 (2026-10-20)
 
 - Authentication & API security
