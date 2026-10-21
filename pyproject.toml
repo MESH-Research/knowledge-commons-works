@@ -16,10 +16,18 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
+  "werkzeug>=3.1.9",
+  "oauthlib>=4.0.0",
+  "bleach>=6.4.0",
+  "virtualenv>=21.14.12",
+  "urllib3>=2.8.0",
+  "msgpack>=1.2.3",
+  "lxml-html-clean>=0.4.5",
   "aiohttp>=3.14.4,<4",
   "cairosvg>=2.9.1",
   "certifi>=2026.10.19",
   "cryptography>=49",
+  "fsspec>=2026.6.0",
   "invenio-app-rdm[opensearch2,s3]~=13.0.0",
   "invenio-communities>=19,<20",
   "invenio-group-collections-kcworks",
@@ -47,6 +55,9 @@ dependencies = [
   "tornado>=6.5.9",
   "tqdm",
   "uwsgi>=2.0.23",
+  "nbconvert>=7.17.1,<8",
+  "soupsieve>=2.8.4,<3",
+  "multidict>=6.9.1,<7",
 ]
 optional-dependencies.dev = [
   "bump-my-version==1.5.1",
