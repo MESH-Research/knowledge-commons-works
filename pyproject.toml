@@ -331,6 +331,7 @@ ini_options.plugins = [
   "tests.fixtures.frontend",
   "tests.fixtures.identifiers",
   "tests.fixtures.idms",
+  "tests.fixtures.indexer_queues",
   "tests.fixtures.logging",
   "tests.fixtures.mail",
   "tests.fixtures.names",

@@ -23,7 +23,12 @@ from .fixtures.custom_fields import test_config_fields  # noqa: E402
 from .fixtures.env_defaults import set_default_os_env
 from .fixtures.frontend import MockManifestLoader  # noqa: E402
 from .fixtures.identifiers import test_config_identifiers  # noqa: E402
-from .fixtures.logging import log_folder_path, test_config_logging
+from .fixtures.indexer_queues import purge_indexer_mq_queues
+from .fixtures.logging import (
+    dedupe_app_logger_handlers,
+    log_folder_path,
+    test_config_logging,
+)
 
 set_default_os_env()
 
