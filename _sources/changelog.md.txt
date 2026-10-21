@@ -5,7 +5,13 @@
 
 ## Unreleased
 
-- update pillow, cryptography, mistune, pyjwt, tornado
+- update many dependencies with reported vulnerabilities:
+  - pillow, cryptography, mistune, pyjwt, tornado, aiohttp, yarl, certifi,
+    bleach, werkzeug, oauthlib, urllib3, msgpack, lxml-html-clean, fsspeck,
+    s3fs, soupsieve, mako, virtualenv, distlib, python-discovery, packaging,
+    nbconvert, multidict, marshmallow, pygments, setuptools
+- bug fixes:
+  - fix serialization of embedded schema.org json-ld in detail page template
 
 ## 1.1.0 (2026-10-20)
 
