@@ -290,6 +290,7 @@ def template_loader() -> Callable:
         project_root = Path(__file__).parent.parent
         site_path = project_root / "site" / "kcworks" / "templates" / "semantic-ui"
         package_path = project_root / "templates"
+        theme_path = project_root / "templates" / "semantic-ui"
         test_helpers_path = (
             Path(__file__).parent / "helpers" / "templates" / "semantic-ui"
         )
@@ -298,7 +299,8 @@ def template_loader() -> Callable:
         template_paths = []
         candidates: list[str | Path] = [
             test_helpers_path,  # Main project test stubs (highest priority)
-            package_path,
+            package_path,  # mail templates and other non-theme paths
+            theme_path,  # Semantic-UI theme (kcworks/macros/...)
             site_path,
         ]
         for path in candidates:
