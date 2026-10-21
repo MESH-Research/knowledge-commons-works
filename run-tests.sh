@@ -19,6 +19,8 @@
 #
 # Flags consumed here; everything else is forwarded to the suite runner:
 #   pytest normally, Jest when --js-only (wrapper chooses via env).
+#   --fetch-secrets: pull SPARKPOST_* / INVENIO_ADMIN_EMAIL from AWS SM
+#   (default: placeholder values; Compose still needs a secrets file mount).
 
 set -o errexit
 set -o nounset
@@ -32,6 +34,7 @@ function cleanup() {
   rm -f /tmp/kcworks-test-connections.env
   rm -f /tmp/kcworks-test-services.env # legacy name from earlier iterations
   rm -f /tmp/kcworks-test-js-only-secrets.env
+  rm -f /tmp/kcworks-test-placeholder-secrets.env
   if [[ -z "${CI:-}" ]] && [[ ${keep_services:-0} -eq 0 ]]; then
     test_compose_file_args
     docker compose -p kcworks-test "${TEST_COMPOSE_FILES[@]}" down --remove-orphans || true
@@ -185,18 +188,24 @@ function test_compose_file_args() {
   fi
 }
 
+function write_placeholder_test_secrets() {
+  # Compose always requires TEST_SECRET_FILE for aws_secrets. Default suite
+  # never SMTP's; placeholders satisfy the mount and MAIL_* config wiring.
+  TEST_SECRET_FILE="${1:-/tmp/kcworks-test-placeholder-secrets.env}"
+  {
+    printf 'SPARKPOST_USERNAME=test-unused\n'
+    printf 'SPARKPOST_API_KEY=test-unused\n'
+    printf 'INVENIO_ADMIN_EMAIL=test@example.com\n'
+  } >"$TEST_SECRET_FILE"
+  chmod 600 "$TEST_SECRET_FILE"
+  export TEST_SECRET_FILE
+}
+
 function write_js_only_compose_placeholders() {
   # Compose always mounts these; wrapper exits before reading them in JS-only.
   CONNECTIONS_ENV_FILE="/tmp/kcworks-test-connections.env"
   printf '# js-only placeholder\n' >"$CONNECTIONS_ENV_FILE"
-  TEST_SECRET_FILE="/tmp/kcworks-test-js-only-secrets.env"
-  {
-    printf 'SPARKPOST_USERNAME=js-only-unused\n'
-    printf 'SPARKPOST_API_KEY=js-only-unused\n'
-    printf 'INVENIO_ADMIN_EMAIL=js-only-unused@example.com\n'
-  } >"$TEST_SECRET_FILE"
-  chmod 600 "$TEST_SECRET_FILE"
-  export TEST_SECRET_FILE
+  write_placeholder_test_secrets /tmp/kcworks-test-js-only-secrets.env
 }
 
 function dotenv_quote() {
@@ -438,19 +447,34 @@ function resolve_test_env_files() {
   rm -f /tmp/kcworks-test-services.env
 
   TEST_SECRET_FILE=""
-  local test_secret_file
-  if test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
-    if [ -n "$test_secret_file" ]; then
-      TEST_SECRET_FILE="$test_secret_file"
-      env_file_args+=(--env-file "$TEST_SECRET_FILE")
-      echo "Using AWS Secrets Manager test secrets at ${TEST_SECRET_FILE}"
-    else
-      echo "AWS Secrets Manager lookup skipped (KCWORKS_TEST_SM_DISABLE=1)"
+  local want_fetch=0
+  if [[ ${fetch_secrets:-0} -eq 1 ]] || [[ "${KCWORKS_TEST_FETCH_SECRETS:-0}" == "1" ]]; then
+    want_fetch=1
+  fi
+  # Hard skip even if --fetch-secrets was passed (CI belt-and-suspenders).
+  if [[ "${KCWORKS_TEST_SM_DISABLE:-0}" == "1" ]]; then
+    want_fetch=0
+  fi
+
+  if [[ "$want_fetch" -eq 1 ]]; then
+    local test_secret_file
+    if ! test_secret_file=$(./scripts/kcworks_test_secrets.sh); then
+      echo "Error: failed to fetch test secrets from AWS Secrets Manager." >&2
+      echo "       Omit --fetch-secrets to use placeholders." >&2
+      exit 1
     fi
+    if [ -z "$test_secret_file" ]; then
+      echo "Error: --fetch-secrets requested but secrets helper returned no file." >&2
+      echo "       Unset KCWORKS_TEST_SM_DISABLE if it is set." >&2
+      exit 1
+    fi
+    TEST_SECRET_FILE="$test_secret_file"
+    env_file_args+=(--env-file "$TEST_SECRET_FILE")
+    echo "Using AWS Secrets Manager test secrets at ${TEST_SECRET_FILE}"
   else
-    echo "Error: failed to fetch test secrets from AWS Secrets Manager." >&2
-    echo "       Set KCWORKS_TEST_SM_DISABLE=1 to skip and rely on tests/.env only." >&2
-    exit 1
+    write_placeholder_test_secrets
+    env_file_args+=(--env-file "$TEST_SECRET_FILE")
+    echo "Using placeholder mail secrets (pass --fetch-secrets to pull from AWS SM)"
   fi
 }
 
@@ -491,6 +515,7 @@ skip_translations=0
 build_image=0
 run_js=0
 js_only=0
+fetch_secrets=0
 forwarded_args=()
 
 for arg in "$@"; do
@@ -510,6 +535,9 @@ for arg in "$@"; do
   --js-only)
     js_only=1
     run_js=1
+    ;;
+  --fetch-secrets)
+    fetch_secrets=1
     ;;
   *)
     forwarded_args+=("${arg}")
@@ -588,8 +616,7 @@ if [[ "$is_ci" == "true" ]]; then
 else
   write_test_runner_connections_env
   if [[ -z "${TEST_SECRET_FILE}" || ! -f "${TEST_SECRET_FILE}" ]]; then
-    echo "Error: local test-runner requires a secrets file from kcworks_test_secrets.sh." >&2
-    echo "       Do not set KCWORKS_TEST_SM_DISABLE=1 for local containerized runs." >&2
+    echo "Error: local test-runner requires a secrets file (placeholder or --fetch-secrets)." >&2
     exit 1
   fi
   export TEST_SECRET_FILE

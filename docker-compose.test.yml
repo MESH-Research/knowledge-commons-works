@@ -13,8 +13,9 @@
 # Secrets: Compose service secret ``aws_secrets`` (from host file path in
 # TEST_SECRET_FILE at create time). Inside the container it appears at
 # /run/secrets/aws_secrets for the container lifetime; the host file must
-# remain until tests finish (Compose binds that path). run-tests.sh deletes
-# the host file after docker wait / on cleanup.
+# remain until tests finish (Compose binds that path). run-tests.sh writes
+# placeholders by default, or AWS SM material with ``--fetch-secrets``, then
+# deletes the host file after docker wait / on cleanup.
 #
 # Connection details (non-secret DB/broker/search/redis URLs) are written as
 # plain dotenv to /tmp/kcworks-test-connections.env and mounted into the
