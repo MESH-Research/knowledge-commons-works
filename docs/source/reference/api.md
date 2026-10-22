@@ -1857,3 +1857,13 @@ If session invalidation fails (for example, a database or session-store error):
 
 - **400 Bad Request**: The `username` query parameter is missing.
 - **401 Unauthorized**: The Bearer token is missing or does not match the configured static token (`COMMONS_PROFILES_API_TOKEN`).
+
+####Validation Checklist Before Ingest
+- All required fields are present
+- Dates must be in EDTF format as YYYY or YYYY-MM-DD (can be ranges)
+- Names split into first name and last name
+- Language codes are ISO 639-2 (e.g., eng)
+- Identifiers are valid URLs or DOIs (URLs including https:// but DOIs without any doi: prefix)
+- Creators include structured names
+- No duplicate identifiers (only one identifier per scheme is allowed in a given metadata field’s list)
+- JSON validates against KCWorks schema
