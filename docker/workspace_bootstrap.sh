@@ -9,7 +9,8 @@
 #   3. Clone the project into the shared src volume (once, if empty)
 #   4. Initialize git submodules when needed (no auto-pull of the parent)
 #   5. Local config files (.invenio.private, .env from .env.example) if missing
-#   6. invenio-cli install (python + symlink + assets)
+#   6. Install: invenio-cli install python + symlink; assets via webpack
+#      create → patch pnpm-workspace.yaml → install/build (see step_install)
 #   7. KCWorks-only startup_*.sh / uwsgi inis into instance (if missing)
 #   8. invenio-cli services setup -n (infra already up; no Docker)
 #   9. KCWorks overlay (extra roles, vocab job schedules / optional seeds)
@@ -26,7 +27,7 @@
 #
 # Install::
 #
-#   KCWORKS_INSTALL_FORCE=1   re-run full invenio-cli install even if already done
+#   KCWORKS_INSTALL_FORCE=1   re-run install (python + symlink + assets) even if done
 #
 # Services setup::
 #
@@ -84,13 +85,14 @@ Usage: workspace_bootstrap.sh [options]
                      config | install | setup | setup-overlay
   -h, --help         Show this help
 
-Default: preflight → git → config → invenio-cli install → services setup →
+Default: preflight → git → config → install → services setup →
 setup-overlay. Confirm before each step when stdin is a TTY (unless --yes).
 
 Git clone uses KCWORKS_GIT_URL / KCWORKS_GIT_BRANCH (SSH by default).
 Config creates .invenio.private / .env only when missing (never overwrites).
-install: full upstream invenio-cli install (python + symlink + assets), then
-  KCWorks-only startup_*.sh / uwsgi inis if missing.
+install: invenio-cli install python + symlink; then assets (collect,
+  webpack clean create, patch pnpm allowBuilds, webpack install/build),
+  then KCWorks-only startup_*.sh / uwsgi inis if missing.
   Skip when .venv + instance cfg + assets look present unless
   KCWORKS_INSTALL_FORCE=1.
 Setup runs: invenio-cli services setup -n --no-demo-data
@@ -615,6 +617,7 @@ EOF
 run_invenio_cli() {
   (
     cd "$SRC_ROOT"
+    export INVENIO_INSTANCE_PATH="$INSTANCE_PATH"
     if command -v uv >/dev/null 2>&1; then
       uv run invenio-cli "$@"
     else
@@ -622,6 +625,63 @@ run_invenio_cli() {
       return 127
     fi
   )
+}
+
+# Run `invenio` CLI from SRC_ROOT (webpack / collect / shell).
+run_invenio() {
+  (
+    cd "$SRC_ROOT"
+    export INVENIO_INSTANCE_PATH="$INSTANCE_PATH"
+    if command -v uv >/dev/null 2>&1; then
+      uv run invenio "$@"
+    else
+      echo "invenio could not be run (need uv)" >&2
+      return 127
+    fi
+  )
+}
+
+# Harden instance assets/pnpm-workspace.yaml for pnpm 10+ (placeholders /
+# ERR_PNPM_IGNORED_BUILDS). Must run after webpack create, before install.
+patch_instance_pnpm_workspace() {
+  local patch="${SRC_ROOT}/scripts/build/patch-webpack-assets-pnpm-allow-builds.py"
+  if [[ ! -f "$patch" ]]; then
+    report_fail "install    missing ${patch} (pull/refresh src volume?)"
+    return 1
+  fi
+  (
+    cd "$SRC_ROOT"
+    export INVENIO_INSTANCE_PATH="$INSTANCE_PATH"
+    uv run python "$patch"
+  )
+}
+
+# Assets path matching production Dockerfile + invenio-cli update_statics,
+# with an explicit patch gap between webpack create and webpack install.
+install_assets_with_pnpm_patch() {
+  report_info "Assets: invenio collect → webpack clean create → patch → install → build"
+  run_invenio collect --verbose || return 1
+  run_invenio webpack clean create || return 1
+  patch_instance_pnpm_workspace || return 1
+
+  # Match Dockerfile theme.config / templates scaffolding when present.
+  if [[ -f "${SRC_ROOT}/assets/less/theme.config" ]]; then
+    mkdir -p "${INSTANCE_PATH}/assets/less"
+    cp "${SRC_ROOT}/assets/less/theme.config" "${INSTANCE_PATH}/assets/less/"
+  fi
+  mkdir -p "${INSTANCE_PATH}/assets/templates/custom_fields" \
+    "${INSTANCE_PATH}/assets/templates/search"
+
+  run_invenio webpack install || return 1
+
+  # pnpm may rewrite allowBuilds mid-install; re-harden before build.
+  patch_instance_pnpm_workspace || return 1
+
+  local symlink_py="${SRC_ROOT}/scripts/build/symlink_assets.py"
+  if [[ -f "$symlink_py" ]]; then
+    run_invenio shell "$symlink_py" || return 1
+  fi
+  run_invenio webpack build || return 1
 }
 
 # KCWorks container entrypoints / uwsgi configs — not part of upstream install.
@@ -680,11 +740,11 @@ install_already_done() {
     && [[ -d "${INSTANCE_PATH}/assets/node_modules" ]]
 }
 
-# --- step 6: invenio-cli install (python + symlink + assets) ------------------
+# --- step 6: python + symlink (invenio-cli) + patched assets ------------------
 
 step_install() {
   echo >&2
-  echo "  --- 6. invenio-cli install ---" >&2
+  echo "  --- 6. install (python + symlink + patched assets) ---" >&2
 
   if [[ ! -f "${SRC_ROOT}/.invenio" ]]; then
     report_fail "install    missing ${SRC_ROOT}/.invenio"
@@ -731,13 +791,27 @@ step_install() {
   if install_already_done && [[ "$INSTALL_FORCE" != "1" ]]; then
     report_ok "install    .venv + instance cfg + assets present (skip; set KCWORKS_INSTALL_FORCE=1 to redo)"
   else
-    report_info "Running: invenio-cli install (INVENIO_INSTANCE_PATH=${INSTANCE_PATH})"
-    if run_invenio_cli install; then
-      report_ok "install    invenio-cli install finished (python + symlink + assets)"
-    else
-      report_fail "install    invenio-cli install failed"
+    report_info "Running: invenio-cli install python (INVENIO_INSTANCE_PATH=${INSTANCE_PATH})"
+    if ! run_invenio_cli install python; then
+      report_fail "install    invenio-cli install python failed"
       return
     fi
+    report_ok "install    python dependencies installed"
+
+    report_info "Running: invenio-cli install symlink"
+    if ! run_invenio_cli install symlink; then
+      report_fail "install    invenio-cli install symlink failed"
+      return
+    fi
+    report_ok "install    instance symlinks updated"
+
+    # Do not use `invenio-cli install assets`: it runs create→install with no
+    # hook for pnpm-workspace hardening (ERR_PNPM_IGNORED_BUILDS).
+    if ! install_assets_with_pnpm_patch; then
+      report_fail "install    assets (create → patch → install/build) failed"
+      return
+    fi
+    report_ok "install    assets finished (create → patch → install → build)"
   fi
 
   if ensure_kcworks_instance_runtime_files; then
@@ -880,7 +954,7 @@ finish_phase "Git" "Fix git/SSH or submodules, then re-run."
 run_step config "create local .invenio.private / .env if missing" step_config
 finish_phase "Config" "Fix src permissions or add .env.example, then re-run."
 
-run_step install "invenio-cli install (python + symlink + assets)" step_install
+run_step install "install (python + symlink + patched assets)" step_install
 finish_phase "Install" "Fix INSTANCE_PATH / uv / .invenio.private, then re-run."
 
 run_step setup "invenio-cli services setup -n (if not already done)" step_setup

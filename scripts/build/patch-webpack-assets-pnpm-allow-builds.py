@@ -8,10 +8,18 @@
 """Patch generated webpack assets `pnpm-workspace.yaml` for modern pnpm.
 
 `invenio webpack clean create` copies invenio-assets' template. Older
-releases (e.g. 4.2.1) omit the pnpm 11+ build-script settings that master
-already ships. Match upstream master: declare the known packages under
-`allowBuilds` as `false` and set `strictDepBuilds: false` so install
-warns instead of failing with `ERR_PNPM_IGNORED_BUILDS`.
+releases omit pnpm 10+ `allowBuilds` / `strictDepBuilds`. During
+`pnpm install`, pnpm then writes placeholder values
+(``set this to true or false``) and fails with ``ERR_PNPM_IGNORED_BUILDS``
+when ``strictDepBuilds`` defaults to true.
+
+This patch:
+
+- Sets ``strictDepBuilds: false`` (warn instead of hard-fail on new scripts)
+- Ensures known packages are ``allowBuilds: false`` (scripts not needed for
+  normal Invenio asset builds; see invenio-app-rdm#3444)
+- Coerces any non-boolean ``allowBuilds`` values (pnpm placeholders) to
+  ``false``
 
 See inveniosoftware/invenio-assets (pnpm-workspace.yaml) and
 inveniosoftware/invenio-app-rdm#3444.
@@ -22,15 +30,35 @@ Uses `INVENIO_INSTANCE_PATH` (default `/opt/invenio/var/instance`).
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import yaml
 
-# Same package keys as upstream invenio-assets master; scripts stay blocked.
+# Upstream master keys + packages we have seen pnpm placeholder during KCWorks
+# installs. Scripts stay blocked (false); not required for normal asset builds.
 ALLOW_BUILDS_FALSE = (
     "@fortawesome/fontawesome-free",
     "@parcel/watcher",
     "@swc/core",
+    "core-js",
+    "ejs",
+    "es5-ext",
 )
+
+
+def _coerce_allow_builds(raw: Any) -> dict[str, bool]:
+    """Merge known keys and turn pnpm placeholders into false."""
+    out: dict[str, bool] = {name: False for name in ALLOW_BUILDS_FALSE}
+    if not isinstance(raw, dict):
+        return out
+    for key, value in raw.items():
+        name = str(key)
+        if isinstance(value, bool):
+            out[name] = value
+        else:
+            # "set this to true or false" or any other non-bool → deny scripts
+            out[name] = False
+    return out
 
 
 def main() -> int:
@@ -44,15 +72,20 @@ def main() -> int:
 
     text = workspace.read_text(encoding="utf-8")
     data = yaml.safe_load(text) or {}
-    data.setdefault("allowBuilds", {b: False for b in ALLOW_BUILDS_FALSE})
-    data.setdefault("strictDepBuilds", False)
+    if not isinstance(data, dict):
+        data = {}
+
+    data["allowBuilds"] = _coerce_allow_builds(data.get("allowBuilds"))
+    data["strictDepBuilds"] = False
 
     workspace.write_text(
-        yaml.safe_dump(data, default_flow_style=False, sort_keys=False)
+        yaml.safe_dump(data, default_flow_style=False, sort_keys=False),
+        encoding="utf-8",
     )
+    denied = sorted(k for k, v in data["allowBuilds"].items() if v is False)
     print(
-        f"ensured correct build settings in {workspace}: allowBuilds=false for "
-        f"{', '.join(ALLOW_BUILDS_FALSE)}; strictDepBuilds=false"
+        f"patched {workspace}: strictDepBuilds=false; "
+        f"allowBuilds=false for {', '.join(denied)}"
     )
     return 0
 

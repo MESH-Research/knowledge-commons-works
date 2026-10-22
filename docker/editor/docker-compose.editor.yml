@@ -1,10 +1,15 @@
-# Editor attach overlay — used by a host launcher, not by app compose.
+# KCWorks editor attach overlay — wires a pluggable editor image (default:
+# nvim-sandbox) onto this project's network + volumes.
 #
-# Contract (docs/private/dev-workspace-container-design.md):
+# Image/build live in the nvim-sandbox project (KCWORKS_EDITOR_CONTEXT).
+# This file only supplies KCWorks-specific mounts and env.
+#
+# Contract:
 #   - External network  = project name (dev/app network only; not *-test)
 #   - External volumes  = <project>-src_data → /opt/invenio/src
 #                         <project>-instance_data → /opt/invenio/var/instance
-#   - User              = dev (1000:1000) — project-agnostic login name
+#   - User              = entrypoint starts as root (socat SSH proxy), then
+#                         runuser to dev (1000:1000). Do not set compose `user:`.
 #   - Editor home volume per project (default: ${KCWORKS_PROJECT_NAME}-editor-home)
 #   - One editor container instance per open project
 #
@@ -12,20 +17,23 @@
 #
 #   ./kcworks-project.sh              # agents + tmux attach
 #   ./kcworks-project.sh --up-only
+#   ./kcworks-project.sh --build      # build from KCWORKS_EDITOR_CONTEXT
 #
 # Prerequisites: ./kcworks-startup.sh so network + src/instance volumes exist.
 # Agents overlay is always included by kcworks-project.sh.
+# Attach/exec as uid 1000: ``docker compose exec -u dev editor …``
+#
+# See docs/source/developing/editor.md and ~/Development/nvim-sandbox/README.md.
 name: ${KCWORKS_PROJECT_NAME:-kcworks}-editor
 services:
   editor:
-    image: ${KCWORKS_EDITOR_IMAGE:-kcworks-editor:latest}
+    image: ${KCWORKS_EDITOR_IMAGE:-nvim-sandbox:latest}
     build:
-      context: .
+      context: ${KCWORKS_EDITOR_CONTEXT}
       dockerfile: Dockerfile
       args:
         NVIM_VERSION: ${NVIM_VERSION:-v0.12.5}
     container_name: ${KCWORKS_PROJECT_NAME:-kcworks}-editor
-    user: "1000:1000"
     working_dir: ${KCWORKS_SRC_MOUNT:-/opt/invenio/src}
     environment:
       HOME: /home/dev
@@ -33,20 +41,29 @@ services:
       VISUAL: nvim
       SHELL: /bin/zsh
       TERM: ${TERM:-xterm-256color}
-      NVM_DIR: /home/dev/.nvm
-      NODE_SHIM_VERSION: ${NODE_SHIM_VERSION:-v24.9.0}
       PNPM_HOME: /home/dev/.local/share/pnpm
-      # Mutable CLI pins (entrypoint installs into the home volume)
+      # Yarn Berry ignores ~/.npmrc ignore-scripts; npm/pnpm use home .npmrc (seed).
+      YARN_ENABLE_SCRIPTS: "false"
+      # Mutable CLI pins (seed installs into the home volume)
       GO_VERSION: ${GO_VERSION:-1.24.7}
       GH_VERSION: ${GH_VERSION:-2.101.0}
       LAZYGIT_VERSION: ${LAZYGIT_VERSION:-0.64.1}
       YAZI_VERSION: ${YAZI_VERSION:-26.9.1}
       LMS_HOST: ${LMS_HOST:-host.docker.internal}
       LMS_PORT: ${LMS_PORT:-1234}
-      # git pull config repos on start
+      # git pull manifest config repos on start (or set pull_on_start in manifest)
       EDITOR_CONFIG_PULL: ${EDITOR_CONFIG_PULL:-0}
-      # reinstall pi/go/gh/lazygit/yazi into home on start
+      # reinstall pi/go/gh/lazygit/yazi + refresh ~/editor-tools lockfile
       EDITOR_TOOLS_UPDATE: ${EDITOR_TOOLS_UPDATE:-0}
+      # Optional: override image default manifest
+      EDITOR_MANIFEST: ${EDITOR_MANIFEST:-}
+      # Personal addon: cloned+run by nvim-sandbox seed as uid 1000 only (opt-in)
+      EDITOR_ADDON_REPO: ${EDITOR_ADDON_REPO:-}
+      EDITOR_ADDON_DIR: ${EDITOR_ADDON_DIR:-}
+      EDITOR_ADDON_SCRIPT: ${EDITOR_ADDON_SCRIPT:-}
+      EDITOR_ADDON_REF: ${EDITOR_ADDON_REF:-}
+      EDITOR_NOTES_DIR: ${EDITOR_NOTES_DIR:-}
+      EDITOR_NOTES_REPO: ${EDITOR_NOTES_REPO:-}
     volumes:
       # Per-project source tree (shared with workspace/apps)
       - type: volume
@@ -56,7 +73,7 @@ services:
       - type: volume
         source: instance_data
         target: ${KCWORKS_INSTANCE_MOUNT:-/opt/invenio/var/instance}
-      # Global editor home: configs, Mason/lazy, oh-my-zsh, pi, undodir, …
+      # Editor home: configs, Mason/lazy, oh-my-zsh, pi, undodir, …
       - type: volume
         source: editor_home
         target: /home/dev

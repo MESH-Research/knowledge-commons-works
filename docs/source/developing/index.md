@@ -8,6 +8,7 @@ code_standards.md
 source_control.md
 workflow.md
 agents-macos.md
+editor.md
 testing.md
 how_tos.md
 menus.md

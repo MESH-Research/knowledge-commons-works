@@ -13,10 +13,19 @@
 # bind runs — Docker creates missing bind-mount parents as root. The editor
 # image seeds /home/dev/.gnupg (mode 700, uid 1000) so a fresh editor-home
 # volume gets it on first mount.
+#
+# SSH: same proxy model as docker-compose.dev.agents.yml (mount + socat).
 services:
   editor:
     environment:
-      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+      # Host agent is mounted at SSH_AUTH_SOCK_MOUNT; entrypoint runs socat and
+      # exposes a uid-1000 socket at SSH_AUTH_SOCK (Docker Desktop often makes
+      # the bind-mounted sock root:root 660).
+      SSH_AUTH_SOCK_MOUNT: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_PROXY:-/tmp/ssh-agent-proxy}
+      # Hint for managed zsh linux.zsh: do not replace the forwarded agent with
+      # a container-local ssh-agent (see monotasker/zsh-config linux.zsh).
+      KCWORKS_FORWARDED_SSH_AGENT: "1"
       GNUPGHOME: ${GNUPGHOME_CONTAINER:-/home/dev/.gnupg}
       GPG_AGENT_SOCK: ${GPG_AGENT_SOCK_CONTAINER:-/home/dev/.gnupg/S.gpg-agent}
     volumes:

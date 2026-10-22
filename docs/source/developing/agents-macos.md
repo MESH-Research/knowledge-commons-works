@@ -4,6 +4,9 @@ Compose overlays bind-mount host agent **sockets** into workspace/editor
 containers. Private keys stay on the YubiKey; the container only requests
 sign/auth (YubiKey touch / PIN via host pinentry).
 
+Pluggable editor (nvim-sandbox) wiring and seed/addon model:
+[editor.md](editor.md).
+
 **Default for local bring-up:** `kcworks-startup.sh` (dev) and
 `kcworks-project.sh` (repository root) always include the agents overlays and
 set the host sockets for you:
@@ -84,11 +87,16 @@ not load FIDO2 (`-sk`) keys into an agent without extra setup.
 
 ## Docker Desktop notes
 
-**Workspace SSH proxy:** Docker Desktop often exposes the bind-mounted agent as
-`root:root` mode `660`, which uid 1000 cannot open. The workspace entrypoint
-(starts as root) runs `socat` to `/tmp/ssh-agent-proxy` (owned by `invenio`)
-and sets `SSH_AUTH_SOCK` to that path. Rebuild the workspace image after pull.
-Use `docker exec -u invenio …` for bootstrap/shells.
+**SSH proxy (workspace + editor):** Docker Desktop often exposes the
+bind-mounted agent as `root:root` mode `660`, which uid 1000 cannot open.
+Both entrypoints start as root, run `socat` to `/tmp/ssh-agent-proxy`
+(owned by `invenio` / `dev`), set `SSH_AUTH_SOCK` to that path, then
+drop to uid 1000 (`gosu` on workspace, `runuser` on editor). Agents overlays
+set `SSH_AUTH_SOCK_MOUNT=/ssh-agent`
+and `SSH_AUTH_SOCK=/tmp/ssh-agent-proxy`. Rebuild images after pull.
+Do not set compose `user:` on the editor (that skips the proxy). Use
+`docker exec -u invenio …` (workspace) or `docker exec -u dev …` /
+`./kcworks-project.sh` (editor).
 
 Images pre-create user-owned `GNUPGHOME` (`/home/dev/.gnupg`,
 `/opt/invenio/.gnupg`, mode 700). That directory must exist before Compose
@@ -127,17 +135,25 @@ at it. Keep **pinentry on the Mac** (`pinentry-mac` in
    docker exec -u invenio -it kcworks-workspace bash -lc 'ssh-add -l'
    docker exec -u invenio -it kcworks-workspace bash -lc 'ssh -T git@github.com'
    docker exec -u invenio -it kcworks-workspace bash -lc 'echo test | gpg --clearsign'
+
+   # Editor (after ./kcworks-project.sh --up-only, or use the attached tmux)
+   docker exec -u dev -it kcworks-editor bash -lc 'echo "$SSH_AUTH_SOCK"; ssh-add -l'
+   docker exec -u dev -it kcworks-editor bash -lc 'ssh -T git@github.com'
+   docker exec -u dev -it kcworks-editor bash -lc 'echo test | gpg --clearsign'
    ```
 
    `gpg --card-status` is expected to fail through the extra socket; that is
-   the restriction working.
+   the restriction working. Editor entrypoint also seeds `github.com` into
+   `~/.ssh/known_hosts` on first boot (non-interactive).
 
 ## Image packages
 
 Both images install agent-facing clients (rebuild after pull):
 
-- **Editor** (`docker/editor/Dockerfile`): `openssh-client`, `gnupg`, `openssl`
-- **Workspace** (`Dockerfile` `dev-workspace` stage): `openssh-client`, `gnupg`, `openssl`
+- **Editor** (nvim-sandbox image, Fedora): `openssh-clients`, `gnupg2`,
+  `openssl`, `socat`, `util-linux` (`runuser`)
+- **Workspace** (`Dockerfile` `dev-workspace` stage): `openssh-client`, `gnupg`,
+  `openssl`, `socat`, `gosu`
 
 ## Security reminder
 

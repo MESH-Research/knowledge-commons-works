@@ -21,6 +21,8 @@ services:
       # the bind-mounted sock root:root 660).
       SSH_AUTH_SOCK_MOUNT: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
       SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_PROXY:-/tmp/ssh-agent-proxy}
+      # Hint for managed zsh linux.zsh: do not replace the forwarded agent.
+      KCWORKS_FORWARDED_SSH_AGENT: "1"
       # Workspace image user home is /opt/invenio (see Dockerfile).
       GNUPGHOME: ${GNUPGHOME_CONTAINER:-/opt/invenio/.gnupg}
       GPG_AGENT_SOCK: ${GPG_AGENT_SOCK_CONTAINER:-/opt/invenio/.gnupg/S.gpg-agent}
