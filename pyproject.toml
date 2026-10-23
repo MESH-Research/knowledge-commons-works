@@ -55,7 +55,7 @@ dependencies = [
   "tornado>=6.5.9",
   "tqdm",
   "uwsgi>=2.0.23",
-  "nbconvert>=7.17.1,<8",
+  "nbconvert>=7.17.2,<8",
   "soupsieve>=2.8.4,<3",
   "multidict>=6.9.1,<7",
 ]
