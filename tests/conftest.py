@@ -13,10 +13,7 @@ import pytest
 from invenio_app.factory import create_app as _create_app
 
 from .fixtures.app import RunningApp  # noqa: F401 — re-export for tests
-from .fixtures.env_defaults import set_default_os_env
 from .fixtures.logging import log_folder_path
-
-set_default_os_env()
 
 
 def load_config():
@@ -106,8 +103,10 @@ def template_loader_paths() -> list[Path]:
 
 
 @pytest.fixture(scope="module")
-def app(app, location, bootstrap_vocabularies, admin_roles):
-    """Wrap shared `app` so location, vocabularies, and admin roles load first.
+def app(app, location):
+    """Wrap shared `app` so the files `location` fixture loads for the suite.
+
+    Vocabularies and admin roles come from the shared `app` fixture.
 
     Yields:
         The Flask application instance.
