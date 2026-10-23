@@ -11,10 +11,19 @@
 #       --file docker-compose.yml --file docker-compose.dev.yml up -d
 #
 # Extends the web-ui, web-api, and worker services to include bind mounts for
-# shared persistent volumes to hold app code and data. Adds an additional 
+# shared persistent volumes to hold app code and data. Adds an additional
 # dev-workspace service to serve as the editing and execution environment for
 # the project.
 #
+# src / instance / import volumes:
+#   Workspace mounts *without* nocopy so an empty volume is seeded from the
+#   workspace image (uid 1000 keep files only). App services use nocopy so the
+#   runtime image cannot copy a .git-less tree into those volumes.
+#   ./kcworks-startup.sh brings up dev-workspace first so it wins first mount.
+#
+networks:
+  default:
+    name: ${KCWORKS_NETWORK:-${KCWORKS_PROJECT_NAME:-kcworks}}
 x-app-volumes: &app-volumes
   - src_data:/opt/invenio/src
   - instance_data:/opt/invenio/var/instance
@@ -77,4 +86,8 @@ services:
 volumes:
   # static_data defined in main docker-compose.yml
   instance_data:
+    name: ${KCWORKS_INSTANCE_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-instance_data}
   src_data:
+    name: ${KCWORKS_SRC_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-src_data}
+  import_data:
+    name: ${KCWORKS_IMPORT_VOLUME:-${KCWORKS_PROJECT_NAME:-kcworks}-import_data}

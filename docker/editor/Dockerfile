@@ -22,7 +22,7 @@ FROM node:24-bookworm-slim
 
 ARG TARGETARCH
 ARG NVIM_VERSION=v0.12.5
-ARG PNPM_VERSION=10.32.1
+ARG PNPM_VERSION=12.9.1
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
@@ -61,6 +61,7 @@ RUN apt-get update \
         locales \
         make \
         openssh-client \
+        openssl \
         pkg-config \
         procps \
         python3 \
@@ -79,6 +80,9 @@ RUN apt-get update \
     && locale-gen \
     && ln -sf "$(command -v fdfind)" /usr/local/bin/fd \
     && rm -rf /var/lib/apt/lists/*
+
+# ── pnpm via Corepack
+RUN corepack enable
 
 # Official node image already ships uid/gid 1000 as `node`.
 RUN usermod -l dev -d /home/dev -m node \
@@ -105,17 +109,20 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/instal
       | bash -s -- --bin-dir /usr/local/bin \
     && zoxide --version
 
-# ── pnpm via Corepack (bootstrap; global packages land in the home volume) ─
-RUN corepack enable \
-    && corepack prepare "pnpm@${PNPM_VERSION}" --activate \
-    && pnpm --version
-
 COPY entrypoint.sh /usr/local/bin/editor-entrypoint.sh
 RUN chmod 0755 /usr/local/bin/editor-entrypoint.sh
 
-WORKDIR /opt/invenio/src
-
 USER dev
+
+# ── pnpm bootstrap; global packages land in the home volume ─
+RUN corepack prepare "pnpm@${PNPM_VERSION}" --activate \
+    && pnpm --version
+
+# Seed into editor-home on first empty volume mount so the agents overlay can
+# bind-mount S.gpg-agent here without Docker creating a root-owned parent.
+RUN mkdir -m 700 -p /home/dev/.gnupg
+
+WORKDIR /opt/invenio/src
 
 ENTRYPOINT ["/usr/local/bin/editor-entrypoint.sh"]
 CMD ["sleep", "infinity"]

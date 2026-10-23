@@ -183,5 +183,5 @@ invenio kcworks-jobs upsert sync_names_missing_users \
 
 echo -e "${green}All done setting up services."
 echo -e "${green}Building and symlinking assets..."
-bash ./scripts/build-assets.sh
+bash ./scripts/build/build-assets.sh
 echo -e "${green}Your instance is now ready to use.${clear}"

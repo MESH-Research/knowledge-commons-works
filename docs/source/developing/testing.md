@@ -96,7 +96,7 @@ The test environment does not use the top-level `.env` file that is used in the 
 1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
 2. A mail-related secrets file (Compose secret / `--env-file`) is loaded **after** `tests/.env`. By default it is a **placeholder** file (`SPARKPOST_USERNAME`, `SPARKPOST_API_KEY`, `INVENIO_ADMIN_EMAIL` with unused values). The suite sets `MAIL_SUPPRESS_SEND=True` and captures mail with the pytest-invenio `mailbox` fixture, so live SparkPost credentials are not required.
 
-To pull real values from AWS Secrets Manager instead of placeholders, pass `--fetch-secrets` (or set `KCWORKS_TEST_FETCH_SECRETS=1`). That runs `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh` and pulls a small slice of keys from the `staging/kcworks` secret by default:
+To pull real values from AWS Secrets Manager instead of placeholders, pass `--fetch-secrets` (or set `KCWORKS_TEST_FETCH_SECRETS=1`). That runs `scripts/dev-host/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh` and pulls a small slice of keys from the `staging/kcworks` secret by default:
 
 - `SPARKPOST_USERNAME`
 - `SPARKPOST_API_KEY`
@@ -110,7 +110,7 @@ Overrides for the fetch helper (only when `--fetch-secrets` is used):
 - `--allow-missing`: warn instead of failing when a listed key is absent from the secret.
 - `KCWORKS_TEST_SM_DISABLE=1`: force-skip the AWS lookup even if `--fetch-secrets` was passed.
 
-Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
+Run `./scripts/dev-host/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
 
 ```{note}
 CI does not pass `--fetch-secrets` and does not inject SparkPost / admin-email GitHub secrets. Placeholders from `run-tests.sh` are enough for the default suite.

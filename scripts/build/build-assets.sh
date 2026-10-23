@@ -62,8 +62,8 @@ invenio webpack clean create
 python "$(dirname "$0")/patch-webpack-assets-pnpm-allow-builds.py"
 # Force TinyMCE 8.5.1+ after pywebpack merge (upstream bundles still declare ^6.7.2).
 # Paired with site/kcworks webpack alias tinymce/tinymce → tinymceGplShim.js (GPL key).
-python "$(dirname "$0")/patch-webpack-assets-tinymce.py"
+python "$(dirname "$0")/../patch-webpack-assets-tinymce.py"
 invenio webpack install
-invenio shell ./scripts/symlink_assets.py
+invenio shell ./scripts/build/symlink_assets.py
 invenio webpack build
 echo -e "${green}All done building assets...${clear}"

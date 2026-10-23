@@ -1,24 +1,30 @@
-# Optional SSH agent-forwarding overlay for the editor service.
+# SSH + GPG agent-forwarding overlay for the editor service.
 #
-# Include only when the host ssh-agent socket is available::
+# Included by default via ./kcworks-project.sh. Requires host
+# KCWORKS_SSH_AUTH_SOCK (dedicated agent) and KCWORKS_GPG_AGENT_SOCK
+# (gpg-agent extra socket); the script sets both
+# (see docs/source/developing/agents-macos.md).
 #
-#   export SSH_AUTH_SOCK   # already set by the agent
-#   docker compose \
-#     -p "${KCWORKS_PROJECT_NAME}-editor" \
-#     -f docker/editor/docker-compose.editor.yml \
-#     -f docker/editor/docker-compose.editor.agents.yml \
-#     up -d
+# Security: bind-mounts the agent *sockets* only. The container can request
+# sign/auth (git SSH, commit signing, simplesec; YubiKey touch on the host).
+# It does not receive private keys and cannot administer the agents.
 #
-# GPG/YubiKey OpenPGP forwarding is left to a further override — Docker Desktop
-# for Mac usually needs a socat bridge, so baking a bind here tends to break
-# SSH-only launches.
-
+# GNUPGHOME must already exist and be owned by the container user before this
+# bind runs — Docker creates missing bind-mount parents as root. The editor
+# image seeds /home/dev/.gnupg (mode 700, uid 1000) so a fresh editor-home
+# volume gets it on first mount.
 services:
   editor:
     environment:
       SSH_AUTH_SOCK: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+      GNUPGHOME: ${GNUPGHOME_CONTAINER:-/home/dev/.gnupg}
+      GPG_AGENT_SOCK: ${GPG_AGENT_SOCK_CONTAINER:-/home/dev/.gnupg/S.gpg-agent}
     volumes:
       - type: bind
-        source: ${SSH_AUTH_SOCK:?SSH_AUTH_SOCK must be set when using the agents overlay}
+        source: ${KCWORKS_SSH_AUTH_SOCK:?KCWORKS_SSH_AUTH_SOCK must be set when using the agents overlay (scripts/dev-host/kcworks-ssh-agent.sh)}
         target: ${SSH_AUTH_SOCK_CONTAINER:-/ssh-agent}
+        read_only: true
+      - type: bind
+        source: ${KCWORKS_GPG_AGENT_SOCK:?KCWORKS_GPG_AGENT_SOCK must be set when using the agents overlay (gpgconf --list-dirs agent-extra-socket)}
+        target: ${GPG_AGENT_SOCK_CONTAINER:-/home/dev/.gnupg/S.gpg-agent}
         read_only: true

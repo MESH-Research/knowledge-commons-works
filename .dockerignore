@@ -57,8 +57,14 @@ scripts/sample_files
 
 # Build artifacts
 build/
+# Keep repo asset-build helpers (name collides with the pattern above).
+!scripts/build/
+!scripts/build/**
 site/build
-site/kcworks.egg-info
+# Editable-install metadata from the host breaks image builds (root-owned
+# egg-info → setuptools "Cannot update time stamp" under USER invenio).
+**/*.egg-info
+**/*.egg-info/
 
 # Static files
 static/admin

@@ -10,7 +10,7 @@
 
 Usage:
     BUILDKIT_PROGRESS=rawjson docker compose build SERVICE 2>&1 \\
-      | uv run python scripts/docker_build_progress.py
+      | uv run python scripts/build/docker_build_progress.py
 
 Exit status is always 0; callers should use ``PIPESTATUS[0]`` (bash) for the
 build command's exit code. Non-JSON lines are ignored (warnings mixed on the

@@ -15,10 +15,10 @@ from kcworks.assets.project_assets_overlay import link_project_assets_and_static
 def main():
     """Symlink repo assets/ and project static/ into the instance build tree.
 
-    Invoked from ``scripts/build-assets.sh`` after collect and webpack create.
+    Invoked from ``scripts/build/build-assets.sh`` after collect and webpack create.
     Writes under ``/opt/invenio/var/instance/`` (including the ``static_data``
     Docker volume shared with nginx). That volume is empty on first ``compose
-    up``; run ``build-assets.sh`` in web-ui before the site is usable.
+    up``; run ``scripts/build/build-assets.sh`` in web-ui before the site is usable.
     """
     with current_app.app_context():
         config = CLIConfig()

@@ -65,7 +65,7 @@ instance_path = /opt/invenio/var/instance
 The UI will not load CSS/JS correctly until step 4 builds static assets.
 Compose mounts an empty `static_data` volume over
 `/opt/invenio/var/instance/static` (nginx and web-ui share it). Image-baked
-static at that path is hidden until you run `bash ./scripts/build-assets.sh`
+static at that path is hidden until you run `bash ./scripts/build/build-assets.sh`
 in web-ui (included in `setup-services.sh` below). Same requirement when
 using `docker-compose.dev.yml`.
 ```
@@ -360,14 +360,15 @@ user.
 
 - The Knowledge Commons Works app is now running at `https://localhost` (if you
   set `KCWORKS_NGINX_HTTPS_HOST_PORT` to something other than `443`, use that
-  port in the URL, e.g. `https://localhost:8443`, and set `INVENIO_SITE_UI_URL`
-  / `INVENIO_SITE_API_URL` to match — see
+  port in the URL, e.g. `https://localhost:8444` for this tree’s
+  `docker-compose.dev.env`, and set `INVENIO_SITE_UI_URL` /
+  `INVENIO_SITE_API_URL` to match — see
   [Host port overrides](#host-port-overrides))
 - The REST API is running at the same origin under `/api`
 - pgAdmin is proxied at `https://localhost/pgadmin` (direct UI port defaults to
-  host `5050` mapped to the pgAdmin container)
+  host `5050` mapped to the pgAdmin container; this tree’s dev env uses `5052`)
 - OpenSearch Dashboards defaults to `http://localhost:5601` unless you override
-  `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT`
+  `KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT` (this tree’s dev env uses `5603`)
 
 This setup will allow you to make changes to the core Knowledge Commons Works
 codebase and see those changes reflected in the running application.
@@ -498,26 +499,26 @@ your Mac**, not how containers talk to each other.
 
 If you change nginx HTTPS (or HTTP) host ports, update **`INVENIO_SITE_UI_URL`**
 and **`INVENIO_SITE_API_URL`** in that clone’s `.env` so the app generates
-correct links (for example `INVENIO_SITE_UI_URL="https://localhost:8443"` and
-`INVENIO_SITE_API_URL="https://localhost:8443/api"`).
+correct links (for example `INVENIO_SITE_UI_URL="https://localhost:8444"` and
+`INVENIO_SITE_API_URL="https://localhost:8444/api"` for this tree).
 
-**Example — second instance (`kcworks-next`)** so it can run alongside defaults
-on `knowledge-commons-works`:
+**Example — `kcworks-next`** (matches tracked `docker-compose.dev.env`) alongside
+`knowledge-commons-works` on 8080/8443/5433/… and tests on 5432/6379/9200/…:
 
 ```shell
 KCWORKS_CONTAINERS_BASE_NAME=kcworks-next
-KCWORKS_NGINX_HTTP_HOST_PORT=8080
-KCWORKS_NGINX_HTTPS_HOST_PORT=8443
-KCWORKS_REDIS_HOST_PORT=6380
-KCWORKS_POSTGRES_HOST_PORT=5433
-KCWORKS_PGADMIN_HOST_PORT=5051
-KCWORKS_RABBITMQ_AMQP_HOST_PORT=5673
-KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT=15673
-KCWORKS_OPENSEARCH_HTTP_HOST_PORT=9201
-KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT=9601
-KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT=5602
-INVENIO_SITE_UI_URL="https://localhost:8443"
-INVENIO_SITE_API_URL="https://localhost:8443/api"
+KCWORKS_NGINX_HTTP_HOST_PORT=8081
+KCWORKS_NGINX_HTTPS_HOST_PORT=8444
+KCWORKS_REDIS_HOST_PORT=6381
+KCWORKS_POSTGRES_HOST_PORT=5434
+KCWORKS_PGADMIN_HOST_PORT=5052
+KCWORKS_RABBITMQ_AMQP_HOST_PORT=5674
+KCWORKS_RABBITMQ_MANAGEMENT_HOST_PORT=15674
+KCWORKS_OPENSEARCH_HTTP_HOST_PORT=9202
+KCWORKS_OPENSEARCH_PERF_ANALYZER_HOST_PORT=9602
+KCWORKS_OPENSEARCH_DASHBOARDS_HOST_PORT=5603
+INVENIO_SITE_UI_URL="https://localhost:8444"
+INVENIO_SITE_API_URL="https://localhost:8444/api"
 ```
 
 **Example — third instance (`v13test`)** alongside the above (pick unused ports
