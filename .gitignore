@@ -170,7 +170,7 @@ Thumbs.db
 # Instance-local application data
 subjects_fast.yaml
 app_data/importer/user_memberships.csv
-app_data/vocabularies/fast
+app_data/vocabularies/fast/
 app_data/exporter
 
 docs/knowledge_base_sync/config.yaml
