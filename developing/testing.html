@@ -391,29 +391,29 @@
 <section id="test-configuration">
 <h3>Test configuration<a class="headerlink" href="#test-configuration" title="Link to this heading">¶</a></h3>
 <p>The top-level <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> file. Some of these variables are then overridden in the <code class="docutils literal notranslate"><span class="pre">test_config</span></code> dictionary that <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> passes to the app instance.</p>
-<p>The test environment does not use the top-level <code class="docutils literal notranslate"><span class="pre">.env</span></code> file that is used in the development environment. Instead, <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code> layers two environment files into the <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> invocation that launches pytest:</p>
+<p>The test environment does not use the top-level <code class="docutils literal notranslate"><span class="pre">.env</span></code> file that is used in the development environment. Instead, <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code> layers environment files into the pytest invocation (CI: <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">--env-file</span></code>; local: Compose mounts loaded by the test-runner wrapper):</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.</p></li>
-<li><p>A dynamically generated <code class="docutils literal notranslate"><span class="pre">/tmp/kcworks-tests-secrets.env</span></code> (mode <code class="docutils literal notranslate"><span class="pre">600</span></code>, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded <strong>after</strong> <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code>, so its values override any matching keys in <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code>.</p></li>
+<li><p>A mail-related secrets file (Compose secret / <code class="docutils literal notranslate"><span class="pre">--env-file</span></code>) is loaded <strong>after</strong> <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code>. By default it is a <strong>placeholder</strong> file (<code class="docutils literal notranslate"><span class="pre">SPARKPOST_USERNAME</span></code>, <code class="docutils literal notranslate"><span class="pre">SPARKPOST_API_KEY</span></code>, <code class="docutils literal notranslate"><span class="pre">INVENIO_ADMIN_EMAIL</span></code> with unused values). The suite sets <code class="docutils literal notranslate"><span class="pre">MAIL_SUPPRESS_SEND=True</span></code> and captures mail with the pytest-invenio <code class="docutils literal notranslate"><span class="pre">mailbox</span></code> fixture, so live SparkPost credentials are not required.</p></li>
 </ol>
-<p>The secret file is produced by <code class="docutils literal notranslate"><span class="pre">scripts/kcworks_test_secrets.sh</span></code>, which mirrors the production-style flow used by <code class="docutils literal notranslate"><span class="pre">kcworks-startup.sh</span></code>. By default it pulls a small, defined slice of keys from the <code class="docutils literal notranslate"><span class="pre">staging/kcworks</span></code> secret:</p>
+<p>To pull real values from AWS Secrets Manager instead of placeholders, pass <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code> (or set <code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_FETCH_SECRETS=1</span></code>). That runs <code class="docutils literal notranslate"><span class="pre">scripts/kcworks_test_secrets.sh</span></code>, which mirrors the production-style flow used by <code class="docutils literal notranslate"><span class="pre">kcworks-startup.sh</span></code> and pulls a small slice of keys from the <code class="docutils literal notranslate"><span class="pre">staging/kcworks</span></code> secret by default:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_USERNAME</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SPARKPOST_API_KEY</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">INVENIO_ADMIN_EMAIL</span></code></p></li>
 </ul>
-<p>The defaults can be overridden without editing the script:</p>
+<p>Overrides for the fetch helper (only when <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code> is used):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_SECRET_ID</span></code> (or <code class="docutils literal notranslate"><span class="pre">--secret-id</span></code>): override the AWS Secrets Manager secret id.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_KEYS</span></code> (or <code class="docutils literal notranslate"><span class="pre">--keys</span></code>): comma-separated list of keys to pull from the secret.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--region</span></code>: forwarded to <code class="docutils literal notranslate"><span class="pre">aws</span></code> for cross-region secrets.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--allow-missing</span></code>: warn instead of failing when a listed key is absent from the secret.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_DISABLE=1</span></code>: skip the AWS lookup entirely; rely on <code class="docutils literal notranslate"><span class="pre">tests/.env</span></code> (used in CI, where secrets come from GitHub Actions secrets).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_DISABLE=1</span></code>: force-skip the AWS lookup even if <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code> was passed.</p></li>
 </ul>
 <p>Run <code class="docutils literal notranslate"><span class="pre">./scripts/kcworks_test_secrets.sh</span> <span class="pre">--help</span></code> for the full contract. The helper requires the <code class="docutils literal notranslate"><span class="pre">aws</span></code> CLI to be configured on the host and the project venv at <code class="docutils literal notranslate"><span class="pre">.venv/bin/python</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>On CI the workflow sets <code class="docutils literal notranslate"><span class="pre">KCWORKS_TEST_SM_DISABLE=1</span></code> and injects the same keys via the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">tests</span></code> step’s <code class="docutils literal notranslate"><span class="pre">env:</span></code> block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.</p>
+<p>CI does not pass <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code> and does not inject SparkPost / admin-email GitHub secrets. Placeholders from <code class="docutils literal notranslate"><span class="pre">run-tests.sh</span></code> are enough for the default suite.</p>
 </div>
 </section>
 <section id="containerized-test-runner-for-local-development">
@@ -422,11 +422,11 @@
 <ul class="simple">
 <li><p>Uses <code class="docutils literal notranslate"><span class="pre">docker-compose.test.yml</span></code> (project-managed network). The pytest path also merges <code class="docutils literal notranslate"><span class="pre">docker-compose.test.services.yml</span></code> so the runner joins docker-services-cli’s <code class="docutils literal notranslate"><span class="pre">docker_services_cli_default</span></code> network; <code class="docutils literal notranslate"><span class="pre">--js-only</span></code> uses the base file only</p></li>
 <li><p>Mounts site/deps/tests (and assets/Jest config when needed) from the host</p></li>
-<li><p>Loads secrets via a Compose service secret for the pytest path</p></li>
+<li><p>Loads the mail secrets file via a Compose service secret (placeholders by default; AWS SM material with <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code>)</p></li>
 </ul>
-<p>The temp file containing AWS secrets is:</p>
+<p>The host secrets file is:</p>
 <ol class="arabic simple">
-<li><p>Created by <code class="docutils literal notranslate"><span class="pre">kcworks_test_secrets.sh</span></code></p></li>
+<li><p>Written as placeholders, or created by <code class="docutils literal notranslate"><span class="pre">kcworks_test_secrets.sh</span></code> when <code class="docutils literal notranslate"><span class="pre">--fetch-secrets</span></code> is set</p></li>
 <li><p>Mounted into the container for its lifetime</p></li>
 <li><p>Deleted after the container finishes (cleanup trap handles interrupts)</p></li>
 </ol>
