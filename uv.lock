@@ -4096,7 +4096,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "kcworks"
-version = "1.1.0"
+version = "1.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

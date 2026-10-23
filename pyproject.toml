@@ -321,7 +321,10 @@ ini_options.timeout = 300
 ini_options.timeout_method = "thread"
 ini_options.plugins = [
   "celery.contrib.pytest",
+  "tests.fixtures.app",
+  "tests.fixtures.app_config",
   "tests.fixtures.caching",
+  "tests.fixtures.celery",
   "tests.fixtures.cli",
   "tests.fixtures.communities",
   "tests.fixtures.community_events",
