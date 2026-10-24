@@ -19,7 +19,7 @@ dependencies = [
   "werkzeug>=3.1.9",
   "oauthlib>=4.0.0",
   "bleach>=6.4.0",
-  "virtualenv>=21.14.12",
+  "virtualenv>=21.14.13",
   "urllib3>=2.8.0",
   "msgpack>=1.2.3",
   "lxml-html-clean>=0.4.5",
@@ -58,6 +58,7 @@ dependencies = [
   "nbconvert>=7.17.2,<8",
   "soupsieve>=2.8.4,<3",
   "multidict>=6.9.1,<7",
+  "filelock>=4.2.1",
 ]
 optional-dependencies.dev = [
   "bump-my-version==1.5.1",

@@ -68,23 +68,16 @@ theme = WebpackThemeBundle(
                 "lodash": "^4.18.0",
                 "orcid-utils": "^1.2.2",
                 "yup": "^0.32.11",
-            
                 "moment": "^2.31.0",
-                            
                 "prismjs": "^1.30.0",
-                            
                 "qs": "^6.16.1",
-                            
                 "replaywebpage": "^2.5.3",
-                            
                 "ajv": "^8.20.0",
-                            
                 "bootstrap-sass": "^3.4.3",
-                            
                 "jquery": "^3.5.0",
-                            
                 "@babel/core": "^7.29.6",
-                            },
+                "pdfjs-dist": "^5.0 <5.6.83",
+            },
             "devDependencies": {
                 "geopattern": "^1.2.3",
             },
