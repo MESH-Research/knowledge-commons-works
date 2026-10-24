@@ -611,6 +611,12 @@ check_docker_compose_running
 resolve_test_env_files
 start_docker_services
 
+# Unset so `uv --env-file tests/.env` can supply DB URI (uv will not
+# override existing shell vars). Fixtures default if `.env` omits it.
+# Same rule as package run-tests.sh (host pytest + docker-services-cli).
+unset SQLALCHEMY_DATABASE_URI
+unset INVENIO_SQLALCHEMY_DATABASE_URI
+
 if [[ "$is_ci" == "true" ]]; then
   run_ci_pytest
 else
