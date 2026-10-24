@@ -75,19 +75,28 @@
   },
   "description": "Invenio assets",
   "devDependencies": {
+    "@babel/preset-env": "7.29.0",
+    "@babel/preset-react": "7.28.5",
     "@inveniosoftware/eslint-config-invenio": "^2.0.0",
     "@rspack/cli": ">1.0.0",
     "@rspack/core": "<1.7.0",
     "@rspack/dev-server": ">1.0.0",
     "@swc/core": "^1.6.13",
     "@swc/helpers": "^0.5.11",
+    "@testing-library/jest-dom": "5.17.0",
+    "@testing-library/react": "12.1.5",
+    "@testing-library/user-event": "12.8.3",
+    "@tinymce/tinymce-react": "^6.3.0",
     "autoprefixer": "^10.4.0",
+    "babel-jest": "29.7.0",
     "babel-loader": "^9.0.0",
     "css-loader": "^6.0.0",
     "eventsource-polyfill": "^0.9.0",
     "expose-loader": "^4.0.0",
     "file-loader": "^6.0.0",
     "geopattern": "^1.2.3",
+    "jest": "27.5.1",
+    "jest-environment-jsdom": "27.5.1",
     "less": "^4.0.0",
     "less-loader": "^11.0.0",
     "ora": "^6.0.0",
@@ -100,13 +109,11 @@
     "sass-loader": "^16.0.0",
     "style-loader": "^3.0.0",
     "swc-loader": "^0.2.6",
+    "tinymce": "^8.5.1",
     "url-loader": "^4.1.0",
     "webpack-bundle-analyzer": "^4.0.0",
-    "webpack-bundle-tracker": "^1.0.0",
-    "tinymce": "^8.5.1",
-    "@tinymce/tinymce-react": "^6.3.0"
+    "webpack-bundle-tracker": "^1.0.0"
   },
-  "packageManager": "pnpm@12.11.2",
   "engines": {
     "node": ">=18",
     "pnpm": ">=10.0.0"
@@ -117,7 +124,18 @@
   "scripts": {
     "build": "NODE_PRESERVE_SYMLINKS=1 rspack --mode production --config ./build/rspack.config.js",
     "postinstall": "patch-package",
-    "start": "NODE_PRESERVE_SYMLINKS=1 rspack --mode development --watch --config ./build/rspack.config.js"
+    "start": "NODE_PRESERVE_SYMLINKS=1 rspack --mode development --watch --config ./build/rspack.config.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:update": "jest -u",
+    "test:file": "jest --testPathPattern"
   },
-  "version": "2.0.0"
+  "version": "2.0.0",
+  "packageManager": "pnpm@12.11.2",
+  "config": {
+    "languages": [
+      "en"
+    ]
+  }
 }
