@@ -64,31 +64,28 @@ jobs:
           echo "services_setup=False" >> .invenio.private && \
           echo "instance_path=/opt/invenio/var/instance" >> .invenio.private
           touch tests/.env
+      # Before pytest: geopattern parity helpers (dump_js.js) need root node_modules.
+      # Same install also covers lint + Jest below.
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run tests
         env:
-          # CI gets test secrets from GitHub Actions secrets (this env: block),
-          # not from AWS Secrets Manager. Disable the launcher's SM lookup so
-          # run-tests.sh skips the AWS path and relies on the values below.
-          KCWORKS_TEST_SM_DISABLE: "1"
+          # Mail SPARKPOST_* / INVENIO_ADMIN_EMAIL are placeholders from
+          # run-tests.sh by default (suite suppresses SMTP). Opt in locally
+          # with --fetch-secrets. Other secrets below are for live/remote tests.
           CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
           CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
           COMMONS_PROFILES_API_TOKEN: ${{ secrets.TEST_COMMONS_PROFILES_API_TOKEN }}
-          INVENIO_ADMIN_EMAIL: ${{ secrets.TEST_INVENIO_ADMIN_EMAIL }}
           INVENIO_SITE_UI_URL: ${{ vars.INVENIO_SITE_UI_URL }}
           INVENIO_SITE_API_URL: ${{ vars.INVENIO_SITE_API_URL }}
           INVENIO_COMMONS_API_REQUEST_PROTOCOL: https
           INVENIO_MAIL_SUPPRESS_SEND: True
-          SPARKPOST_API_KEY: ${{ secrets.TEST_SPARKPOST_API_KEY }}
-          SPARKPOST_USERNAME: ${{ secrets.TEST_SPARKPOST_USERNAME }}
           PYTHONWARNINGS: "ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::UserWarning"
         run: |
           chmod +x run-tests.sh
           bash run-tests.sh
       # - name: Run translations test
       #   run: ./run-i18n-tests.sh
-      - name: Install deps for frontend tests
-        working-directory: .
-        run: pnpm install --frozen-lockfile
       - name: Lint JavaScript
         working-directory: .
         run: pnpm run lint

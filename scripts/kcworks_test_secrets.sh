@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Fetch a slice of test secrets from AWS Secrets Manager as dotenv material.
 #
+# Opt-in for the test suite: run-tests.sh calls this only with --fetch-secrets
+# (or KCWORKS_TEST_FETCH_SECRETS=1). The default test path uses placeholders.
+#
 # Test-suite analog of kcworks-startup.sh: pulls a defined set of keys from a
 # JSON secret in AWS Secrets Manager. Two output modes:
 #

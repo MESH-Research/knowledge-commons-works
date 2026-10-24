@@ -6,26 +6,14 @@
 
 """Top-level pytest configuration for KCWorks tests."""
 
-import ast
 import importlib.util
-import os
-from collections import namedtuple
-from collections.abc import Callable
 from pathlib import Path
 
-import jinja2
 import pytest
 from invenio_app.factory import create_app as _create_app
-from invenio_queues import current_queues
 
-# Imports after logging setup (E402 suppressed - logging must be set up first)
-from .fixtures.custom_fields import test_config_fields  # noqa: E402
-from .fixtures.env_defaults import set_default_os_env
-from .fixtures.frontend import MockManifestLoader  # noqa: E402
-from .fixtures.identifiers import test_config_identifiers  # noqa: E402
-from .fixtures.logging import log_folder_path, test_config_logging
-
-set_default_os_env()
+from .fixtures.app import RunningApp  # noqa: F401 — re-export for tests
+from .fixtures.logging import log_folder_path
 
 
 def load_config():
@@ -59,8 +47,11 @@ print("Config loaded successfully")
 
 pytest_plugins = (
     "celery.contrib.pytest",
+    "tests.fixtures.app",
+    "tests.fixtures.app_config",
     "tests.fixtures.bootstrap",
     "tests.fixtures.caching",
+    "tests.fixtures.celery",
     "tests.fixtures.cli",
     "tests.fixtures.communities",
     "tests.fixtures.community_events",
@@ -70,6 +61,7 @@ pytest_plugins = (
     "tests.fixtures.frontend",
     "tests.fixtures.identifiers",
     "tests.fixtures.idms",
+    "tests.fixtures.indexer_queues",
     "tests.fixtures.logging",
     "tests.fixtures.mail",
     "tests.fixtures.records",
@@ -94,323 +86,53 @@ pytest_plugins = (
 )
 
 
-def _(x):
-    """Identity function for string extraction.
-
-    Returns:
-        Any: The input value unchanged.
-    """
-    return x
-
-
-test_config = {
-    **config,
-    **test_config_fields,
-    **test_config_identifiers,
-    **test_config_fields,
-    **test_config_logging,
-    # **test_config_stats,  # Now getting directly from invenio.cfg
-    # NOTE: Postgres/broker values — prefer env from docker-services-cli (host)
-    # or the container .env.test_connections rewrite (service hostnames on the compose
-    # network). Fall back to localhost for plain host runs without --env.
-    "SQLALCHEMY_DATABASE_URI": os.environ.get(
-        "SQLALCHEMY_DATABASE_URI",
-        "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio",
-    ),
-    "POSTGRES_USER": "invenio",
-    "POSTGRES_PASSWORD": "invenio",
-    "POSTGRES_DB": "invenio",
-    "SEARCH_INDEX_PREFIX": "",  # TODO: Search index prefix triggers errors
-    "WTF_CSRF_ENABLED": False,
-    "WTF_CSRF_METHODS": [],
-    "RATELIMIT_ENABLED": False,
-    "APP_DEFAULT_SECURE_HEADERS": {
-        "content_security_policy": {"default-src": []},
-        "force_https": False,
-    },
-    "BROKER_URL": os.environ.get(
-        "BROKER_URL",
-        "amqp://guest:guest@localhost:5672//",
-    ),
-    # "CELERY_CACHE_BACKEND": "memory",
-    # "CELERY_RESULT_BACKEND": "cache",
-    "CELERY_TASK_ALWAYS_EAGER": False,
-    "CELERY_TASK_EAGER_PROPAGATES_EXCEPTIONS": True,
-    "CELERY_LOGLEVEL": "DEBUG",
-    #  'DEBUG_TB_ENABLED': False,
-    "INVENIO_INSTANCE_PATH": "/opt/invenio/var/instance",
-    # Suppress real SMTP by default; tests that assert on mail use the pytest-invenio
-    # `mailbox` fixture plus `enable_mail_sending` (see tests/fixtures/mail.py).
-    "MAIL_SUPPRESS_SEND": True,
-    "MAIL_SERVER": "smtp.sparkpostmail.com",
-    "MAIL_PORT": 587,
-    "MAIL_USE_TLS": True,
-    "MAIL_USE_SSL": False,
-    "MAIL_USERNAME": os.getenv("SPARKPOST_USERNAME"),
-    "MAIL_PASSWORD": os.getenv("SPARKPOST_API_KEY"),
-    "MAIL_DEFAULT_SENDER": os.getenv("INVENIO_ADMIN_EMAIL"),
-    #  'OAUTH2_CACHE_TYPE': 'simple',
-    #  'OAUTHLIB_INSECURE_TRANSPORT': True,
-    "SECRET_KEY": "test-secret-key",
-    "SECURITY_PASSWORD_SALT": "test-secret-key",
-    "WEBPACKEXT_MANIFEST_LOADER": MockManifestLoader,
-    "TESTING": True,
-    "DEBUG": True,
-    "COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED": True,
-    "COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED": True,
-    "STATS_DASHBOARD_ENABLED_GLOBAL": True,
-    "STATS_DASHBOARD_ENABLED_COMMUNITY": True,
-    "STATS_DASHBOARD_COMMUNITY_OPT_IN": False,
-}
-
-parent_path = Path(__file__).parent
-log_file_path = log_folder_path / "invenio.log"
-if not log_file_path.exists():
-    log_file_path.parent.mkdir(parents=True, exist_ok=True)
-    log_file_path.touch()
-
-test_config["LOGGING_FS_LEVEL"] = "DEBUG"
-test_config["LOGGING_FS_LOGFILE"] = str(log_file_path)
-test_config["LOGGING_CONSOLE_LEVEL"] = "DEBUG"
-test_config["CELERY_LOGFILE"] = str(log_folder_path / "celery.log")
-test_config["RECORD_IMPORTER_DATA_DIR"] = str(
-    parent_path / "helpers" / "sample_import_data"
-)
-test_config["RECORD_IMPORTER_LOGS_LOCATION"] = log_folder_path
-
-# enable DataCite DOI provider
-test_config["DATACITE_ENABLED"] = True
-test_config["DATACITE_USERNAME"] = "INVALID"
-test_config["DATACITE_PASSWORD"] = "INVALID"
-test_config["DATACITE_DATACENTER_SYMBOL"] = "TEST"
-test_config["DATACITE_PREFIX"] = "10.17613"
-test_config["DATACITE_TEST_MODE"] = True
-# ...but fake it
-
-test_config["SITE_API_URL"] = os.environ.get(
-    "INVENIO_SITE_API_URL", "http://localhost/api"
-)
-test_config["SITE_UI_URL"] = os.environ.get("INVENIO_SITE_UI_URL", "http://localhost")
-test_config["OAISERVER_ID_PREFIX"] = test_config["SITE_UI_URL"]
-
-
-@pytest.fixture(scope="module")
-def extra_entry_points() -> dict:
-    """Extra entry points fixture for KCWorks.
-
-    Returns:
-        dict: Dictionary of extra entry points.
-    """
-    return {
-        # "invenio_base.api_apps": ["kcworks = kcworks.ext:KCWorks"],
-        # "invenio_base.apps": ["kcworks = kcworks.ext:KCWorks"],
-        # "invenio_base.api_blueprints": [
-        #     "kcworks = kcworks.views.views:create_api_blueprint"
-        # ],
-        # "invenio_base.blueprints": ["kcworks = kcworks.views.views:create_blueprint"],
-    }
-
-
 @pytest.fixture(scope="session")
-def celery_config(celery_config):
-    """Celery config fixture for KCWorks.
+def template_loader_paths() -> list[Path]:
+    """KCWorks template directories for the shared `template_loader` fixture.
 
     Returns:
-        dict: Celery configuration dictionary.
+        list[Path]: Ordered template directories for Jinja.
     """
-    celery_config["logfile"] = str(log_folder_path / "celery.log")
-    celery_config["loglevel"] = "DEBUG"
-    celery_config["task_always_eager"] = True
-    celery_config["cache_backend"] = "memory"
-    celery_config["result_backend"] = "cache"
-    celery_config["task_eager_propagates_exceptions"] = True
-
-    return celery_config
-
-
-@pytest.fixture(scope="session")
-def celery_enable_logging():
-    """Celery enable logging fixture for KCWorks.
-
-    Returns:
-        bool: True to enable Celery logging.
-    """
-    return True
-
-
-# This is a namedtuple that holds all the fixtures we're likely to need
-# in a single test.
-RunningApp = namedtuple(
-    "RunningApp",
-    [
-        "app",
-        "location",
-        "cache",
-        "create_communities_custom_fields",
-        "create_records_custom_fields",
-    ],
-)
-
-
-@pytest.fixture(scope="function")
-def running_app(
-    app,
-    location,
-    cache,
-    create_communities_custom_fields,
-    create_records_custom_fields,
-):
-    """This fixture provides an app with the typically needed db data loaded.
-
-    All of these fixtures are often needed together, so collecting them
-    under a semantic umbrella makes sense.
-
-    Returns:
-        RunningApp: The running application instance.
-    """
-    return RunningApp(
-        app,
-        location,
-        cache,
-        create_communities_custom_fields,
-        create_records_custom_fields,
-    )
+    project_root = Path(__file__).parent.parent
+    return [
+        Path(__file__).parent / "helpers" / "templates" / "semantic-ui",
+        project_root / "templates",
+        project_root / "templates" / "semantic-ui",
+        project_root / "site" / "kcworks" / "templates" / "semantic-ui",
+    ]
 
 
 @pytest.fixture(scope="module")
-def template_loader() -> Callable:
-    """Fixture providing overloaded and custom templates to test app.
+def app(app, location):
+    """Wrap shared `app` so the files `location` fixture loads for the suite.
 
-    Returns:
-        Callable: Function to load templates.
-    """
-
-    def load_tempates(app):
-        """Load templates for the test app."""
-        project_root = Path(__file__).parent.parent
-        site_path = project_root / "site" / "kcworks" / "templates" / "semantic-ui"
-        package_path = project_root / "templates"
-        test_helpers_path = (
-            Path(__file__).parent / "helpers" / "templates" / "semantic-ui"
-        )
-
-        # Local template paths for overrides
-        template_paths = []
-        candidates: list[str | Path] = [
-            test_helpers_path,  # Main project test stubs (highest priority)
-            package_path,
-            site_path,
-        ]
-        for path in candidates:
-            path_obj = Path(path) if isinstance(path, str) else path
-            if path_obj.exists():
-                template_paths.append(str(path_obj))
-
-        prev_loader = app.jinja_env.loader  # Invenio_app's themed dispatch loader
-        custom_loader = jinja2.ChoiceLoader(
-            [
-                prev_loader,
-                jinja2.FileSystemLoader(template_paths),
-            ]
-        )
-        app.jinja_env.loader = custom_loader
-
-    return load_tempates
-
-
-@pytest.fixture(scope="module")
-def app(
-    app,
-    app_config,
-    database,
-    location,
-    search,
-    bootstrap_vocabularies,
-    template_loader,
-    admin_roles,
-):
-    """This fixture provides an app with the typically needed basic fixtures.
-
-    This fixture should be used in conjunction with the `running_app`
-    fixture to provide a complete app with all the typically needed
-    fixtures. This fixture sets up the basic functions like db, search,
-    the default files location, and template loader once per modules.
-    The `running_app` fixture is function scoped and initializes per-test
-    fixtures such as cache and custom fields that should be reset between tests.
+    Vocabularies and admin roles come from the shared `app` fixture.
 
     Yields:
-        Flask: The Flask application instance.
+        The Flask application instance.
     """
-    with app.app_context():
-        current_queues.declare()
-    template_loader(app)
     yield app
 
 
 @pytest.fixture(scope="module")
-def search_hosts():
-    """Search hosts for pytest-invenio (OpenSearch).
-
-    Prefer `SEARCH_HOSTS` from the environment (docker-services-cli on the
-    host → localhost; container `.env.test_connections` → `opensearch`
-    service name). Falls back to localhost for plain host runs without that
-    env var.
-
-    Yields:
-        list[dict]: OpenSearch host dicts for the search client.
-    """
-    raw = os.environ.get("SEARCH_HOSTS", "").strip()
-    if raw:
-        yield ast.literal_eval(raw)
-    else:
-        yield [{"host": "localhost", "port": 9200}]
-
-
-@pytest.fixture(scope="module")
 def app_config(app_config) -> dict:
-    """App config fixture for KCWorks.
+    """Layer invenio.cfg and root-only settings onto the shared test defaults.
 
     Returns:
-        dict: Application configuration dictionary.
+        dict: The layered Flask/Invenio application config.
     """
-    for k, v in test_config.items():
-        app_config[k] = v
+    for key, value in config.items():
+        app_config.setdefault(key, value)
 
-    # Connection env wins over fixture defaults (CI/host localhost via
-    # docker-services-cli --env; local container via wrapper / .env.test_connections).
-    if os.environ.get("SQLALCHEMY_DATABASE_URI"):
-        app_config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
-    if os.environ.get("BROKER_URL"):
-        app_config["BROKER_URL"] = os.environ["BROKER_URL"]
-        app_config["CELERY_BROKER_URL"] = os.environ["BROKER_URL"]
-        app_config["QUEUES_BROKER_URL"] = os.environ["BROKER_URL"]
-    if os.environ.get("CACHE_REDIS_URL"):
-        app_config["CACHE_REDIS_URL"] = os.environ["CACHE_REDIS_URL"]
-        app_config["CACHE_TYPE"] = "redis"
-    if os.environ.get("ACCOUNTS_SESSION_REDIS_URL"):
-        app_config["ACCOUNTS_SESSION_REDIS_URL"] = os.environ[
-            "ACCOUNTS_SESSION_REDIS_URL"
-        ]
-    if os.environ.get("CELERY_RESULT_BACKEND"):
-        app_config["CELERY_RESULT_BACKEND"] = os.environ["CELERY_RESULT_BACKEND"]
-    if os.environ.get("RATELIMIT_STORAGE_URI"):
-        app_config["RATELIMIT_STORAGE_URI"] = os.environ["RATELIMIT_STORAGE_URI"]
-        app_config["RATELIMIT_STORAGE_URL"] = os.environ["RATELIMIT_STORAGE_URI"]
-    if os.environ.get("COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"):
-        app_config["COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"] = os.environ[
-            "COMMUNITIES_IDENTITIES_CACHE_REDIS_URL"
-        ]
-
-    # invenio-search: if SEARCH_CLIENT_CONFIG contains `hosts`, SEARCH_HOSTS
-    # is ignored. Always set both from env when present.
-    raw_hosts = os.environ.get("SEARCH_HOSTS", "").strip()
-    if raw_hosts:
-        hosts = ast.literal_eval(raw_hosts)
-        app_config["SEARCH_HOSTS"] = hosts
-        client_cfg = dict(app_config.get("SEARCH_CLIENT_CONFIG") or {})
-        client_cfg["hosts"] = hosts
-        app_config["SEARCH_CLIENT_CONFIG"] = client_cfg
-
+    app_config["COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED"] = True
+    app_config["COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED"] = True
+    app_config["STATS_DASHBOARD_ENABLED_GLOBAL"] = True
+    app_config["STATS_DASHBOARD_ENABLED_COMMUNITY"] = True
+    app_config["STATS_DASHBOARD_COMMUNITY_OPT_IN"] = False
+    app_config["RECORD_IMPORTER_DATA_DIR"] = str(
+        Path(__file__).parent / "helpers" / "sample_import_data"
+    )
+    app_config["RECORD_IMPORTER_LOGS_LOCATION"] = log_folder_path
     return app_config
 
 

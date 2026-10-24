@@ -91,29 +91,29 @@ Pytest will also run any doctests that are found in these directories. This incl
 
 The top-level `conftest.py` file is used to configure the test environment. Most of the tests use an invenio (Flask) app instance that receives all of the configuration variables from the `invenio.cfg` file. Some of these variables are then overridden in the `test_config` dictionary that `conftest.py` passes to the app instance.
 
-The test environment does not use the top-level `.env` file that is used in the development environment. Instead, `run-tests.sh` layers two environment files into the `uv run` invocation that launches pytest:
+The test environment does not use the top-level `.env` file that is used in the development environment. Instead, `run-tests.sh` layers environment files into the pytest invocation (CI: `uv run --env-file`; local: Compose mounts loaded by the test-runner wrapper):
 
 1. `tests/.env` (when present) holds non-secret defaults — URLs, public identifiers, and any per-developer overrides. This file is checked in only as a placeholder; values are managed locally.
-2. A dynamically generated `/tmp/kcworks-tests-secrets.env` (mode `600`, removed immediately after container starts) holds secrets fetched from AWS Secrets Manager. This file is loaded **after** `tests/.env`, so its values override any matching keys in `tests/.env`.
+2. A mail-related secrets file (Compose secret / `--env-file`) is loaded **after** `tests/.env`. By default it is a **placeholder** file (`SPARKPOST_USERNAME`, `SPARKPOST_API_KEY`, `INVENIO_ADMIN_EMAIL` with unused values). The suite sets `MAIL_SUPPRESS_SEND=True` and captures mail with the pytest-invenio `mailbox` fixture, so live SparkPost credentials are not required.
 
-The secret file is produced by `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh`. By default it pulls a small, defined slice of keys from the `staging/kcworks` secret:
+To pull real values from AWS Secrets Manager instead of placeholders, pass `--fetch-secrets` (or set `KCWORKS_TEST_FETCH_SECRETS=1`). That runs `scripts/kcworks_test_secrets.sh`, which mirrors the production-style flow used by `kcworks-startup.sh` and pulls a small slice of keys from the `staging/kcworks` secret by default:
 
 - `SPARKPOST_USERNAME`
 - `SPARKPOST_API_KEY`
 - `INVENIO_ADMIN_EMAIL`
 
-The defaults can be overridden without editing the script:
+Overrides for the fetch helper (only when `--fetch-secrets` is used):
 
 - `KCWORKS_TEST_SM_SECRET_ID` (or `--secret-id`): override the AWS Secrets Manager secret id.
 - `KCWORKS_TEST_SM_KEYS` (or `--keys`): comma-separated list of keys to pull from the secret.
 - `--region`: forwarded to `aws` for cross-region secrets.
 - `--allow-missing`: warn instead of failing when a listed key is absent from the secret.
-- `KCWORKS_TEST_SM_DISABLE=1`: skip the AWS lookup entirely; rely on `tests/.env` (used in CI, where secrets come from GitHub Actions secrets).
+- `KCWORKS_TEST_SM_DISABLE=1`: force-skip the AWS lookup even if `--fetch-secrets` was passed.
 
 Run `./scripts/kcworks_test_secrets.sh --help` for the full contract. The helper requires the `aws` CLI to be configured on the host and the project venv at `.venv/bin/python`.
 
 ```{note}
-On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys via the `Run tests` step's `env:` block from GitHub Actions secrets. No AWS credentials are needed (or used) in CI.
+CI does not pass `--fetch-secrets` and does not inject SparkPost / admin-email GitHub secrets. Placeholders from `run-tests.sh` are enough for the default suite.
 ```
 
 ### Containerized test runner for local development
@@ -121,10 +121,10 @@ On CI the workflow sets `KCWORKS_TEST_SM_DISABLE=1` and injects the same keys vi
 In local mode, pytest (and optional Jest) runs inside a container (`test-runner`) that:
 - Uses `docker-compose.test.yml` (project-managed network). The pytest path also merges `docker-compose.test.services.yml` so the runner joins docker-services-cli's `docker_services_cli_default` network; `--js-only` uses the base file only
 - Mounts site/deps/tests (and assets/Jest config when needed) from the host
-- Loads secrets via a Compose service secret for the pytest path
+- Loads the mail secrets file via a Compose service secret (placeholders by default; AWS SM material with `--fetch-secrets`)
 
-The temp file containing AWS secrets is:
-1. Created by `kcworks_test_secrets.sh`
+The host secrets file is:
+1. Written as placeholders, or created by `kcworks_test_secrets.sh` when `--fetch-secrets` is set
 2. Mounted into the container for its lifetime
 3. Deleted after the container finishes (cleanup trap handles interrupts)
 
