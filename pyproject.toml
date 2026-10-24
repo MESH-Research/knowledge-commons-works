@@ -4,7 +4,7 @@ requires = ["babel>2.8", "setuptools>=83", "wheel"]
 
 [project]
 name = "kcworks"
-version = "1.1.0"
+version = "1.1.2"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
@@ -16,10 +16,18 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
+  "werkzeug>=3.1.9",
+  "oauthlib>=4.0.0",
+  "bleach>=6.4.0",
+  "virtualenv>=21.14.13",
+  "urllib3>=2.8.0",
+  "msgpack>=1.2.3",
+  "lxml-html-clean>=0.4.5",
   "aiohttp>=3.14.4,<4",
   "cairosvg>=2.9.1",
   "certifi>=2026.10.19",
   "cryptography>=49",
+  "fsspec>=2026.6.0",
   "invenio-app-rdm[opensearch2,s3]~=13.0.0",
   "invenio-communities>=19,<20",
   "invenio-group-collections-kcworks",
@@ -47,6 +55,10 @@ dependencies = [
   "tornado>=6.5.9",
   "tqdm",
   "uwsgi>=2.0.23",
+  "nbconvert>=7.17.2,<8",
+  "soupsieve>=2.8.4,<3",
+  "multidict>=6.9.1,<7",
+  "filelock>=4.2.1",
 ]
 optional-dependencies.dev = [
   "bump-my-version==1.5.1",
@@ -310,7 +322,10 @@ ini_options.timeout = 300
 ini_options.timeout_method = "thread"
 ini_options.plugins = [
   "celery.contrib.pytest",
+  "tests.fixtures.app",
+  "tests.fixtures.app_config",
   "tests.fixtures.caching",
+  "tests.fixtures.celery",
   "tests.fixtures.cli",
   "tests.fixtures.communities",
   "tests.fixtures.community_events",
@@ -320,6 +335,7 @@ ini_options.plugins = [
   "tests.fixtures.frontend",
   "tests.fixtures.identifiers",
   "tests.fixtures.idms",
+  "tests.fixtures.indexer_queues",
   "tests.fixtures.logging",
   "tests.fixtures.mail",
   "tests.fixtures.names",
@@ -361,7 +377,7 @@ run.omit = [
 ]
 
 [tool.bumpversion]
-current_version = "1.1.0"
+current_version = "1.1.2"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"

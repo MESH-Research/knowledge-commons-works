@@ -5,7 +5,30 @@
 
 ## Unreleased
 
-- update pillow, cryptography, mistune, pyjwt, tornado
+## 1.1.2 (2026-10-24)
+
+- Security / dependencies
+  - update brotli, filelock, and virtualenv for published advisories
+  - pin `pdfjs-dist` to `5.3.93` in site `webpack.py` (avoids vulnerable
+    `^5.0` float into ≥5.6.83)
+- Bug fixes
+  - IIIF error handling and logging before generic 5xx responses
+  - explicit Celery broker heartbeat configuration
+- Tests / CI
+  - thin root conftest toward the fixtures package; fix connection defaults
+    for docker-services-cli; purge indexer queues between tests
+  - user-data and importer suite fixes; install pnpm earlier in CI; stop
+    pulling secrets by default in tests
+
+## 1.1.1 (2026-10-21)
+
+- update many dependencies with reported vulnerabilities:
+  - pillow, cryptography, mistune, pyjwt, tornado, aiohttp, yarl, certifi,
+    bleach, werkzeug, oauthlib, urllib3, msgpack, lxml-html-clean, fsspeck,
+    s3fs, soupsieve, mako, virtualenv, distlib, python-discovery, packaging,
+    nbconvert, multidict, marshmallow, pygments, setuptools
+- bug fixes:
+  - fix serialization of embedded schema.org json-ld in detail page template
 
 ## 1.1.0 (2026-10-20)
 

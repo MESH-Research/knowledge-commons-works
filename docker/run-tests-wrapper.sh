@@ -10,7 +10,8 @@
 # shell variables win — same as former ``uv run --env-file``):
 #   1. tests/.env — developer non-secret defaults (from the ./tests bind mount)
 #   2. .env.test_connections — DB/broker/search/redis hosts for this container
-#   3. /run/secrets/aws_secrets — AWS SM slice (Compose service secret)
+#   3. /run/secrets/aws_secrets — mail-related keys (Compose service secret;
+#      placeholders by default, or AWS SM when run-tests.sh --fetch-secrets)
 #
 # Shell exports below for DB/broker/cache/search hosts win over matching keys
 # in those files.
@@ -53,11 +54,12 @@ if [[ ! -f "$CONNECTIONS_ENV_FILE" || ! -r "$CONNECTIONS_ENV_FILE" ]]; then
   exit 1
 fi
 if [[ ! -f "$SECRET_FILE" || ! -r "$SECRET_FILE" ]]; then
-  echo "Error: missing or unreadable AWS secrets file: ${SECRET_FILE}" >&2
+  echo "Error: missing or unreadable secrets file: ${SECRET_FILE}" >&2
   exit 1
 fi
 
-# Confirm expected secret key *names* are present (never print values).
+# Confirm expected key *names* are present (never print values). Values may be
+# placeholders or AWS SM material depending on run-tests.sh --fetch-secrets.
 for key in SPARKPOST_USERNAME SPARKPOST_API_KEY INVENIO_ADMIN_EMAIL; do
   if ! grep -Eq "^${key}=" "$SECRET_FILE"; then
     echo "Error: expected key ${key} not found in ${SECRET_FILE}" >&2
