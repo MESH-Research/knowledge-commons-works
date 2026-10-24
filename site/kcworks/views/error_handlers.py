@@ -12,11 +12,15 @@ lives in `register_themed_error_handlers` below. Per-handler logic
 """
 
 import functools
+import traceback
+from collections.abc import Callable
+from dataclasses import dataclass
 from types import TracebackType
 from typing import Any
 
 from flask import Flask, Response, jsonify, make_response, render_template, request
 from flask import current_app as app
+from flask_resources import HTTPJSONException
 from werkzeug.exceptions import (
     Forbidden,
     Gone,
@@ -40,6 +44,37 @@ from invenio_remote_user_data_kcworks.errors import (
     UserCreationFailed,
     UserDataRequestFailed,
     UserDataRequestTimeout,
+)
+
+
+@dataclass(frozen=True, slots=True)
+class ApiExceptionTransform:
+    """One row in the API exception transform table.
+
+    Attributes:
+        exc_type: Exception class to match (`isinstance`).
+        to_http: Build the `HTTPException` to re-raise.
+        endpoint_prefixes: Blueprint/endpoint prefixes this rule applies to
+            (e.g. `("iiif",)` matches `iiif` and `iiif.base`). `None` means
+            every endpoint. First matching rule wins.
+    """
+
+    exc_type: type[BaseException]
+    to_http: Callable[[BaseException], HTTPException]
+    endpoint_prefixes: tuple[str, ...] | None = None
+
+
+# Per-rule endpoint scope — same exception type can map differently per
+# blueprint (or be ignored outside listed prefixes).
+API_EXCEPTION_TRANSFORMS: tuple[ApiExceptionTransform, ...] = (
+    ApiExceptionTransform(
+        exc_type=ValueError,
+        to_http=lambda e: HTTPJSONException(
+            code=400,
+            description="Bad request.",
+        ),
+        endpoint_prefixes=("iiif",),
+    ),
 )
 
 
@@ -374,6 +409,26 @@ def _deepest_traceback_frame_location(
     return tb.tb_frame.f_code.co_filename, tb.tb_lineno
 
 
+def _format_stack_frames(error: BaseException) -> str:
+    """Format stack frames only — never the exception type or message.
+
+    `logging` `exc_info=` / `traceback.format_exception` append
+    `Type: message`, and many Invenio/domain exceptions put identifiers,
+    tokens, or request fragments in `__str__`. Frame lines from
+    `traceback.format_tb` omit that trailer (and do not dump locals).
+
+    Args:
+        error: Exception whose `__traceback__` should be formatted.
+
+    Returns:
+        Joined stack frames, or a short placeholder when no traceback exists.
+    """
+    tb = getattr(error, "__traceback__", None)
+    if tb is None:
+        return "(no traceback)"
+    return "".join(traceback.format_tb(tb)).rstrip() or "(empty traceback)"
+
+
 def _log_catch_all_exception(error: BaseException) -> None:
     """Log an exception handled only by the catch-all `Exception` registration.
 
@@ -388,7 +443,7 @@ def _log_catch_all_exception(error: BaseException) -> None:
     )
     app.logger.warning(
         "Catch-all error handler caught %s for %s %s (raised at %s:%s). "
-        "Returning 500; enable DEBUG for full traceback.",
+        "Returning 500; enable DEBUG for stack frames.",
         type(error).__name__,
         request.method,
         request.path,
@@ -396,11 +451,11 @@ def _log_catch_all_exception(error: BaseException) -> None:
         lineno or "?",
     )
     app.logger.debug(
-        "Full traceback for %s on %s %s",
+        "Stack for %s on %s %s:\n%s",
         type(error).__name__,
         request.method,
         request.path,
-        exc_info=error,
+        _format_stack_frames(error),
     )
 
 
@@ -434,8 +489,8 @@ def _make_logging_wrapper(
 
     Logs at WARNING with a one-line summary that names the exception type,
     the blueprint, the request method+path, and the deepest-frame file:line.
-    Logs the full traceback (including the exception's `__str__()`, which
-    may carry user-supplied values for some exception classes) at DEBUG only.
+    Logs stack frames at DEBUG without the exception message (see
+    `_format_stack_frames`).
 
     Args:
         target_app: The Flask app whose logger we use.
@@ -458,7 +513,7 @@ def _make_logging_wrapper(
         target_app.logger.warning(
             "Blueprint error handler caught %s in blueprint=%s for %s %s "
             "(handler=%s.%s, raised at %s:%s). "
-            "Themed response will be rendered; enable DEBUG for full traceback.",
+            "Mapped response will be returned; enable DEBUG for stack frames.",
             type(error).__name__,
             bp_name,
             request.method,
@@ -469,12 +524,12 @@ def _make_logging_wrapper(
             lineno or "?",
         )
         target_app.logger.debug(
-            "Full traceback for %s caught by blueprint=%s on %s %s",
+            "Stack for %s caught by blueprint=%s on %s %s:\n%s",
             type(error).__name__,
             bp_name,
             request.method,
             request.path,
-            exc_info=error,
+            _format_stack_frames(error),
         )
         return orig_handler(error)
 
@@ -486,22 +541,20 @@ def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
     """Log the original exception when a blueprint-scoped error handler fires.
 
     Several upstream Invenio blueprints register blueprint-scoped error
-    handlers that map programmer errors directly to themed 404/403/410
-    responses without logging the underlying cause, including:
-    - `invenio_app_rdm.records_ui`
-    - `requests_ui`, `users_ui`, `communities_ui`
-    - `invenio_communities`
+    handlers that map programmer / domain errors to HTTP responses without
+    logging the underlying cause. On the UI app that includes themed 404/403/410
+    handlers (e.g. `invenio_app_rdm.records_ui`, `communities_ui`). On the API
+    app the same pattern appears on flask-resources blueprints that map
+    `PIDDoesNotExistError`, `FileKeyNotFoundError`, etc. to JSON.
 
-    Those handlers commonly catch `NoResultFound`, `KeyError`,
-    `PIDDoesNotExistError`, `PIDUnregistered`, and `FileKeyNotFoundError`.
     Flask's `got_request_exception` signal does not fire for handled
     exceptions, so the original error is otherwise invisible.
 
     This walks `app.error_handler_spec` and replaces each blueprint-scoped
-    handler with a wrapper that logs (WARNING summary, DEBUG full traceback)
-    before delegating. App-wide handlers registered by
-    `register_themed_error_handlers` are intentionally skipped; the
-    catch-all `Exception` handler logs via `_log_catch_all_exception`
+    handler with a wrapper that logs (WARNING summary, DEBUG stack frames
+    without exception messages) before delegating. App-wide handlers
+    registered by `register_themed_error_handlers` are intentionally skipped;
+    the catch-all `Exception` handler logs via `_log_catch_all_exception`
     before returning the themed 500.
 
     Handlers registered for `werkzeug.exceptions.HTTPException` subclasses
@@ -513,8 +566,8 @@ def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
 
     Args:
         target_app: The Flask app whose blueprint error handlers should be
-            instrumented. Typically called once from `finalize_app` after
-            `register_themed_error_handlers`.
+            instrumented. Called from UI `finalize_app` and API
+            `api_finalize_app` after blueprints have registered their handlers.
     """
     for bp_name, code_map in list(target_app.error_handler_spec.items()):
         if bp_name is None:
@@ -528,3 +581,83 @@ def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
                 exc_map[exc_cls] = _make_logging_wrapper(
                     target_app, handler, bp_name, exc_cls
                 )
+
+
+def _endpoint_matches(endpoint: str, prefixes: tuple[str, ...] | None) -> bool:
+    """True if `endpoint` is covered by `prefixes` (`None` = all endpoints).
+
+    Args:
+        endpoint: Flask endpoint name (e.g. `iiif.base`).
+        prefixes: Blueprint/endpoint prefixes, or `None` for all endpoints.
+
+    Returns:
+        Whether this endpoint should be considered a match for the rule.
+    """
+    if prefixes is None:
+        return True
+    return any(endpoint == p or endpoint.startswith(f"{p}.") for p in prefixes)
+
+
+def _transform(exc: BaseException, endpoint: str) -> HTTPException | None:
+    """Return an HTTPException to re-raise, or None to leave the error alone.
+
+    Walks `API_EXCEPTION_TRANSFORMS` in order; first rule whose `exc_type` and
+    `endpoint_prefixes` both match wins.
+    """
+    for rule in API_EXCEPTION_TRANSFORMS:
+        if not isinstance(exc, rule.exc_type):
+            continue
+        if not _endpoint_matches(endpoint, rule.endpoint_prefixes):
+            continue
+        return rule.to_http(exc)
+    return None
+
+
+def _wrap_view(view: Callable[..., Any], endpoint: str) -> Callable[..., Any]:
+    if getattr(view, "_kcworks_api_error_wrapped", False):
+        return view
+
+    @functools.wraps(view)
+    def wrapped(*args: Any, **kwargs: Any) -> Any:
+        try:
+            return view(*args, **kwargs)
+        except HTTPException:
+            raise  # already a proper HTTP response path
+        except Exception as exc:
+            mapped = _transform(exc, endpoint)
+            if mapped is None:
+                raise
+            app.logger.warning(
+                "API error transform %s → HTTP %s for %s %s (endpoint=%s)",
+                type(exc).__name__,
+                getattr(mapped, "code", "?"),
+                request.method,
+                request.path,
+                endpoint,
+            )
+            app.logger.debug(
+                "Stack for transformed %s on %s %s:\n%s",
+                type(exc).__name__,
+                request.method,
+                request.path,
+                _format_stack_frames(exc),
+            )
+            raise mapped from exc
+
+    wrapped._kcworks_api_error_wrapped = True  # type: ignore[attr-defined]
+    return wrapped
+
+
+def install_api_error_transforms(target_app: Flask) -> None:
+    """Wrap API views so `API_EXCEPTION_TRANSFORMS` can re-raise as HTTPExceptions.
+
+    Complements `wrap_blueprint_error_handlers_with_logging` (observability for
+    errors that already have blueprint handlers). This path covers unhandled
+    exceptions that would otherwise become 5xx. Which endpoints a rule applies
+    to is decided per row via `ApiExceptionTransform.endpoint_prefixes`.
+
+    Args:
+        target_app: The API Flask application.
+    """
+    for endpoint, view in list(target_app.view_functions.items()):
+        target_app.view_functions[endpoint] = _wrap_view(view, endpoint)

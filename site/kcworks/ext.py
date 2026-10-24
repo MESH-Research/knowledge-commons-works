@@ -85,6 +85,7 @@ from kcworks.templates.template_filters import (
 )
 from kcworks.utils.menu_utils import alter_menu_from_config
 from kcworks.views.error_handlers import (
+    install_api_error_transforms,
     register_themed_error_handlers,
     wrap_blueprint_error_handlers_with_logging,
 )
@@ -393,8 +394,7 @@ def _static_token_before_request() -> None:
     )
     # Provide the OAuth stand-in objects for the request.
     scopes = {
-        sid
-        for sid, _ in current_oauth2server.scope_choices(exclude_internal=False)
+        sid for sid, _ in current_oauth2server.scope_choices(exclude_internal=False)
     }
     request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
         user=user,
@@ -438,9 +438,10 @@ def api_finalize_app(app: Flask) -> None:
     """Entry point for `invenio_base.api_finalize_app` (API app).
 
     Installs the static-token before-request hook when configured.
-    Themed error handlers are registered on the UI app only
-    (`finalize_app`); the API app relies on Invenio/Flask
-    `HTTPException` and `RESTException` handling instead.
+    Themed HTML error handlers stay on the UI app (`finalize_app`).
+    Here we instrument blueprint error handlers for logging (same helper as
+    the UI app) and optionally transform selected unhandled exceptions into
+    HTTPExceptions via `install_api_error_transforms`.
     """
     routes_map = app.config.get("STATIC_API_TOKEN_ROUTES") or {}
     prepended_funcs = []
@@ -451,3 +452,8 @@ def api_finalize_app(app: Flask) -> None:
     app.before_request_funcs[None] = (
         prepended_funcs + funcs + [_check_oauth_token_scopes]
     )
+
+    # After blueprints have registered handlers: log buried domain errors.
+    wrap_blueprint_error_handlers_with_logging(app)
+    # Per-rule endpoint scope lives in API_EXCEPTION_TRANSFORMS.
+    install_api_error_transforms(app)
