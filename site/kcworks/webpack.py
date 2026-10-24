@@ -76,7 +76,7 @@ theme = WebpackThemeBundle(
                 "bootstrap-sass": "^3.4.3",
                 "jquery": "^3.5.0",
                 "@babel/core": "^7.29.6",
-                "pdfjs-dist": "^5.0 <5.6.83",
+                "pdfjs-dist": "5.3.93",
             },
             "devDependencies": {
                 "geopattern": "^1.2.3",
