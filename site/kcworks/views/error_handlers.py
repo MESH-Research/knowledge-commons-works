@@ -644,7 +644,7 @@ def _wrap_view(view: Callable[..., Any], endpoint: str) -> Callable[..., Any]:
             )
             raise mapped from exc
 
-    wrapped._kcworks_api_error_wrapped = True  # type: ignore[attr-defined]
+    wrapped._kcworks_api_error_wrapped = True  # ty: ignore[unresolved-attribute]
     return wrapped
 
 
