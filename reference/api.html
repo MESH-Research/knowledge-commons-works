@@ -2638,6 +2638,17 @@ automatically purged entirely from the database. There is also no API mechanism 
 <li><p><strong>400 Bad Request</strong>: The <code class="docutils literal notranslate"><span class="pre">username</span></code> query parameter is missing.</p></li>
 <li><p><strong>401 Unauthorized</strong>: The Bearer token is missing or does not match the configured static token (<code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>).</p></li>
 </ul>
+<p>####Validation Checklist Before Ingest</p>
+<ul class="simple">
+<li><p>All required fields are present</p></li>
+<li><p>Dates must be in EDTF format as YYYY or YYYY-MM-DD (can be ranges)</p></li>
+<li><p>Names split into first name and last name</p></li>
+<li><p>Language codes are ISO 639-2 (e.g., eng)</p></li>
+<li><p>Identifiers are valid URLs or DOIs (URLs including https:// but DOIs without any doi: prefix)</p></li>
+<li><p>Creators include structured names</p></li>
+<li><p>No duplicate identifiers (only one identifier per scheme is allowed in a given metadata field’s list)</p></li>
+<li><p>JSON validates against KCWorks schema</p></li>
+</ul>
 </section>
 </section>
 </section>
