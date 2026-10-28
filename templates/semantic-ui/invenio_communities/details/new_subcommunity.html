@@ -17,12 +17,15 @@
 
 {%- block javascript %}
 {{ super() }}
+{% if permissions.can_update %}
 {{ webpack['invenio-communities-subcommunities-new-custom.js'] }}
+{% endif %}
 {%- endblock javascript %}
 
 
 {%- block page_body %}
 {{ super() }}
+{% if permissions.can_update %}
 {% set ancestor_ids = community_ui | community_breadcrumb_items | map(attribute='id') | list %}
 <div
     id="app"
@@ -33,4 +36,14 @@
     data-can-create-restricted='{{ can_create_restricted | tojson }}'
   >
 </div>
+{% else %}
+<div class="ui container rel-mt-2 rel-mb-2">
+  <div class="ui negative message">
+    <div class="header">{{ _("Permission required") }}</div>
+    <p>
+      {{ _("Only collection owners can create or link subcollections.") }}
+    </p>
+  </div>
+</div>
+{% endif %}
 {%- endblock page_body %}

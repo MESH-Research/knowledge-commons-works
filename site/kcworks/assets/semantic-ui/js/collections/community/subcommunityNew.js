@@ -110,6 +110,7 @@ class CommunityCreateForm extends Component {
     error: "",
     hasCommunity: getInitialHasCommunity(),
     communities: [],
+    communitiesLoading: true,
   };
 
   componentDidMount() {
@@ -124,6 +125,7 @@ class CommunityCreateForm extends Component {
         .then((response) => response.data)
         .then((data) => {
           this.setState({
+            communitiesLoading: false,
             communities: (data?.hits?.hits || [])
               .filter((item) => !excludedIds.has(String(item.id)))
               // Client-side guard: same eligibility as the query (truthy `parent`
@@ -138,6 +140,7 @@ class CommunityCreateForm extends Component {
         })
         .catch((error) => {
           console.error(error);
+          this.setState({ communitiesLoading: false });
         })
     );
   }
@@ -199,7 +202,7 @@ class CommunityCreateForm extends Component {
 
   render() {
     const { formConfig, canCreateRestricted, community } = this.props;
-    const { hasCommunity, communities, error } = this.state;
+    const { hasCommunity, communities, communitiesLoading, error } = this.state;
 
     return (
       <Overridable
@@ -282,9 +285,13 @@ class CommunityCreateForm extends Component {
                         }
                         fieldPath="metadata.community"
                         options={communities}
-                        defaultValue="Loading..."
+                        placeholder={
+                          communitiesLoading
+                            ? i18next.t("Loading...")
+                            : i18next.t("Select a collection")
+                        }
                         required
-                        disabled={_isEmpty(communities)}
+                        disabled={communitiesLoading || _isEmpty(communities)}
                       />
                     )}
                     {!hasCommunity && (
