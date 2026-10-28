@@ -32,6 +32,16 @@ import Overridable, { OverridableContext, overrideStore } from "react-overridabl
 import { getAncestorCommunities } from "./CommunitiesCardGroup";
 
 /**
+ * Initial create-vs-link mode from `?mode=new|link`.
+ *
+ * @returns {boolean} True when linking an existing collection (`mode=link`).
+ */
+function getInitialHasCommunity() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("mode") === "link";
+}
+
+/**
  * IDs that must not be selectable as a new subcollection of `community`.
  *
  * Includes the community itself and every ancestor (avoids hierarchy cycles).
@@ -98,7 +108,7 @@ IdentifierField.propTypes = {
 class CommunityCreateForm extends Component {
   state = {
     error: "",
-    hasCommunity: false,
+    hasCommunity: getInitialHasCommunity(),
     communities: [],
   };
 

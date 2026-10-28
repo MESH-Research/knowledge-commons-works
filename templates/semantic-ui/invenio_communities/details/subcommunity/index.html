@@ -26,10 +26,14 @@
       <h2 class="ui medium header mb-0 align-self-center">
         {{ config.get("APP_RDM_SUBCOMMUNITIES_LABEL", _("Subcommunities") ) }}
       </h2>
-      {% if community["children"]["allow"] and current_user.is_authenticated %}
+      {% if community["children"]["allow"] and permissions.can_update %}
         <a class="ui small button primary"
-           href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community['slug']) }}">
+           href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community['slug'], mode='new') }}">
           {{ _("New subcollection") }}
+        </a>
+        <a class="ui small button"
+           href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community['slug'], mode='link') }}">
+          {{ _("Link existing") }}
         </a>
       {% endif %}
     </div>
