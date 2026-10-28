@@ -76,7 +76,10 @@ jobs:
           CILOGON_CLIENT_ID: ${{ secrets.CILOGON_CLIENT_ID }}
           CILOGON_CLIENT_SECRET: ${{ secrets.CILOGON_CLIENT_SECRET }}
           COMMONS_PROFILES_API_TOKEN: ${{ secrets.TEST_COMMONS_PROFILES_API_TOKEN }}
-          INVENIO_SITE_UI_URL: ${{ vars.INVENIO_SITE_UI_URL }}
+          # Do not inject vars.INVENIO_SITE_UI_URL: tests/fixtures/urls.py
+          # defaults to http://localhost. A https repo var mismatches Flask
+          # test-client request.url (always http) used as silent-SSO
+          # final_redirect, without reflecting real TLS termination.
           INVENIO_SITE_API_URL: ${{ vars.INVENIO_SITE_API_URL }}
           INVENIO_COMMONS_API_REQUEST_PROTOCOL: https
           INVENIO_MAIL_SUPPRESS_SEND: True

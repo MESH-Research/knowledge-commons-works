@@ -50,10 +50,14 @@
            href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community_slug) }}">
           {{ _("See all") }}
         </a>
-        {% if current_user.is_authenticated %}
+        {% if permissions.can_update %}
           <a class="ui mini button primary align-self-center rel-ml-1"
-             href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community_slug) }}">
+             href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community_slug, mode='new') }}">
             {{ _("New subcollection") }}
+          </a>
+          <a class="ui mini button align-self-center rel-ml-1"
+             href="{{ url_for('invenio_communities.communities_new_subcommunity', pid_value=community_slug, mode='link') }}">
+            {{ _("Link existing") }}
           </a>
         {% endif %}
       {% endif %}
