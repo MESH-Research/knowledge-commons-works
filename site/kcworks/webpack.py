@@ -79,6 +79,7 @@ theme = WebpackThemeBundle(
                 "pdfjs-dist": "5.3.93",
             },
             "devDependencies": {
+                "@reduxjs/toolkit": "1.9.7",
                 "geopattern": "^1.2.3",
             },
             "aliases": {

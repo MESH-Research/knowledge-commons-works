@@ -116,7 +116,7 @@ KCWorks then runs two post-create patches before install (see
 - `scripts/patch-webpack-assets-pnpm-allow-builds.py` — modern pnpm
   `allowBuilds` / `strictDepBuilds` on the generated workspace file.
 - `scripts/patch-webpack-assets-tinymce.py` — rewrite assembled `package.json`
-  to `tinymce` `^8.5.1` and `@tinymce/tinymce-react` `^6.3.0`. Upstream bundles
+  to `tinymce` `^8.9.3` and `@tinymce/tinymce-react` `^6.3.0`. Upstream bundles
   still declare TinyMCE 6.x; declaring major 8 in a theme `webpack.py` would
   fail pywebpack same-major merge. The site overlay aliases `tinymce/tinymce` to
   `js/kcworks/tinymceGplShim.js` so every bundled editor gets
