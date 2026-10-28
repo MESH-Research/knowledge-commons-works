@@ -78,6 +78,7 @@
     "@babel/preset-env": "7.29.0",
     "@babel/preset-react": "7.28.5",
     "@inveniosoftware/eslint-config-invenio": "^2.0.0",
+    "@reduxjs/toolkit": "1.9.7",
     "@rspack/cli": ">1.0.0",
     "@rspack/core": "<1.7.0",
     "@rspack/dev-server": ">1.0.0",
