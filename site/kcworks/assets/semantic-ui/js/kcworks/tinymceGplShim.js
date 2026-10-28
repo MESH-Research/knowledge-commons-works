@@ -21,7 +21,7 @@
  * replaces defaults — so we inject into each editor iframe on ``init`` instead.
  *
  * Paired with ``scripts/patch-webpack-assets-tinymce.py``, which bumps the generated
- * assets ``package.json`` to TinyMCE 8.5.1+ / ``@tinymce/tinymce-react`` ^6.3 so the
+ * assets ``package.json`` to TinyMCE 8.9.3+ / ``@tinymce/tinymce-react`` ^6.3 so the
  * install matches this shim.
  */
 
