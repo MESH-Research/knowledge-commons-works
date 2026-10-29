@@ -3,7 +3,8 @@
   Based on invenio_previewer PDF.js template.
   Copyright (C) 2015-2025 CERN, (C) 2022-2024 TU Wien.
 
-  KCWorks override: uses upstream PDF viewer and adds KCWorks toolbar styling.
+  KCWorks override: uses upstream PDF viewer, KCWorks toolbar styling, and a
+  download progress bar wired to #loadingBar (file size from the record).
 #}
 
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
@@ -19,6 +20,8 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/pdfjs/web/pdf_viewer.css') }}" />
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pdfjs.css') }}" />
   {{ webpack['pdf_viewer_overrides_css.css'] }}
+  {# Register getDocument wrapper before deferred open_pdf.js #}
+  {{ webpack['pdf_viewer_load_progress.js'] }}
   <script src="{{ url_for('static', filename='js/pdfjs/build/pdf.min.mjs') }}" type="module"></script>
   <script src="{{ url_for('static', filename='js/pdfjs/web/pdf_viewer.mjs') }}" type="module"></script>
   <script src="{{ url_for('static', filename='js/open_pdf.js') }}" defer></script>
@@ -28,6 +31,7 @@
 {%- block panel %}
 
 <input id="pdf-file-uri" type="hidden" value="{{ file.uri }}" />
+<input id="pdf-file-size" type="hidden" value="{{ file.size|default(0)|int }}" />
 <input id="pdf-enable-scripting" type="hidden" value="{{ config.PREVIEWER_PDF_JS_ENABLE_SCRIPTING|default(false)|lower }}" />
 <input id="pdf-document-init-params" type="hidden" value='{{ config.PREVIEWER_PDF_JS_DOCUMENT_INIT_PARAMS|default({})|tojson }}' />
 
@@ -100,7 +104,7 @@
             </div>
             </div>
 
-            <div id="loadingBar">
+            <div id="loadingBar" hidden class="hidden" aria-hidden="true">
               <div class="progress">
                 <div class="glimmer">
                 </div>

@@ -15,7 +15,7 @@ in a theme ``webpack.py`` would fail pywebpack's same-major ``merge_deps``.
 After a successful create (still on 6.x majors), this script rewrites the
 assembled ``assets/package.json`` so ``pnpm install`` pulls:
 
-- ``tinymce`` ``^8.5.1`` (XSS fixes that have no 6.x backport)
+- ``tinymce`` ``^8.9.3`` (XSS fixes that have no 6.x backport)
 - ``@tinymce/tinymce-react`` ``^6.3.0`` (peer supports TinyMCE 8)
 
 The site overlay aliases ``tinymce/tinymce`` to
@@ -33,7 +33,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-TINYMCE_VERSION = "^8.5.1"
+TINYMCE_VERSION = "^8.9.3"
 TINYMCE_REACT_VERSION = "^6.3.0"
 
 

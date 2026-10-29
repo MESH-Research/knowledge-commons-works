@@ -64,16 +64,6 @@ RDM_RECORDS_IDENTIFIERS_SCHEMES.update({
 """Record-level identifier schemes"""
 
 RDM_RECORDS_PERSONORG_SCHEMES.update({
-    "hcid": {
-        "label": _("hcid"),
-        "validator": always_valid,
-        "datacite": "Other",
-    },
-    "kcid": {
-        "label": _("kcid"),
-        "validator": always_valid,
-        "datacite": "Other",
-    },
     "hc_username": {
         "label": _("KC member"),
         "validator": always_valid,
@@ -203,5 +193,5 @@ VOCABULARIES_AWARDS_OPENAIRE_FUNDERS = {
 
 Extends the upstream OpenAIRE → ROR funder prefix mapping with funders
 that appear in the OpenAIRE projects feed but are not yet covered by
-invenio-vocabularies' built-in dictionary. 
+invenio-vocabularies' built-in dictionary.
 """

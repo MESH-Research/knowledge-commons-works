@@ -32,6 +32,16 @@ import Overridable, { OverridableContext, overrideStore } from "react-overridabl
 import { getAncestorCommunities } from "./CommunitiesCardGroup";
 
 /**
+ * Initial create-vs-link mode from `?mode=new|link`.
+ *
+ * @returns {boolean} True when linking an existing collection (`mode=link`).
+ */
+function getInitialHasCommunity() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("mode") === "link";
+}
+
+/**
  * IDs that must not be selectable as a new subcollection of `community`.
  *
  * Includes the community itself and every ancestor (avoids hierarchy cycles).
@@ -98,8 +108,9 @@ IdentifierField.propTypes = {
 class CommunityCreateForm extends Component {
   state = {
     error: "",
-    hasCommunity: false,
+    hasCommunity: getInitialHasCommunity(),
     communities: [],
+    communitiesLoading: true,
   };
 
   componentDidMount() {
@@ -114,6 +125,7 @@ class CommunityCreateForm extends Component {
         .then((response) => response.data)
         .then((data) => {
           this.setState({
+            communitiesLoading: false,
             communities: (data?.hits?.hits || [])
               .filter((item) => !excludedIds.has(String(item.id)))
               // Client-side guard: same eligibility as the query (truthy `parent`
@@ -128,6 +140,7 @@ class CommunityCreateForm extends Component {
         })
         .catch((error) => {
           console.error(error);
+          this.setState({ communitiesLoading: false });
         })
     );
   }
@@ -189,7 +202,7 @@ class CommunityCreateForm extends Component {
 
   render() {
     const { formConfig, canCreateRestricted, community } = this.props;
-    const { hasCommunity, communities, error } = this.state;
+    const { hasCommunity, communities, communitiesLoading, error } = this.state;
 
     return (
       <Overridable
@@ -272,9 +285,13 @@ class CommunityCreateForm extends Component {
                         }
                         fieldPath="metadata.community"
                         options={communities}
-                        defaultValue="Loading..."
+                        placeholder={
+                          communitiesLoading
+                            ? i18next.t("Loading...")
+                            : i18next.t("Select a collection")
+                        }
                         required
-                        disabled={_isEmpty(communities)}
+                        disabled={communitiesLoading || _isEmpty(communities)}
                       />
                     )}
                     {!hasCommunity && (

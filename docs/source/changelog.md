@@ -5,20 +5,25 @@
 
 ## Unreleased
 
+## 1.1.3 (2026-10-27)
+
+- Security / dependencies
+  - update dnspython
+
 ## 1.1.2 (2026-10-24)
 
 - Security / dependencies
   - update brotli, filelock, and virtualenv for published advisories
-  - pin `pdfjs-dist` to `5.3.93` in site `webpack.py` (avoids vulnerable
-    `^5.0` float into ≥5.6.83)
+  - pin `pdfjs-dist` to `5.3.93` in site `webpack.py` (avoids vulnerable `^5.0`
+    float into ≥5.6.83)
 - Bug fixes
   - IIIF error handling and logging before generic 5xx responses
   - explicit Celery broker heartbeat configuration
 - Tests / CI
-  - thin root conftest toward the fixtures package; fix connection defaults
-    for docker-services-cli; purge indexer queues between tests
-  - user-data and importer suite fixes; install pnpm earlier in CI; stop
-    pulling secrets by default in tests
+  - thin root conftest toward the fixtures package; fix connection defaults for
+    docker-services-cli; purge indexer queues between tests
+  - user-data and importer suite fixes; install pnpm earlier in CI; stop pulling
+    secrets by default in tests
 
 ## 1.1.1 (2026-10-21)
 

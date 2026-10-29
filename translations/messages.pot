@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-10-24 06:09+0000\n"
+"POT-Creation-Date: 2026-10-29 00:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /opt/invenio/src/invenio.cfg:362
+#: /opt/invenio/src/invenio.cfg:368
 #, python-format
 msgid "%(icon)s Statistics"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:374
+#: /opt/invenio/src/invenio.cfg:380
 msgid ""
 "Collection managers and administrators can enable the statistics "
 "dashboard for this collection from the collection settings page"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:379
+#: /opt/invenio/src/invenio.cfg:385
 #: /opt/invenio/src/site/kcworks/config/custom_fields.py:174
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/config/config.py:138
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/records/communities/custom_fields/custom_fields.py:171
 msgid "Enable Dashboard"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:382
+#: /opt/invenio/src/invenio.cfg:388
 msgid ""
 "Enable the 'Statistics' tab that displays a collection statistics "
 "dashboard."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:454
+#: /opt/invenio/src/invenio.cfg:460
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:66
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:160
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:202
@@ -57,7 +57,7 @@ msgstr ""
 msgid "Best match"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:458
+#: /opt/invenio/src/invenio.cfg:464
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:70
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:168
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:210
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Newest"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:462
+#: /opt/invenio/src/invenio.cfg:468
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:74
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:172
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:214
@@ -87,15 +87,15 @@ msgstr ""
 msgid "Oldest"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:466
+#: /opt/invenio/src/invenio.cfg:472
 msgid "Most recently published"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:470
+#: /opt/invenio/src/invenio.cfg:476
 msgid "Earliest published"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:474
+#: /opt/invenio/src/invenio.cfg:480
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:846
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1747
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2001
@@ -106,290 +106,290 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:478
+#: /opt/invenio/src/invenio.cfg:484
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:82
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:248
 msgid "Recently updated"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:482
+#: /opt/invenio/src/invenio.cfg:488
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:86
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:252
 msgid "Least recently updated"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:486
+#: /opt/invenio/src/invenio.cfg:492
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:256
 msgid "Most viewed"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:489
+#: /opt/invenio/src/invenio.cfg:495
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:259
 msgid "Most downloaded"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:590
+#: /opt/invenio/src/invenio.cfg:596
 msgid "Help & FAQ"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:592
+#: /opt/invenio/src/invenio.cfg:598
 msgid "Terms of use"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:596
+#: /opt/invenio/src/invenio.cfg:602
 msgid "Privacy policy"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:600
+#: /opt/invenio/src/invenio.cfg:606
 msgid "Guidelines for use"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:603
+#: /opt/invenio/src/invenio.cfg:609
 msgid "Mesh Research"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:610
+#: /opt/invenio/src/invenio.cfg:616
 msgid "Knowledge Commons"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:612
+#: /opt/invenio/src/invenio.cfg:618
 msgid "LinkedIn"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:617
+#: /opt/invenio/src/invenio.cfg:623
 msgid "hcommons.social"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:622
+#: /opt/invenio/src/invenio.cfg:628
 msgid "Newsletter"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:630
+#: /opt/invenio/src/invenio.cfg:636
 msgid "Supporters"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:639
+#: /opt/invenio/src/invenio.cfg:645
 msgid "Michigan State University"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:641
+#: /opt/invenio/src/invenio.cfg:647
 msgid "National Science Foundation"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:646
+#: /opt/invenio/src/invenio.cfg:652
 msgid "National Endowment for the Humanities"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:951
+#: /opt/invenio/src/invenio.cfg:957
 #: /opt/invenio/src/templates/semantic-ui/invenio_communities/details/settings/base.html:23
 msgid "Subcollections"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1002
+#: /opt/invenio/src/invenio.cfg:1008
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:39
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:96
 msgid "Reader"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1003
+#: /opt/invenio/src/invenio.cfg:1009
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:97
 msgid "Can view restricted records."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1008
+#: /opt/invenio/src/invenio.cfg:1014
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:41
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:102
 msgid "Curator"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1009
+#: /opt/invenio/src/invenio.cfg:1015
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:103
 msgid "Can curate records and view restricted records."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1015
+#: /opt/invenio/src/invenio.cfg:1021
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:40
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:109
 msgid "Manager"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1017
+#: /opt/invenio/src/invenio.cfg:1023
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:111
 msgid "Can manage members, curate records and view restricted records."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1026
+#: /opt/invenio/src/invenio.cfg:1032
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/communities/services/facets.py:38
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:120
 msgid "Owner"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1027
+#: /opt/invenio/src/invenio.cfg:1033
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/config.py:121
 msgid "Full administrative access to the entire community."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1060
+#: /opt/invenio/src/invenio.cfg:1066
 #: /opt/invenio/src/templates/semantic-ui/invenio_app_rdm/intro_section.html:23
 msgid "Configure"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1061
+#: /opt/invenio/src/invenio.cfg:1067
 msgid "Curation"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1065
+#: /opt/invenio/src/invenio.cfg:1071
 msgid "Contribute"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1255 /opt/invenio/src/invenio.cfg:1299
+#: /opt/invenio/src/invenio.cfg:1261 /opt/invenio/src/invenio.cfg:1305
 msgid "Media URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1256 /opt/invenio/src/invenio.cfg:1265
-#: /opt/invenio/src/invenio.cfg:1274 /opt/invenio/src/invenio.cfg:1283
-#: /opt/invenio/src/invenio.cfg:1292 /opt/invenio/src/invenio.cfg:1300
-#: /opt/invenio/src/invenio.cfg:1309 /opt/invenio/src/invenio.cfg:1318
-#: /opt/invenio/src/invenio.cfg:1327
+#: /opt/invenio/src/invenio.cfg:1262 /opt/invenio/src/invenio.cfg:1271
+#: /opt/invenio/src/invenio.cfg:1280 /opt/invenio/src/invenio.cfg:1289
+#: /opt/invenio/src/invenio.cfg:1298 /opt/invenio/src/invenio.cfg:1306
+#: /opt/invenio/src/invenio.cfg:1315 /opt/invenio/src/invenio.cfg:1324
+#: /opt/invenio/src/invenio.cfg:1333
 msgid "Production company/publisher"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1257
+#: /opt/invenio/src/invenio.cfg:1263
 msgid "Work title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1258 /opt/invenio/src/invenio.cfg:1268
-#: /opt/invenio/src/invenio.cfg:1285 /opt/invenio/src/invenio.cfg:1294
-#: /opt/invenio/src/invenio.cfg:1330
+#: /opt/invenio/src/invenio.cfg:1264 /opt/invenio/src/invenio.cfg:1274
+#: /opt/invenio/src/invenio.cfg:1291 /opt/invenio/src/invenio.cfg:1300
+#: /opt/invenio/src/invenio.cfg:1336
 msgid "Project or series URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1259 /opt/invenio/src/invenio.cfg:1267
-#: /opt/invenio/src/invenio.cfg:1278 /opt/invenio/src/invenio.cfg:1303
-#: /opt/invenio/src/invenio.cfg:1320 /opt/invenio/src/invenio.cfg:1329
+#: /opt/invenio/src/invenio.cfg:1265 /opt/invenio/src/invenio.cfg:1273
+#: /opt/invenio/src/invenio.cfg:1284 /opt/invenio/src/invenio.cfg:1309
+#: /opt/invenio/src/invenio.cfg:1326 /opt/invenio/src/invenio.cfg:1335
 msgid "Production location"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1260 /opt/invenio/src/invenio.cfg:1322
-#: /opt/invenio/src/invenio.cfg:1331
+#: /opt/invenio/src/invenio.cfg:1266 /opt/invenio/src/invenio.cfg:1328
+#: /opt/invenio/src/invenio.cfg:1337
 msgid "Media, equipment, technologies used, etc."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1261 /opt/invenio/src/invenio.cfg:1270
-#: /opt/invenio/src/invenio.cfg:1288 /opt/invenio/src/invenio.cfg:1296
-#: /opt/invenio/src/invenio.cfg:1305 /opt/invenio/src/invenio.cfg:1332
+#: /opt/invenio/src/invenio.cfg:1267 /opt/invenio/src/invenio.cfg:1276
+#: /opt/invenio/src/invenio.cfg:1294 /opt/invenio/src/invenio.cfg:1302
+#: /opt/invenio/src/invenio.cfg:1311 /opt/invenio/src/invenio.cfg:1338
 msgid "Project or series title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1264 /opt/invenio/src/invenio.cfg:1282
-#: /opt/invenio/src/invenio.cfg:1291 /opt/invenio/src/invenio.cfg:1326
+#: /opt/invenio/src/invenio.cfg:1270 /opt/invenio/src/invenio.cfg:1288
+#: /opt/invenio/src/invenio.cfg:1297 /opt/invenio/src/invenio.cfg:1332
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1420
 msgid "Recording URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1266 /opt/invenio/src/invenio.cfg:1293
+#: /opt/invenio/src/invenio.cfg:1272 /opt/invenio/src/invenio.cfg:1299
 msgid "Recording title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1269 /opt/invenio/src/invenio.cfg:1295
-#: /opt/invenio/src/invenio.cfg:1304 /opt/invenio/src/invenio.cfg:1313
+#: /opt/invenio/src/invenio.cfg:1275 /opt/invenio/src/invenio.cfg:1301
+#: /opt/invenio/src/invenio.cfg:1310 /opt/invenio/src/invenio.cfg:1319
 msgid "Media, equipment, instruments, etc."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1273
+#: /opt/invenio/src/invenio.cfg:1279
 msgid "Documentary URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1275
+#: /opt/invenio/src/invenio.cfg:1281
 msgid "Documentary title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1276
+#: /opt/invenio/src/invenio.cfg:1282
 msgid "Project, program or series URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1277 /opt/invenio/src/invenio.cfg:1287
+#: /opt/invenio/src/invenio.cfg:1283 /opt/invenio/src/invenio.cfg:1293
 msgid "Equipment, technologies used, etc."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1279
+#: /opt/invenio/src/invenio.cfg:1285
 msgid "Project, program or series title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1284 /opt/invenio/src/invenio.cfg:1467
+#: /opt/invenio/src/invenio.cfg:1290 /opt/invenio/src/invenio.cfg:1473
 msgid "Interview title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1286
+#: /opt/invenio/src/invenio.cfg:1292
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:363
 msgid "Recording location"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1301
+#: /opt/invenio/src/invenio.cfg:1307
 msgid "Media title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1302
+#: /opt/invenio/src/invenio.cfg:1308
 msgid "Project or  series URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1308
+#: /opt/invenio/src/invenio.cfg:1314
 msgid "Performance URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1310
+#: /opt/invenio/src/invenio.cfg:1316
 msgid "Performance title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1311
+#: /opt/invenio/src/invenio.cfg:1317
 msgid "Performance location"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1312
+#: /opt/invenio/src/invenio.cfg:1318
 msgid "Project or program URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1314
+#: /opt/invenio/src/invenio.cfg:1320
 msgid "Project or program title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1317
+#: /opt/invenio/src/invenio.cfg:1323
 msgid "Episode URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1319
+#: /opt/invenio/src/invenio.cfg:1325
 msgid "Podcast episode title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1321
+#: /opt/invenio/src/invenio.cfg:1327
 msgid "Podcast series URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1323
+#: /opt/invenio/src/invenio.cfg:1329
 msgid "Podcast series title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1328
+#: /opt/invenio/src/invenio.cfg:1334
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:125
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:129
 msgid "Recording Title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1335
+#: /opt/invenio/src/invenio.cfg:1341
 msgid "Dataset size"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1336
+#: /opt/invenio/src/invenio.cfg:1342
 msgid "Dataset title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1337 /opt/invenio/src/invenio.cfg:1343
-#: /opt/invenio/src/invenio.cfg:1359 /opt/invenio/src/invenio.cfg:1364
-#: /opt/invenio/src/invenio.cfg:1368 /opt/invenio/src/invenio.cfg:1386
-#: /opt/invenio/src/invenio.cfg:1392 /opt/invenio/src/invenio.cfg:1398
-#: /opt/invenio/src/invenio.cfg:1404 /opt/invenio/src/invenio.cfg:1410
-#: /opt/invenio/src/invenio.cfg:1416 /opt/invenio/src/invenio.cfg:1421
-#: /opt/invenio/src/invenio.cfg:1448
+#: /opt/invenio/src/invenio.cfg:1343 /opt/invenio/src/invenio.cfg:1349
+#: /opt/invenio/src/invenio.cfg:1365 /opt/invenio/src/invenio.cfg:1370
+#: /opt/invenio/src/invenio.cfg:1374 /opt/invenio/src/invenio.cfg:1392
+#: /opt/invenio/src/invenio.cfg:1398 /opt/invenio/src/invenio.cfg:1404
+#: /opt/invenio/src/invenio.cfg:1410 /opt/invenio/src/invenio.cfg:1416
+#: /opt/invenio/src/invenio.cfg:1422 /opt/invenio/src/invenio.cfg:1427
+#: /opt/invenio/src/invenio.cfg:1454
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2569
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2652
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:126
@@ -401,16 +401,16 @@ msgstr ""
 msgid "Project URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1338
+#: /opt/invenio/src/invenio.cfg:1344
 msgid "Data storage repository"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1341 /opt/invenio/src/invenio.cfg:1367
+#: /opt/invenio/src/invenio.cfg:1347 /opt/invenio/src/invenio.cfg:1373
 msgid "Image title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1342 /opt/invenio/src/invenio.cfg:1358
-#: /opt/invenio/src/invenio.cfg:1363
+#: /opt/invenio/src/invenio.cfg:1348 /opt/invenio/src/invenio.cfg:1364
+#: /opt/invenio/src/invenio.cfg:1369
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:947
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:643
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:138
@@ -419,95 +419,95 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1346
+#: /opt/invenio/src/invenio.cfg:1352
 msgid "Chart title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1349
+#: /opt/invenio/src/invenio.cfg:1355
 msgid "Diagram title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1352
+#: /opt/invenio/src/invenio.cfg:1358
 msgid "Figure title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1353
+#: /opt/invenio/src/invenio.cfg:1359
 msgid "Page(s)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1355
+#: /opt/invenio/src/invenio.cfg:1361
 msgid "Map title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1357
+#: /opt/invenio/src/invenio.cfg:1363
 msgid "Artwork title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1362
+#: /opt/invenio/src/invenio.cfg:1368
 msgid "Photograph title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1370 /opt/invenio/src/invenio.cfg:1373
-#: /opt/invenio/src/invenio.cfg:1529 /opt/invenio/src/invenio.cfg:1533
+#: /opt/invenio/src/invenio.cfg:1376 /opt/invenio/src/invenio.cfg:1379
+#: /opt/invenio/src/invenio.cfg:1535 /opt/invenio/src/invenio.cfg:1539
 msgid "Resource title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1371
+#: /opt/invenio/src/invenio.cfg:1377
 msgid "Curriculum title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1372
+#: /opt/invenio/src/invenio.cfg:1378
 msgid "Lesson plan title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1374
+#: /opt/invenio/src/invenio.cfg:1380
 msgid "Syllabus title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1375 /opt/invenio/src/invenio.cfg:1378
-#: /opt/invenio/src/invenio.cfg:1380 /opt/invenio/src/invenio.cfg:1383
+#: /opt/invenio/src/invenio.cfg:1381 /opt/invenio/src/invenio.cfg:1384
+#: /opt/invenio/src/invenio.cfg:1386 /opt/invenio/src/invenio.cfg:1389
 msgid "Presentation title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1376
+#: /opt/invenio/src/invenio.cfg:1382
 msgid "Paper title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1377
+#: /opt/invenio/src/invenio.cfg:1383
 msgid "Poster title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1381
+#: /opt/invenio/src/invenio.cfg:1387
 msgid "Slide counts"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1385 /opt/invenio/src/invenio.cfg:1420
+#: /opt/invenio/src/invenio.cfg:1391 /opt/invenio/src/invenio.cfg:1426
 msgid "Software name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1387 /opt/invenio/src/invenio.cfg:1393
-#: /opt/invenio/src/invenio.cfg:1399 /opt/invenio/src/invenio.cfg:1422
+#: /opt/invenio/src/invenio.cfg:1393 /opt/invenio/src/invenio.cfg:1399
+#: /opt/invenio/src/invenio.cfg:1405 /opt/invenio/src/invenio.cfg:1428
 msgid "Producer/publisher"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1390 /opt/invenio/src/invenio.cfg:1402
+#: /opt/invenio/src/invenio.cfg:1396 /opt/invenio/src/invenio.cfg:1408
 msgid "Model title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1391 /opt/invenio/src/invenio.cfg:1403
+#: /opt/invenio/src/invenio.cfg:1397 /opt/invenio/src/invenio.cfg:1409
 msgid "Model URLs and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1396
+#: /opt/invenio/src/invenio.cfg:1402
 msgid "Application Name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1397
+#: /opt/invenio/src/invenio.cfg:1403
 msgid "Application URLs and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1405 /opt/invenio/src/invenio.cfg:1411
-#: /opt/invenio/src/invenio.cfg:1417
+#: /opt/invenio/src/invenio.cfg:1411 /opt/invenio/src/invenio.cfg:1417
+#: /opt/invenio/src/invenio.cfg:1423
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1162
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2018
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2471
@@ -516,256 +516,256 @@ msgstr ""
 msgid "Publisher"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1408
+#: /opt/invenio/src/invenio.cfg:1414
 msgid "Notebook name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1409
+#: /opt/invenio/src/invenio.cfg:1415
 msgid "Notebook URLs and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1414
+#: /opt/invenio/src/invenio.cfg:1420
 msgid "Service name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1415
+#: /opt/invenio/src/invenio.cfg:1421
 msgid "Service URLs and Other Identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1424 /opt/invenio/src/invenio.cfg:1526
+#: /opt/invenio/src/invenio.cfg:1430 /opt/invenio/src/invenio.cfg:1532
 msgid "Document title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1426 /opt/invenio/src/invenio.cfg:1427
+#: /opt/invenio/src/invenio.cfg:1432 /opt/invenio/src/invenio.cfg:1433
 msgid "Abstract title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1428
+#: /opt/invenio/src/invenio.cfg:1434
 msgid "Abstract pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1430
+#: /opt/invenio/src/invenio.cfg:1436
 msgid "Bibliography title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1432
+#: /opt/invenio/src/invenio.cfg:1438
 msgid "Post title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1433
+#: /opt/invenio/src/invenio.cfg:1439
 msgid "Blog title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1434
+#: /opt/invenio/src/invenio.cfg:1440
 msgid "Blog home URL"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1436
+#: /opt/invenio/src/invenio.cfg:1442
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/custom_fields/ui/imprint_fields.py:25
 msgid "Book title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1438
+#: /opt/invenio/src/invenio.cfg:1444
 msgid "Chapter/section title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1439
+#: /opt/invenio/src/invenio.cfg:1445
 msgid "Section pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1442
+#: /opt/invenio/src/invenio.cfg:1448
 msgid "Proceedings title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1443
+#: /opt/invenio/src/invenio.cfg:1449
 msgid "Proceedings URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1446
+#: /opt/invenio/src/invenio.cfg:1452
 msgid "Plan title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1447
+#: /opt/invenio/src/invenio.cfg:1453
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1815
 msgid "Plan URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1451
+#: /opt/invenio/src/invenio.cfg:1457
 msgid "Documentation title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1452
+#: /opt/invenio/src/invenio.cfg:1458
 msgid "Documentation URLs and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1455
+#: /opt/invenio/src/invenio.cfg:1461
 msgid "Editorial title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1456
+#: /opt/invenio/src/invenio.cfg:1462
 msgid "Newspaper/periodical name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1457
+#: /opt/invenio/src/invenio.cfg:1463
 msgid "Editorial pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1458 /opt/invenio/src/invenio.cfg:1487
-#: /opt/invenio/src/invenio.cfg:1497
+#: /opt/invenio/src/invenio.cfg:1464 /opt/invenio/src/invenio.cfg:1493
+#: /opt/invenio/src/invenio.cfg:1503
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/contrib/imprint/custom_fields.py:103
 #: /opt/invenio/src/site/kcworks/metadata_fields/kcr_metadata_fields.py:156
 msgid "Edition"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1459
+#: /opt/invenio/src/invenio.cfg:1465
 msgid "Editorial URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1462
+#: /opt/invenio/src/invenio.cfg:1468
 msgid "Essay title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1463
+#: /opt/invenio/src/invenio.cfg:1469
 msgid "Essay URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1464
+#: /opt/invenio/src/invenio.cfg:1470
 msgid "Essay pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1470 /opt/invenio/src/invenio.cfg:1484
-#: /opt/invenio/src/invenio.cfg:1494
+#: /opt/invenio/src/invenio.cfg:1476 /opt/invenio/src/invenio.cfg:1490
+#: /opt/invenio/src/invenio.cfg:1500
 msgid "Article title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1471 /opt/invenio/src/invenio.cfg:1486
-#: /opt/invenio/src/invenio.cfg:1496
+#: /opt/invenio/src/invenio.cfg:1477 /opt/invenio/src/invenio.cfg:1492
+#: /opt/invenio/src/invenio.cfg:1502
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:164
 msgid "Article pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1474
+#: /opt/invenio/src/invenio.cfg:1480
 msgid "Comment title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1475
+#: /opt/invenio/src/invenio.cfg:1481
 msgid "Comment URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1476
+#: /opt/invenio/src/invenio.cfg:1482
 msgid "Comment pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1479
+#: /opt/invenio/src/invenio.cfg:1485
 msgid "Response title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1480
+#: /opt/invenio/src/invenio.cfg:1486
 msgid "Response URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1481
+#: /opt/invenio/src/invenio.cfg:1487
 msgid "Response pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1485
+#: /opt/invenio/src/invenio.cfg:1491
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:188
 msgid "Magazine/periodical title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1490
+#: /opt/invenio/src/invenio.cfg:1496
 msgid "Monograph title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1491
+#: /opt/invenio/src/invenio.cfg:1497
 msgid "Monograph URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1495
+#: /opt/invenio/src/invenio.cfg:1501
 msgid "Newspaper name"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1499
+#: /opt/invenio/src/invenio.cfg:1505
 msgid "Publication title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1500
+#: /opt/invenio/src/invenio.cfg:1506
 msgid "Poem title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1501
+#: /opt/invenio/src/invenio.cfg:1507
 msgid "Preprint title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1503
+#: /opt/invenio/src/invenio.cfg:1509
 msgid "Report title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1504
+#: /opt/invenio/src/invenio.cfg:1510
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:184
 msgid "Total report pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1507 /opt/invenio/src/invenio.cfg:1540
+#: /opt/invenio/src/invenio.cfg:1513 /opt/invenio/src/invenio.cfg:1546
 msgid "Review title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1508
+#: /opt/invenio/src/invenio.cfg:1514
 msgid "Journal/periodical title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1509
+#: /opt/invenio/src/invenio.cfg:1515
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:189
 msgid "Review pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1510
+#: /opt/invenio/src/invenio.cfg:1516
 msgid "Review URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1513
+#: /opt/invenio/src/invenio.cfg:1519
 msgid "Standard title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1514
+#: /opt/invenio/src/invenio.cfg:1520
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2112
 msgid "Standard URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1516
+#: /opt/invenio/src/invenio.cfg:1522
 msgid "Thesis/dissertation title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1518
+#: /opt/invenio/src/invenio.cfg:1524
 msgid "White paper title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1519
+#: /opt/invenio/src/invenio.cfg:1525
 msgid "White paper URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1522
+#: /opt/invenio/src/invenio.cfg:1528
 msgid "Working paper title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1523
+#: /opt/invenio/src/invenio.cfg:1529
 msgid "Working paper URLs and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1527
+#: /opt/invenio/src/invenio.cfg:1533
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2285
 msgid "Document URL and other identifiers"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1530
+#: /opt/invenio/src/invenio.cfg:1536
 msgid "Catalog title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1531
+#: /opt/invenio/src/invenio.cfg:1537
 msgid "Collection title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1532
+#: /opt/invenio/src/invenio.cfg:1538
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:371
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2352
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:616
@@ -773,74 +773,74 @@ msgstr ""
 msgid "Event title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1535
+#: /opt/invenio/src/invenio.cfg:1541
 msgid "Title of notes"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1536
+#: /opt/invenio/src/invenio.cfg:1542
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:964
 msgid "Total pages"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1537
+#: /opt/invenio/src/invenio.cfg:1543
 msgid "Current volume"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1539
+#: /opt/invenio/src/invenio.cfg:1545
 msgid "Patent title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1541
+#: /opt/invenio/src/invenio.cfg:1547
 msgid "Object title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1542
+#: /opt/invenio/src/invenio.cfg:1548
 msgid "Workflow title"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1547 /opt/invenio/src/invenio.cfg:1550
-#: /opt/invenio/src/invenio.cfg:1555 /opt/invenio/src/invenio.cfg:1556
-#: /opt/invenio/src/invenio.cfg:1557 /opt/invenio/src/invenio.cfg:1558
-#: /opt/invenio/src/invenio.cfg:1559 /opt/invenio/src/invenio.cfg:1560
-#: /opt/invenio/src/invenio.cfg:1561
+#: /opt/invenio/src/invenio.cfg:1553 /opt/invenio/src/invenio.cfg:1556
+#: /opt/invenio/src/invenio.cfg:1561 /opt/invenio/src/invenio.cfg:1562
+#: /opt/invenio/src/invenio.cfg:1563 /opt/invenio/src/invenio.cfg:1564
+#: /opt/invenio/src/invenio.cfg:1565 /opt/invenio/src/invenio.cfg:1566
+#: /opt/invenio/src/invenio.cfg:1567
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:318
 msgid "e.g. 30 min"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1552
+#: /opt/invenio/src/invenio.cfg:1558
 msgid "e.g., sound equipment, software (press 'enter' to add each item)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1566
+#: /opt/invenio/src/invenio.cfg:1572
 msgid "e.g. 32 cm, 1.5 GB (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1568
+#: /opt/invenio/src/invenio.cfg:1574
 msgid " "
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1582
+#: /opt/invenio/src/invenio.cfg:1588
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:235
 msgid "Copy/paste your existing DOI here..."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1583
+#: /opt/invenio/src/invenio.cfg:1589
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:236
 msgid "Discard the reserved DOI."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1584
+#: /opt/invenio/src/invenio.cfg:1590
 msgid "Reserve a DOI now!"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1588
+#: /opt/invenio/src/invenio.cfg:1594
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:239
 msgid ""
 "Reserve a DOI by pressing the button (so it can be included in files "
 "prior to upload). The DOI is registered when your upload is published."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1593
+#: /opt/invenio/src/invenio.cfg:1599
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/config.py:249
 msgid ""
 "Only enter a DOI if you have already registered one with a DOI provider. "
@@ -848,41 +848,41 @@ msgid ""
 "upload is published."
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:1963 /opt/invenio/src/invenio.cfg:2059
-#: /opt/invenio/src/invenio.cfg:2156 /opt/invenio/src/invenio.cfg:2242
-#: /opt/invenio/src/invenio.cfg:2345 /opt/invenio/src/invenio.cfg:2444
-#: /opt/invenio/src/invenio.cfg:2543
+#: /opt/invenio/src/invenio.cfg:1969 /opt/invenio/src/invenio.cfg:2065
+#: /opt/invenio/src/invenio.cfg:2162 /opt/invenio/src/invenio.cfg:2248
+#: /opt/invenio/src/invenio.cfg:2351 /opt/invenio/src/invenio.cfg:2450
+#: /opt/invenio/src/invenio.cfg:2549
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:306
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:357
 msgid "e.g. 30 min (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:2643
+#: /opt/invenio/src/invenio.cfg:2649
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:208
 msgid "e.g. 1.4M rows (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:2738
+#: /opt/invenio/src/invenio.cfg:2744
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:255
 msgid "e.g. 32 x 40 cm (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:2935
+#: /opt/invenio/src/invenio.cfg:2941
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:886
 msgid "e.g. 30 min (press enter to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:3092
+#: /opt/invenio/src/invenio.cfg:3098
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:438
 msgid "e.g. 400 MB"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:3205
+#: /opt/invenio/src/invenio.cfg:3211
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1740
 msgid "e.g., 400 words (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:3796
+#: /opt/invenio/src/invenio.cfg:3802
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1104
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1106
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1121
@@ -892,7 +892,7 @@ msgstr ""
 msgid "Add Contributor"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:3797
+#: /opt/invenio/src/invenio.cfg:3803
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1107
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:1122
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-modular-deposit-form/invenio_modular_deposit_form/config/alternate_paged.py:927
@@ -900,16 +900,16 @@ msgstr ""
 msgid "Edit Contributor"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:4113
+#: /opt/invenio/src/invenio.cfg:4119
 msgid "e.g., 1000 maps (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:4217
+#: /opt/invenio/src/invenio.cfg:4223
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:853
 msgid "e.g., 1000 books (press 'enter' to add)"
 msgstr ""
 
-#: /opt/invenio/src/invenio.cfg:4723
+#: /opt/invenio/src/invenio.cfg:4729
 #: /opt/invenio/src/site/kcworks/config/deposit_form_layout.py:2727
 msgid "e.g. 10 cm (press 'enter' to add)"
 msgstr ""
@@ -2049,7 +2049,7 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/config/pids.py:42
 #: /opt/invenio/src/site/kcworks/config/pids.py:49
 #: /opt/invenio/src/site/kcworks/config/pids.py:65
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:125
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:115
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:89
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:368
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:375
@@ -2116,38 +2116,30 @@ msgid "NEH record ID"
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/config/vocabularies.py:68
-msgid "hcid"
-msgstr ""
-
 #: /opt/invenio/src/site/kcworks/config/vocabularies.py:73
-msgid "kcid"
-msgstr ""
-
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:78
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:83
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:116
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:106
 msgid "KC member"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:88
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:78
 msgid "NEH user ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:93
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:83
 msgid "Import user ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:98
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:88
 msgid "Email"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:106
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:96
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:92
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:44
 msgid "GRID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:107
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:97
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:72
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:45
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:126
@@ -2155,7 +2147,7 @@ msgstr ""
 msgid "GND"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:108
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:98
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:71
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:100
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:46
@@ -2163,7 +2155,7 @@ msgstr ""
 msgid "ISNI"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:109
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:99
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:73
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:47
 msgid "ROR"
