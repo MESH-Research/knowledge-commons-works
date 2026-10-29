@@ -59,3 +59,14 @@
   color: var(--main-color);
 }
 
+/* Align download progress with the KCWorks toolbar; keep bar visible while loading. */
+#toolbarContainer {
+  --progressBar-color: #c8c8c8;
+  --progressBar-bg-color: #3a3a3a;
+  --progressBar-blend-color: #8a8a8a;
+}
+
+#toolbarContainer #loadingBar:not([hidden]):not(.hidden) {
+  height: 4px;
+}
+

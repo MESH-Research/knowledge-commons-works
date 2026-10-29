@@ -20,6 +20,9 @@ theme = WebpackThemeBundle(
                 "pdf_viewer_overrides_css": (
                     "./scss/invenio_custom_pdf_viewer/pdfjs_overrides.scss"
                 ),
+                "pdf_viewer_load_progress": (
+                    "./js/invenio_custom_pdf_viewer/pdf_load_progress.js"
+                ),
                 "custom_default_viewer_css": (
                     "./less/site/views/previewers/custom_default_viewer.less"
                 ),
