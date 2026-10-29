@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Development Roadmap" href="roadmap.html"><link rel="prev" title="Feature Highlights" href="feature_highlights.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Changes - Knowledge Commons Works 1.1.3 documentation</title>
+        <title>Changes - Knowledge Commons Works 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Knowledge Commons Works 1.1.3 documentation</div></a>
+      <a href="index.html"><div class="brand">Knowledge Commons Works 1.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.1.3 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.2.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -286,11 +286,51 @@
 <!-- Copyright (C) 2024-2025 Mesh Research. -->
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
-<section id="unreleased">
-<h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
-</section>
 <section id="id1">
-<h2>1.1.3 (2026-10-27)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>1.2.0 (2026-10-28)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>File uploads</p>
+<ul>
+<li><p>Add full-file integrity check for multi-part Uppy uploads</p></li>
+</ul>
+</li>
+<li><p>Subcollections admin UX</p>
+<ul>
+<li><p>improve subcollection enable toggle UX</p></li>
+<li><p>add separate buttons to create/link a subcollection</p></li>
+<li><p>fix existing subcollection select dropdown on form</p></li>
+<li><p>add missing browse message trans and remove msg icon</p></li>
+</ul>
+</li>
+<li><p>PDF previewer</p>
+<ul>
+<li><p>add progress bar to pdf previewer for large files</p></li>
+</ul>
+</li>
+<li><p>Security / dependencies</p>
+<ul>
+<li><p>update tinymce and add reduxjs/toolkit to dev dependencies</p></li>
+<li><p>sanitize task output against potential user data leakage</p></li>
+</ul>
+</li>
+<li><p>Testing</p>
+<ul>
+<li><p>avoid db pool exhaustion and quiet PID logging spam</p></li>
+<li><p>fix workflow pnpm version in deposit form submodule</p></li>
+<li><p>fix minor ty errors</p></li>
+</ul>
+</li>
+<li><p>Configuration</p>
+<ul>
+<li><p>add extra Google Analytics URLs to CSP</p></li>
+<li><p>fix CSP setting for S3 bucket domain for staging compatibility</p></li>
+<li><p>remove legacy kcid and hcid personorg identifier schemes</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>1.1.3 (2026-10-27)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Security / dependencies</p>
 <ul>
@@ -299,8 +339,8 @@
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>1.1.2 (2026-10-24)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h2>1.1.2 (2026-10-24)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Security / dependencies</p>
 <ul>
@@ -325,8 +365,8 @@ secrets by default in tests</p></li>
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>1.1.1 (2026-10-21)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h2>1.1.1 (2026-10-21)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>update many dependencies with reported vulnerabilities:</p>
 <ul>
@@ -343,8 +383,8 @@ nbconvert, multidict, marshmallow, pygments, setuptools</p></li>
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>1.1.0 (2026-10-20)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h2>1.1.0 (2026-10-20)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Authentication &amp; API security</p>
 <ul>
@@ -441,8 +481,8 @@ as for certifi (which drops some compromised CA certificates).</p></li>
 </li>
 </ul>
 </section>
-<section id="id5">
-<h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <p>This 1.0.0 release represents not only an upgrade of our underlying InvenioRDM
 platform, but a major step forward in features, stability, and security. These
 enhancements include:</p>
@@ -615,8 +655,8 @@ images</p></li>
 </li>
 </ul>
 </section>
-<section id="id6">
-<h2>0.8.1 (2026-06-09)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>0.8.1 (2026-06-09)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix release</p>
 <ul>
@@ -626,8 +666,8 @@ often causing “jammed” uploads.</p></li>
 </li>
 </ul>
 </section>
-<section id="id7">
-<h2>0.8.0 (2026-05-19)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<section id="id8">
+<h2>0.8.0 (2026-05-19)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
 <p>Major feature release</p>
 <ul class="simple">
 <li><p>New single-sign-on login and user-data sync system based on KCProfiles and
@@ -689,8 +729,8 @@ user/community flows</p></li>
 </li>
 </ul>
 </section>
-<section id="id8">
-<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <p>Bug fix release</p>
 <ul class="simple">
 <li><p>Collections</p>
@@ -728,8 +768,8 @@ instances on the same machine.</p></li>
 </li>
 </ul>
 </section>
-<section id="id9">
-<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<section id="id10">
+<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Search paging and navigation improvements</p>
 <ul>
@@ -762,8 +802,8 @@ in many tabs at once.</p></li>
 </li>
 </ul>
 </section>
-<section id="id10">
-<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<section id="id11">
+<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix</p>
 <ul>
@@ -779,8 +819,8 @@ weren’t filtered by community properly.</p></li>
 </li>
 </ul>
 </section>
-<section id="id11">
-<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<section id="id12">
+<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Major new feature: Stats dashboards for collections and KCWorks as a whole</p></li>
 <li><p>Other misc. user-facing improvements and bug fixes:</p>
@@ -886,8 +926,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id12">
-<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<section id="id13">
+<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -896,8 +936,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id13">
-<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<section id="id14">
+<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -907,8 +947,8 @@ publication submissions.</p></li>
 </li>
 </ul>
 </section>
-<section id="id14">
-<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<section id="id15">
+<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -926,8 +966,8 @@ publication information line of search result items.</p></li>
 </li>
 </ul>
 </section>
-<section id="id15">
-<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<section id="id16">
+<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Group collections</p>
 <ul>
@@ -986,16 +1026,16 @@ invenio-rdm-records, invenio-vocabularies.</p></li>
 <li><p>Public roadmap updates</p></li>
 </ul>
 </section>
-<section id="id16">
-<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<section id="id17">
+<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added a new CLI command to allow admins to bulk update a single metadata field
 to a single new fixed value for every record in a collection.</p></li>
 <li><p>Added public roadmap to the documentation.</p></li>
 </ul>
 </section>
-<section id="id17">
-<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<section id="id18">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
@@ -1534,24 +1574,24 @@ upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#unreleased">Unreleased</a></li>
-<li><a class="reference internal" href="#id1">1.1.3 (2026-10-27)</a></li>
-<li><a class="reference internal" href="#id2">1.1.2 (2026-10-24)</a></li>
-<li><a class="reference internal" href="#id3">1.1.1 (2026-10-21)</a></li>
-<li><a class="reference internal" href="#id4">1.1.0 (2026-10-20)</a></li>
-<li><a class="reference internal" href="#id5">1.0.0 (2026-09-24)</a></li>
-<li><a class="reference internal" href="#id6">0.8.1 (2026-06-09)</a></li>
-<li><a class="reference internal" href="#id7">0.8.0 (2026-05-19)</a></li>
-<li><a class="reference internal" href="#id8">0.7.3 (2026-02-12)</a></li>
-<li><a class="reference internal" href="#id9">0.7.2 (2026-01-20)</a></li>
-<li><a class="reference internal" href="#id10">0.7.1 (2025-12-19)</a></li>
-<li><a class="reference internal" href="#id11">0.7.0 (2025-12-15)</a></li>
-<li><a class="reference internal" href="#id12">0.5.6 (2025-09-30)</a></li>
-<li><a class="reference internal" href="#id13">0.5.5 (2025-09-10)</a></li>
-<li><a class="reference internal" href="#id14">0.5.4 (2025-08-14)</a></li>
-<li><a class="reference internal" href="#id15">0.5.3 (2025-07-17)</a></li>
-<li><a class="reference internal" href="#id16">0.5.2 (2025-05-29)</a></li>
-<li><a class="reference internal" href="#id17">0.5.1 (2025-05-13)</a></li>
+<li><a class="reference internal" href="#id1">1.2.0 (2026-10-28)</a></li>
+<li><a class="reference internal" href="#id2">1.1.3 (2026-10-27)</a></li>
+<li><a class="reference internal" href="#id3">1.1.2 (2026-10-24)</a></li>
+<li><a class="reference internal" href="#id4">1.1.1 (2026-10-21)</a></li>
+<li><a class="reference internal" href="#id5">1.1.0 (2026-10-20)</a></li>
+<li><a class="reference internal" href="#id6">1.0.0 (2026-09-24)</a></li>
+<li><a class="reference internal" href="#id7">0.8.1 (2026-06-09)</a></li>
+<li><a class="reference internal" href="#id8">0.8.0 (2026-05-19)</a></li>
+<li><a class="reference internal" href="#id9">0.7.3 (2026-02-12)</a></li>
+<li><a class="reference internal" href="#id10">0.7.2 (2026-01-20)</a></li>
+<li><a class="reference internal" href="#id11">0.7.1 (2025-12-19)</a></li>
+<li><a class="reference internal" href="#id12">0.7.0 (2025-12-15)</a></li>
+<li><a class="reference internal" href="#id13">0.5.6 (2025-09-30)</a></li>
+<li><a class="reference internal" href="#id14">0.5.5 (2025-09-10)</a></li>
+<li><a class="reference internal" href="#id15">0.5.4 (2025-08-14)</a></li>
+<li><a class="reference internal" href="#id16">0.5.3 (2025-07-17)</a></li>
+<li><a class="reference internal" href="#id17">0.5.2 (2025-05-29)</a></li>
+<li><a class="reference internal" href="#id18">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
@@ -1574,7 +1614,7 @@ upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=cb7bf70b"></script>
+</div><script src="_static/documentation_options.js?v=6efca38a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
