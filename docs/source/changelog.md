@@ -3,7 +3,28 @@
 
 # Changes
 
-## Unreleased
+## 1.2.0 (2026-10-28)
+
+- File uploads
+  - Add full-file integrity check for multi-part Uppy uploads
+- Subcollections admin UX
+  - improve subcollection enable toggle UX
+  - add separate buttons to create/link a subcollection
+  - fix existing subcollection select dropdown on form
+  - add missing browse message trans and remove msg icon
+- PDF previewer
+  - add progress bar to pdf previewer for large files
+- Security / dependencies
+  - update tinymce and add reduxjs/toolkit to dev dependencies
+  - sanitize task output against potential user data leakage
+- Testing
+  - avoid db pool exhaustion and quiet PID logging spam
+  - fix workflow pnpm version in deposit form submodule
+  - fix minor ty errors
+- Configuration
+  - add extra Google Analytics URLs to CSP
+  - fix CSP setting for S3 bucket domain for staging compatibility
+  - remove legacy kcid and hcid personorg identifier schemes
 
 ## 1.1.3 (2026-10-27)
 

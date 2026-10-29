@@ -13,7 +13,7 @@ Knowledge Commons Works is a collaborative tool for storing and sharing academic
 research. It is part of Knowledge Commons and is built on an instance of the
 InvenioRDM repository system.
 
-Version 1.1.3
+Version 1.2.0
 
 ## Copyright
 
