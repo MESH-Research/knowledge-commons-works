@@ -53,7 +53,7 @@ dependencies = [
   "pyjwt>=2.14.0",
   "sentry-sdk[flask]>=1,<2",
   "sqlalchemy[asyncio]",
-  "tornado>=6.5.9",
+  "tornado>=6.6",
   "tqdm",
   "uwsgi>=2.0.23",
   "nbconvert>=7.17.2,<8",
