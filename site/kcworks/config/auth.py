@@ -93,6 +93,15 @@ STATIC_API_TOKEN_ROUTES = {
 # to the KC Profiles microservice via the SSO broker.
 # We declare the globus app here in order to use oauthclient infrastructure
 # to manage users' secondary authentication with Globus.
+#
+# ``GLOBUS_API_CREDENTIALS`` is the Flask-OAuthlib ``app_key`` for that remote
+# app (see ``GlobusAPIOAuthSettingsHelper``). Client ID/secret come from the
+# environment — never commit plaintext values.
+GLOBUS_API_CREDENTIALS = {
+    "consumer_key": os.getenv("GLOBUS_CLIENT_ID"),
+    "consumer_secret": os.getenv("GLOBUS_CLIENT_SECRET"),
+}
+
 OAUTHCLIENT_REMOTE_APPS = {
     "globus": GLOBUS_API_REMOTE_APP,
 }

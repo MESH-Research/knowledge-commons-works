@@ -625,7 +625,18 @@ COMMONS_PROFILES_API_TOKEN
 SPARKPOST_USERNAME
 SPARKPOST_API_KEY
 INVENIO_DATACITE_PASSWORD
+ICER_DATA_HUB_PROVISIONING_TOKEN
+GLOBUS_CLIENT_ID
+GLOBUS_CLIENT_SECRET
 ```
+
+`GLOBUS_CLIENT_ID` and `GLOBUS_CLIENT_SECRET` are the Globus Auth application
+credentials (from [developers.globus.org](https://developers.globus.org/)).
+They are loaded into Flask as `GLOBUS_API_CREDENTIALS` (`consumer_key` /
+`consumer_secret`) for the oauthclient Globus remote app. Redirect URI for the
+app should match oauthclient’s authorized callback (typically
+`/oauth/authorized/globus/`). `ICER_DATA_HUB_PROVISIONING_TOKEN` is the Bearer
+token for MSU Data Hub bucket provisioning via the ICER Ceph-S3 API.
 
 Also configure (locally or via your secret store — not all are in the startup
 script’s default SM key list):
