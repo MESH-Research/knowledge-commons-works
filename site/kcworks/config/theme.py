@@ -4,6 +4,8 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+from invenio_i18n import lazy_gettext as _
+
 from kcworks.config.site_urls import (
     KC_HELP_URL,
     KC_WORDPRESS_DOMAIN,

@@ -5,6 +5,7 @@
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
 from invenio_i18n import LazyString
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.resources.stats.event_builders import (
     build_record_unique_id,
 )
@@ -79,24 +80,6 @@ When both enabled, aggregation and cache generation tasks will run hourly:
 STATS_DASHBOARD_ENABLED_GLOBAL = True
 STATS_DASHBOARD_ENABLED_COMMUNITY = True
 STATS_DASHBOARD_COMMUNITY_OPT_IN = True
-
-
-# FIXME: restrict this permission to authorized users with the proper role
-AllowAllPermission = type(
-    "Allow",
-    (),
-    {"can": lambda self: True, "allows": lambda *args: True},
-)()
-
-
-def AllowAllPermissionFactory(obj_id, action) -> AllowAllPermission:
-    """Permission factory that allows any user.
-
-    Returns:
-        AllowAllPermission
-    """
-    return AllowAllPermission
-
 
 # Register stats templates as new-style index templates instead of
 # using the old-style index templates.
@@ -203,7 +186,7 @@ STATS_AGGREGATIONS = {
 STATS_QUERIES = {
     "record-view": {
         "cls": TermsQuery,
-        "permission_factory": AllowAllPermissionFactory,
+        "permission_factory": None,
         "params": {
             "index": "stats-record-view",
             "doc_type": "record-view-day-aggregation",
@@ -223,7 +206,7 @@ STATS_QUERIES = {
     },
     "record-view-all-versions": {
         "cls": TermsQuery,
-        "permission_factory": AllowAllPermissionFactory,
+        "permission_factory": None,
         "params": {
             "index": "stats-record-view",
             "doc_type": "record-view-day-aggregation",
@@ -242,7 +225,7 @@ STATS_QUERIES = {
     },
     "record-download": {
         "cls": TermsQuery,
-        "permission_factory": AllowAllPermissionFactory,
+        "permission_factory": None,
         "params": {
             "index": "stats-file-download",
             "doc_type": "file-download-day-aggregation",
@@ -263,7 +246,7 @@ STATS_QUERIES = {
     },
     "record-download-all-versions": {
         "cls": TermsQuery,
-        "permission_factory": AllowAllPermissionFactory,
+        "permission_factory": None,
         "params": {
             "index": "stats-file-download",
             "doc_type": "file-download-day-aggregation",

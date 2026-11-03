@@ -4,7 +4,7 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-import datetime
+from datetime import UTC, datetime
 
 from invenio_i18n import lazy_gettext as _
 
@@ -13,7 +13,7 @@ from invenio_i18n import lazy_gettext as _
 APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED = True
 APP_RDM_DEPOSIT_FORM_TEMPLATE = "invenio_modular_deposit_form/deposit.html"
 APP_RDM_DEPOSIT_FORM_DEFAULTS = {
-    "publication_date": lambda: datetime.now().strftime("%Y-%m-%d"),
+    "publication_date": lambda: datetime.now(UTC).strftime("%Y-%m-%d"),
     # "rights": [
     #     {
     #         "id": "cc-by-4.0",
