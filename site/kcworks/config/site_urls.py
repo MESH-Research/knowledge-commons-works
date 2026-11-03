@@ -75,3 +75,23 @@ KC_SEARCH_URL_DOCS = os.getenv(
     f"{COMMONS_API_REQUEST_PROTOCOL}://search.{KC_WORDPRESS_DOMAIN}/v1/documents",
 )
 KC_GROUPS_URL_BASE = f"{COMMONS_API_REQUEST_PROTOCOL}://{KC_WORDPRESS_DOMAIN}/groups/"
+
+
+# isort: split
+
+# OAI-PMH
+# =======
+# See https://github.com/inveniosoftware/invenio-oaiserver/blob/
+# master/invenio_oaiserver/config.py
+
+OAISERVER_ID_PREFIX = SITE_UI_URL
+"""The prefix that will be applied to the generated OAI-PMH ids."""
+
+# USER DASHBOARD
+# ==============
+
+APP_RDM_USER_DASHBOARD_ROUTES = {
+    "uploads": "/me/uploads",
+    "communities": "/me/collections",
+    "requests": "/me/requests",
+}
