@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Content Moderation" href="moderation.html"><link rel="prev" title="Known Issues" href="../known_issues.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Running Commands from the KCWorks Back End" href="running_commands.html"><link rel="prev" title="Known Issues" href="../known_issues.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
         <title>Administrator Guide - Knowledge Commons Works 1.2.0 documentation</title>
@@ -198,18 +198,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Development Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
-<li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="export_formats.html">Export formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pids.html">DOIs and Other PIDs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html">Checking KCWorks Application Health</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -286,49 +288,13 @@
 <h1>Administrator Guide<a class="headerlink" href="#administrator-guide" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="moderation.html">Content Moderation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="moderation.html#first-time-deposit-moderation">First-time Deposit Moderation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="moderation.html#handling-inappropriate-content">Handling Inappropriate Content</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="running_commands.html#starting-an-interactive-shell-session-in-a-kcworks-app-container">Starting an interactive shell session in a KCWorks app container</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="file_storage.html">File Storage Administration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="file_storage.html#changing-the-kcworks-s3-file-storage-bucket">Changing the KCWorks S3 file storage bucket</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="scheduled_events.html">Scheduled events</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#two-schedulers">Two schedulers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#within-each-hour">Within each hour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#daily-utc">Daily (UTC)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#weekly">Weekly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#interval-not-clock-tied">Interval (not clock-tied)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#changing-schedules">Changing schedules</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#what-loads-and-in-what-order">What loads, and in what order</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#how-do-i-import-vocabulary-data-from-a-local-file">How do I import vocabulary data from a local file?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#affiliations-ror">Affiliations (ROR)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#funders-ror">Funders (ROR)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-openaire">Awards — OpenAIRE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-cordis">Awards — CORDIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#resource-types">Resource types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#subjects-fast-homosaurus">Subjects (FAST / Homosaurus)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#related-documentation">Related documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-kinds-of-names-records-does-kcworks-write">What kinds of Names records does KCWorks write?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-runs-automatically-vs-what-you-run-by-hand">What runs automatically vs what you run by hand?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-user-records-created-or-updated">When are USER records created or updated?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-cited-records-created-or-updated">When are CITED records created or updated?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-records-merged">When are records merged?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-pairs-flagged-for-review">When are pairs flagged for review?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#how-do-i-inspect-or-force-a-refresh">How do I inspect or force a refresh?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#mental-model-short">Mental model (short)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moderation.html">Content Moderation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="moderation.html#first-time-deposit-moderation">First-time Deposit Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moderation.html#handling-inappropriate-content">Handling Inappropriate Content</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_data_management.html">User Data Management</a><ul>
@@ -375,6 +341,56 @@
 <li class="toctree-l2"><a class="reference internal" href="export_formats.html#bibtex-serialization">BibTeX serialization</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="scheduled_events.html">Scheduled events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#two-schedulers">Two schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#within-each-hour">Within each hour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#daily-utc">Daily (UTC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#weekly">Weekly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#interval-not-clock-tied">Interval (not clock-tied)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html#changing-schedules">Changing schedules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pids.html">DOIs and Other PIDs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pids.html#how-to-re-register-a-doi-for-a-published-record">How to Re-register a DOI for a Published Record</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#what-loads-and-in-what-order">What loads, and in what order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#how-do-i-import-vocabulary-data-from-a-local-file">How do I import vocabulary data from a local file?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#affiliations-ror">Affiliations (ROR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#funders-ror">Funders (ROR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-openaire">Awards — OpenAIRE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#awards-cordis">Awards — CORDIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#resource-types">Resource types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#subjects-fast-homosaurus">Subjects (FAST / Homosaurus)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html#related-documentation">Related documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-kinds-of-names-records-does-kcworks-write">What kinds of Names records does KCWorks write?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#what-runs-automatically-vs-what-you-run-by-hand">What runs automatically vs what you run by hand?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-user-records-created-or-updated">When are USER records created or updated?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-cited-records-created-or-updated">When are CITED records created or updated?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-records-merged">When are records merged?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#when-are-pairs-flagged-for-review">When are pairs flagged for review?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#how-do-i-inspect-or-force-a-refresh">How do I inspect or force a refresh?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html#mental-model-short">Mental model (short)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file_storage.html">File Storage Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_storage.html#changing-the-kcworks-s3-file-storage-bucket">Changing the KCWorks S3 file storage bucket</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="health.html">Checking KCWorks Application Health</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="health.html#link-map">Link map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#works-profiles">Works → Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#profiles-works">Profiles → Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#wordpress-profiles">WordPress → Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#wordpress-works">WordPress → Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#works-wordpress">Works → WordPress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health.html#client-works">Client → Works</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -384,12 +400,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="moderation.html">
+          <a class="next-page" href="running_commands.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Content Moderation</div>
+                <div class="title">Running Commands from the KCWorks Back End</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
