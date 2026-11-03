@@ -1,0 +1,1047 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
+
+    <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
+        <title>Checking KCWorks Application Health - Knowledge Commons Works 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.2.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.2.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_highlights.html">Feature Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Development Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="moderation.html">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_storage.html">File Storage Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scheduled_events.html">Scheduled events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vocabulary_management.html">Vocabulary Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="names_vocabulary.html">Names Vocabulary Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export_formats.html">Export formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../setup/index.html">Setting up KCWorks</a><input aria-label="Toggle navigation of Setting up KCWorks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../setup/configuration.html">Configuration of KCWorks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup/installation.html">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../developing/index.html">Developing KCWorks</a><input aria-label="Toggle navigation of Developing KCWorks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developing/architecture.html">KCWorks Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/code_standards.html">Development Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/source_control.html">Source Control and Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/workflow.html">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/testing.html">Automated Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/how_tos.html">How Tos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/menus.html">Menus (Flask-Menu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/oauth_scopes.html">OAuth scopes (developer notes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/knowledge_base_sync.html">Publishing admin docs to the knowledge base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/building.html">Build Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/stats.html">Stats and Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/i18n.html">I18n</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developing/infrastructure.html">KCWorks Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/metadata.html">Metadata Schema, Vocabularies, and Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/api_credentials.html">API credentials and CLI authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/service_accounts_and_scopes.html">Service accounts and OAuth scopes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/outgoing_signals.html">Outgoing Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_commands.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizations.html">Customizations to InvenioRDM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../in_depth.html">In-depth Installation Instructions (NEEDS UPDATING)</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/admin_guide/health.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="checking-kcworks-application-health">
+<h1>Checking KCWorks Application Health<a class="headerlink" href="#checking-kcworks-application-health" title="Link to this heading">¶</a></h1>
+<p>Concrete HTTP requests for each inter-app and client contact point around
+KCWorks. Organized by <strong>who calls whom</strong>. Decide which of these belong in
+continuous health checks vs occasional integration tests.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Hosts and tokens vary by environment. Examples use production-shaped hosts
+(<code class="docutils literal notranslate"><span class="pre">works.hcommons.org</span></code>, <code class="docutils literal notranslate"><span class="pre">profile.hcommons.org</span></code>). Substitute the deployment’s
+<code class="docutils literal notranslate"><span class="pre">SITE_UI_URL</span></code> / <code class="docutils literal notranslate"><span class="pre">KC_PROFILES_DOMAIN</span></code> and the matching secrets.</p>
+<p>Do <strong>not</strong> commit real tokens. Export them in the shell first::</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export COMMONS_PROFILES_API_TOKEN='…'   # Profiles ↔ Works sync + outbound Profiles
+export COMMONS_SSO_LOGOUT_API_TOKEN='…' # Works logout webhook only
+export WORKS_API_TOKEN='…'              # OAuth / personal access token for client APIs
+</pre></div>
+</div>
+</div>
+<p>Related reference: <a class="reference internal" href="../reference/api.html"><span class="doc">API</span></a>, <a class="reference internal" href="../reference/api_credentials.html"><span class="doc">API credentials and CLI authentication</span></a>,
+<a class="reference internal" href="../reference/outgoing_signals.html"><span class="doc">Outgoing Signals</span></a>.</p>
+<hr class="docutils" />
+<section id="link-map">
+<h2>Link map<a class="headerlink" href="#link-map" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Link</p></th>
+<th class="head"><p>Section</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Works → Profiles</p></td>
+<td><p><a class="reference internal" href="#works--profiles"><span class="xref myst">Works → Profiles</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Profiles → Works</p></td>
+<td><p><a class="reference internal" href="#profiles--works"><span class="xref myst">Profiles → Works</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>WordPress → Profiles</p></td>
+<td><p><a class="reference internal" href="#wordpress--profiles"><span class="xref myst">WordPress → Profiles</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>WordPress → Works</p></td>
+<td><p><a class="reference internal" href="#wordpress--works"><span class="xref myst">WordPress → Works</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Works → WordPress</p></td>
+<td><p><a class="reference internal" href="#works--wordpress"><span class="xref myst">Works → WordPress</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Client → Works</p></td>
+<td><p><a class="reference internal" href="#client--works"><span class="xref myst">Client → Works</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="works-profiles">
+<h2>Works → Profiles<a class="headerlink" href="#works-profiles" title="Link to this heading">¶</a></h2>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/subs/?sub={sub}</span></code></p></td>
+<td><p>Resolve profile by OAuth <code class="docutils literal notranslate"><span class="pre">sub</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/subs/{username}/</span></code></p></td>
+<td><p>Resolve profile by KC username</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/members/{username}/</span></code></p></td>
+<td><p>Pull member profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/groups/{id}</span></code></p></td>
+<td><p>Pull group metadata</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/members/{name|unknown}/works/status</span></code></p></td>
+<td><p>Report webhook job outcome</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/actions/logout/</span></code></p></td>
+<td><p>Local Works logout → global logout</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/broker/verify-nonce/</span></code></p></td>
+<td><p>Validate SSO broker nonce</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Auth: Bearer <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/members/</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">/"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/subs/?sub=</span><span class="si">${</span><span class="nv">OAUTH_SUB</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/subs/</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">/"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/groups/</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "username": "healthcheck_user",</span>
+<span class="s1">    "sub": "auth0|healthcheck",</span>
+<span class="s1">    "status": "PROCESSED",</span>
+<span class="s1">    "event": "updated",</span>
+<span class="s1">    "note": "works-health-check"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/members/healthcheck_user/works/status"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "user_name": "healthcheck_user",</span>
+<span class="s1">    "user_agent": "kcworks-health-check/1.0"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/api/v1/actions/logout/'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"nonce": "health-check-nonce-not-real"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/broker/verify-nonce/'</span>
+</pre></div>
+</div>
+</section>
+<section id="ui-browser-requests">
+<h3>UI browser requests<a class="headerlink" href="#ui-browser-requests" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/login/?return_to={callback}&amp;final_redirect={url}</span></code></p></td>
+<td><p>Explicit login</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/broker/silent-login/?return_to={callback}&amp;final_redirect={url}</span></code></p></td>
+<td><p>Silent SSO</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">return_to</span></code> must be Works’ broker callback, e.g.
+<code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/sso/broker-callback/</span></code>.</p>
+<p>Example (open in a browser or follow redirects with curl <code class="docutils literal notranslate"><span class="pre">-L</span></code> carefully):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CALLBACK</span><span class="o">=</span><span class="s1">'https://works.hcommons.org/sso/broker-callback/'</span>
+<span class="nv">FINAL</span><span class="o">=</span><span class="s1">'https://works.hcommons.org/'</span>
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code} %{url_effective}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--get<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"return_to=</span><span class="si">${</span><span class="nv">CALLBACK</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"final_redirect=</span><span class="si">${</span><span class="nv">FINAL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/login/'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code} %{url_effective}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--get<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"return_to=</span><span class="si">${</span><span class="nv">CALLBACK</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"final_redirect=</span><span class="si">${</span><span class="nv">FINAL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/broker/silent-login/'</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="profiles-works">
+<h2>Profiles → Works<a class="headerlink" href="#profiles-works" title="Link to this heading">¶</a></h2>
+<section id="sso-logout">
+<h3>SSO / logout<a class="headerlink" href="#sso-logout" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/logout</span></code></p></td>
+<td><p>Logout webhook ping</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/logout?username={username}</span></code></p></td>
+<td><p>Invalidate that user’s Works sessions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/sso/broker-callback/</span></code></p></td>
+<td><p>Browser return after Profiles login / silent check</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Logout webhook auth: Bearer <code class="docutils literal notranslate"><span class="pre">COMMONS_SSO_LOGOUT_API_TOKEN</span></code>.<br />
+Broker callback: browser redirect with <code class="docutils literal notranslate"><span class="pre">broker_token</span></code> or <code class="docutils literal notranslate"><span class="pre">no_session</span></code> (not the static Profiles API token).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/logout'</span>
+<span class="c1"># Typical success body: {"message":"Webhook receiver is active","status":200}</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/logout?username=healthcheck_nonexistent_user'</span>
+<span class="c1"># Unknown user → 404; real ${KC_USERNAME} → invalidates sessions</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/webhooks/users/logout?username=</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="c1"># Broker callback shapes (browser-oriented; expect redirect or error without a real token)</span>
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/sso/broker-callback/?no_session=1&amp;final_redirect=https://works.hcommons.org/'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/sso/broker-callback/?broker_token=</span><span class="si">${</span><span class="nv">BROKER_TOKEN</span><span class="si">}</span><span class="s2">&amp;final_redirect=https://works.hcommons.org/"</span>
+</pre></div>
+</div>
+</section>
+<section id="user-group-data-webhooks">
+<h3>User / group data webhooks<a class="headerlink" href="#user-group-data-webhooks" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/update</span></code></p></td>
+<td><p>User-data webhook ping</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/update</span></code></p></td>
+<td><p>Queue user/group metadata sync</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/user_data_update</span></code></p></td>
+<td><p>Deprecated alias ping</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/user_data_update</span></code></p></td>
+<td><p>Deprecated alias signal</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Auth: Bearer <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/update'</span>
+<span class="c1"># Typical success body: {"message":"Webhook receiver is active","status":200}</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "idp": "knowledgeCommons",</span>
+<span class="s1">    "updates": {</span>
+<span class="s1">      "users": [{"id": "auth0|REPLACE_WITH_REAL_SUB", "event": "updated"}],</span>
+<span class="s1">      "groups": [{"id": "REPLACE_WITH_REAL_GROUP_ID", "event": "updated"}]</span>
+<span class="s1">    }</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/update'</span>
+<span class="c1"># Accept → HTTP 202; queues work and GETs Profiles members/groups</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/user_data_update'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "idp": "knowledgeCommons",</span>
+<span class="s1">    "updates": {</span>
+<span class="s1">      "users": [{"id": "auth0|REPLACE_WITH_REAL_SUB", "event": "updated"}]</span>
+<span class="s1">    }</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/user_data_update'</span>
+</pre></div>
+</div>
+</section>
+<section id="group-collections-api">
+<h3>Group collections API<a class="headerlink" href="#group-collections-api" title="Link to this heading">¶</a></h3>
+<p>Often called with an OAuth token for <code class="docutils literal notranslate"><span class="pre">svc-group-collections</span></code>
+(<code class="docutils literal notranslate"><span class="pre">group-collections:read</span></code> / <code class="docutils literal notranslate"><span class="pre">group-collections:write</span></code>). See
+<a class="reference internal" href="../reference/api_credentials.html"><span class="doc">API credentials and CLI authentication</span></a>.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections</span></code></p></td>
+<td><p>List group-linked collections</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections?commons_instance=&amp;commons_group_id=</span></code></p></td>
+<td><p>Filtered list</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections/{slug}</span></code></p></td>
+<td><p>Read one</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections</span></code></p></td>
+<td><p>Create (Works then GETs Profiles group metadata)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DELETE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections/{slug}?commons_instance=&amp;commons_group_id=</span></code></p></td>
+<td><p>Soft-delete</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/group_collections?size=1'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;commons_group_id=</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "commons_instance": "knowledgeCommons",</span>
+<span class="s1">    "commons_group_id": "REPLACE_WITH_REAL_GROUP_ID",</span>
+<span class="s1">    "collection_visibility": "restricted"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/group_collections'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">?commons_instance=knowledgeCommons&amp;commons_group_id=</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="wordpress-profiles">
+<h2>WordPress → Profiles<a class="headerlink" href="#wordpress-profiles" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/members/{username}/</span></code></p></td>
+<td><p>Member profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/groups/{id}</span></code></p></td>
+<td><p>Group metadata</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/subs/?sub={sub}</span></code></p></td>
+<td><p>Sub lookup</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/subs/{username}/</span></code></p></td>
+<td><p>Sub by username</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/api/v1/actions/logout/</span></code></p></td>
+<td><p>Central logout</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/login/?return_to=…&amp;final_redirect=…</span></code></p></td>
+<td><p>Explicit login (browser)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://profile.hcommons.org/broker/silent-login/?…</span></code></p></td>
+<td><p>Silent SSO (browser)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Auth for API rows: Bearer <code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/members/</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">/"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/groups/</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/subs/?sub=</span><span class="si">${</span><span class="nv">OAUTH_SUB</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://profile.hcommons.org/api/v1/subs/</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">/"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_PROFILES_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "user_name": "healthcheck_user",</span>
+<span class="s1">    "user_agent": "wordpress-health-check/1.0"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/api/v1/actions/logout/'</span>
+
+<span class="nv">CALLBACK</span><span class="o">=</span><span class="s1">'https://REPLACE_WITH_WORDPRESS_CALLBACK/'</span>
+<span class="nv">FINAL</span><span class="o">=</span><span class="s1">'https://REPLACE_WITH_WORDPRESS_FINAL/'</span>
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code} %{url_effective}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--get<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"return_to=</span><span class="si">${</span><span class="nv">CALLBACK</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"final_redirect=</span><span class="si">${</span><span class="nv">FINAL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/login/'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code} %{url_effective}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--get<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"return_to=</span><span class="si">${</span><span class="nv">CALLBACK</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s2">"final_redirect=</span><span class="si">${</span><span class="nv">FINAL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://profile.hcommons.org/broker/silent-login/'</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="wordpress-works">
+<h2>WordPress → Works<a class="headerlink" href="#wordpress-works" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/logout</span></code></p></td>
+<td><p>Logout webhook ping</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/webhooks/users/logout?username={username}</span></code></p></td>
+<td><p>Logout webhook signal</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Auth: Bearer <code class="docutils literal notranslate"><span class="pre">COMMONS_SSO_LOGOUT_API_TOKEN</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/logout'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/webhooks/users/logout?username=healthcheck_nonexistent_user'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">COMMONS_SSO_LOGOUT_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/webhooks/users/logout?username=</span><span class="si">${</span><span class="nv">KC_USERNAME</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="works-wordpress">
+<h2>Works → WordPress<a class="headerlink" href="#works-wordpress" title="Link to this heading">¶</a></h2>
+<p>Works does <strong>not</strong> call WordPress (Sites) directly. Member and group metadata
+are read from Profiles (<code class="docutils literal notranslate"><span class="pre">IDMS_BASE_API_URL</span></code>), not from <code class="docutils literal notranslate"><span class="pre">wp-json</span></code> Commons
+endpoints. No probes on this link.</p>
+</section>
+<hr class="docutils" />
+<section id="client-works">
+<h2>Client → Works<a class="headerlink" href="#client-works" title="Link to this heading">¶</a></h2>
+<section id="records">
+<h3>Records<a class="headerlink" href="#records" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/records/?size=1</span></code></p></td>
+<td><p>Search</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/records/{id}</span></code></p></td>
+<td><p>Read published record</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/records/{id}/files</span></code></p></td>
+<td><p>List files</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/records/?size=1'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">/files"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/records/?size=1'</span>
+</pre></div>
+</div>
+</section>
+<section id="group-collections">
+<h3>Group collections<a class="headerlink" href="#group-collections" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/api/group_collections?size=1'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections?commons_instance=knowledgeCommons&amp;commons_group_id=</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+</section>
+<section id="import-api">
+<h3>Import API<a class="headerlink" href="#import-api" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/import/{collection}</span></code> — multipart; token needs <code class="docutils literal notranslate"><span class="pre">records:import</span></code>.
+Full schema: <a class="reference internal" href="../reference/api.html"><span class="doc">API</span></a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Missing multipart body (auth / routing only)</span>
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/import/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG_OR_UUID</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="c1"># Full import (creates/updates works)</span>
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'strict_validation=true'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'all_or_none=true'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'review_required=false'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'notify_record_owners=false'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'metadata=@./healthcheck-metadata.json;type=application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s1">'files=@./healthcheck.txt;type=text/plain;filename=healthcheck.txt'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/import/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG_OR_UUID</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+</section>
+<section id="fair-signposting">
+<h3>FAIR signposting<a class="headerlink" href="#fair-signposting" title="Link to this heading">¶</a></h3>
+<p>Enabled via <code class="docutils literal notranslate"><span class="pre">APP_RDM_RECORD_LANDING_PAGE_FAIR_SIGNPOSTING_LEVEL_1_ENABLED</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span>-D<span class="w"> </span>-<span class="w"> </span>-o<span class="w"> </span>/tmp/linkset.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/linkset+json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-I<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+<span class="c1"># Look for: Link: &lt;…&gt; ; rel="linkset" ; type="application/linkset+json"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-I<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+<span class="c1"># Landing page Link header (level 1 when enabled)</span>
+</pre></div>
+</div>
+</section>
+<section id="embedded-negotiated-metadata">
+<h3>Embedded / negotiated metadata<a class="headerlink" href="#embedded-negotiated-metadata" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/x-bibtex'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/records/</span><span class="si">${</span><span class="nv">RECORD_ID</span><span class="si">}</span><span class="s2">/export/bibtex"</span>
+</pre></div>
+</div>
+</section>
+<section id="oai-pmh">
+<h3>OAI-PMH<a class="headerlink" href="#oai-pmh" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/oai2d?verb=Identify'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/oai2d?verb=ListMetadataFormats'</span>
+</pre></div>
+</div>
+</section>
+<section id="sitemap">
+<h3>Sitemap<a class="headerlink" href="#sitemap" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/sitemap.xml'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/sitemap_index_0.xml'</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://works.hcommons.org/sitemap_0.xml'</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Mesh Research
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Checking KCWorks Application Health</a><ul>
+<li><a class="reference internal" href="#link-map">Link map</a></li>
+<li><a class="reference internal" href="#works-profiles">Works → Profiles</a><ul>
+<li><a class="reference internal" href="#api">API</a></li>
+<li><a class="reference internal" href="#ui-browser-requests">UI browser requests</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profiles-works">Profiles → Works</a><ul>
+<li><a class="reference internal" href="#sso-logout">SSO / logout</a></li>
+<li><a class="reference internal" href="#user-group-data-webhooks">User / group data webhooks</a></li>
+<li><a class="reference internal" href="#group-collections-api">Group collections API</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#wordpress-profiles">WordPress → Profiles</a></li>
+<li><a class="reference internal" href="#wordpress-works">WordPress → Works</a></li>
+<li><a class="reference internal" href="#works-wordpress">Works → WordPress</a></li>
+<li><a class="reference internal" href="#client-works">Client → Works</a><ul>
+<li><a class="reference internal" href="#records">Records</a></li>
+<li><a class="reference internal" href="#group-collections">Group collections</a></li>
+<li><a class="reference internal" href="#import-api">Import API</a></li>
+<li><a class="reference internal" href="#fair-signposting">FAIR signposting</a></li>
+<li><a class="reference internal" href="#embedded-negotiated-metadata">Embedded / negotiated metadata</a></li>
+<li><a class="reference internal" href="#oai-pmh">OAI-PMH</a></li>
+<li><a class="reference internal" href="#sitemap">Sitemap</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=6efca38a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>
