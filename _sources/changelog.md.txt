@@ -3,6 +3,27 @@
 
 # Changes
 
+## 1.2.1 (2026-11-04)
+
+- Importer
+  - Bucknell Digital Commons owner email config + welcome email templates
+- Bug fixes
+  - Groups: fix group role assignment for admin users
+  - File previews: stop re-downloading the preview file when switching tabs
+  - Stats: remove awkward record stats query permissions
+- File Uploads:
+  - improve server/uWSGI settings for large file imports and uploads
+- Config refactor:
+  - split the monolith invenio.cfg into re-exported modules under
+    site/kcworks/config/ (deposit form layout, stats, search, communities,
+    serving, etc.)
+- Dependencies & security - Update lodash (root + deposit form package) - Update
+  tornado - Related lockfile / webpack updates Testing & CI - fix ty and ruff
+  errors - Test runner fixes - Restore required npm dev dependencies for js
+  testing - stop injecting API URL in CI (caused CORS conflicts in testing) -
+  TinyMCE webpack assets test Docs - Admin guide index order - new PIDs admin
+  guide page
+
 ## 1.2.0 (2026-10-28)
 
 - File uploads
