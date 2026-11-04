@@ -24,6 +24,9 @@ RATELIMIT_ENABLED = True if os.getenv("INVENIO_RATELIMIT_ENABLED") == "True" els
 # nginx_production/conf.d/default.conf
 # For multi-part form data uploads like avatar images
 MAX_CONTENT_LENGTH = (1024 * 1024) * 100  # 100 MB
+# Bulk import (/api/import) raises this per-request via the importer blueprint
+# to RECORD_IMPORTER_MAX_CONTENT_LENGTH (default 500 GB); nginx /api/import
+# is 500G. Do not raise the global MAX_CONTENT_LENGTH for all of /api.
 # For deposit file uploads
 FILES_REST_DEFAULT_MAX_FILE_SIZE = (10**10) * 50  # 500 GB
 

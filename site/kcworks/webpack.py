@@ -68,7 +68,7 @@ theme = WebpackThemeBundle(
             "dependencies": {
                 "angular": "^1.8.3",
                 "axios": "^1.20.0",
-                "lodash": "^4.18.0",
+                "lodash": "^4.18.1",
                 "orcid-utils": "^1.2.2",
                 "yup": "^0.32.11",
                 "moment": "^2.31.0",
@@ -84,6 +84,15 @@ theme = WebpackThemeBundle(
             "devDependencies": {
                 "@reduxjs/toolkit": "1.9.7",
                 "geopattern": "^1.2.3",
+                "@babel/eslint-parser": "^7.26.10",
+                "eslint": "^8.57.1",
+                "eslint-plugin-jsx-a11y": "^6.10.2",
+                "eslint-plugin-react": "^7.37.5",
+                "eslint-plugin-react-hooks": "^4.6.2",
+                "i18next-conv": "^15.1.2",
+                "i18next-scanner": "^4.6.0",
+                "identity-obj-proxy": "^3.0.0",
+                "react-test-renderer": "^16.14.0",
             },
             "aliases": {
                 "@js/kcworks": "js",

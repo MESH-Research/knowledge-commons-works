@@ -2759,3 +2759,2866 @@ FIELDS_BY_TYPE_CONFIG = {
         },
     },
 }
+
+
+# ---------------------------------------------------------------------------
+# Old fields-by-type config preserved for reference (not active).
+# The active config is now MODULAR_DEPOSIT_FORM_FIELDS_BY_TYPE above.
+# ---------------------------------------------------------------------------
+_OLD_FIELDS_BY_TYPE = {
+    "audiovisual": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Media Details",
+                "icon": "video",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Media URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-audioRecording": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Recording Details",
+                "icon": "headphones",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Media, instruments, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Recording location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Recording URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-documentary": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Documentary Details",
+                "icon": "video",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Media, technologies used, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Production location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Documentary URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-interviewRecording": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Recording Details",
+                "icon": "microphone",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Interview location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Equipment used, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Recording URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-musicalRecording": {
+        "page-2": [{"same_as": "audiovisual-audioRecording"}],
+    },
+    "audiovisual-other": {
+        "page-2": [{"same_as": "audiovisual"}],
+    },
+    "audiovisual-performance": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Performance Details",
+                "icon": "video",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Performance location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Media, instruments, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Performance URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                                "label": "Project or series title",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project or series URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-podcastEpisode": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Episode Details",
+                "icon": "microphone",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Recording location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URL and Other Identifiers for Episode",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Podcast Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                                "label": "Main podcast title",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Main podcast URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "audiovisual-videoRecording": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Recording Details",
+                "icon": "video",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Media, technologies used, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press 'enter' to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Production location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Recording URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                                "label": "Production company/institution",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                                "label": "Production company/publisher",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "dataset": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Dataset Details",
+                "icon": "table",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Data formats, etc.",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Record count",
+                                "placeholder": _(
+                                    "e.g. 1.4M rows (press 'enter' to add)"
+                                ),
+                                "description": "",
+                            }
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Dataset URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "image": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Image Details",
+                "icon": "picture",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Dimensions",
+                                "placeholder": _(
+                                    "e.g. 32 x 40 cm (press 'enter' to add)"
+                                ),
+                                "description": "",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Image URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "image-chart": {"page-2": [{"same_as": "image"}]},
+    "image-diagram": {"page-2": [{"same_as": "image"}]},
+    "image-figure": {"page-2": [{"same_as": "image"}]},
+    "image-map": {"page-2": [{"same_as": "image"}]},
+    "image-visualArt": {"page-2": [{"same_as": "image"}]},
+    "image-photograph": {"page-2": [{"same_as": "image"}]},
+    "image-other": {"page-2": [{"same_as": "image"}]},
+    "instructionalResource": {
+        "page-2": [
+            {
+                "section": "instructional_resource_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "graduation",
+                "label": "Resource Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "course_title",
+                                "component": "CourseTitleComponent",
+                                "classnames": "sixteen wide",
+                            },
+                            {
+                                "section": "course_url",
+                                "label": "Course URL",
+                                "component": "PublicationURLComponent",
+                                "classnames": "sixteen wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "label": "Institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "department",
+                                "label": "Department or Discipline",
+                                "component": "DisciplineComponent",
+                                "icon": "folder",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ]
+    },
+    "instructionalResource-curriculum": {
+        "page-2": [{"same_as": "instructionalResource"}]
+    },
+    "instructionalResource-lessonPlan": {
+        "page-2": [{"same_as": "instructionalResource"}]
+    },
+    "instructionalResource-other": {"page-2": [{"same_as": "instructionalResource"}]},
+    "instructionalResource-syllabus": {
+        "page-2": [{"same_as": "instructionalResource"}]
+    },
+    "presentation": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Presentation Details",
+                "icon": "group",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "session",
+                                "component": "MeetingSessionComponent",
+                                "label": "Session",
+                            },
+                            {
+                                "section": "session_part",
+                                "component": "MeetingSessionPartComponent",
+                                "label": "Session part",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Duration",
+                                "placeholder": _("e.g. 30 min (press enter to add)"),
+                                "description": "",
+                            },
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Media or materials used",
+                                "placeholder": (
+                                    "e.g., PowerPoint, handouts (press enter to add)"
+                                ),
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Presentation URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "event_details",
+                "component": "FormSection",
+                "label": "Event Details",
+                "icon": "calendar",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_title",
+                                "component": "MeetingTitleComponent",
+                                "label": "Event title",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_acronym",
+                                "component": "MeetingAcronymComponent",
+                                "label": "Event acronym",
+                                "icon": "font",
+                            },
+                            {
+                                "section": "event_dates",
+                                "component": "MeetingDatesComponent",
+                                "label": "Event dates",
+                                "icon": "calendar",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_organization",
+                                "component": "MeetingOrganizationComponent",
+                                "label": "Organization",
+                            },
+                            {
+                                "section": "sponsoring_institution",
+                                "component": "SponsoringInstitutionComponent",
+                                "label": "Sponsoring institution",
+                                "icon": "building outline",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_url",
+                                "component": "MeetingURLComponent",
+                                "label": "Event URL",
+                            },
+                            {
+                                "section": "event_place",
+                                "component": "MeetingPlaceComponent",
+                                "label": "Event location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "presentation-conferencePaper": {"page-2": [{"same_as": "presentation"}]},
+    "presentation-conferencePoster": {"page-2": [{"same_as": "presentation"}]},
+    "presentation-presentationText": {"page-2": [{"same_as": "presentation"}]},
+    "presentation-slides": {"page-2": [{"same_as": "presentation"}]},
+    "presentation-other": {"page-2": [{"same_as": "presentation"}]},
+    "software": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Software Details",
+                "icon": "group",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "code_repository",
+                                "component": "CodeRepositoryComponent",
+                                "icon": "github",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "version",
+                                "component": "VersionComponent",
+                                "icon": "copy",
+                                "description": "",
+                            },
+                            {
+                                "section": "development_status",
+                                "component": "CodeDevelopmentStatusComponent",
+                                "icon": "heartbeat",
+                                "placeholder": "",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Size",
+                                "placeholder": _("e.g. 400 MB"),
+                                "icon": "database",
+                                "description": "",
+                            },
+                            {
+                                "section": "programming_language",
+                                "component": "CodeProgrammingLanguageComponent",
+                                "icon": "code",
+                                "label": "Programming languages",
+                                "placeholder": "e.g., Python, JavaScript, R",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Package URL and other identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Natural (Human) Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "software-3DModel": {"page-2": [{"same_as": "software"}]},
+    "software-application": {"page-2": [{"same_as": "software"}]},
+    "software-computationalModel": {"page-2": [{"same_as": "software"}]},
+    "software-computationalNotebook": {"page-2": [{"same_as": "software"}]},
+    "software-service": {"page-2": [{"same_as": "software"}]},
+    "software-other": {"page-2": [{"same_as": "software"}]},
+    "textDocument": None,
+    "textDocument-abstract": {
+        "page-2": [
+            {
+                "same_as": "textDocument-journalArticle",
+            }
+        ]
+    },
+    "textDocument-bibliography": None,
+    "textDocument-blogPost": {
+        "page-2": [
+            {
+                "section": "alternate_identifiers",
+                "label": "Post URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+                "icon": "linkify",
+            },
+            {
+                "section": "section_details",
+                "component": "FormSection",
+                "label": "Post Details",
+                "icon": "file",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Post length",
+                                "placeholder": _(
+                                    "e.g., 400 words (press 'enter' to add)"
+                                ),
+                                "description": "",
+                            },
+                            {
+                                "section": "version",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                                "icon": "copy",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    }
+                ],
+            },
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Blog Details",
+                "icon": "world",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_title",
+                                "component": "JournalTitleComponent",
+                                "label": "Blog title",
+                            },
+                            {
+                                "section": "blog_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Blog URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_publisher",
+                                "component": "PublisherComponent",
+                                "label": "Blog publisher",
+                            },
+                            {
+                                "section": "blog_publisher_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Blog publisher location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-book": {
+        "page-2": [
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "isbn",
+                                "component": "ISBNComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "book_volumes",
+                                "component": "VolumeComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "book_pages",
+                                "component": "TotalPagesComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "section": "series",
+                        "component": "SeriesComponent",
+                    },
+                ],
+                "show_heading": True,
+                "icon": "file",
+                "label": "Publication Details",
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-bookSection": {"page-2": [{"same_as": "textDocument-essay"}]},
+    "textDocument-conferenceProceeding": {
+        "page-2": [
+            {
+                "section": "event_details",
+                "component": "FormSection",
+                "label": "Event Details",
+                "icon": "calendar",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_title",
+                                "component": "MeetingTitleComponent",
+                                "label": "Event title",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_acronym",
+                                "component": "MeetingAcronymComponent",
+                                "label": "Event acronym",
+                                "icon": "font",
+                            },
+                            {
+                                "section": "event_dates",
+                                "component": "MeetingDatesComponent",
+                                "label": "Event dates",
+                                "icon": "calendar",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_organization",
+                                "component": "MeetingOrganizationComponent",
+                                "label": "Organization",
+                            },
+                            {
+                                "section": "sponsoring_institution",
+                                "component": "SponsoringInstitutionComponent",
+                                "label": "Sponsoring institution",
+                                "icon": "building outline",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_url",
+                                "component": "MeetingURLComponent",
+                                "label": "Event URL",
+                            },
+                            {
+                                "section": "event_place",
+                                "component": "MeetingPlaceComponent",
+                                "label": "Event location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "book",
+                "label": "Publication Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "isbn",
+                                "component": "ISBNComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "book_volumes",
+                                "component": "VolumeComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "book_pages",
+                                "component": "TotalPagesComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "section": "series",
+                        "component": "SeriesComponent",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Proceedings URLs and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-dataManagementPlan": {"page-2": [{"same_as": "textDocument-report"}]},
+    "textDocument-documentation": {"page-2": [{"same_as": "textDocument-report"}]},
+    "textDocument-editorial": {
+        "page-2": [
+            {
+                "same_as": "textDocument-newspaperArticle",
+            }
+        ],
+        "page-3": [
+            {
+                "same_as": "textDocument-newspaperArticle",
+            }
+        ],
+    },
+    "textDocument-essay": {
+        "page-2": [
+            {
+                "section": "book_section_details",
+                "component": "FormSection",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "book_title",
+                                "component": "BookTitleComponent",
+                                "classnames": "sixteen wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "section_pages",
+                                "component": "SectionPagesComponent",
+                            },
+                            {
+                                "section": "book_pages",
+                                "component": "TotalPagesComponent",
+                            },
+                            {
+                                "section": "book_volumes",
+                                "component": "VolumeComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                                "classnames": "eight wide",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                                "classnames": "eight wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "isbn",
+                                "component": "ISBNComponent",
+                            },
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "section": "series",
+                        "label": "Series",
+                        "component": "SeriesComponent",
+                    },
+                ],
+                "show_heading": True,
+                "icon": "file",
+                "label": "Publication Details",
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-interviewTranscript": {
+        "page-2": [{"same_as": "textDocument-report"}]
+    },
+    "textDocument-journalArticle": {
+        "page-2": [
+            {
+                "section": "journal_section_details",
+                "component": "FormSection",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "journal_title",
+                                "component": "JournalTitleComponent",
+                                "classnames": "sixteen wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "journal_volume",
+                                "component": "JournalVolumeComponent",
+                            },
+                            {
+                                "section": "journal_issue",
+                                "component": "JournalIssueComponent",
+                            },
+                            {
+                                "section": "section_pages",
+                                "component": "SectionPagesComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "issn",
+                                "component": "JournalISSNComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+                "show_heading": True,
+                "icon": "book",
+                "label": "Periodical Details",
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-legalComment": {
+        "page-2": [{"same_as": "textDocument-journalArticle"}]
+    },
+    "textDocument-legalResponse": {
+        "page-2": [{"same_as": "textDocument-journalArticle"}]
+    },
+    "textDocument-magazineArticle": {
+        "page-2": [{"same_as": "textDocument-newspaperArticle"}],
+        "page-3": [{"same_as": "textDocument-newspaperArticle"}],
+    },
+    "textDocument-monograph": {"page-2": [{"same_as": "textDocument-book"}]},
+    "textDocument-newspaperArticle": {
+        "page-2": [
+            {
+                "section": "journal_section_details",
+                "component": "FormSection",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "newspaper_title",
+                                "component": "JournalTitleComponent",
+                                "classnames": "ten wide",
+                            },
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                                "classnames": "six wide",
+                            },
+                        ],
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "newspaper_volume",
+                                "component": "JournalVolumeComponent",
+                            },
+                            {
+                                "section": "newspaper_issue",
+                                "component": "JournalIssueComponent",
+                            },
+                            {
+                                "section": "section_pages",
+                                "component": "SectionPagesComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "issn",
+                                "component": "JournalISSNComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+                "show_heading": True,
+                "icon": "book",
+                "label": "Periodical Details",
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ],
+        "page-3": [
+            {
+                "section": "creators",
+                "label": "Contributors",
+                "component": "CreatorsComponent",
+                "wrapped": True,
+                "addButtonLabel": "Add Contributor",
+                "modal": {
+                    "addLabel": _("Add Contributor"),
+                    "editLabel": _("Edit Contributor"),
+                },
+            },
+            {
+                "section": "ai",
+                "label": "AI Use",
+                "icon": "microchip",
+                "component": "AIComponent",
+                "wrapped": True,
+            },
+        ],
+    },
+    "textDocument-onlinePublication": {
+        "page-2": [
+            {
+                "section": "alternate_identifiers",
+                "label": "URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+                "icon": "linkify",
+            },
+            {
+                "section": "section_details",
+                "component": "FormSection",
+                "label": "Online Publication Details",
+                "icon": "cloud",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_title",
+                                "component": "JournalTitleComponent",
+                                "label": "Parent Site Title",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "version",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                                "icon": "copy",
+                            },
+                            {
+                                "section": "blog_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Parent Site URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_publisher",
+                                "component": "PublisherComponent",
+                                "label": "Publisher",
+                            },
+                            {
+                                "section": "blog_publisher_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Publisher location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-poeticWork": {"page-2": [{"same_as": "textDocument-essay"}]},
+    "textDocument-preprint": {"page-2": [{"same_as": "textDocument-journalArticle"}]},
+    "textDocument-report": {
+        "page-2": [
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "file",
+                "label": "Report Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sponsoring_institution",
+                                "label": "Sponsoring institution",
+                                "component": "SponsoringInstitutionComponent",
+                            }
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                            },
+                            {
+                                "section": "book_pages",
+                                "component": "TotalPagesComponent",
+                            },
+                            {
+                                "section": "book_volumes",
+                                "component": "VolumeComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Report URLs and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project or institution location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Language",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-review": {"page-2": [{"same_as": "textDocument-journalArticle"}]},
+    "textDocument-technicalStandard": {"page-2": [{"same_as": "textDocument-report"}]},
+    "textDocument-thesis": {
+        "page-2": [
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "graduation",
+                "label": "Thesis or Dissertation Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sponsoring_institution",
+                                "label": "Institution",
+                                "component": "SponsoringInstitutionComponent",
+                            }
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution_department",
+                                "component": "InstitutionDepartmentComponent",
+                                "icon": "folder",
+                            },
+                            {
+                                "section": "degree",
+                                "component": "DegreeComponent",
+                                "icon": "certificate",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "location",
+                                "component": "PublicationLocationComponent",
+                            },
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Language",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+        ]
+    },
+    "textDocument-whitePaper": {"page-2": [{"same_as": "textDocument-report"}]},
+    "textDocument-workingPaper": {"page-2": [{"same_as": "textDocument-report"}]},
+    "textDocument-other": {"page-2": [{"same_as": "textDocument-report"}]},
+    "other": None,
+    "other-catalog": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Catalog Details",
+                "icon": "ordered list",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Catalogued materials or formats",
+                                "placeholder": (
+                                    "e.g., books, maps, etc. (press 'enter' to add)"
+                                ),
+                            },
+                            {
+                                "section": "version",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                                "icon": "code branch",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Catalog location",
+                                "icon": "map marker alternate",
+                            },
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Record counts",
+                                "placeholder": _(
+                                    "e.g., 1000 maps (press 'enter' to add)"
+                                ),
+                                "description": "",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Catalog URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project or institution location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "other-collection": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Collection Details",
+                "icon": "zip",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Materials included, formats, etc.",
+                                "placeholder": (
+                                    "e.g., books, maps, etc. (press 'enter' to add)"
+                                ),
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "edition",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                            },
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Item counts",
+                                "placeholder": _(
+                                    "e.g., 1000 books (press 'enter' to add)"
+                                ),
+                                "description": "",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Collection URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Collection location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "other-event": {
+        "page-2": [
+            {
+                "section": "event_details",
+                "component": "FormSection",
+                "label": "Event Details",
+                "icon": "calendar",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_title",
+                                "component": "MeetingTitleComponent",
+                                "label": "Event title",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_acronym",
+                                "component": "MeetingAcronymComponent",
+                                "label": "Event acronym",
+                                "icon": "font",
+                            },
+                            {
+                                "section": "event_dates",
+                                "component": "MeetingDatesComponent",
+                                "label": "Event dates",
+                                "icon": "calendar",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_organization",
+                                "component": "MeetingOrganizationComponent",
+                                "label": "Organization",
+                            },
+                            {
+                                "section": "sponsoring_institution",
+                                "component": "SponsoringInstitutionComponent",
+                                "label": "Sponsoring institution",
+                                "icon": "building outline",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "event_url",
+                                "component": "MeetingURLComponent",
+                                "label": "Event URL",
+                            },
+                            {
+                                "section": "event_place",
+                                "component": "MeetingPlaceComponent",
+                                "label": "Event location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "other-interactiveResource": {
+        "page-2": [
+            {
+                "section": "alternate_identifiers",
+                "label": "Resource URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+                "icon": "linkify",
+            },
+            {
+                "section": "section_details",
+                "component": "FormSection",
+                "label": "Resource Details",
+                "icon": "hand pointer",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_title",
+                                "component": "JournalTitleComponent",
+                                "label": "Parent Site Title",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "version",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                                "icon": "copy",
+                            },
+                            {
+                                "section": "blog_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Parent Site URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "blog_publisher",
+                                "component": "PublisherComponent",
+                                "label": "Publisher",
+                            },
+                            {
+                                "section": "blog_publisher_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Publisher location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project or institution location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+        ]
+    },
+    "other-notes": {
+        "page-2": [
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "file",
+                "label": "Notes Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sponsoring_institution",
+                                "label": "Sponsoring institution",
+                                "component": "SponsoringInstitutionComponent",
+                            }
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "edition",
+                                "component": "EditionComponent",
+                            },
+                            {
+                                "section": "book_pages",
+                                "component": "TotalPagesComponent",
+                            },
+                            {
+                                "section": "book_volumes",
+                                "component": "VolumeComponent",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "URLs and Other Identifiers for Notes",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project or institution location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Language",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "other-patent": {
+        "page-2": [
+            {
+                "section": "publication_details",
+                "component": "FormSection",
+                "show_heading": True,
+                "icon": "file",
+                "label": "Patent Details",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publisher",
+                                "component": "PublisherComponent",
+                                "label": "Issuing authority",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Region or country",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Patent URL and Alternate Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "sponsoring_institution",
+                                "label": "Sponsoring institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Project or institution location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Language",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ]
+    },
+    "other-peerReview": None,
+    "other-physicalObject": {
+        "page-2": [
+            {
+                "section": "image_details",
+                "component": "FormSection",
+                "label": "Object Details",
+                "icon": "cube",
+                "show_heading": True,
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "media",
+                                "component": "MediaComponent",
+                                "label": "Materials or media",
+                                "placeholder": (
+                                    "e.g., paper, glass (press 'enter' to add)"
+                                ),
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "edition",
+                                "component": "VersionComponent",
+                                "label": "Version",
+                            },
+                            {
+                                "section": "sizes",
+                                "component": "SizesComponent",
+                                "label": "Dimensions, weight, etc.",
+                                "placeholder": _("e.g. 10 cm (press 'enter' to add)"),
+                                "description": "",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "alternate_identifiers",
+                "label": "Object URL and Other Identifiers",
+                "component": "AlternateIdentifiersComponent",
+                "wrapped": True,
+            },
+            {
+                "section": "project_details",
+                "component": "FormSection",
+                "label": "Project Details",
+                "show_heading": True,
+                "icon": "briefcase",
+                "subsections": [
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "project_title",
+                                "component": "ProjectTitleComponent",
+                                "label": "Project or collection title",
+                            },
+                            {
+                                "section": "project_url",
+                                "component": "PublicationURLComponent",
+                                "label": "Project URL",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                    {
+                        "component": "FormRow",
+                        "subsections": [
+                            {
+                                "section": "institution",
+                                "component": "SponsoringInstitutionComponent",
+                            },
+                            {
+                                "section": "publication_location",
+                                "component": "PublicationLocationComponent",
+                                "label": "Object or collection location",
+                            },
+                        ],
+                        "classnames": "equal width",
+                    },
+                ],
+            },
+            {
+                "section": "language",
+                "label": "Languages",
+                "component": "LanguagesComponent",
+                "placeholder": "e.g., English, French, Swahili",
+                "description": (
+                    "Search for the language(s) of the resource (e.g.,"
+                    ' "en", "fre", "Swahili"). Press enter to '
+                    "select each language."
+                ),
+                "wrapped": True,
+            },
+        ],
+    },
+    "other-workflow": None,
+}

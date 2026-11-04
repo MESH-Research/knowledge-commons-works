@@ -22,6 +22,9 @@ from datetime import timedelta
 
 from .site_urls import COMMONS_API_REQUEST_PROTOCOL, KC_PROFILES_DOMAIN
 
+KCWORKS_ADMIN_ROLES = ["administration", "administration-moderation"]
+REMOTE_USER_DATA_ADMIN_ROLES = KCWORKS_ADMIN_ROLES
+
 # Invenio-Accounts
 # ----------------
 # See https://github.com/inveniosoftware/invenio-accounts/blob/

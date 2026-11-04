@@ -4,17 +4,14 @@
 # KCWorks is free software; you can redistribute it and/or modify it under the
 # terms of the MIT License; see LICENSE file for more details.
 
-"""Record search field aliases for the Lucene query parser.
+"""Search-related configuration variables."""
 
-User-facing aliases in the search box (e.g. `title:foo`) are rewritten to
-OpenSearch field paths by
-`kcworks.services.search.queryparser.MultiFieldSearchTransformer`.
-
-Multi-field aliases are tuples of paths and expand to
-`(field1:value OR field2:value OR ...)`.
-"""
+import os
 
 from invenio_access.permissions import system_permission
+from invenio_i18n import lazy_gettext as _
+from invenio_rdm_records.contrib.codemeta import CODEMETA_FACETS
+from invenio_rdm_records.services import facets
 from invenio_rdm_records.services.queryparser import word_internal_notes
 from invenio_records_resources.services.records.queryparser import QueryParser
 from invenio_records_resources.services.records.queryparser.transformer import (
@@ -23,6 +20,35 @@ from invenio_records_resources.services.records.queryparser.transformer import (
 )
 
 from kcworks.services.search.queryparser import MultiFieldSearchTransformer
+
+# OpenSearch configuration
+# =======================
+
+SEARCH_DOMAIN = os.getenv("INVENIO_SEARCH_DOMAIN", "search:9200")
+SEARCH_INDEX_PREFIX = "kcworks-"
+
+
+SEARCH_CLIENT_CONFIG = {
+    "http_compress": True,
+    # Built-in resilience features - compatible with OpenSearch client
+    "timeout": 60,  # Default timeout for normal operations (searches, health checks)
+    "max_retries": 5,  # Number of retry attempts (increased for production)
+    "retry_on_timeout": True,  # Retry on timeout
+    "retry_on_status": [429, 500, 502, 503, 504],  # HTTP status codes to retry
+    "backoff_factor": 2,  # Exponential backoff multiplier
+    "max_backoff": 120,  # Maximum backoff time in seconds (increased)
+    # Connection pooling
+    "maxsize": 25,  # Maximum number of connections in pool
+    "retry_on_connection_error": True,
+    # SSL configuration (if needed)
+    # "use_ssl": False,
+    # "verify_certs": False,
+    # "ssl_assert_hostname": False,
+    # "ssl_show_warn": False,
+}
+
+# Search alias configuration
+# ========================
 
 # --- Combined field groups (OR-expanded by MultiFieldSearchTransformer) ---
 
@@ -303,3 +329,190 @@ RECORD_SEARCH_QUERY_PARSER = QueryParser.factory(
     tree_transformer_cls=MultiFieldSearchTransformer,
     fields=DEFAULT_SEARCH_FIELDS,
 )
+
+
+# Search facets
+# ==============
+
+RDM_FACETS = {
+    "is_published": {
+        "facet": facets.is_published,
+        "ui": {
+            "field": "is_published",
+        },
+    },
+    "resource_type": {
+        "facet": facets.resource_type,
+        "ui": {
+            "field": "resource_type.type",
+            "childAgg": {
+                "field": "resource_type.subtype",
+            },
+        },
+    },
+    "file_type": {
+        "facet": facets.filetype,
+        "ui": {
+            "field": "files.types",
+        },
+    },
+    "language": {
+        "facet": facets.language,
+        "ui": {
+            "field": "languages",
+        },
+    },
+    "access_status": {
+        "facet": facets.access_status,
+        "ui": {
+            "field": "access.status",
+        },
+    },
+    "subject_nested": {
+        "facet": facets.subject_nested,
+        "ui": {
+            "field": "subjects.scheme",
+            "childAgg": {
+                "field": "subjects.subject",
+            },
+        },
+    },
+    "subject": {
+        "facet": facets.subject,
+        "ui": {
+            "field": "subjects.subject",
+        },
+    },
+    **CODEMETA_FACETS,
+}
+
+# Search sorting
+# ==============
+
+RDM_SORT_OPTIONS = {
+    "bestmatch": dict(
+        title=_("Best match"),
+        fields=["_score"],  # search defaults to desc on `_score` field
+    ),
+    "newest": dict(
+        title=_("Newest"),
+        fields=["-created"],
+    ),
+    "oldest": dict(
+        title=_("Oldest"),
+        fields=["created"],
+    ),
+    "published-desc": dict(
+        title=_("Most recently published"),
+        fields=["-metadata.publication_date"],
+    ),
+    "published-asc": dict(
+        title=_("Earliest published"),
+        fields=["metadata.publication_date"],
+    ),
+    "version": dict(
+        title=_("Version"),
+        fields=["-versions.index"],
+    ),
+    "updated-desc": dict(
+        title=_("Recently updated"),
+        fields=["-updated"],
+    ),
+    "updated-asc": dict(
+        title=_("Least recently updated"),
+        fields=["updated"],
+    ),
+    "mostviewed": dict(
+        title=_("Most viewed"), fields=["-stats.all_versions.unique_views"]
+    ),
+    "mostdownloaded": dict(
+        title=_("Most downloaded"), fields=["-stats.all_versions.unique_downloads"]
+    ),
+}
+
+# Service search configurations
+# ===============================
+
+# Backend search options for /api/records and community-records API (q=
+# parsing/aliases, service facets/sort). Community UI sidebar does NOT read this
+# for which facets/sort to display — see COMMUNITIES_RECORDS_SEARCH.
+RDM_SEARCH = {
+    "facets": [
+        "resource_type",
+        "language",
+        "file_type",
+        "access_status",
+        "programmingLanguage",
+        "developmentStatus",
+    ],
+    "sort": [
+        "bestmatch",
+        "newest",
+        "oldest",
+        "published-desc",
+        "published-asc",
+        "version",
+        "mostviewed",
+        "mostdownloaded",
+    ],
+    "query_parser_cls": RECORD_SEARCH_QUERY_PARSER,
+}
+
+# User uploads / drafts search (/api/user/records). Facets/sort match upstream
+# RDM defaults; aliases use the same parser as RDM_SEARCH.
+RDM_SEARCH_DRAFTS = {
+    "facets": ["access_status", "is_published", "resource_type", "file_type"],
+    "sort": [
+        "bestmatch",
+        "updated-desc",
+        "updated-asc",
+        "newest",
+        "oldest",
+        "version",
+    ],
+    "query_parser_cls": RECORD_SEARCH_QUERY_PARSER,
+}
+
+# React-SearchKit config for community/collection records pages only: which
+# facets and sort options the sidebar shows. Keep facet/sort lists aligned with
+# RDM_SEARCH. Query aliases still come from RDM_SEARCH via the API.
+COMMUNITIES_RECORDS_SEARCH = {
+    "facets": [
+        "resource_type",
+        "language",
+        "file_type",
+        "access_status",
+        "programmingLanguage",
+        "developmentStatus",
+    ],
+    "sort": [
+        "bestmatch",
+        "newest",
+        "oldest",
+        "published-desc",
+        "published-asc",
+        "version",
+        "mostviewed",
+        "mostdownloaded",
+    ],
+}
+
+RDM_SEARCH_USER_COMMUNITIES = {
+    "facets": ["visibility", "type"],
+    "sort": ["bestmatch", "newest", "oldest"],
+    "sort_default": "bestmatch",
+    "sort_default_no_query": "newest",
+}
+"""User communities search configuration (i.e list of user communities)
+This affects the community search modal in the detail page.
+"""
+
+COMMUNITIES_SEARCH = {
+    "facets": ["type", "visibility"],
+    "sort": ["bestmatch", "newest", "oldest"],
+    "sort_default": "bestmatch",
+    "sort_default_no_query": "newest",
+}
+"""Community search configuration (i.e list of communities)
+This affects the community search modal in the upload form.
+"""
