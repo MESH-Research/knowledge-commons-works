@@ -308,11 +308,13 @@ ini_options.addopts = """
 --ignore=site/kcworks/dependencies/invenio-stats-dashboard
 --ignore=site/kcworks/dependencies/kc-knowledge-base-sync
 --ignore=site/kcworks/dependencies/kcworks-import-client
+--ignore=site/kcworks/config
 --ignore=site/kcworks/services/search/index_templates
 --ignore=tests/helpers
 --cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
 """
 ini_options.norecursedirs = [
+  "site/kcworks/config",
   "site/kcworks/services/search/index_templates/records/os-v2",
   "site/kcworks/dependencies/invenio-stats-dashboard/invenio_stats_dashboard/patches",
 ]
