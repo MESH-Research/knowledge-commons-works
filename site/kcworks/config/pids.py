@@ -23,6 +23,8 @@ from idutils import is_doi, normalize_doi
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids import providers
 
+from kcworks.config.site_urls import KC_PROFILES_URL_BASE
+
 # DataCite client configuration
 # -----------------------------
 DATACITE_ENABLED = True
@@ -89,3 +91,37 @@ RDM_PARENT_PERSISTENT_IDENTIFIERS = {
     },
 }
 """Persistent identifiers for parent record."""
+
+# Identifier urls
+# pid follows end of each string
+# urn expects to begin 'urn:nbn'
+LANDING_URLS = {
+    "ads": "https://ui.adsabs.harvard.edu/#abs/",
+    "arrayexpress_array": "https://www.ebi.ac.uk/arrayexpress/arrays/",
+    "arrayexpress_experiment": "https://www.ebi.ac.uk/arrayexpress/experiments/",
+    "arxiv": "https://arxiv.org/abs/",
+    "ascl": "https://ascl.net/",
+    "bioproject": "https://www.ebi.ac.uk/ena/data/view/",
+    "biosample": "https://www.ebi.ac.uk/ena/data/view/",
+    "doi": "https://doi.org/",
+    "ensembl": "https://www.ensembl.org/id/",
+    "genome": "https://www.ncbi.nlm.nih.gov/assembly/",
+    "geo": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "gnd": "https://d-nb.info/gnd/",
+    "hal": "https://hal.archives-ouvertes.fr/",
+    "handle": "https://hdl.handle.net/",
+    "hcommons_username": KC_PROFILES_URL_BASE,
+    "kcommons_username": KC_PROFILES_URL_BASE,
+    "isni": "https://isni.org/isni/",
+    "orcid": "https://orcid.org/",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/",
+    "refseq": "https://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=",
+    "ror": "https://ror.org/",
+    "sra": "https://www.ebi.ac.uk/ena/data/view/",
+    "swh": "https://archive.softwareheritage.org/",
+    "urn": "https://nbn-resolving.org/",
+    "uniprot": "https://purl.uniprot.org/uniprot/",
+    "viaf": "https://viaf.org/viaf/",
+}
+"""URL generation configuration for the supported PID providers."""

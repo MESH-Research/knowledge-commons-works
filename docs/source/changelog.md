@@ -3,7 +3,49 @@
 
 # Changes
 
-## Unreleased
+## 1.2.1 (2026-11-04)
+
+- Importer
+  - Bucknell Digital Commons owner email config + welcome email templates
+- Bug fixes
+  - Groups: fix group role assignment for admin users
+  - File previews: stop re-downloading the preview file when switching tabs
+  - Stats: remove awkward record stats query permissions
+- File Uploads:
+  - improve server/uWSGI settings for large file imports and uploads
+- Config refactor:
+  - split the monolith invenio.cfg into re-exported modules under
+    site/kcworks/config/ (deposit form layout, stats, search, communities,
+    serving, etc.)
+- Dependencies & security - Update lodash (root + deposit form package) - Update
+  tornado - Related lockfile / webpack updates Testing & CI - fix ty and ruff
+  errors - Test runner fixes - Restore required npm dev dependencies for js
+  testing - stop injecting API URL in CI (caused CORS conflicts in testing) -
+  TinyMCE webpack assets test Docs - Admin guide index order - new PIDs admin
+  guide page
+
+## 1.2.0 (2026-10-28)
+
+- File uploads
+  - Add full-file integrity check for multi-part Uppy uploads
+- Subcollections admin UX
+  - improve subcollection enable toggle UX
+  - add separate buttons to create/link a subcollection
+  - fix existing subcollection select dropdown on form
+  - add missing browse message trans and remove msg icon
+- PDF previewer
+  - add progress bar to pdf previewer for large files
+- Security / dependencies
+  - update tinymce and add reduxjs/toolkit to dev dependencies
+  - sanitize task output against potential user data leakage
+- Testing
+  - avoid db pool exhaustion and quiet PID logging spam
+  - fix workflow pnpm version in deposit form submodule
+  - fix minor ty errors
+- Configuration
+  - add extra Google Analytics URLs to CSP
+  - fix CSP setting for S3 bucket domain for staging compatibility
+  - remove legacy kcid and hcid personorg identifier schemes
 
 ## 1.1.3 (2026-10-27)
 

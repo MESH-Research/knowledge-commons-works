@@ -59,6 +59,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+# But don't exclude similarly named test files
+!tests/build
+!tests/build/**
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

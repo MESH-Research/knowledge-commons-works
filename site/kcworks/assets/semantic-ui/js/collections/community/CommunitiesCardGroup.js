@@ -57,7 +57,7 @@ PlaceholderLoader.defaultProps = {
 };
 
 const EmptyMessage = ({ message }) => {
-  return <Message icon="info" header={message} />;
+  return <Message header={message} />;
 };
 
 EmptyMessage.propTypes = {
@@ -92,8 +92,7 @@ export function getAncestorCommunities(community) {
 export function getKcGroupsUrlBase() {
   const domain =
     document.getElementById("main-nav-menu")?.dataset?.kcWordpressDomain ||
-    document.querySelector("[data-kc-wordpress-domain]")?.dataset
-      ?.kcWordpressDomain;
+    document.querySelector("[data-kc-wordpress-domain]")?.dataset?.kcWordpressDomain;
   return domain ? `https://${domain}/groups/` : "";
 }
 
@@ -124,8 +123,7 @@ class CommunityCard extends Component {
     const title = community.metadata?.title || "";
     const rawDescription = community.metadata?.description || "";
     const description =
-      rawDescription ||
-      (isCarousel ? "A Knowledge Commons Works collection." : "");
+      rawDescription || (isCarousel ? "A Knowledge Commons Works collection." : "");
     const collectionHref = `/collections/${community.slug}`;
     const ancestors = isCarousel ? getAncestorCommunities(community) : [];
     const commonsGroup = isCarousel ? getCommonsGroup(community) : null;
@@ -185,17 +183,13 @@ class CommunityCard extends Component {
                       )}
                     </span>
                   )}
-                  {commonsGroup && ancestors.length > 0 && (
-                    <span className="parents-sep"> · </span>
-                  )}
+                  {commonsGroup && ancestors.length > 0 && <span className="parents-sep"> · </span>}
                   {ancestors.length > 0 && (
                     <>
                       <span className="parents-label">Part of </span>
                       {ancestors.map((item, index) => (
                         <React.Fragment key={item.id || item.slug || index}>
-                          {index > 0 && (
-                            <span className="parents-divider"> › </span>
-                          )}
+                          {index > 0 && <span className="parents-divider"> › </span>}
                           <a href={`/collections/${item.slug}`}>{item.title}</a>
                         </React.Fragment>
                       ))}
