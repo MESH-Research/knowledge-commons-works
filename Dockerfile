@@ -5,13 +5,13 @@
 #                 Python extensions and build webpack assets. No test extras.
 #   test-runner – builder + optional-dependencies.tests (pytest, …) + root
 #                 `pnpm install` for Jest; not copied into runtime.
-#   runtime     – minimal Debian Bookworm image with only shared runtime libs;
+#   runtime     – minimal Debian Trixie image with only shared runtime libs;
 #                 no compilers, no Node, no pnpm, no uv, no test extras.
 #
 # Note: Keep commands in sync with ./scripts/bootstrap.
 
 # ── Stage 1: builder ──────────────────────────────────────────────────────
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm AS builder
+FROM ghcr.io/astral-sh/uv:python3.12-trixie AS builder
 
 ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
@@ -44,9 +44,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libltdl-dev \
     libpq-dev \
-    libpcre3-dev \
+    libpcre2-dev \
     locales \
-    libpcre3 \
+    libpcre2-8-0 \
     libffi-dev \
     uuid-dev \
     wget \
@@ -129,9 +129,9 @@ RUN NODE_ENV=development pnpm install --frozen-lockfile \
 
 
 # ── Stage 2: runtime ──────────────────────────────────────────────────────
-# python:3.12-slim-bookworm shares the same Python path (/usr/local/bin/python3.12)
+# python:3.12-slim-trixie shares the same Python path (/usr/local/bin/python3.12)
 # as the builder base, so venv symlinks resolve correctly after the COPY.
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.12-slim-trixie AS runtime
 
 ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     INVENIO_SITE_UI_URL=https://localhost \
@@ -155,8 +155,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 \
     libxslt1.1 \
     libpq5 \
-    libpcre3 \
-    libssl3 \
+    libpcre2-8-0 \
+    libssl3t64 \
     libffi8 \
     libcairo2 \
     locales \
