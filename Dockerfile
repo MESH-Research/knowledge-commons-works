@@ -29,6 +29,10 @@ RUN mkdir -p /opt/invenio/var/instance && \
     mkdir -p /opt/invenio/src
 WORKDIR /opt/invenio/src
 
+# FIXME: Temporary apt remediation
+RUN apt-get -o Acquire::Retries=0 update \
+ && apt-get -o Acquire::Retries=0 install -y --only-upgrade apt
+
 # Build tools, compile-time libs, Node.js — none of these land in the runtime image.
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -141,6 +145,10 @@ ENV INVENIO_INSTANCE_PATH=/opt/invenio/var/instance \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONWARNINGS=ignore::DeprecationWarning,ignore::SyntaxWarning \
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+
+# FIXME: Temporary apt remediation
+RUN apt-get -o Acquire::Retries=0 update \
+ && apt-get -o Acquire::Retries=0 install -y --only-upgrade apt
 
 # Runtime shared libs only — no *-dev packages, no compilers, no Node.
 RUN apt-get update && apt-get install -y --no-install-recommends \
