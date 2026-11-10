@@ -768,8 +768,8 @@ Authorization: Bearer &lt;your-api-key&gt;
 </div>
 <p>To use a different scheme for deduplication, set the request form field <code class="docutils literal notranslate"><span class="pre">id_scheme</span></code> (and optionally <code class="docutils literal notranslate"><span class="pre">alternate_id_scheme</span></code>) to that scheme name, and use the same scheme in each work’s <code class="docutils literal notranslate"><span class="pre">metadata.identifiers</span></code>. The scheme must already be defined in KCWorks (<code class="docutils literal notranslate"><span class="pre">RDM_RECORDS_IDENTIFIERS_SCHEMES</span></code>), or arranged with the KCWorks team for addition before import. Built-in import-oriented schemes include <code class="docutils literal notranslate"><span class="pre">import-recid</span></code> and <code class="docutils literal notranslate"><span class="pre">neh-recid</span></code>. DOI values in <code class="docutils literal notranslate"><span class="pre">pids.doi</span></code> are also used for matching when present.</p>
 </section>
-<section id="files-when-re-importing-an-existing-work-no-updates-is-false">
-<span id="import-existing-record-files"></span><h4>Files when re-importing an existing work (<code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code>)<a class="headerlink" href="#files-when-re-importing-an-existing-work-no-updates-is-false" title="Link to this heading">¶</a></h4>
+<section id="import-existing-record-files">
+<span id="files-when-re-importing-an-existing-work-no-updates-is-false"></span><h4>Files when re-importing an existing work (<code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code>)<a class="headerlink" href="#import-existing-record-files" title="Link to this heading">¶</a></h4>
 <p>When an import matches an existing draft or published work and <code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code> (the default), or when <code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;true&quot;</span></code> but metadata is unchanged so the load continues, KCWorks reconciles files against the existing record as follows:</p>
 <ul class="simple">
 <li><p>Same filename (key) and same size → leave the existing file; no re-upload.</p></li>
@@ -2755,7 +2755,7 @@ automatically purged entirely from the database. There is also no API mechanism 
 <li><a class="reference internal" href="#kc-accounts-for-work-owners">KC accounts for work owners</a></li>
 <li><a class="reference internal" href="#email-notifications-for-work-owners">Email notifications for work owners</a></li>
 <li><a class="reference internal" href="#identifying-the-work-for-import">Identifying the work for import</a></li>
-<li><a class="reference internal" href="#files-when-re-importing-an-existing-work-no-updates-is-false">Files when re-importing an existing work (<code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code>)</a></li>
+<li><a class="reference internal" href="#import-existing-record-files">Files when re-importing an existing work (<code class="docutils literal notranslate"><span class="pre">no_updates</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code>)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#example-import-request">Example import request</a><ul>
