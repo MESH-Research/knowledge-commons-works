@@ -18,7 +18,7 @@ SQLALCHEMY_DATABASE_URI = os.getenv(
 )
 
 SQLALCHEMY_ENGINE_OPTIONS = {
-    "pool_pre_ping": False,
+    "pool_pre_ping": True,
     "pool_recycle": 3600,
     "pool_timeout": 10,
     "connect_args": {"options": "-c timezone=UTC"},

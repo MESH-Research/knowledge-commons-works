@@ -115,6 +115,11 @@ APP_DEFAULT_SECURE_HEADERS = {
             "'unsafe-inline'",  # for inline scripts
         ],
         "font-src": ["'self'", "data:", "fonts.gstatic.com"],  # for fonts
+        "frame-src": [
+            "'self'",
+            "blob:",
+            *CSP_S3_BUCKET_SRC,
+        ],
     },
     "content_security_policy_report_only": False,
     "content_security_policy_report_uri": None,
