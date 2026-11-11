@@ -11,6 +11,7 @@ from typing import Any
 from invenio_accounts.models import User
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_rdm_records.records.systemfields.access.field.record import RecordAccess
+from invenio_remote_user_data_kcworks.proxies import current_remote_user_data_service
 
 
 def update_nested_dict(starting_value: Any, updates: Any) -> Any:
@@ -69,17 +70,24 @@ def get_commons_user_from_contributor(contributor: dict) -> str:
     return id
 
 
-# FIXME: implement
 def get_user_by_commons_username(commons_username: str) -> User | None:
-    """Get a kcworks user by their Commons username based on external authentication.
+    """Get a KCWorks user by their Commons / KC member username.
+
+    Delegates to `RemoteUserDataService.find_local_user_by_kc_username`, which
+    matches `identifier_kc_username`, legacy `UserIdentity` rows, and username
+    heuristics shared with login matching.
 
     Parameters:
         commons_username: The Commons username to search for.
 
     Returns:
-        The KCWorks user.
+        The matching KCWorks user, or `None` if none is found.
     """
-    raise NotImplementedError("Not implemented")
+    if not commons_username:
+        return None
+    return current_remote_user_data_service.find_local_user_by_kc_username(
+        commons_username
+    )
 
 
 def get_kcworks_user_from_contributor(contributor: dict) -> User | None:
