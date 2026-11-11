@@ -24,6 +24,7 @@ from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids import providers
 
 from kcworks.config.site_urls import KC_PROFILES_URL_BASE
+from kcworks.services.pids.datacite import RetryingDataCitePIDProvider
 
 # DataCite client configuration
 # -----------------------------
@@ -34,11 +35,15 @@ DATACITE_TEST_MODE = (
 )
 DATACITE_DATACENTER_SYMBOL = "MSU.CORE"
 
+# Transient DataCite API retries (transport errors and 5xx / server errors).
+DATACITE_RETRY_ATTEMPTS = 3
+DATACITE_RETRY_BACKOFF_SECONDS = 0.5
+
 # Persistent identifier providers
 # -------------------------------
 RDM_PERSISTENT_IDENTIFIER_PROVIDERS = [
-    # DataCite DOI provider
-    providers.DataCitePIDProvider(
+    # DataCite DOI provider (retries transient remote API failures)
+    RetryingDataCitePIDProvider(
         "datacite",
         client=providers.DataCiteClient("datacite", config_prefix="DATACITE"),
         label=_("DOI"),
@@ -67,7 +72,7 @@ RDM_PERSISTENT_IDENTIFIERS = {
         "label": _("DOI"),
         "validator": is_doi,
         "normalizer": normalize_doi,
-        "is_enabled": providers.DataCitePIDProvider.is_enabled,
+        "is_enabled": RetryingDataCitePIDProvider.is_enabled,
         "ui": {"default_selected": "no"},
     },
     "oai": {
@@ -87,7 +92,7 @@ RDM_PARENT_PERSISTENT_IDENTIFIERS = {
         "label": _("Concept DOI"),
         "validator": is_doi,
         "normalizer": normalize_doi,
-        "is_enabled": providers.DataCitePIDProvider.is_enabled,
+        "is_enabled": RetryingDataCitePIDProvider.is_enabled,
     },
 }
 """Persistent identifiers for parent record."""
