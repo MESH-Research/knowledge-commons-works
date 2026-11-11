@@ -12,6 +12,13 @@ from invenio_accounts.models import User
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_rdm_records.records.systemfields.access.field.record import RecordAccess
 
+from invenio_remote_user_data_kcworks.proxies import current_remote_user_data_service
+from invenio_remote_user_data_kcworks.types.auth import AccountInfo
+from invenio_remote_user_data_kcworks.utils.auth import (
+    CILogonHelpers,
+    UserIdentifierHelpers,
+)
+
 
 def update_nested_dict(starting_value: Any, updates: Any) -> Any:
     """Update a nested dictionary with another dictionary.
@@ -47,8 +54,51 @@ def update_nested_dict(starting_value: Any, updates: Any) -> Any:
     return starting_value
 
 
+def _account_info_from_contributor(contributor: dict) -> AccountInfo | None:
+    """Build an `AccountInfo` from a contributor's person/org identifiers.
+
+    Collects `kc_username` / `hc_username`, `orcid`, and `email` schemes.
+    Returns `None` when none of those identifiers are present.
+
+    Args:
+        contributor: A creator/contributor metadata dict.
+
+    Returns:
+        An `AccountInfo` suitable for `CILogonHelpers.get_user_from_account_info`,
+        or `None` when there is nothing to look up.
+    """
+    kc_username = ""
+    email = ""
+    orcid: str | None = None
+    identifiers = contributor.get("person_or_org", {}).get("identifiers") or []
+    for identifier in identifiers:
+        scheme = identifier.get("scheme")
+        value = identifier.get("identifier") or ""
+        if not value:
+            continue
+        if scheme in ("hc_username", "kc_username") and not kc_username:
+            kc_username = value
+        elif scheme == "email" and not email:
+            email = value
+        elif scheme == "orcid" and not orcid:
+            orcid = value
+    if not (kc_username or email or orcid):
+        return None
+    return AccountInfo(
+        external_id="",
+        external_method="knowledgeCommons",
+        email=email,
+        orcid=orcid,
+        kc_username=kc_username,
+    )
+
+
 def get_commons_user_from_contributor(contributor: dict) -> str:
     """Get the Commons username from a contributor dict.
+
+    Prefers an explicit `kc_username` / `hc_username` identifier. When those
+    are absent, resolves a local user via ORCID/email and reads the username
+    from that user.
 
     If one can't be found, return an empty string.
 
@@ -58,32 +108,43 @@ def get_commons_user_from_contributor(contributor: dict) -> str:
     Returns:
         The Commons username as a string.
     """
-    id = ""
-    if contributor["person_or_org"].get("identifiers"):
-        for identifier in contributor["person_or_org"]["identifiers"]:
-            if identifier["scheme"] in ["hc_username", "kc_username"]:
-                id = identifier["identifier"]
-    # FIXME: get the username from the email?
-    # FIXME: get the username from orcid?
+    identifiers = contributor.get("person_or_org", {}).get("identifiers") or []
+    for identifier in identifiers:
+        if identifier.get("scheme") in ("hc_username", "kc_username"):
+            value = identifier.get("identifier") or ""
+            if value:
+                return value
     # FIXME: add a field to the contributor model for the kc_username?
-    return id
+    user = get_kcworks_user_from_contributor(contributor)
+    return UserIdentifierHelpers.username_from_user(user) or ""
 
 
-# FIXME: implement
 def get_user_by_commons_username(commons_username: str) -> User | None:
-    """Get a kcworks user by their Commons username based on external authentication.
+    """Get a KCWorks user by their Commons / KC member username.
+
+    Delegates to `RemoteUserDataService.find_local_user_by_kc_username`, which
+    matches `identifier_kc_username`, legacy `UserIdentity` rows, and username
+    heuristics shared with login matching.
 
     Parameters:
         commons_username: The Commons username to search for.
 
     Returns:
-        The KCWorks user.
+        The matching KCWorks user, or `None` if none is found.
     """
-    raise NotImplementedError("Not implemented")
+    if not commons_username:
+        return None
+    return current_remote_user_data_service.find_local_user_by_kc_username(
+        commons_username
+    )
 
 
 def get_kcworks_user_from_contributor(contributor: dict) -> User | None:
     """Get the KCWorks user from a contributor dict.
+
+    Builds an `AccountInfo` from the contributor's identifiers and delegates
+    to `CILogonHelpers.get_user_from_account_info`, which matches by ORCID,
+    KC username, and email (same chain used at login).
 
     Parameters:
         contributor: A contributor dict.
@@ -91,18 +152,10 @@ def get_kcworks_user_from_contributor(contributor: dict) -> User | None:
     Returns:
         The KCWorks user. If one can't be found, return None.
     """
-    user = None
-    commons_user = get_commons_user_from_contributor(contributor)
-    if commons_user:
-        user = get_user_by_commons_username(commons_user)
-    # else:
-    #     orcid = [
-    #         i
-    #         for i in contributor["person_or_org"].get("identifiers", [])
-    #         if i["scheme"] == "orcid"
-    #     ]
-    # FIXME: get the user by orcid
-    return user
+    account_info = _account_info_from_contributor(contributor)
+    if account_info is None:
+        return None
+    return CILogonHelpers.get_user_from_account_info(account_info)
 
 
 def get_changed_fields(
