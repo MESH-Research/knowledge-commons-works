@@ -435,6 +435,10 @@ def _log_catch_all_exception(error: BaseException) -> None:
     Flask does not call `flask.Flask.log_exception` when a matching error
     handler exists, so otherwise-unhandled errors would be silent.
 
+    Always WARNING with inline stack frames. Stacks are not gated on logging
+    DEBUG: on prod, `INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG` alone does not make
+    `app.logger.debug` visible (logger effective level stays WARNING).
+
     Args:
         error: The exception about to be rendered as a 500.
     """
@@ -443,18 +447,12 @@ def _log_catch_all_exception(error: BaseException) -> None:
     )
     app.logger.warning(
         "Catch-all error handler caught %s for %s %s (raised at %s:%s). "
-        "Returning 500; enable DEBUG for stack frames.",
+        "Returning 500.\n%s",
         type(error).__name__,
         request.method,
         request.path,
         filename or "?",
         lineno or "?",
-    )
-    app.logger.debug(
-        "Stack for %s on %s %s:\n%s",
-        type(error).__name__,
-        request.method,
-        request.path,
         _format_stack_frames(error),
     )
 
@@ -487,17 +485,19 @@ def _make_logging_wrapper(
 ) -> Any:
     """Build a wrapper that logs the original exception, then delegates.
 
-    Logs at WARNING with a one-line summary that names the exception type,
-    the blueprint, the request method+path, and the deepest-frame file:line.
-    Logs stack frames at DEBUG without the exception message (see
-    `_format_stack_frames`).
+    Logs at WARNING with a one-line summary (exception type, blueprint,
+    method+path, deepest file:line) plus inline stack frames without the
+    exception message (see `_format_stack_frames`). Stacks are attached at
+    WARNING — not DEBUG — because prod `INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG`
+    does not make `app.logger.debug` visible without also lowering the
+    logger effective level (and that would flood unrelated DEBUG traffic).
 
     Args:
         target_app: The Flask app whose logger we use.
         orig_handler: The original blueprint-scoped error handler to delegate to.
         bp_name: The name of the blueprint that registered `orig_handler`.
         exc_cls: The exception class the handler was registered for. Included
-            here for future per-class log-level tuning; not currently used.
+            for call-site symmetry / future per-class routing; unused today.
 
     Returns:
         A new callable with the same shape as `orig_handler` that performs
@@ -513,7 +513,7 @@ def _make_logging_wrapper(
         target_app.logger.warning(
             "Blueprint error handler caught %s in blueprint=%s for %s %s "
             "(handler=%s.%s, raised at %s:%s). "
-            "Mapped response will be returned; enable DEBUG for stack frames.",
+            "Mapped response will be returned.\n%s",
             type(error).__name__,
             bp_name,
             request.method,
@@ -522,13 +522,6 @@ def _make_logging_wrapper(
             getattr(orig_handler, "__qualname__", "?"),
             filename or "?",
             lineno or "?",
-        )
-        target_app.logger.debug(
-            "Stack for %s caught by blueprint=%s on %s %s:\n%s",
-            type(error).__name__,
-            bp_name,
-            request.method,
-            request.path,
             _format_stack_frames(error),
         )
         return orig_handler(error)
@@ -551,8 +544,8 @@ def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
     exceptions, so the original error is otherwise invisible.
 
     This walks `app.error_handler_spec` and replaces each blueprint-scoped
-    handler with a wrapper that logs (WARNING summary, DEBUG stack frames
-    without exception messages) before delegating. App-wide handlers
+    handler with a wrapper that logs a WARNING summary plus inline stack
+    frames (no exception messages) before delegating. App-wide handlers
     registered by `register_themed_error_handlers` are intentionally skipped;
     the catch-all `Exception` handler logs via `_log_catch_all_exception`
     before returning the themed 500.
@@ -628,18 +621,12 @@ def _wrap_view(view: Callable[..., Any], endpoint: str) -> Callable[..., Any]:
             if mapped is None:
                 raise
             app.logger.warning(
-                "API error transform %s → HTTP %s for %s %s (endpoint=%s)",
+                "API error transform %s → HTTP %s for %s %s (endpoint=%s).\n%s",
                 type(exc).__name__,
                 getattr(mapped, "code", "?"),
                 request.method,
                 request.path,
                 endpoint,
-            )
-            app.logger.debug(
-                "Stack for transformed %s on %s %s:\n%s",
-                type(exc).__name__,
-                request.method,
-                request.path,
                 _format_stack_frames(exc),
             )
             raise mapped from exc
