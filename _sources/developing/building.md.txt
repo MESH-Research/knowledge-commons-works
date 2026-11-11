@@ -10,15 +10,29 @@ branches. The build is triggered by the `build.yml` workflow.
 .github/workflows/build.yml
 ```
 
-If the push is to the `staging` or `production` branch, the build will be tagged
-with the branch name and pushed to AWS Elastic Container Registry (ECR) as well
-as to the "monotasker/kcworks" Docker Hub repository. If the push is to the
-`main` branch, the build will be tagged with `latest` and pushed just to the
-"monotasker/kcworks" Docker Hub repository. If the build is triggered by a push
-to a branch with a name that starts with `dev/`, the build will be given a tag
-starting with `dev-` and pushed just to the "monotasker/kcworks" Docker Hub
-repository. E.g., a push to the `dev/my-feature` branch will be tagged with
-`dev-my-feature` and pushed to the "monotasker/kcworks" Docker Hub repository.
+If the push is to the `staging` or `production` branch, the build is pushed to
+AWS Elastic Container Registry (ECR) as `:latest`, `:$GITHUB_SHA`, and
+`:v{pyproject-version}-{shortsha}` (no automatic version bump; the pyproject
+version is read as-is). The same images are also pushed to the
+"monotasker/kcworks" Docker Hub repository under the branch name tag. After the
+ECR push succeeds, the workflow forces a new ECS deployment on the target
+service so running tasks re-pull `:latest`, then creates a Sentry release named
+like the build tag. Task definitions are not modified (same pattern as Knowledge
+Commons Profiles). Staging always updates `kcworks-staging-blue` on
+`kcworks-staging-3`. Production picks among `kcworks-blue` / `kcworks-green` on
+`kcworks-prod-2` (whichever has desired or running tasks; if both are up, blue is
+preferred for blue-green pretest).
+
+Sentry release steps expect repository secrets `SENTRY_AUTH_TOKEN`,
+`SENTRY_ORG`, `SENTRY_PROJECT` (production), and `SENTRY_PROJECT_STAGING`.
+
+If the push is to the `main` branch, the build will be tagged with `latest` and
+pushed just to the "monotasker/kcworks" Docker Hub repository. If the build is
+triggered by a push to a branch with a name that starts with `dev/`, the build
+will be given a tag starting with `dev-` and pushed just to the
+"monotasker/kcworks" Docker Hub repository. E.g., a push to the
+`dev/my-feature` branch will be tagged with `dev-my-feature` and pushed to the
+"monotasker/kcworks" Docker Hub repository.
 
 ```{note}
 The local docker-compose.yml file is configured to use the "latest" container from Docker Hub by default. If you need to use a container build from a dev branch you can specify the image tag with the `IMAGE_TAG` environment variable. E.g., `IMAGE_TAG=dev-my-feature docker compose up -d` will use the container tagged "dev-my-feature".

@@ -174,8 +174,12 @@ Jest configs use `verbose: false` by default (file-level results, not per-test P
 
 ## Ghost Inspector tests
 
-The Ghost Inspector tests are run on the deployed site (staging or production). They run on a regular schedule and are used to ensure that the site is working as expected.
+The Ghost Inspector tests are run on the deployed site (staging or production).
+They can be triggered manually via `workflow_dispatch` on
+`.github/workflows/ghost-inspector.yml`.
 
 ```{note}
-At present, Ghost Inspector tests are not run automatically when a pull request is merged into the `staging` or `production` branches. This should be implemented in the future once deployment to the respective servers is fully automated.
+Automatic `push` / `pull_request` triggers for Ghost Inspector on `staging` and
+`production` are commented out for now (while deploy-on-merge settles). Re-enable
+those triggers or wire a post-deploy run when ready.
 ```

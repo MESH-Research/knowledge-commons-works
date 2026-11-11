@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Development Workflow" href="workflow.html"><link rel="prev" title="Development Standards" href="code_standards.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Source Control and Versioning - Knowledge Commons Works 1.2.1 documentation</title>
+        <title>Source Control and Versioning - Knowledge Commons Works 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.2.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.3.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.2.1 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.3.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -325,7 +325,7 @@ uv<span class="w"> </span>run<span class="w"> </span>bump-my-version<span class=
 <p class="admonition-title">Note</p>
 <p>Merges into <code class="docutils literal notranslate"><span class="pre">main</span></code> should be performed using the <code class="docutils literal notranslate"><span class="pre">squash</span></code> merge strategy (the equivalent of <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">merge</span> <span class="pre">--squash</span> <span class="pre">&lt;branch&gt;</span></code>). This combines all of the incoming changes into a single commit, making the commit history cleaner and easier to read.</p>
 </div>
-<p>No commits should be made directly to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. All changes should be made to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch and then merged into <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> via pull requests. This is especially important because changes pushed to <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> branches will automatically trigger rebuilding of the stanging or production containers and the deployment of the updated containers to the respective servers.</p>
+<p>No commits should be made directly to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code> branches. All changes should be made to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch and then merged into <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> via pull requests. This is especially important because changes pushed to <code class="docutils literal notranslate"><span class="pre">staging</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code> branches will automatically trigger rebuilding of the staging or production containers, pushing <code class="docutils literal notranslate"><span class="pre">:latest</span></code> to ECR, and forcing a new ECS deployment so tasks pick up those images.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Pull requests to staging and production should be merged using the <code class="docutils literal notranslate"><span class="pre">rebase</span></code> merge strategy, so that the commit history for these branches is kept clean and identical to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
@@ -432,7 +432,7 @@ uv<span class="w"> </span>run<span class="w"> </span>bump-my-version<span class=
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=ca842793"></script>
+</div><script src="../_static/documentation_options.js?v=1f29e9d3"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
