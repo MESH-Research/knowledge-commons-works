@@ -138,18 +138,22 @@ const UserNav = ({
         </a>
       ))}
 
-      {userAdministrator && <div className="item spacer mobile tablet only restricted mt-10"></div>}
-      {adminItemsCombined.map((item) => (
-        <a
-          className="ui mobile tablet only restricted"
-          href={item.url}
-          key={item.text}
-          tabIndex={0}
-        >
-          {stripHtml(item.text)}
-        </a>
-      ))}
-      {userAdministrator && <div className="item spacer mobile tablet only restricted mb-10"></div>}
+      {userAdministrator ? (
+        <>
+          <div className="item spacer mobile tablet only restricted mt-10"></div>
+          {adminItemsCombined.map((item) => (
+            <a
+              className="ui mobile tablet only restricted"
+              href={item.url}
+              key={item.text}
+              tabIndex={0}
+            >
+              {stripHtml(item.text)}
+            </a>
+          ))}
+          <div className="item spacer mobile tablet only restricted mb-10"></div>
+        </>
+      ) : null}
     </>
   );
 };
