@@ -16,15 +16,14 @@ AWS Elastic Container Registry (ECR) as `:latest`, `:$GITHUB_SHA`, and
 version is read as-is). The same images are also pushed to the
 "monotasker/kcworks" Docker Hub repository under the branch name tag. After the
 ECR push succeeds, the workflow forces a new ECS deployment on the target
-service so running tasks re-pull `:latest`, then creates a Sentry release named
-like the build tag. Task definitions are not modified (same pattern as Knowledge
-Commons Profiles). Staging always updates `kcworks-staging-blue` on
-`kcworks-staging-3`. Production picks among `kcworks-blue` / `kcworks-green` on
-`kcworks-prod-2` (whichever has desired or running tasks; if both are up, blue is
-preferred for blue-green pretest).
+service so running tasks re-pull `:latest`. Task definitions are not modified
+(same pattern as Knowledge Commons Profiles). Staging always updates
+`kcworks-staging-blue` on `kcworks-staging-3`. Production picks among
+`kcworks-blue` / `kcworks-green` on `kcworks-prod-2` (whichever has desired or
+running tasks; if both are up, blue is preferred for blue-green pretest).
 
-Sentry release steps expect repository secrets `SENTRY_AUTH_TOKEN`,
-`SENTRY_ORG`, `SENTRY_PROJECT` (production), and `SENTRY_PROJECT_STAGING`.
+Sentry release steps are present in `build.yml` but commented out until the
+matching GitHub secrets are configured.
 
 If the push is to the `main` branch, the build will be tagged with `latest` and
 pushed just to the "monotasker/kcworks" Docker Hub repository. If the build is
