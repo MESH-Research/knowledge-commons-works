@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from types import TracebackType
 from typing import Any
 
-from flask import Flask, Response, jsonify, make_response, render_template, request
+from flask import Flask, Response, g, jsonify, make_response, render_template, request
 from flask import current_app as app
 from flask_resources import HTTPJSONException
 from werkzeug.exceptions import (
@@ -30,6 +30,11 @@ from werkzeug.exceptions import (
     TooManyRequests,
     Unauthorized,
 )
+
+try:
+    import sentry_sdk
+except ImportError:
+    sentry_sdk = None  # ty: ignore[invalid-assignment]
 
 from invenio_remote_user_data_kcworks.errors import (
     BrokerExpiryValueError,
@@ -313,7 +318,7 @@ def oauth_500_handler(
 
     Triggered for werkzeug `InternalServerError`. The catch-all
     `Exception` registration uses `catch_all_exception_handler`
-    instead, which logs the original error before delegating here.
+    instead.
 
     Args:
         error: The exception being handled.
@@ -346,7 +351,8 @@ def register_themed_error_handlers(target_app: Flask) -> None:
 
     Any exception not covered by the table is caught by the final
     `Exception` registration (`catch_all_exception_handler`), which
-    logs the original error then renders a themed 500.
+    renders a themed 500. (Logging for that path is done by
+    `wrap_error_handlers_with_logging`.)
 
     The API app does not call this; it relies on Invenio/Flask
     `HTTPException` and `RESTException` handling instead.
@@ -429,42 +435,15 @@ def _format_stack_frames(error: BaseException) -> str:
     return "".join(traceback.format_tb(tb)).rstrip() or "(empty traceback)"
 
 
-def _log_catch_all_exception(error: BaseException) -> None:
-    """Log an exception handled only by the catch-all `Exception` registration.
-
-    Flask does not call `flask.Flask.log_exception` when a matching error
-    handler exists, so otherwise-unhandled errors would be silent.
-
-    Always WARNING with inline stack frames. Stacks are not gated on logging
-    DEBUG: on prod, `INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG` alone does not make
-    `app.logger.debug` visible (logger effective level stays WARNING).
-
-    Args:
-        error: The exception about to be rendered as a 500.
-    """
-    filename, lineno = _deepest_traceback_frame_location(
-        getattr(error, "__traceback__", None)
-    )
-    app.logger.warning(
-        "Catch-all error handler caught %s for %s %s (raised at %s:%s). "
-        "Returning 500.\n%s",
-        type(error).__name__,
-        request.method,
-        request.path,
-        filename or "?",
-        lineno or "?",
-        _format_stack_frames(error),
-    )
-
-
 def catch_all_exception_handler(
     error: BaseException,
     *,
     json_only: bool = False,
 ) -> Response | tuple[Response, int]:
-    """Log and render 500 for exceptions not in the themed routing table.
+    """Render 500 for exceptions not in the themed routing table.
 
     Registered via `register_themed_error_handlers` on `Exception` only.
+    Logging is done by `wrap_error_handlers_with_logging`.
 
     Args:
         error: The exception being handled.
@@ -473,103 +452,153 @@ def catch_all_exception_handler(
     Returns:
         Themed or JSON 500 response from `oauth_500_handler`.
     """
-    _log_catch_all_exception(error)
     return oauth_500_handler(error, json_only=json_only)
+
+
+def _exception_to_log(error: BaseException) -> BaseException:
+    """Prefer Flask's `original_exception` when logging a synthesized 500.
+
+    Args:
+        error: Exception passed to the error handler.
+
+    Returns:
+        `error.original_exception` when set, otherwise `error`.
+    """
+    if isinstance(error, HTTPException):
+        original = getattr(error, "original_exception", None)
+        if isinstance(original, BaseException):
+            return original
+    return error
+
+
+def _response_status_for_logging(
+    error: BaseException, handler_result: Any
+) -> int | None:
+    """Resolve the HTTP status that should drive 4xx vs 5xx logging.
+
+    Prefers `HTTPException.code` on the raised error; otherwise reads the
+    handler return value (`Response`, `(body, status)`, or `HTTPException`).
+
+    Args:
+        error: Exception passed to the error handler.
+        handler_result: Return value from the original handler.
+
+    Returns:
+        Status code, or `None` if unknown (treated as not a 5xx for logging).
+    """
+    if isinstance(error, HTTPException) and error.code is not None:
+        return error.code
+    if isinstance(handler_result, HTTPException):
+        return handler_result.code
+    if isinstance(handler_result, Response):
+        return handler_result.status_code
+    if isinstance(handler_result, tuple) and len(handler_result) >= 2:
+        status = handler_result[1]
+        if isinstance(status, int):
+            return status
+    return None
 
 
 def _make_logging_wrapper(
     target_app: Flask,
     orig_handler: Any,
-    bp_name: str,
+    bp_name: str | None,
     exc_cls: type,
 ) -> Any:
-    """Build a wrapper that logs the original exception, then delegates.
+    """Build a wrapper that runs the handler, then logs only for 5xx responses.
 
-    Logs at WARNING with a one-line summary (exception type, blueprint,
-    method+path, deepest file:line) plus inline stack frames without the
-    exception message (see `_format_stack_frames`). Stacks are attached at
-    WARNING — not DEBUG — because prod `INVENIO_LOGGING_CONSOLE_LEVEL=DEBUG`
-    does not make `app.logger.debug` visible without also lowering the
-    logger effective level (and that would flood unrelated DEBUG traffic).
+    Calls `orig_handler` first, then logs at ERROR and always
+    `sentry_sdk.capture_exception` when the outcome is an HTTP 5xx. 4xx
+    outcomes are not logged. Sets `g.sentry_event_id` from that capture so
+    response `error_id` matches this failure (not a stale `last_event_id`).
 
     Args:
         target_app: The Flask app whose logger we use.
-        orig_handler: The original blueprint-scoped error handler to delegate to.
-        bp_name: The name of the blueprint that registered `orig_handler`.
+        orig_handler: The original error handler to delegate to.
+        bp_name: Blueprint that registered `orig_handler`, or `None` for app-wide.
         exc_cls: The exception class the handler was registered for. Included
             for call-site symmetry / future per-class routing; unused today.
 
     Returns:
-        A new callable with the same shape as `orig_handler` that performs
-        logging then returns whatever `orig_handler` returns.
+        A new callable with the same shape as `orig_handler`.
     """
     del exc_cls  # reserved for future per-class log routing
+    scope = bp_name if bp_name is not None else "<app>"
 
     @functools.wraps(orig_handler)
     def _logged(error: BaseException) -> Any:
+        result = orig_handler(error)
+        status = _response_status_for_logging(error, result)
+        if status is None or status < 500:
+            return result
+
+        log_error = _exception_to_log(error)
+
+        if sentry_sdk is not None:
+            # Always capture here so `error_id` is this failure's id, not a
+            # stale `last_event_id` from an earlier request. May duplicate
+            # FlaskIntegration's got_request_exception capture on unhandled
+            # paths; prefer a correct id over deduping.
+            event_id = sentry_sdk.capture_exception(log_error)
+            if event_id:
+                g.sentry_event_id = event_id
+
         filename, lineno = _deepest_traceback_frame_location(
-            getattr(error, "__traceback__", None)
+            getattr(log_error, "__traceback__", None)
         )
-        target_app.logger.warning(
-            "Blueprint error handler caught %s in blueprint=%s for %s %s "
+        target_app.logger.error(
+            "Error handler caught %s in blueprint=%s for %s %s "
             "(handler=%s.%s, raised at %s:%s). "
             "Mapped response will be returned.\n%s",
-            type(error).__name__,
-            bp_name,
+            type(log_error).__name__,
+            scope,
             request.method,
             request.path,
             getattr(orig_handler, "__module__", "?"),
             getattr(orig_handler, "__qualname__", "?"),
             filename or "?",
             lineno or "?",
-            _format_stack_frames(error),
+            _format_stack_frames(log_error),
         )
-        return orig_handler(error)
+        return result
 
     _logged._kcworks_logged = True  # ty: ignore[unresolved-attribute]
     return _logged
 
 
-def wrap_blueprint_error_handlers_with_logging(target_app: Flask) -> None:
-    """Log the original exception when a blueprint-scoped error handler fires.
+def wrap_error_handlers_with_logging(target_app: Flask) -> None:
+    """Log the original exception when a mapped error handler fires.
 
-    Several upstream Invenio blueprints register blueprint-scoped error
-    handlers that map programmer / domain errors to HTTP responses without
-    logging the underlying cause. On the UI app that includes themed 404/403/410
-    handlers (e.g. `invenio_app_rdm.records_ui`, `communities_ui`). On the API
-    app the same pattern appears on flask-resources blueprints that map
-    `PIDDoesNotExistError`, `FileKeyNotFoundError`, etc. to JSON.
+    Several upstream Invenio blueprints register error handlers that map
+    domain code errors to HTTP responses without logging the underlying cause.
+    On the UI app that includes themed 404/403/410 handlers
+    (e.g. for `invenio_app_rdm.records_ui`, `communities_ui`). On the API app the
+    same pattern appears on flask-resources blueprints that map
+    `PIDDoesNotExistError`, `FileKeyNotFoundError`, etc. to JSON. For these handled
+    exceptions, Flask's `got_request_exception` signal also does not fire (for Sentry
+    to capture). So the original error is invisible.
 
-    Flask's `got_request_exception` signal does not fire for handled
-    exceptions, so the original error is otherwise invisible.
+    Something similar happens with unhandled 5xx errors on the API app. Flask wraps
+    these in an InternalServerError and passes them to Invenio-REST's app-level
+    HTTP 500 handler, which transforms them into JSON with no log. These errors can be
+    visible in Sentry (because `got_request_exception` *is* fired), but not in the
+    console.
 
-    This walks `app.error_handler_spec` and replaces each blueprint-scoped
-    handler with a wrapper that logs a WARNING summary plus inline stack
-    frames (no exception messages) before delegating. App-wide handlers
-    registered by `register_themed_error_handlers` are intentionally skipped;
-    the catch-all `Exception` handler logs via `_log_catch_all_exception`
-    before returning the themed 500.
-
-    Handlers registered for `werkzeug.exceptions.HTTPException` subclasses
-    are skipped: those represent intentional, routine HTTP responses (real
-    client 404s, 405s, etc.), not buried programmer errors. Wrapping them
-    would produce a WARNING for every routine client error.
+    This function walks Flask's map of error handlers (`app.error_handler_spec`) and
+    wraps each handler. After the handler returns, 5xx outcomes are logged at ERROR
+    (Sentry + console); 4xx outcomes are skipped.
 
     Idempotent: handlers are tagged after wrapping so re-runs are no-ops.
 
     Args:
-        target_app: The Flask app whose blueprint error handlers should be
-            instrumented. Called from UI `finalize_app` and API
-            `api_finalize_app` after blueprints have registered their handlers.
+        target_app: The Flask app whose error handlers should be instrumented.
+            Called from UI `finalize_app` and API `api_finalize_app` after
+            blueprints have registered their handlers.
     """
     for bp_name, code_map in list(target_app.error_handler_spec.items()):
-        if bp_name is None:
-            continue
         for _code, exc_map in list(code_map.items()):
             for exc_cls, handler in list(exc_map.items()):
                 if getattr(handler, "_kcworks_logged", False):
-                    continue
-                if isinstance(exc_cls, type) and issubclass(exc_cls, HTTPException):
                     continue
                 exc_map[exc_cls] = _make_logging_wrapper(
                     target_app, handler, bp_name, exc_cls
@@ -638,7 +667,7 @@ def _wrap_view(view: Callable[..., Any], endpoint: str) -> Callable[..., Any]:
 def install_api_error_transforms(target_app: Flask) -> None:
     """Wrap API views so `API_EXCEPTION_TRANSFORMS` can re-raise as HTTPExceptions.
 
-    Complements `wrap_blueprint_error_handlers_with_logging` (observability for
+    Complements `wrap_error_handlers_with_logging` (observability for
     errors that already have blueprint handlers). This path covers unhandled
     exceptions that would otherwise become 5xx. Which endpoints a rule applies
     to is decided per row via `ApiExceptionTransform.endpoint_prefixes`.

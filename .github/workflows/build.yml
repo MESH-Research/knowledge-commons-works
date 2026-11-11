@@ -209,17 +209,19 @@ jobs:
           echo "Waiting for service to become stable..."
           aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
           echo "Service ${SERVICE} is stable"
-      - name: Create Sentry release (staging)
-        if: env.RELEASE_VERSION == 'staging'
-        uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_STAGING }}
-        with:
-          environment: staging
-          version: ${{ env.SENTRY_RELEASE }}
-          ignore_missing: true
+      # Sentry release (staging) — re-enable when GitHub secrets are configured:
+      # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT_STAGING
+      # - name: Create Sentry release (staging)
+      #   if: env.RELEASE_VERSION == 'staging'
+      #   uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      #     SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      #     SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_STAGING }}
+      #   with:
+      #     environment: staging
+      #     version: ${{ env.SENTRY_RELEASE }}
+      #     ignore_missing: true
       - name: Force ECS redeployment (production)
         if: env.RELEASE_VERSION == 'production'
         run: |
@@ -260,17 +262,20 @@ jobs:
           echo "Waiting for service to become stable..."
           aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
           echo "Service ${SERVICE} is stable"
-      - name: Create Sentry release (production)
-        if: env.RELEASE_VERSION == 'production'
-        uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ env.SENTRY_RELEASE }}
-          ignore_missing: true
+      # Sentry release (production) — re-enable when GitHub secrets are configured:
+      # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT
+      # (org slug mesh-research; project id 4509254001295360 from Sentry URL)
+      # - name: Create Sentry release (production)
+      #   if: env.RELEASE_VERSION == 'production'
+      #   uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      #     SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      #     SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      #   with:
+      #     environment: production
+      #     version: ${{ env.SENTRY_RELEASE }}
+      #     ignore_missing: true
       - name: Start containers
         if: always()
         env:
