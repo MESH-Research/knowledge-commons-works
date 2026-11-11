@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-11-06 16:57+0000\n"
+"POT-Creation-Date: 2026-11-11 01:30+0000\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1960,9 +1960,9 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/pids.py:44
-#: /opt/invenio/src/site/kcworks/config/pids.py:51
-#: /opt/invenio/src/site/kcworks/config/pids.py:67
+#: /opt/invenio/src/site/kcworks/config/pids.py:49
+#: /opt/invenio/src/site/kcworks/config/pids.py:56
+#: /opt/invenio/src/site/kcworks/config/pids.py:72
 #: /opt/invenio/src/site/kcworks/config/vocabularies.py:115
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:89
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:368
@@ -1973,17 +1973,17 @@ msgstr ""
 msgid "DOI"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/pids.py:56
+#: /opt/invenio/src/site/kcworks/config/pids.py:61
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:380
 msgid "OAI ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/pids.py:76
+#: /opt/invenio/src/site/kcworks/config/pids.py:81
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:407
 msgid "OAI"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/pids.py:87
+#: /opt/invenio/src/site/kcworks/config/pids.py:92
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:427
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:437
 msgid "Concept DOI"

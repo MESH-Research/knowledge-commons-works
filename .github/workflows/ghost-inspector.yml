@@ -1,10 +1,12 @@
 name: Ghost Inspector Tests
 
 on:
-  push:
-    branches: [ staging, production ]
-  pull_request:
-    branches: [ staging, production ]
+  # Temporarily disabled while ECS deploy-on-merge is rolled out; re-enable
+  # (or wire post-deploy) once staging/production bounce is reliable.
+  # push:
+  #   branches: [ staging, production ]
+  # pull_request:
+  #   branches: [ staging, production ]
   workflow_dispatch:
     inputs:
       reason:
