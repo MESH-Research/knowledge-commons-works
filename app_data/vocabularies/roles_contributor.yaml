@@ -40,7 +40,7 @@
     en: Attributed name
 - id: author
   props:
-    datacite: Author
+    datacite: Other
   title:
     en: Author
 - id: authorOfIntroduction
