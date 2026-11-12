@@ -103,16 +103,24 @@ def test_configured_datacite_provider_is_retrying_subclass(appctx):
     assert isinstance(provider.client, RetryingDataCiteClientProxy)
 
 
-def test_configured_provider_register_retries_public_doi(appctx, mocker):
-    """Configured provider instance retries `public_doi` then succeeds."""
-    provider = _configured_datacite_provider(appctx)
+def _provider_with_mock_client(inner: MagicMock) -> RetryingDataCitePIDProvider:
+    """Build a throwaway provider so tests never mutate app-config providers.
+
+    Returns:
+        A `RetryingDataCitePIDProvider` wrapping `inner` for retries.
+    """
+    return RetryingDataCitePIDProvider("datacite", client=inner)
+
+
+def test_provider_register_retries_public_doi(appctx, mocker):
+    """Retrying provider retries `public_doi` then succeeds."""
     api = MagicMock()
     api.public_doi.side_effect = [HttpError("blip"), None]
     inner = MagicMock()
     inner.api = api
     inner.name = "datacite"
     inner._api = api
-    provider.client = RetryingDataCiteClientProxy(inner)
+    provider = _provider_with_mock_client(inner)
     provider.serializer = MagicMock()
     provider.serializer.dump_obj.return_value = {"titles": [{"title": "t"}]}
 
@@ -139,30 +147,34 @@ def test_refresh_http_client_clears_cached_rest_client():
     assert inner._api is None
 
 
-def test_configured_provider_register_returns_false_after_retries(appctx, mocker):
-    """Configured provider returns False when remote registration keeps failing."""
+def test_provider_register_returns_false_after_retries(appctx, mocker):
+    """Retrying provider returns False when remote registration keeps failing."""
+    previous_attempts = appctx.config["DATACITE_RETRY_ATTEMPTS"]
+    previous_backoff = appctx.config["DATACITE_RETRY_BACKOFF_SECONDS"]
     appctx.config["DATACITE_RETRY_ATTEMPTS"] = 2
     appctx.config["DATACITE_RETRY_BACKOFF_SECONDS"] = 0.01
+    try:
+        api = MagicMock()
+        api.public_doi.side_effect = DataCiteServerError("500")
+        inner = MagicMock()
+        inner.api = api
+        provider = _provider_with_mock_client(inner)
+        provider.serializer = MagicMock()
+        provider.serializer.dump_obj.return_value = {}
+        mocker.patch.object(provider, "_log_errors")
+        mocker.patch("kcworks.services.pids.retry.time.sleep", return_value=None)
+        refresh = mocker.spy(provider.client, "refresh_http_client")
 
-    provider = _configured_datacite_provider(appctx)
-    api = MagicMock()
-    api.public_doi.side_effect = DataCiteServerError("500")
-    inner = MagicMock()
-    inner.api = api
-    provider.client = RetryingDataCiteClientProxy(inner)
-    provider.serializer = MagicMock()
-    provider.serializer.dump_obj.return_value = {}
-    mocker.patch.object(provider, "_log_errors")
-    mocker.patch("kcworks.services.pids.retry.time.sleep", return_value=None)
-    refresh = mocker.spy(provider.client, "refresh_http_client")
+        pid = MagicMock()
+        pid.pid_value = "10.17613/example"
+        pid.is_registered.return_value = False
+        pid.register.return_value = True
 
-    pid = MagicMock()
-    pid.pid_value = "10.17613/example"
-    pid.is_registered.return_value = False
-    pid.register.return_value = True
-
-    record = {"access": {"record": "public"}}
-    assert provider.register(pid, record, url="https://example.org/record") is False
-    assert api.public_doi.call_count == 2
-    # 5xx is not a transport failure; do not force a new HTTP client.
-    refresh.assert_not_called()
+        record = {"access": {"record": "public"}}
+        assert provider.register(pid, record, url="https://example.org/record") is False
+        assert api.public_doi.call_count == 2
+        # 5xx is not a transport failure; do not force a new HTTP client.
+        refresh.assert_not_called()
+    finally:
+        appctx.config["DATACITE_RETRY_ATTEMPTS"] = previous_attempts
+        appctx.config["DATACITE_RETRY_BACKOFF_SECONDS"] = previous_backoff

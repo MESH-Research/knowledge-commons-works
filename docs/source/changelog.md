@@ -3,6 +3,35 @@
 
 # Changes
 
+## 1.3.0 (2026-11-11)
+
+- Bug fixes
+  - File download button: sidebar single-file download no longer triggers
+    permission check
+  - PDF previewer download button: CSP updated so S3 assets download in preview
+    iframes
+  - Mobile nav: main sidebar menu no longer shows inappropriate options to
+    non-admin users
+  - Import API: 502 errors fixed by fixing Nginx configuration for /api/import
+    route
+- Stability
+  - DataCite API calls now retry if there's an error (custom wrapper for
+    DataCite provider)
+  - Celery DB connections: enable pool_pre_ping so workers don’t get stale RDS
+    connections
+  - Search API provisioning — user lookup + fuller identifier lookup utils
+- System
+  - Error logging: 5xx errors log tracebacks again (had been hidden on prod) CI
+  - ECS auto-redeploy on push to prod/staging
+- Security
+  - Updated OS base images: Debian base moved bookworm → trixie.
+  - Apt package updated to secure version in image builds
+  - Updated submodule JS testing deps + pnpm lock
+- Testing
+  - Updates Fixtures submodule
+  - New tests for datacite retry, search api provisioning
+  - Ruff fixes
+
 ## 1.2.1 (2026-11-04)
 
 - Importer

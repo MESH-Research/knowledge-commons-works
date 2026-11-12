@@ -87,7 +87,7 @@ from kcworks.utils.menu_utils import alter_menu_from_config
 from kcworks.views.error_handlers import (
     install_api_error_transforms,
     register_themed_error_handlers,
-    wrap_blueprint_error_handlers_with_logging,
+    wrap_error_handlers_with_logging,
 )
 
 # Stand-ins for request.oauth in the static-token flow. Real OAuth flow sets
@@ -343,7 +343,7 @@ def finalize_app(app: Flask) -> None:
     app.before_request_funcs[None] = [_setup_csrf_protected_routes] + funcs
     _schedule_community_menu_overrides(app)
     register_themed_error_handlers(app)
-    wrap_blueprint_error_handlers_with_logging(app)
+    wrap_error_handlers_with_logging(app)
     wrap_runscheduler_for_job_context(app)
 
 
@@ -454,6 +454,6 @@ def api_finalize_app(app: Flask) -> None:
     )
 
     # After blueprints have registered handlers: log buried domain errors.
-    wrap_blueprint_error_handlers_with_logging(app)
+    wrap_error_handlers_with_logging(app)
     # Per-rule endpoint scope lives in API_EXCEPTION_TRANSFORMS.
     install_api_error_transforms(app)

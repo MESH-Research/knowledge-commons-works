@@ -46,7 +46,7 @@ Merging to `main` should be done via pull request, and the merge only accepted i
 Merges into `main` should be performed using the `squash` merge strategy (the equivalent of `git merge --squash <branch>`). This combines all of the incoming changes into a single commit, making the commit history cleaner and easier to read.
 ```
 
-No commits should be made directly to the `staging` or `production` branches. All changes should be made to the `main` branch and then merged into `staging` and `production` via pull requests. This is especially important because changes pushed to `staging` and `production` branches will automatically trigger rebuilding of the stanging or production containers and the deployment of the updated containers to the respective servers.
+No commits should be made directly to the `staging` or `production` branches. All changes should be made to the `main` branch and then merged into `staging` and `production` via pull requests. This is especially important because changes pushed to `staging` and `production` branches will automatically trigger rebuilding of the staging or production containers, pushing `:latest` to ECR, and forcing a new ECS deployment so tasks pick up those images.
 
 ```{note}
 Pull requests to staging and production should be merged using the `rebase` merge strategy, so that the commit history for these branches is kept clean and identical to the `main` branch.

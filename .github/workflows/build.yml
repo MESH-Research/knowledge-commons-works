@@ -29,7 +29,8 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Build + ECR push + ECS services-stable wait can exceed 30m on staging/prod.
+    timeout-minutes: 60
     steps:
       - name: Get release version
         id: get_release_version
@@ -52,13 +53,13 @@ jobs:
           tag_name=${branch_name//\//-}
           echo "RELEASE_VERSION=$tag_name" >> $GITHUB_ENV
       - name: Label production
-        if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/production'
         run: |
           echo "RELEASE_VERSION=production" >> $GITHUB_ENV
           echo "ECR_APP_REPO=${{ env.IMAGE_NAME }}/production" >> $GITHUB_ENV
           echo "ECR_FRONTEND_REPO=${{ env.IMAGE_NAME }}/production-frontend" >> $GITHUB_ENV
       - name: Label staging
-        if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
         run: |
           echo "RELEASE_VERSION=staging" >> $GITHUB_ENV
           echo "ECR_APP_REPO=${{ env.IMAGE_NAME }}/staging" >> $GITHUB_ENV
@@ -108,6 +109,19 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12.x"
+      # Immutable ECR tags from current pyproject version + git SHA (no version bump).
+      - name: Set deploy image tags
+        if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'staging'
+        run: |
+          set -euo pipefail
+          VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          SHORT_SHA="${GITHUB_SHA::7}"
+          BUILD_TAG="v${VERSION}-${SHORT_SHA}"
+          echo "PROJECT_VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "ECR_SHA_TAG=${GITHUB_SHA}" >> "$GITHUB_ENV"
+          echo "ECR_BUILD_TAG=${BUILD_TAG}" >> "$GITHUB_ENV"
+          echo "SENTRY_RELEASE=${BUILD_TAG}" >> "$GITHUB_ENV"
+          echo "Deploy tags: latest, ${GITHUB_SHA}, ${BUILD_TAG}"
       # Cache docker images so they don't rebuild every time
       # - name: Cache Local Images
       #   id: local-images
@@ -122,20 +136,30 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           if [ -n "${{ env.ECR_APP_REPO }}" ]; then
-            ECR_APP_TAG="$ECR_REGISTRY/${{ env.ECR_APP_REPO }}:latest"
-            ECR_FRONTEND_TAG="$ECR_REGISTRY/${{ env.ECR_FRONTEND_REPO }}:latest"
+            ECR_APP_BASE="$ECR_REGISTRY/${{ env.ECR_APP_REPO }}"
+            ECR_FRONTEND_BASE="$ECR_REGISTRY/${{ env.ECR_FRONTEND_REPO }}"
+            ECR_APP_TAGS=(
+              --tag "$ECR_APP_BASE:latest"
+              --tag "$ECR_APP_BASE:$ECR_SHA_TAG"
+              --tag "$ECR_APP_BASE:$ECR_BUILD_TAG"
+            )
+            ECR_FRONTEND_TAGS=(
+              --tag "$ECR_FRONTEND_BASE:latest"
+              --tag "$ECR_FRONTEND_BASE:$ECR_SHA_TAG"
+              --tag "$ECR_FRONTEND_BASE:$ECR_BUILD_TAG"
+            )
           else
-            ECR_APP_TAG=""
-            ECR_FRONTEND_TAG=""
+            ECR_APP_TAGS=()
+            ECR_FRONTEND_TAGS=()
           fi
           docker build . --file Dockerfile --platform=linux/amd64 --progress=plain \
             --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION \
             --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION \
-            $([ -n "$ECR_APP_TAG" ] && echo "--tag $ECR_APP_TAG")
+            "${ECR_APP_TAGS[@]}"
           docker build ./docker/nginx_production/ --platform=linux/amd64 --progress=plain \
             --tag $DOCKERHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION \
             --tag $GITHUB_REGISTRY/$DOCKERHUB_USERNAME/$IMAGE_NAME-frontend:$RELEASE_VERSION \
-            $([ -n "$ECR_FRONTEND_TAG" ] && echo "--tag $ECR_FRONTEND_TAG")
+            "${ECR_FRONTEND_TAGS[@]}"
           docker image ls
       - name: Push Image to Docker Hub
         if: env.RELEASE_VERSION == 'production' || env.RELEASE_VERSION == 'latest' || env.RELEASE_VERSION == 'staging' || startsWith(env.RELEASE_VERSION, 'dev')
@@ -158,8 +182,100 @@ jobs:
           ECR_APP_REPO: ${{ env.ECR_APP_REPO }}
           ECR_FRONTEND_REPO: ${{ env.ECR_FRONTEND_REPO }}
         run: |
-          docker push $ECR_REGISTRY/$ECR_APP_REPO:latest
-          docker push $ECR_REGISTRY/$ECR_FRONTEND_REPO:latest
+          set -euo pipefail
+          for tag in latest "$ECR_SHA_TAG" "$ECR_BUILD_TAG"; do
+            docker push "$ECR_REGISTRY/$ECR_APP_REPO:$tag"
+            docker push "$ECR_REGISTRY/$ECR_FRONTEND_REPO:$tag"
+          done
+      # Redeploy like knowledge-commons-profiles: task defs keep :latest; bounce
+      # the service so new tasks pull the images just pushed. No TD register /
+      # PassRole.
+      - name: Force ECS redeployment (staging)
+        if: env.RELEASE_VERSION == 'staging'
+        run: |
+          set -euo pipefail
+          CLUSTER="kcworks-staging-3"
+          SERVICE="kcworks-staging-blue"
+          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE}"
+          echo "### ECS redeploy (staging)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- cluster: \`${CLUSTER}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- service: \`${SERVICE}\`" >> "$GITHUB_STEP_SUMMARY"
+          aws ecs update-service \
+            --cluster "$CLUSTER" \
+            --service "$SERVICE" \
+            --force-new-deployment \
+            --output text \
+            --query 'service.serviceName'
+          echo "Waiting for service to become stable..."
+          aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
+          echo "Service ${SERVICE} is stable"
+      # Sentry release (staging) — re-enable when GitHub secrets are configured:
+      # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT_STAGING
+      # - name: Create Sentry release (staging)
+      #   if: env.RELEASE_VERSION == 'staging'
+      #   uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      #     SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      #     SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_STAGING }}
+      #   with:
+      #     environment: staging
+      #     version: ${{ env.SENTRY_RELEASE }}
+      #     ignore_missing: true
+      - name: Force ECS redeployment (production)
+        if: env.RELEASE_VERSION == 'production'
+        run: |
+          set -euo pipefail
+          CLUSTER="kcworks-prod-2"
+          SERVICES_JSON=$(aws ecs describe-services \
+            --cluster "$CLUSTER" \
+            --services kcworks-blue kcworks-green \
+            --output json)
+          BLUE_DESIRED=$(echo "$SERVICES_JSON" | jq -r '.services[] | select(.serviceName=="kcworks-blue") | .desiredCount // 0')
+          GREEN_DESIRED=$(echo "$SERVICES_JSON" | jq -r '.services[] | select(.serviceName=="kcworks-green") | .desiredCount // 0')
+          BLUE_RUNNING=$(echo "$SERVICES_JSON" | jq -r '.services[] | select(.serviceName=="kcworks-blue") | .runningCount // 0')
+          GREEN_RUNNING=$(echo "$SERVICES_JSON" | jq -r '.services[] | select(.serviceName=="kcworks-green") | .runningCount // 0')
+          echo "kcworks-blue desired=${BLUE_DESIRED} running=${BLUE_RUNNING}"
+          echo "kcworks-green desired=${GREEN_DESIRED} running=${GREEN_RUNNING}"
+          if { [ "${BLUE_DESIRED}" -gt 0 ] || [ "${BLUE_RUNNING}" -gt 0 ]; } && \
+             { [ "${GREEN_DESIRED}" -gt 0 ] || [ "${GREEN_RUNNING}" -gt 0 ]; }; then
+            SERVICE="kcworks-blue"
+            echo "Both colors up; preferring kcworks-blue for blue-green pretest"
+          elif [ "${BLUE_DESIRED}" -gt 0 ] || [ "${BLUE_RUNNING}" -gt 0 ]; then
+            SERVICE="kcworks-blue"
+          elif [ "${GREEN_DESIRED}" -gt 0 ] || [ "${GREEN_RUNNING}" -gt 0 ]; then
+            SERVICE="kcworks-green"
+          else
+            echo "Neither kcworks-blue nor kcworks-green has desired/running tasks" >&2
+            exit 1
+          fi
+          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE}"
+          echo "### ECS redeploy (production)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- cluster: \`${CLUSTER}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- service: \`${SERVICE}\`" >> "$GITHUB_STEP_SUMMARY"
+          aws ecs update-service \
+            --cluster "$CLUSTER" \
+            --service "$SERVICE" \
+            --force-new-deployment \
+            --output text \
+            --query 'service.serviceName'
+          echo "Waiting for service to become stable..."
+          aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
+          echo "Service ${SERVICE} is stable"
+      # Sentry release (production) — re-enable when GitHub secrets are configured:
+      # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT
+      # (org slug mesh-research; project id 4509254001295360 from Sentry URL)
+      # - name: Create Sentry release (production)
+      #   if: env.RELEASE_VERSION == 'production'
+      #   uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3.7.2
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      #     SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      #     SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      #   with:
+      #     environment: production
+      #     version: ${{ env.SENTRY_RELEASE }}
+      #     ignore_missing: true
       - name: Start containers
         if: always()
         env:
