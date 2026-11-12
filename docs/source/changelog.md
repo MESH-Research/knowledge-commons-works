@@ -3,6 +3,21 @@
 
 # Changes
 
+## 1.3.1 (2026-11-12)
+
+- Bug fixes
+  - ORCID / user-data: missing Names record is no longer treated as an error
+  - DataCite: map contributor role Author → Other (schema doesn’t allow Author
+    on contributors)
+  - Importer: gate local filename sanitizer correctly; only compare file sizes
+    when both sides have size
+  - Avatars: monkeypatch AvatarResult.etag so non-ASCII initials don’t blow WSGI
+    latin1 headers
+- Logging
+  - handled 5xx errors again reach console/Sentry
+- CI
+  - temporarily skip Sentry release on prod deploy
+
 ## 1.3.0 (2026-11-11)
 
 - Bug fixes

@@ -77,6 +77,7 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 from kcworks.services.records.record_communities.record_community_ancestor_component import (  # noqa: E501
     RecordCommunityAncestorComponent,
 )
+from kcworks.services.users.patch_avatar_etag import patch_avatar_etag
 from kcworks.templates.template_filters import (
     community_breadcrumb_items,
     community_dashboard_request_url,
@@ -192,6 +193,7 @@ class KCWorks:
         app.config["COMMUNITIES_PERMISSION_POLICY"] = KCWorksCommunityPermissionPolicy
 
         patch_community_access_restriction_check()
+        patch_avatar_etag()
 
         existing_rdm_record_components = app.config.get(
             "RDM_RECORDS_SERVICE_COMPONENTS", [*DefaultRecordsComponents]
