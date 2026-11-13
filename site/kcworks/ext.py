@@ -53,7 +53,8 @@ from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
 from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
-from kcworks.services.health.jobs import log_if_scheduler_heartbeat_job_missing
+# Bisect: disabled with the finalize calls below.
+# from kcworks.services.health.jobs import log_if_scheduler_heartbeat_job_missing
 from kcworks.services.jobs.wrap_runscheduler_job_context import (
     wrap_runscheduler_for_job_context,
 )
@@ -370,7 +371,8 @@ def finalize_app(app: Flask) -> None:
     wrap_error_handlers_with_logging(app)
     wrap_runscheduler_for_job_context(app)
     _merge_kcworks_celery_beat_schedule(app)
-    log_if_scheduler_heartbeat_job_missing(app)
+    # Bisect: disabled while staging UI hangs after health deploy.
+    # log_if_scheduler_heartbeat_job_missing(app)
 
 
 def _static_token_before_request() -> None:
@@ -484,4 +486,5 @@ def api_finalize_app(app: Flask) -> None:
     # Per-rule endpoint scope lives in API_EXCEPTION_TRANSFORMS.
     install_api_error_transforms(app)
     _merge_kcworks_celery_beat_schedule(app)
-    log_if_scheduler_heartbeat_job_missing(app)
+    # Bisect: disabled while staging UI hangs after health deploy.
+    # log_if_scheduler_heartbeat_job_missing(app)
