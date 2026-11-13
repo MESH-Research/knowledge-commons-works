@@ -187,28 +187,34 @@ jobs:
             docker push "$ECR_REGISTRY/$ECR_APP_REPO:$tag"
             docker push "$ECR_REGISTRY/$ECR_FRONTEND_REPO:$tag"
           done
-      # Redeploy like knowledge-commons-profiles: task defs keep :latest; bounce
-      # the service so new tasks pull the images just pushed. No TD register /
-      # PassRole.
+      # Bounce the service onto the newest ACTIVE revision of the task-definition
+      # family (images still :latest). Does not register a new revision / PassRole.
       - name: Force ECS redeployment (staging)
         if: env.RELEASE_VERSION == 'staging'
         run: |
           set -euo pipefail
           CLUSTER="kcworks-staging-3"
           SERVICE="kcworks-staging-blue"
-          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE}"
+          TASK_FAMILY="kcworks-staging"
+          TASK_DEF=$(aws ecs describe-task-definition \
+            --task-definition "$TASK_FAMILY" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE} taskDefinition=${TASK_DEF}"
           echo "### ECS redeploy (staging)" >> "$GITHUB_STEP_SUMMARY"
           echo "- cluster: \`${CLUSTER}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- service: \`${SERVICE}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- taskDefinition: \`${TASK_DEF}\`" >> "$GITHUB_STEP_SUMMARY"
           aws ecs update-service \
             --cluster "$CLUSTER" \
             --service "$SERVICE" \
+            --task-definition "$TASK_DEF" \
             --force-new-deployment \
             --output text \
             --query 'service.serviceName'
           echo "Waiting for service to become stable..."
           aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
-          echo "Service ${SERVICE} is stable"
+          echo "Service ${SERVICE} is stable on ${TASK_DEF}"
       # Sentry release (staging) — re-enable when GitHub secrets are configured:
       # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT_STAGING
       # - name: Create Sentry release (staging)
@@ -227,6 +233,7 @@ jobs:
         run: |
           set -euo pipefail
           CLUSTER="kcworks-prod-2"
+          TASK_FAMILY="kcworks"
           SERVICES_JSON=$(aws ecs describe-services \
             --cluster "$CLUSTER" \
             --services kcworks-blue kcworks-green \
@@ -249,19 +256,25 @@ jobs:
             echo "Neither kcworks-blue nor kcworks-green has desired/running tasks" >&2
             exit 1
           fi
-          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE}"
+          TASK_DEF=$(aws ecs describe-task-definition \
+            --task-definition "$TASK_FAMILY" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+          echo "Forcing new deployment on cluster=${CLUSTER} service=${SERVICE} taskDefinition=${TASK_DEF}"
           echo "### ECS redeploy (production)" >> "$GITHUB_STEP_SUMMARY"
           echo "- cluster: \`${CLUSTER}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- service: \`${SERVICE}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- taskDefinition: \`${TASK_DEF}\`" >> "$GITHUB_STEP_SUMMARY"
           aws ecs update-service \
             --cluster "$CLUSTER" \
             --service "$SERVICE" \
+            --task-definition "$TASK_DEF" \
             --force-new-deployment \
             --output text \
             --query 'service.serviceName'
           echo "Waiting for service to become stable..."
           aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
-          echo "Service ${SERVICE} is stable"
+          echo "Service ${SERVICE} is stable on ${TASK_DEF}"
       # Sentry release (production) — re-enable when GitHub secrets are configured:
       # SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT
       # (org slug mesh-research; project id 4509254001295360 from Sentry URL)
