@@ -44,6 +44,7 @@ from invenio_remote_user_data_kcworks.utils.broker import extract_bearer_token
 from invenio_remote_user_data_kcworks.utils.static_token import (
     resolve_static_token_route,
 )
+from kcworks.config.celery import KCWORKS_CELERY_BEAT_SCHEDULE
 from kcworks.config.oauth_scope_routes import required_scopes_for
 from kcworks.services.communities.community_parent import (
     CommunityParentComponent as KCWorksCommunityParentComponent,
@@ -52,6 +53,7 @@ from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
 from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
+from kcworks.services.health.jobs import log_if_scheduler_heartbeat_job_missing
 from kcworks.services.jobs.wrap_runscheduler_job_context import (
     wrap_runscheduler_for_job_context,
 )
@@ -141,6 +143,9 @@ class KCWorks:
         self.init_services(app)
         self.init_components(app)
         self.init_template_filters(app)
+        # Early merge so Celery workers that never hit finalize still see it;
+        # finalize_app / api_finalize_app merge again after other extensions.
+        _merge_kcworks_celery_beat_schedule(app)
         app.extensions["kcworks"] = self
 
     def init_services(self, app: Flask) -> None:
@@ -324,6 +329,23 @@ def _schedule_community_menu_overrides(app: Flask) -> None:
         kcworks_ext._community_menu_overrides_applied = True
 
 
+def _merge_kcworks_celery_beat_schedule(app: Flask) -> None:
+    """Merge KCWorks worker-beat entries into `CELERY_BEAT_SCHEDULE`.
+
+    Additive only — never replace the upstream dict. Used by the worker
+    container's embedded beat (`celery worker --beat`), not by
+    `RunScheduler`.
+
+    Args:
+        app: Flask application whose config holds `CELERY_BEAT_SCHEDULE`.
+    """
+    existing = app.config.get("CELERY_BEAT_SCHEDULE") or {}
+    app.config["CELERY_BEAT_SCHEDULE"] = {
+        **existing,
+        **KCWORKS_CELERY_BEAT_SCHEDULE,
+    }
+
+
 def finalize_app(app: Flask) -> None:
     """Register KCWorks UI error handlers and instrument blueprint ones.
 
@@ -347,6 +369,8 @@ def finalize_app(app: Flask) -> None:
     register_themed_error_handlers(app)
     wrap_error_handlers_with_logging(app)
     wrap_runscheduler_for_job_context(app)
+    _merge_kcworks_celery_beat_schedule(app)
+    log_if_scheduler_heartbeat_job_missing(app)
 
 
 def _static_token_before_request() -> None:
@@ -459,3 +483,5 @@ def api_finalize_app(app: Flask) -> None:
     wrap_error_handlers_with_logging(app)
     # Per-rule endpoint scope lives in API_EXCEPTION_TRANSFORMS.
     install_api_error_transforms(app)
+    _merge_kcworks_celery_beat_schedule(app)
+    log_if_scheduler_heartbeat_job_missing(app)
