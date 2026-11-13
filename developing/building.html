@@ -299,12 +299,14 @@ AWS Elastic Container Registry (ECR) as <code class="docutils literal notranslat
 <code class="docutils literal notranslate"><span class="pre">:v{pyproject-version}-{shortsha}</span></code> (no automatic version bump; the pyproject
 version is read as-is). The same images are also pushed to the
 “monotasker/kcworks” Docker Hub repository under the branch name tag. After the
-ECR push succeeds, the workflow forces a new ECS deployment on the target
-service so running tasks re-pull <code class="docutils literal notranslate"><span class="pre">:latest</span></code>. Task definitions are not modified
-(same pattern as Knowledge Commons Profiles). Staging always updates
-<code class="docutils literal notranslate"><span class="pre">kcworks-staging-blue</span></code> on <code class="docutils literal notranslate"><span class="pre">kcworks-staging-3</span></code>. Production picks among
-<code class="docutils literal notranslate"><span class="pre">kcworks-blue</span></code> / <code class="docutils literal notranslate"><span class="pre">kcworks-green</span></code> on <code class="docutils literal notranslate"><span class="pre">kcworks-prod-2</span></code> (whichever has desired or
-running tasks; if both are up, blue is preferred for blue-green pretest).</p>
+ECR push succeeds, the workflow updates the target ECS service to the newest
+ACTIVE revision of the environment’s task-definition family
+(<code class="docutils literal notranslate"><span class="pre">kcworks-staging</span></code> or <code class="docutils literal notranslate"><span class="pre">kcworks</span></code>) and forces a new deployment so running tasks
+re-pull <code class="docutils literal notranslate"><span class="pre">:latest</span></code>. CI does not register a new task-definition revision.
+Staging always updates <code class="docutils literal notranslate"><span class="pre">kcworks-staging-blue</span></code> on <code class="docutils literal notranslate"><span class="pre">kcworks-staging-3</span></code>.
+Production picks among <code class="docutils literal notranslate"><span class="pre">kcworks-blue</span></code> / <code class="docutils literal notranslate"><span class="pre">kcworks-green</span></code> on <code class="docutils literal notranslate"><span class="pre">kcworks-prod-2</span></code>
+(whichever has desired or running tasks; if both are up, blue is preferred for
+blue-green pretest).</p>
 <p>Sentry release steps are present in <code class="docutils literal notranslate"><span class="pre">build.yml</span></code> but commented out until the
 matching GitHub secrets are configured.</p>
 <p>If the push is to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, the build will be tagged with <code class="docutils literal notranslate"><span class="pre">latest</span></code> and

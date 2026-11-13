@@ -15,12 +15,14 @@ AWS Elastic Container Registry (ECR) as `:latest`, `:$GITHUB_SHA`, and
 `:v{pyproject-version}-{shortsha}` (no automatic version bump; the pyproject
 version is read as-is). The same images are also pushed to the
 "monotasker/kcworks" Docker Hub repository under the branch name tag. After the
-ECR push succeeds, the workflow forces a new ECS deployment on the target
-service so running tasks re-pull `:latest`. Task definitions are not modified
-(same pattern as Knowledge Commons Profiles). Staging always updates
-`kcworks-staging-blue` on `kcworks-staging-3`. Production picks among
-`kcworks-blue` / `kcworks-green` on `kcworks-prod-2` (whichever has desired or
-running tasks; if both are up, blue is preferred for blue-green pretest).
+ECR push succeeds, the workflow updates the target ECS service to the newest
+ACTIVE revision of the environment’s task-definition family
+(`kcworks-staging` or `kcworks`) and forces a new deployment so running tasks
+re-pull `:latest`. CI does not register a new task-definition revision.
+Staging always updates `kcworks-staging-blue` on `kcworks-staging-3`.
+Production picks among `kcworks-blue` / `kcworks-green` on `kcworks-prod-2`
+(whichever has desired or running tasks; if both are up, blue is preferred for
+blue-green pretest).
 
 Sentry release steps are present in `build.yml` but commented out until the
 matching GitHub secrets are configured.
