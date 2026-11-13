@@ -3,6 +3,14 @@
 
 # Changes
 
+## 1.3.2 (2026-11-12)
+
+- Bug fixes
+  - api-provisioning: avoid blocking error when no recid to delete (76a2da1e )
+  - importer): disable local-file logging for API imports (6f9f10ae)
+  - names: avoid PID collision error in component that rolls back db (caa8bdd3)
+  - avatars: make AvatarResult.etag ASCII to allow Sentry ingest (0e8cdea4)
+
 ## 1.3.1 (2026-11-12)
 
 - Bug fixes
