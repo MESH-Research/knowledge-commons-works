@@ -76,17 +76,23 @@ def run_health_report(
         # app container (or without a useful docker socket), so "skipped -
         # in-container" is noise. Standalone `check_health.sh` still prints them.
         filtered = [
-            dict(c) for c in stack["checks"] if c.get("name", "").lower() != "docker"
+            c for c in stack["checks"] if c.get("name", "").lower() != "docker"
         ]
-        stack = {
-            **stack,
-            "checks": annotate_stack_checks(filtered),  # type: ignore[typeddict-item]
-            "raw": "\n".join(
-                line
-                for line in (stack.get("raw") or "").splitlines()
-                if not line.lstrip().lower().startswith("docker")
-            ),
+        cleaned_raw = "\n".join(
+            line
+            for line in (stack.get("raw") or "").splitlines()
+            if not line.lstrip().lower().startswith("docker")
+        )
+        filtered_stack: StackLayerResult = {
+            "ok": stack["ok"],
+            "exit_code": stack["exit_code"],
+            "script_path": stack["script_path"],
+            "timed_out": stack["timed_out"],
+            "error": stack["error"],
+            "checks": annotate_stack_checks(filtered),
+            "raw": cleaned_raw,
         }
+        stack = filtered_stack
 
     if skip_runtime:
         runtime: RuntimeLayerResult = {
@@ -125,11 +131,11 @@ def run_health_report(
         outbound = run_outbound_probes(include_mutating=include_mutating)
 
     services = build_services_summary(
-        stack_checks=[dict(c) for c in stack["checks"]],
-        runtime_checks=[dict(c) for c in runtime["checks"]],
+        stack_checks=[{**c} for c in stack["checks"]],
+        runtime_checks=[{**c} for c in runtime["checks"]],
     )
 
-    return {
+    report: HealthReport = {
         "ok": bool(stack["ok"] and runtime["ok"] and outbound["ok"]),
         "checked_at": datetime.now(UTC).isoformat(),
         "stack": stack,
@@ -137,6 +143,7 @@ def run_health_report(
         "outbound": outbound,
         "services": services,
     }
+    return report
 
 
 def health_report_as_dict(report: HealthReport) -> dict[str, Any]:
@@ -151,14 +158,14 @@ def health_report_as_dict(report: HealthReport) -> dict[str, Any]:
     return {
         "ok": report["ok"],
         "checked_at": report["checked_at"],
-        "stack": dict(report["stack"]),
+        "stack": {**report["stack"]},
         "runtime": {
             "ok": report["runtime"]["ok"],
-            "checks": [dict(c) for c in report["runtime"]["checks"]],
+            "checks": [{**c} for c in report["runtime"]["checks"]],
         },
         "outbound": {
             "ok": report["outbound"]["ok"],
-            "checks": [dict(c) for c in report["outbound"]["checks"]],
+            "checks": [{**c} for c in report["outbound"]["checks"]],
         },
-        "services": {k: dict(v) for k, v in report["services"].items()},
+        "services": {k: {**v} for k, v in report["services"].items()},
     }

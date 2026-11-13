@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 # ESC[ … m sequences used by check_health.sh for color.
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
@@ -29,6 +29,7 @@ class StackCheck(TypedDict):
     name: str
     status: str
     detail: str
+    implies: NotRequired[list[str]]
 
 
 class StackLayerResult(TypedDict):
@@ -167,8 +168,12 @@ def run_stack_health_script(
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
-        parts = [exc.stdout or "", exc.stderr or ""]
-        raw = strip_ansi("\n".join(p for p in parts if p))
+        parts: list[str] = []
+        for chunk in (exc.stdout, exc.stderr):
+            if not chunk:
+                continue
+            parts.append(chunk if isinstance(chunk, str) else chunk.decode())
+        raw = strip_ansi("\n".join(parts))
         return {
             "ok": False,
             "exit_code": None,
@@ -213,4 +218,4 @@ def stack_layer_as_dict(result: StackLayerResult) -> dict[str, Any]:
     Returns:
         Plain dict suitable for jsonify / CLI JSON.
     """
-    return dict(result)
+    return {**result}
