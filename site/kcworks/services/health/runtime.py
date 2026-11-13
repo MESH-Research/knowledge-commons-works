@@ -557,5 +557,5 @@ def runtime_layer_as_dict(result: RuntimeLayerResult) -> dict[str, Any]:
     """
     return {
         "ok": result["ok"],
-        "checks": [dict(c) for c in result["checks"]],
+        "checks": [{**c} for c in result["checks"]],
     }

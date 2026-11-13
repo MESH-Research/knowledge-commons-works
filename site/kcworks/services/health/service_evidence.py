@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from typing import Any, TypedDict
 
+from kcworks.services.health.stack import StackCheck
+
 # Bash stack check names (after ANSI strip) → services they demonstrate when OK.
 # /server_health is nginx-only; Site UI/API go through nginx to the app containers.
 _STACK_IMPLIES: dict[str, list[str]] = {
@@ -31,24 +33,29 @@ class ServiceEvidence(TypedDict):
     evidence: list[str]
 
 
-def annotate_stack_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def annotate_stack_checks(checks: list[StackCheck]) -> list[StackCheck]:
     """Attach `implies` service lists to OK stack checks.
 
     Args:
-        checks: Parsed stack check dicts (mutated copies returned).
+        checks: Parsed stack check dicts (copies returned).
 
     Returns:
         New list with `implies` set (empty when not OK / unknown name).
     """
-    out: list[dict[str, Any]] = []
+    out: list[StackCheck] = []
     for check in checks:
-        item = dict(check)
-        name = item.get("name", "")
-        if item.get("status") == "OK":
-            item["implies"] = list(_STACK_IMPLIES.get(name, []))
-        else:
-            item.setdefault("implies", [])
-        out.append(item)
+        name = check["name"]
+        implies = (
+            list(_STACK_IMPLIES.get(name, [])) if check["status"] == "OK" else []
+        )
+        out.append(
+            {
+                "name": name,
+                "status": check["status"],
+                "detail": check["detail"],
+                "implies": implies,
+            }
+        )
     return out
 
 
