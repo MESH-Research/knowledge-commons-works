@@ -1,0 +1,142 @@
+{%- extends "invenio_theme/page.html" %}
+
+{% block page_title %}{{ _("KCWorks health report") }}{% endblock %}
+
+{% block page_body %}
+<div class="ui container" style="padding: 2rem 0;">
+  <h1 class="ui header">
+    {{ _("KCWorks health report") }}
+    {% if report.ok %}
+      <span class="ui green tiny label">{{ _("OK") }}</span>
+    {% else %}
+      <span class="ui red tiny label">{{ _("FAILED") }}</span>
+    {% endif %}
+  </h1>
+  <p class="ui grey text">
+    {{ _("Checked at") }}: <code>{{ report.checked_at }}</code>
+    &middot;
+    <a href="/api/health/report">{{ _("JSON") }}</a>
+  </p>
+
+  <h2 class="ui dividing header">{{ _("Services") }}</h2>
+  <p class="ui grey text">{{ _("Inferred from successful probes (not docker inspect).") }}</p>
+  <table class="ui celled compact table">
+    <thead>
+      <tr>
+        <th>{{ _("Service") }}</th>
+        <th>{{ _("Status") }}</th>
+        <th>{{ _("Evidence") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for service, info in report.services.items()|sort %}
+      <tr class="{% if info.status == 'ok' %}positive{% elif info.status == 'failed' %}error{% else %}warning{% endif %}">
+        <td>{{ service }}</td>
+        <td>{{ info.status }}</td>
+        <td><code>{{ info.evidence|join(', ') if info.evidence else '—' }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="ui dividing header">{{ _("Stack") }} <small>(check_health.sh)</small></h2>
+  {% if report.stack.ok %}
+    <div class="ui positive message">{{ _("Stack checks passed") }} (exit {{ report.stack.exit_code }})</div>
+  {% else %}
+    <div class="ui negative message">
+      {{ _("Stack checks failed") }}
+      {% if report.stack.error %} — {{ report.stack.error }}{% endif %}
+      {% if report.stack.exit_code is not none %} (exit {{ report.stack.exit_code }}){% endif %}
+    </div>
+  {% endif %}
+  <table class="ui celled compact table">
+    <thead>
+      <tr>
+        <th>{{ _("Name") }}</th>
+        <th>{{ _("Status") }}</th>
+        <th>{{ _("Implies") }}</th>
+        <th>{{ _("Detail") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for check in report.stack.checks %}
+      <tr class="{% if check.status == 'FAILED' %}error{% elif check.status == 'skipped' or check.status == 'WARN' %}warning{% elif check.status == 'OK' %}positive{% endif %}">
+        <td>{{ check.name }}</td>
+        <td>{{ check.status }}</td>
+        <td>{{ check.implies|join(', ') if check.implies else '—' }}</td>
+        <td><code>{{ check.detail }}</code></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">{{ _("No parsed check lines (see raw output).") }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if report.stack.raw %}
+  <details class="ui segment">
+    <summary>{{ _("Raw script output") }}</summary>
+    <pre style="white-space: pre-wrap; font-size: 0.85em;">{{ report.stack.raw }}</pre>
+  </details>
+  {% endif %}
+
+  <h2 class="ui dividing header">{{ _("Runtime") }} <small>(app context)</small></h2>
+  {% if report.runtime.ok %}
+    <div class="ui positive message">{{ _("Runtime probes passed") }}</div>
+  {% else %}
+    <div class="ui negative message">{{ _("One or more runtime probes failed") }}</div>
+  {% endif %}
+  <table class="ui celled compact table">
+    <thead>
+      <tr>
+        <th>{{ _("Name") }}</th>
+        <th>{{ _("Status") }}</th>
+        <th>{{ _("Implies") }}</th>
+        <th>{{ _("Detail") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for check in report.runtime.checks %}
+      <tr class="{% if not check.ok %}error{% elif check.skipped or check.status == 'WARN' %}warning{% else %}positive{% endif %}">
+        <td>{{ check.name }}</td>
+        <td>{{ check.status }}{% if check.skipped %} (skipped){% endif %}</td>
+        <td>{{ check.implies|join(', ') if check.implies else '—' }}</td>
+        <td><code>{{ check.detail }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="ui dividing header">{{ _("Outbound") }} <small>(Works → Profiles)</small></h2>
+  {% if report.outbound.ok %}
+    <div class="ui positive message">{{ _("Outbound probes passed (skipped entries do not fail the report)") }}</div>
+  {% else %}
+    <div class="ui negative message">{{ _("One or more outbound probes failed") }}</div>
+  {% endif %}
+  <table class="ui celled compact table">
+    <thead>
+      <tr>
+        <th>{{ _("Name") }}</th>
+        <th>{{ _("Method") }}</th>
+        <th>{{ _("Status") }}</th>
+        <th>{{ _("HTTP") }}</th>
+        <th>{{ _("Detail") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for check in report.outbound.checks %}
+      <tr class="{% if not check.ok %}error{% elif check.skipped %}warning{% else %}positive{% endif %}">
+        <td>{{ check.name }}</td>
+        <td>{{ check.method }}</td>
+        <td>{{ check.status }}{% if check.skipped %} (skipped){% endif %}</td>
+        <td>{{ check.http_status if check.http_status is not none else "—" }}</td>
+        <td>
+          <code>{{ check.detail }}</code>
+          {% if check.url %}
+          <br><span class="ui grey text" style="font-size: 0.85em;">{{ check.url }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
