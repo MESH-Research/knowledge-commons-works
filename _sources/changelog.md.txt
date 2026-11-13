@@ -3,6 +3,12 @@
 
 # Changes
 
+## 1.4.0 (2026-11-13)
+
+- Feature
+  - New health check that tests app services and connectivity, with CLI, UI, and
+    API reports.
+
 ## 1.3.2 (2026-11-12)
 
 - Bug fixes

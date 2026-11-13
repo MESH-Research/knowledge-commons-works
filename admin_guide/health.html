@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Setting up KCWorks" href="../setup/index.html"><link rel="prev" title="File Storage Administration" href="file_storage.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Checking KCWorks Application Health - Knowledge Commons Works 1.3.2 documentation</title>
+        <title>Checking KCWorks Application Health - Knowledge Commons Works 1.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.3.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.3.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -289,6 +289,65 @@
 <p>Concrete HTTP requests for each inter-app and client contact point around
 KCWorks. Organized by <strong>who calls whom</strong>. Decide which of these belong in
 continuous health checks vs occasional integration tests.</p>
+<section id="automated-report-stack-runtime-outbound">
+<h2>Automated report (stack + runtime + outbound)<a class="headerlink" href="#automated-report-stack-runtime-outbound" title="Link to this heading">¶</a></h2>
+<p>Three layers, one report:</p>
+<ol class="arabic simple">
+<li><p><strong>Stack</strong> — runs <code class="docutils literal notranslate"><span class="pre">scripts/check_health.sh</span></code> as a subprocess (still usable
+alone for basic connectivity). OK Site UI / Site API / <code class="docutils literal notranslate"><span class="pre">/server_health</span></code>
+lines are annotated with the services they <strong>imply</strong> (<code class="docutils literal notranslate"><span class="pre">frontend</span></code>, <code class="docutils literal notranslate"><span class="pre">web-ui</span></code>,
+<code class="docutils literal notranslate"><span class="pre">web-api</span></code>).</p></li>
+<li><p><strong>Runtime</strong> (app context) — <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">1</span></code> on Postgres, Redis <code class="docutils literal notranslate"><span class="pre">PING</span></code>,
+<code class="docutils literal notranslate"><span class="pre">current_cache</span></code> set/get/delete, Celery <code class="docutils literal notranslate"><span class="pre">inspect.ping()</span></code>, a canary task
+round-trip, worker <code class="docutils literal notranslate"><span class="pre">CELERY_BEAT_SCHEDULE</span></code> presence, dual heartbeats
+(worker embedded beat vs dedicated <code class="docutils literal notranslate"><span class="pre">RunScheduler</span></code> Job, each stamping
+a separate cache key every 15m), and coarse recent <code class="docutils literal notranslate"><span class="pre">invenio-jobs</span></code> Run
+activity.</p></li>
+<li><p><strong>Outbound</strong> — authenticated Works → Profiles probes. Mutating POSTs
+(<code class="docutils literal notranslate"><span class="pre">works/status</span></code>, <code class="docutils literal notranslate"><span class="pre">actions/logout</span></code>) are <strong>listed as skipped</strong> by default;
+fake-nonce <code class="docutils literal notranslate"><span class="pre">verify-nonce</span></code> expects a 4xx.</p></li>
+</ol>
+<p>A <strong>services</strong> summary merges evidence (e.g. Site UI OK → <code class="docutils literal notranslate"><span class="pre">web-ui</span></code>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># CLI (inside the UI app container / with app context)</span>
+invenio<span class="w"> </span>kcworks-health<span class="w"> </span>check
+invenio<span class="w"> </span>kcworks-health<span class="w"> </span>check<span class="w"> </span>--json
+invenio<span class="w"> </span>kcworks-health<span class="w"> </span>check<span class="w"> </span>--skip-stack<span class="w">          </span><span class="c1"># runtime + outbound</span>
+invenio<span class="w"> </span>kcworks-health<span class="w"> </span>check<span class="w"> </span>--skip-runtime
+invenio<span class="w"> </span>kcworks-health<span class="w"> </span>check<span class="w"> </span>--include-mutating<span class="w">    </span><span class="c1"># also POST logout/status</span>
+
+<span class="c1"># Browser (administration-access required)</span>
+<span class="c1">#   GET /health</span>
+
+<span class="c1"># JSON API (same auth)</span>
+<span class="c1">#   GET /api/health/report</span>
+</pre></div>
+</div>
+<p>Outbound fixture IDs (Flask config first, then env; long names only):
+<code class="docutils literal notranslate"><span class="pre">HEALTHCHECK_KC_USERNAME</span></code>, <code class="docutils literal notranslate"><span class="pre">HEALTHCHECK_OAUTH_SUB</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HEALTHCHECK_COMMONS_GROUP_ID</span></code> — or the same keys with an <code class="docutils literal notranslate"><span class="pre">INVENIO_</span></code> prefix
+for Invenio’s env→config loader. Auth token remains
+<code class="docutils literal notranslate"><span class="pre">COMMONS_PROFILES_API_TOKEN</span></code> (env).</p>
+<p>Heartbeat freshness (default max age 30 minutes = 2× the 15m interval):
+<code class="docutils literal notranslate"><span class="pre">HEALTHCHECK_WORKER_BEAT_HEARTBEAT_MAX_AGE_SECONDS</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HEALTHCHECK_SCHEDULER_HEARTBEAT_MAX_AGE_SECONDS</span></code> (or <code class="docutils literal notranslate"><span class="pre">INVENIO_</span></code>-prefixed).
+Worker beat stamps <code class="docutils literal notranslate"><span class="pre">kcworks:health:worker_beat_heartbeat</span></code> via
+<code class="docutils literal notranslate"><span class="pre">CELERY_BEAT_SCHEDULE</span></code>; the scheduler Job stamps
+<code class="docutils literal notranslate"><span class="pre">kcworks:health:scheduler_heartbeat</span></code> (register with
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-jobs</span> <span class="pre">upsert</span> <span class="pre">scheduler_heartbeat</span></code>).</p>
+<p>Nginx <code class="docutils literal notranslate"><span class="pre">/server_health</span></code> is the cheap LB liveness probe (nginx only, no app);
+<code class="docutils literal notranslate"><span class="pre">/health</span></code> is the rich admin report. <code class="docutils literal notranslate"><span class="pre">/healthcheck</span></code> remains a temporary
+alias of <code class="docutils literal notranslate"><span class="pre">/server_health</span></code> until load balancers are cut over.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">check_health.sh</span></code> runs <strong>inside</strong> a compose app container, loopback
+<code class="docutils literal notranslate"><span class="pre">INVENIO_SITE_*_URL</span></code> values (<code class="docutils literal notranslate"><span class="pre">https://localhost…</span></code>) are rewritten to
+<code class="docutils literal notranslate"><span class="pre">https://frontend</span></code> (override with <code class="docutils literal notranslate"><span class="pre">CHECK_HEALTH_INTERNAL_SITE_HOST</span></code>) so
+probes hit the nginx service on the Docker network. Requests still send
+<code class="docutils literal notranslate"><span class="pre">Host:</span> <span class="pre">localhost</span></code> so TrustedHost accepts them (<code class="docutils literal notranslate"><span class="pre">Host:</span> <span class="pre">frontend</span></code> is
+rejected). Use <code class="docutils literal notranslate"><span class="pre">https</span></code>, not <code class="docutils literal notranslate"><span class="pre">http</span></code>: the local nginx port-80 server is
+empty and returns 404. Reload/restart the <code class="docutils literal notranslate"><span class="pre">frontend</span></code> container after
+nginx conf changes so <code class="docutils literal notranslate"><span class="pre">/server_health</span></code> is defined (otherwise that path
+falls through to the app).</p>
+<p>Fake-nonce <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">…/broker/verify-nonce/</span></code> treats HTTP 410 (and other 4xx) as
+success — Profiles often answers Gone for an unknown/expired nonce.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Hosts and tokens vary by environment. Examples use production-shaped hosts
@@ -303,6 +362,7 @@ export WORKS_API_TOKEN='…'              # OAuth / personal access token for cl
 </div>
 <p>Related reference: <a class="reference internal" href="../reference/api.html"><span class="doc">API</span></a>, <a class="reference internal" href="../reference/api_credentials.html"><span class="doc">API credentials and CLI authentication</span></a>,
 <a class="reference internal" href="../reference/outgoing_signals.html"><span class="doc">Outgoing Signals</span></a>.</p>
+</section>
 <hr class="docutils" />
 <section id="link-map">
 <h2>Link map<a class="headerlink" href="#link-map" title="Link to this heading">¶</a></h2>
@@ -430,6 +490,7 @@ curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"nonce": "health-check-nonce-not-real"}'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span><span class="s1">'https://profile.hcommons.org/broker/verify-nonce/'</span>
+<span class="c1"># Fake nonce → client error (often HTTP 410 Gone); proves auth + route are up</span>
 </pre></div>
 </div>
 </section>
@@ -1021,6 +1082,7 @@ curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Checking KCWorks Application Health</a><ul>
+<li><a class="reference internal" href="#automated-report-stack-runtime-outbound">Automated report (stack + runtime + outbound)</a></li>
 <li><a class="reference internal" href="#link-map">Link map</a></li>
 <li><a class="reference internal" href="#works-profiles">Works → Profiles</a><ul>
 <li><a class="reference internal" href="#api">API</a></li>
@@ -1057,7 +1119,7 @@ curl<span class="w"> </span>-sS<span class="w"> </span>-o<span class="w"> </span
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=8ca9e7a0"></script>
+</div><script src="../_static/documentation_options.js?v=9172181d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

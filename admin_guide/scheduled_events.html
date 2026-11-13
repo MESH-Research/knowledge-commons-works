@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="DOIs and Other PIDs" href="pids.html"><link rel="prev" title="Export formats" href="export_formats.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Scheduled events - Knowledge Commons Works 1.3.2 documentation</title>
+        <title>Scheduled events - Knowledge Commons Works 1.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.3.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.3.2 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -320,12 +320,12 @@ the <code class="docutils literal notranslate"><span class="pre">scheduler</span
 runs <code class="docutils literal notranslate"><span class="pre">--beat</span></code> (or a separate beat process using the default scheduler).</p>
 <p><strong>Sources of truth</strong></p>
 <ul class="simple">
-<li><p>Beat: <code class="docutils literal notranslate"><span class="pre">invenio_app_rdm.config.CELERY_BEAT_SCHEDULE</span></code> (package default; KCWorks
-does not replace the dict in <code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code>), plus
+<li><p>Beat: <code class="docutils literal notranslate"><span class="pre">invenio_app_rdm.config.CELERY_BEAT_SCHEDULE</span></code> (package default), plus
 <code class="docutils literal notranslate"><span class="pre">COMMUNITY_STATS_CELERYBEAT_*</span></code> merged at app init when
 <code class="docutils literal notranslate"><span class="pre">COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED</span></code> /
-<code class="docutils literal notranslate"><span class="pre">COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED</span></code> are true (both are in
-<code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code>).</p></li>
+<code class="docutils literal notranslate"><span class="pre">COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED</span></code> are true, plus KCWorks
+additive entries from <code class="docutils literal notranslate"><span class="pre">KCWORKS_CELERY_BEAT_SCHEDULE</span></code> (merged in
+<code class="docutils literal notranslate"><span class="pre">KCWorks</span></code> init/finalize — never a wholesale replace).</p></li>
 <li><p>Jobs: <code class="docutils literal notranslate"><span class="pre">scripts/setup-services.sh</span></code> and <code class="docutils literal notranslate"><span class="pre">scripts/setup-services-production.sh</span></code>.</p></li>
 </ul>
 <p><strong>Celery crontab <code class="docutils literal notranslate"><span class="pre">day_of_week</span></code>:</strong> <code class="docutils literal notranslate"><span class="pre">0</span></code> = Sunday … <code class="docutils literal notranslate"><span class="pre">6</span></code> = Saturday.</p>
@@ -539,6 +539,18 @@ hour:minute.</p>
 <td><p>Drain indexer queues</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">invenio_records_resources.tasks.manage_indexer_queues</span></code></p></td>
 </tr>
+<tr class="row-odd"><td><p>every 15m</p></td>
+<td><p>beat</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kcworks-worker-beat-heartbeat</span></code></p></td>
+<td><p>Stamp cache proving worker embedded beat is live</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">KCWORKS_CELERY_BEAT_SCHEDULE</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>every 15m</p></td>
+<td><p>job</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scheduler_heartbeat</span></code></p></td>
+<td><p>Stamp cache proving <code class="docutils literal notranslate"><span class="pre">RunScheduler</span></code> is dispatching</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setup-services*.sh</span></code></p></td>
+</tr>
 <tr class="row-odd"><td><p>every 1h</p></td>
 <td><p>beat</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">accounts_sessions</span></code></p></td>
@@ -666,7 +678,7 @@ disabled with <code class="docutils literal notranslate"><span class="pre">COMMU
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=8ca9e7a0"></script>
+</div><script src="../_static/documentation_options.js?v=9172181d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
