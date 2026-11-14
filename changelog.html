@@ -289,7 +289,23 @@
 <section id="changes">
 <h1>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h1>
 <section id="id1">
-<h2>1.4.0 (2026-11-13)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>1.4.1 (2026-11-14)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Bug fix: Fix identifier collision when names sync service encountered two
+users with different usernames but the same ORCID.</p></li>
+<li><p>Identifiers:</p>
+<ul>
+<li><p>Update creator/contributor schemas to allow multiple identifiers with the
+same scheme.</p></li>
+<li><p>Update names sync to <em>prevent</em> merges from leaving multiple same-scheme ids,
+since the Names schema is not easily overridable.</p></li>
+</ul>
+</li>
+<li><p>Security: Update soupsieve Python dependency</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>1.4.0 (2026-11-13)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Feature</p>
 <ul>
@@ -299,8 +315,8 @@ API reports.</p></li>
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>1.3.2 (2026-11-12)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h2>1.3.2 (2026-11-12)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -312,8 +328,8 @@ API reports.</p></li>
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>1.3.1 (2026-11-12)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h2>1.3.1 (2026-11-12)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -338,8 +354,8 @@ latin1 headers</p></li>
 </li>
 </ul>
 </section>
-<section id="id4">
-<h2>1.3.0 (2026-11-11)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h2>1.3.0 (2026-11-11)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -384,8 +400,8 @@ connections</p></li>
 </li>
 </ul>
 </section>
-<section id="id5">
-<h2>1.2.1 (2026-11-04)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="id6">
+<h2>1.2.1 (2026-11-04)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Importer</p>
 <ul>
@@ -419,8 +435,8 @@ TinyMCE webpack assets test Docs - Admin guide index order - new PIDs admin
 guide page</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>1.2.0 (2026-10-28)<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>1.2.0 (2026-10-28)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>File uploads</p>
 <ul>
@@ -462,8 +478,8 @@ guide page</p></li>
 </li>
 </ul>
 </section>
-<section id="id7">
-<h2>1.1.3 (2026-10-27)<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<section id="id8">
+<h2>1.1.3 (2026-10-27)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Security / dependencies</p>
 <ul>
@@ -472,8 +488,8 @@ guide page</p></li>
 </li>
 </ul>
 </section>
-<section id="id8">
-<h2>1.1.2 (2026-10-24)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>1.1.2 (2026-10-24)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Security / dependencies</p>
 <ul>
@@ -498,8 +514,8 @@ secrets by default in tests</p></li>
 </li>
 </ul>
 </section>
-<section id="id9">
-<h2>1.1.1 (2026-10-21)<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<section id="id10">
+<h2>1.1.1 (2026-10-21)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>update many dependencies with reported vulnerabilities:</p>
 <ul>
@@ -516,8 +532,8 @@ nbconvert, multidict, marshmallow, pygments, setuptools</p></li>
 </li>
 </ul>
 </section>
-<section id="id10">
-<h2>1.1.0 (2026-10-20)<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<section id="id11">
+<h2>1.1.0 (2026-10-20)<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Authentication &amp; API security</p>
 <ul>
@@ -614,8 +630,8 @@ as for certifi (which drops some compromised CA certificates).</p></li>
 </li>
 </ul>
 </section>
-<section id="id11">
-<h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<section id="id12">
+<h2>1.0.0 (2026-09-24)<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
 <p>This 1.0.0 release represents not only an upgrade of our underlying InvenioRDM
 platform, but a major step forward in features, stability, and security. These
 enhancements include:</p>
@@ -788,8 +804,8 @@ images</p></li>
 </li>
 </ul>
 </section>
-<section id="id12">
-<h2>0.8.1 (2026-06-09)<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<section id="id13">
+<h2>0.8.1 (2026-06-09)<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix release</p>
 <ul>
@@ -799,8 +815,8 @@ often causing “jammed” uploads.</p></li>
 </li>
 </ul>
 </section>
-<section id="id13">
-<h2>0.8.0 (2026-05-19)<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<section id="id14">
+<h2>0.8.0 (2026-05-19)<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
 <p>Major feature release</p>
 <ul class="simple">
 <li><p>New single-sign-on login and user-data sync system based on KCProfiles and
@@ -862,8 +878,8 @@ user/community flows</p></li>
 </li>
 </ul>
 </section>
-<section id="id14">
-<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<section id="id15">
+<h2>0.7.3 (2026-02-12)<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
 <p>Bug fix release</p>
 <ul class="simple">
 <li><p>Collections</p>
@@ -901,8 +917,8 @@ instances on the same machine.</p></li>
 </li>
 </ul>
 </section>
-<section id="id15">
-<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<section id="id16">
+<h2>0.7.2 (2026-01-20)<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Search paging and navigation improvements</p>
 <ul>
@@ -935,8 +951,8 @@ in many tabs at once.</p></li>
 </li>
 </ul>
 </section>
-<section id="id16">
-<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<section id="id17">
+<h2>0.7.1 (2025-12-19)<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fix</p>
 <ul>
@@ -952,8 +968,8 @@ weren’t filtered by community properly.</p></li>
 </li>
 </ul>
 </section>
-<section id="id17">
-<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<section id="id18">
+<h2>0.7.0 (2025-12-15)<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Major new feature: Stats dashboards for collections and KCWorks as a whole</p></li>
 <li><p>Other misc. user-facing improvements and bug fixes:</p>
@@ -1059,8 +1075,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id18">
-<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<section id="id19">
+<h2>0.5.6 (2025-09-30)<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -1069,8 +1085,8 @@ better handling of test .env files</p></li>
 </li>
 </ul>
 </section>
-<section id="id19">
-<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<section id="id20">
+<h2>0.5.5 (2025-09-10)<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Upload form</p>
 <ul>
@@ -1080,8 +1096,8 @@ publication submissions.</p></li>
 </li>
 </ul>
 </section>
-<section id="id20">
-<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
+<section id="id21">
+<h2>0.5.4 (2025-08-14)<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Bug fixes</p>
 <ul>
@@ -1099,8 +1115,8 @@ publication information line of search result items.</p></li>
 </li>
 </ul>
 </section>
-<section id="id21">
-<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<section id="id22">
+<h2>0.5.3 (2025-07-17)<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Group collections</p>
 <ul>
@@ -1159,16 +1175,16 @@ invenio-rdm-records, invenio-vocabularies.</p></li>
 <li><p>Public roadmap updates</p></li>
 </ul>
 </section>
-<section id="id22">
-<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
+<section id="id23">
+<h2>0.5.2 (2025-05-29)<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added a new CLI command to allow admins to bulk update a single metadata field
 to a single new fixed value for every record in a collection.</p></li>
 <li><p>Added public roadmap to the documentation.</p></li>
 </ul>
 </section>
-<section id="id23">
-<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
+<section id="id24">
+<h2>0.5.1 (2025-05-13)<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed BETA status from the site.</p>
 <ul>
@@ -1707,29 +1723,30 @@ upload form. Now, the default publisher is “Knowledge Commons”.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changes</a><ul>
-<li><a class="reference internal" href="#id1">1.4.0 (2026-11-13)</a></li>
-<li><a class="reference internal" href="#id2">1.3.2 (2026-11-12)</a></li>
-<li><a class="reference internal" href="#id3">1.3.1 (2026-11-12)</a></li>
-<li><a class="reference internal" href="#id4">1.3.0 (2026-11-11)</a></li>
-<li><a class="reference internal" href="#id5">1.2.1 (2026-11-04)</a></li>
-<li><a class="reference internal" href="#id6">1.2.0 (2026-10-28)</a></li>
-<li><a class="reference internal" href="#id7">1.1.3 (2026-10-27)</a></li>
-<li><a class="reference internal" href="#id8">1.1.2 (2026-10-24)</a></li>
-<li><a class="reference internal" href="#id9">1.1.1 (2026-10-21)</a></li>
-<li><a class="reference internal" href="#id10">1.1.0 (2026-10-20)</a></li>
-<li><a class="reference internal" href="#id11">1.0.0 (2026-09-24)</a></li>
-<li><a class="reference internal" href="#id12">0.8.1 (2026-06-09)</a></li>
-<li><a class="reference internal" href="#id13">0.8.0 (2026-05-19)</a></li>
-<li><a class="reference internal" href="#id14">0.7.3 (2026-02-12)</a></li>
-<li><a class="reference internal" href="#id15">0.7.2 (2026-01-20)</a></li>
-<li><a class="reference internal" href="#id16">0.7.1 (2025-12-19)</a></li>
-<li><a class="reference internal" href="#id17">0.7.0 (2025-12-15)</a></li>
-<li><a class="reference internal" href="#id18">0.5.6 (2025-09-30)</a></li>
-<li><a class="reference internal" href="#id19">0.5.5 (2025-09-10)</a></li>
-<li><a class="reference internal" href="#id20">0.5.4 (2025-08-14)</a></li>
-<li><a class="reference internal" href="#id21">0.5.3 (2025-07-17)</a></li>
-<li><a class="reference internal" href="#id22">0.5.2 (2025-05-29)</a></li>
-<li><a class="reference internal" href="#id23">0.5.1 (2025-05-13)</a></li>
+<li><a class="reference internal" href="#id1">1.4.1 (2026-11-14)</a></li>
+<li><a class="reference internal" href="#id2">1.4.0 (2026-11-13)</a></li>
+<li><a class="reference internal" href="#id3">1.3.2 (2026-11-12)</a></li>
+<li><a class="reference internal" href="#id4">1.3.1 (2026-11-12)</a></li>
+<li><a class="reference internal" href="#id5">1.3.0 (2026-11-11)</a></li>
+<li><a class="reference internal" href="#id6">1.2.1 (2026-11-04)</a></li>
+<li><a class="reference internal" href="#id7">1.2.0 (2026-10-28)</a></li>
+<li><a class="reference internal" href="#id8">1.1.3 (2026-10-27)</a></li>
+<li><a class="reference internal" href="#id9">1.1.2 (2026-10-24)</a></li>
+<li><a class="reference internal" href="#id10">1.1.1 (2026-10-21)</a></li>
+<li><a class="reference internal" href="#id11">1.1.0 (2026-10-20)</a></li>
+<li><a class="reference internal" href="#id12">1.0.0 (2026-09-24)</a></li>
+<li><a class="reference internal" href="#id13">0.8.1 (2026-06-09)</a></li>
+<li><a class="reference internal" href="#id14">0.8.0 (2026-05-19)</a></li>
+<li><a class="reference internal" href="#id15">0.7.3 (2026-02-12)</a></li>
+<li><a class="reference internal" href="#id16">0.7.2 (2026-01-20)</a></li>
+<li><a class="reference internal" href="#id17">0.7.1 (2025-12-19)</a></li>
+<li><a class="reference internal" href="#id18">0.7.0 (2025-12-15)</a></li>
+<li><a class="reference internal" href="#id19">0.5.6 (2025-09-30)</a></li>
+<li><a class="reference internal" href="#id20">0.5.5 (2025-09-10)</a></li>
+<li><a class="reference internal" href="#id21">0.5.4 (2025-08-14)</a></li>
+<li><a class="reference internal" href="#id22">0.5.3 (2025-07-17)</a></li>
+<li><a class="reference internal" href="#id23">0.5.2 (2025-05-29)</a></li>
+<li><a class="reference internal" href="#id24">0.5.1 (2025-05-13)</a></li>
 <li><a class="reference internal" href="#beta13-2025-05-05">0.5.0-beta13 (2025-05-05)</a></li>
 <li><a class="reference internal" href="#beta12-2025-04-30">0.4.0-beta12 (2025-04-30)</a></li>
 <li><a class="reference internal" href="#beta11-2025-03-14">0.3.8-beta11 (2025-03-14)</a></li>
