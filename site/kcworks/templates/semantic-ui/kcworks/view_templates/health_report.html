@@ -13,7 +13,7 @@
     {% endif %}
   </h1>
   <p class="ui grey text">
-    {{ _("Checked at") }}: <code>{{ report.checked_at }}</code>
+    {{ _("Checked at") }}: {{ report.checked_at | invenio_format_datetime }} UTC
     &middot;
     <a href="/api/health/report">{{ _("JSON") }}</a>
   </p>
