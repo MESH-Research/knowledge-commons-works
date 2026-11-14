@@ -6,9 +6,12 @@
 
 """Unit tests for KCWorks record schema overrides.
 
-Currently focused on `KCWorksPersonOrOrganizationSchema`, which preserves
-a caller-supplied `name` for personal entries instead of unconditionally
-recomposing it as `"family_name, given_name"` (the upstream behavior).
+Covers `KCWorksPersonOrOrganizationSchema`:
+
+- Preserves a caller-supplied `name` for personal entries instead of
+  unconditionally recomposing it as `"family_name, given_name"` (upstream).
+- Allows multiple identifiers with the same scheme when values differ
+  (`IdentifierValueSet`), matching record-level `metadata.identifiers`.
 """
 
 import pytest
@@ -18,21 +21,27 @@ from kcworks.services.records.schemas import (
     KCWorksCreatorSchema,
     KCWorksPersonOrOrganizationSchema,
 )
+from marshmallow import ValidationError
 
 
 @pytest.fixture
 def app_ctx():
     """Push a minimal Flask app context for the schema's ``LocalProxy`` lookups.
 
-    ``PersonOrOrganizationSchema.identifiers`` resolves
-    ``RDM_RECORDS_PERSONORG_SCHEMES`` lazily via a ``LocalProxy``; supplying an
-    empty mapping is enough for loads that don't include identifier values.
+    ``KCWorksPersonOrOrganizationSchema.identifiers`` resolves
+    ``RDM_RECORDS_PERSONORG_SCHEMES`` lazily via a ``LocalProxy``. Tests that
+    load identifier values need at least one allowed scheme with a validator.
 
     Yields:
         The Flask app whose context is active for the test.
     """
     app = Flask("kcworks-record-schema-tests")
-    app.config["RDM_RECORDS_PERSONORG_SCHEMES"] = {}
+    app.config["RDM_RECORDS_PERSONORG_SCHEMES"] = {
+        "kc_username": {
+            "label": "KC member",
+            "validator": lambda x: True,
+        },
+    }
     with app.app_context():
         yield app
 
@@ -95,6 +104,39 @@ class TestKCWorksPersonOrOrganizationSchema:
             }
         )
         assert result == {"type": "organizational", "name": "ACME Corp"}
+
+    def test_allows_duplicate_scheme_with_different_values(self, app_ctx):
+        """Same scheme with distinct values is accepted (unlike upstream)."""
+        result = KCWorksPersonOrOrganizationSchema().load(
+            {
+                "type": "personal",
+                "family_name": "Curie",
+                "given_name": "Marie",
+                "identifiers": [
+                    {"scheme": "kc_username", "identifier": "mcurie"},
+                    {"scheme": "kc_username", "identifier": "marie.curie"},
+                ],
+            }
+        )
+        assert result["identifiers"] == [
+            {"scheme": "kc_username", "identifier": "mcurie"},
+            {"scheme": "kc_username", "identifier": "marie.curie"},
+        ]
+
+    def test_rejects_duplicate_scheme_and_value(self, app_ctx):
+        """Exact ``(scheme, identifier)`` duplicates are still rejected."""
+        with pytest.raises(ValidationError):
+            KCWorksPersonOrOrganizationSchema().load(
+                {
+                    "type": "personal",
+                    "family_name": "Curie",
+                    "given_name": "Marie",
+                    "identifiers": [
+                        {"scheme": "kc_username", "identifier": "mcurie"},
+                        {"scheme": "kc_username", "identifier": "mcurie"},
+                    ],
+                }
+            )
 
 
 class TestKCWorksCreatorContributorSchemas:
