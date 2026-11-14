@@ -4,7 +4,7 @@
     background-color: @positiveColor;
     border: 1px solid;
     color: @white;
-  };
+};
 
 @negative-colors: {
   border-color: @negativeColor;
@@ -16,7 +16,13 @@
   background-color: @white;
   border-color: lighten(@greenLight, 20%);
   color: @positiveColor;
-}
+};
+
+@negative-basic-colors: {
+  border-color: @negativeBorderColor;
+  background-color: @white;
+  color: @negativeTextColor;
+};
 
 .ui.label.basic,
 .ui.label,
@@ -66,6 +72,14 @@
 
   &.access-status.restricted {
     @negative-colors();
+  }
+
+  &.access-status.embargoed {
+    @negative-colors();
+
+    &.basic {
+      @negative-basic-colors();
+    }
   }
 
   // Semantic color labels
