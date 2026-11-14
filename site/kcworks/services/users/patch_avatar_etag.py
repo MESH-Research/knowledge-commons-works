@@ -63,5 +63,5 @@ def patch_avatar_etag() -> None:
     if _PATCHED:
         return
 
-    setattr(AvatarResult, "etag", property(_ascii_safe_etag))
+    setattr(AvatarResult, "etag", property(_ascii_safe_etag))  # noqa: B010
     _PATCHED = True
