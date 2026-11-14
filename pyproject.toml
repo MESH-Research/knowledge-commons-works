@@ -57,7 +57,7 @@ dependencies = [
   "tqdm",
   "uwsgi>=2.0.23",
   "nbconvert>=7.17.2,<8",
-  "soupsieve>=2.8.4,<3",
+  "soupsieve>=4.1",
   "multidict>=6.9.1,<7",
   "filelock>=4.2.1",
 ]
