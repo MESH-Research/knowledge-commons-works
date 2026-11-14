@@ -3,6 +3,30 @@
 
 # Changes
 
+## 1.4.2 (2026-11-14)
+
+- Theme: fix colours for "embargoed" label
+- Tests
+  - fixes for some flaky test assertions
+  - ty and ruff issue fixes
+
+## 1.4.1 (2026-11-14)
+
+- Bug fix: Fix identifier collision when names sync service encountered two
+  users with different usernames but the same ORCID.
+- Identifiers:
+  - Update creator/contributor schemas to allow multiple identifiers with the
+    same scheme.
+  - Update names sync to _prevent_ merges from leaving multiple same-scheme ids,
+    since the Names schema is not easily overridable.
+- Security: Update soupsieve Python dependency
+
+## 1.4.0 (2026-11-13)
+
+- Feature
+  - New health check that tests app services and connectivity, with CLI, UI, and
+    API reports.
+
 ## 1.3.2 (2026-11-12)
 
 - Bug fixes

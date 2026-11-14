@@ -4,6 +4,72 @@ Concrete HTTP requests for each inter-app and client contact point around
 KCWorks. Organized by **who calls whom**. Decide which of these belong in
 continuous health checks vs occasional integration tests.
 
+## Automated report (stack + runtime + outbound)
+
+Three layers, one report:
+
+1. **Stack** — runs `scripts/check_health.sh` as a subprocess (still usable
+   alone for basic connectivity). OK Site UI / Site API / `/server_health`
+   lines are annotated with the services they **imply** (`frontend`, `web-ui`,
+   `web-api`).
+2. **Runtime** (app context) — `SELECT 1` on Postgres, Redis `PING`,
+   `current_cache` set/get/delete, Celery `inspect.ping()`, a canary task
+   round-trip, worker `CELERY_BEAT_SCHEDULE` presence, dual heartbeats
+   (worker embedded beat vs dedicated `RunScheduler` Job, each stamping
+   a separate cache key every 15m), and coarse recent `invenio-jobs` Run
+   activity.
+3. **Outbound** — authenticated Works → Profiles probes. Mutating POSTs
+   (`works/status`, `actions/logout`) are **listed as skipped** by default;
+   fake-nonce `verify-nonce` expects a 4xx.
+
+A **services** summary merges evidence (e.g. Site UI OK → `web-ui`).
+
+```bash
+# CLI (inside the UI app container / with app context)
+invenio kcworks-health check
+invenio kcworks-health check --json
+invenio kcworks-health check --skip-stack          # runtime + outbound
+invenio kcworks-health check --skip-runtime
+invenio kcworks-health check --include-mutating    # also POST logout/status
+
+# Browser (administration-access required)
+#   GET /health
+
+# JSON API (same auth)
+#   GET /api/health/report
+```
+
+Outbound fixture IDs (Flask config first, then env; long names only):
+`HEALTHCHECK_KC_USERNAME`, `HEALTHCHECK_OAUTH_SUB`,
+`HEALTHCHECK_COMMONS_GROUP_ID` — or the same keys with an `INVENIO_` prefix
+for Invenio’s env→config loader. Auth token remains
+`COMMONS_PROFILES_API_TOKEN` (env).
+
+Heartbeat freshness (default max age 30 minutes = 2× the 15m interval):
+`HEALTHCHECK_WORKER_BEAT_HEARTBEAT_MAX_AGE_SECONDS`,
+`HEALTHCHECK_SCHEDULER_HEARTBEAT_MAX_AGE_SECONDS` (or `INVENIO_`-prefixed).
+Worker beat stamps `kcworks:health:worker_beat_heartbeat` via
+`CELERY_BEAT_SCHEDULE`; the scheduler Job stamps
+`kcworks:health:scheduler_heartbeat` (register with
+`invenio kcworks-jobs upsert scheduler_heartbeat`).
+
+Nginx `/server_health` is the cheap LB liveness probe (nginx only, no app);
+`/health` is the rich admin report. `/healthcheck` remains a temporary
+alias of `/server_health` until load balancers are cut over.
+
+When `check_health.sh` runs **inside** a compose app container, loopback
+`INVENIO_SITE_*_URL` values (`https://localhost…`) are rewritten to
+`https://frontend` (override with `CHECK_HEALTH_INTERNAL_SITE_HOST`) so
+probes hit the nginx service on the Docker network. Requests still send
+`Host: localhost` so TrustedHost accepts them (`Host: frontend` is
+rejected). Use `https`, not `http`: the local nginx port-80 server is
+empty and returns 404. Reload/restart the `frontend` container after
+nginx conf changes so `/server_health` is defined (otherwise that path
+falls through to the app).
+
+Fake-nonce `POST …/broker/verify-nonce/` treats HTTP 410 (and other 4xx) as
+success — Profiles often answers Gone for an unknown/expired nonce.
+
 ```{important}
 Hosts and tokens vary by environment. Examples use production-shaped hosts
 (`works.hcommons.org`, `profile.hcommons.org`). Substitute the deployment’s
@@ -99,6 +165,7 @@ curl -sS -X POST \
   -H 'Content-Type: application/json' \
   -d '{"nonce": "health-check-nonce-not-real"}' \
   'https://profile.hcommons.org/broker/verify-nonce/'
+# Fake nonce → client error (often HTTP 410 Gone); proves auth + route are up
 ```
 
 ### UI browser requests

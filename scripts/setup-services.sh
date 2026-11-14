@@ -181,6 +181,13 @@ invenio kcworks-jobs upsert sync_names_missing_users \
     --schedule "crontab:minute=0,hour=9,day_of_week=0" \
     --queue celery
 
+# Lightweight RunScheduler heartbeat (dedicated scheduler container).
+# Worker embedded-beat heartbeat is in CELERY_BEAT_SCHEDULE (config), not here.
+invenio kcworks-jobs upsert scheduler_heartbeat \
+    --title "KCWorks scheduler heartbeat" \
+    --schedule "interval:minutes=15" \
+    --queue celery
+
 echo -e "${green}All done setting up services."
 echo -e "${green}Building and symlinking assets..."
 bash ./scripts/build-assets.sh

@@ -212,7 +212,16 @@ invenio kcworks-jobs upsert sync_names_missing_users \
     --title "Sync missing Names USER records" \
     --schedule "crontab:minute=0,hour=9,day_of_week=0" \
     --queue celery
+invenio kcworks-jobs upsert scheduler_heartbeat \
+    --title "KCWorks scheduler heartbeat" \
+    --schedule "interval:minutes=15" \
+    --queue celery
 ```
+
+The `scheduler_heartbeat` Job stamps a cache key for health checks of the
+dedicated `scheduler` service (`RunScheduler`). The worker container’s
+embedded beat uses a separate entry in `CELERY_BEAT_SCHEDULE` (see
+{doc}`../admin_guide/health`).
 
 The Names jobs (hours 7–9) are documented in
 [Names Vocabulary Lifecycle](../admin_guide/names_vocabulary.md#scheduled-jobs-invenio-jobs).

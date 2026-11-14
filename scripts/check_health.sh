@@ -7,13 +7,16 @@
 #              precedence as kcworks-startup.sh / compose --env-file order),
 #              and probes 127.0.0.1 (see docs/source/setup/installation.md).
 #              Runs Docker container checks.
-#   container  Inside the AWS ECS "ui" container (script baked at
-#              /opt/invenio/src/scripts/). Reads connection targets from the
-#              process environment (the INVENIO_* task-definition variables) and
-#              probes the real service endpoints (RDS / ElastiCache / Amazon
-#              OpenSearch / broker). No Docker checks (no daemon in-container).
-#              The production runtime image has no curl/nc/pg_isready, so HTTP
-#              checks fall back to python3 and TCP checks use bash /dev/tcp.
+#   container  Inside an app container (ECS "ui" or local compose web-ui; script
+#              at /opt/invenio/src/scripts/ in images). Reads connection targets
+#              from the process environment (INVENIO_* ) and probes real service
+#              endpoints (RDS / ElastiCache / OpenSearch / broker, or compose
+#              DNS names like search/db/cache/mq). No Docker checks. HTTP falls
+#              back to python3; TCP uses bash /dev/tcp when nc is missing.
+#              Site UI/API: if INVENIO_SITE_*_URL is loopback (localhost), rewrite
+#              probes to https://frontend (compose nginx service) so they hit the
+#              reverse proxy on the Docker network — not the container's own
+#              loopback. Override with CHECK_HEALTH_INTERNAL_SITE_HOST.
 #   host       On the EC2 instance outside the containers. Runs relaxed Docker
 #              container checks (matched by role keyword, since ECS names are
 #              dynamic) plus the public Site UI/API HTTP checks. Infra services
@@ -34,6 +37,8 @@
 # connection URLs are never printed.
 #
 # Optional tuning (environment variables for this process only):
+#   CHECK_HEALTH_INTERNAL_SITE_HOST  (container mode) Docker DNS name for nginx when
+#     rewriting loopback SITE_* URLs (default: frontend)
 #   CHECK_HEALTH_LOAD_FAIL_MULT   1m loadavg must stay below (this × CPU cores) or count as failed (default 4; 0 disables)
 #   CHECK_HEALTH_LOAD_WARN_MULT   warn on stderr if 1m loadavg exceeds (this × cores) (default 2; 0 disables warn)
 #   CHECK_HEALTH_MEM_WARN_FREE_PCT   warn if MemAvailable (Linux) or approx free (macOS) is below this % of total RAM (default 10; 0 disables)
@@ -225,6 +230,37 @@ url_hostport() {
   printf '%s %s' "$host" "$port"
 }
 
+# Split an http(s) URL into scheme, host, port, path. Echoes
+# "scheme<TAB>host<TAB>port<TAB>path". Empty fields when absent. Non-http(s)
+# or IPv6-literal hosts echo nothing (caller keeps the original URL).
+http_url_parts() {
+  local url="$1"
+  [[ -n "$url" ]] || return 0
+  local scheme="${url%%://*}"
+  local rest="${url#*://}"
+  case "$scheme" in
+    http | https) ;;
+    *) return 0 ;;
+  esac
+  local hostport="${rest%%/*}"
+  local path=""
+  if [[ "$rest" == */* ]]; then
+    path="/${rest#*/}"
+  fi
+  if [[ "$hostport" == \[* ]]; then
+    return 0
+  fi
+  local host port
+  if [[ "$hostport" == *:* ]]; then
+    host="${hostport%%:*}"
+    port="${hostport##*:}"
+  else
+    host="$hostport"
+    port=""
+  fi
+  printf '%s\t%s\t%s\t%s' "$scheme" "$host" "$port" "$path"
+}
+
 # Local compose often keeps INVENIO_SITE_*_URL as https://localhost (scheme
 # default port 443) while docker-compose.dev.env publishes nginx on
 # KCWORKS_NGINX_HTTPS_HOST_PORT (e.g. 8443). Rewrite loopback URLs to the
@@ -235,33 +271,11 @@ local_nginx_url() {
     printf '%s' "$url"
     return
   }
-  local scheme="${url%%://*}"
-  local rest="${url#*://}"
-  # Only plain http(s) site URLs; leave odd schemes alone.
-  case "$scheme" in
-    http | https) ;;
-    *)
-      printf '%s' "$url"
-      return
-      ;;
-  esac
-  local hostport="${rest%%/*}"
-  local path=""
-  if [[ "$rest" == */* ]]; then
-    path="/${rest#*/}"
-  fi
-  local host port
-  if [[ "$hostport" == \[* ]]; then
-    # IPv6 literals — do not rewrite
+  local scheme host port path
+  IFS=$'\t' read -r scheme host port path <<<"$(http_url_parts "$url")"
+  if [[ -z "$scheme" ]]; then
     printf '%s' "$url"
     return
-  fi
-  if [[ "$hostport" == *:* ]]; then
-    host="${hostport%%:*}"
-    port="${hostport##*:}"
-  else
-    host="$hostport"
-    port=""
   fi
   case "$host" in
     localhost | 127.0.0.1) ;;
@@ -283,6 +297,51 @@ local_nginx_url() {
     return
   fi
   printf '%s://%s:%s%s' "$scheme" "$host" "$want" "$path"
+}
+
+# Inside a compose app container, INVENIO_SITE_*_URL is still often
+# https://localhost[:hostPort] for browsers on the host. Loopback there is the
+# app container itself, not nginx. Rewrite to https://<internal-host>/<path>
+# (default host: frontend = compose nginx service). Non-loopback URLs unchanged
+# (ECS public hostnames). Local nginx listens for the app on 443; port 80 is
+# empty — always use https for the rewrite.
+#
+# Probes must still send Host: localhost (see container_site_probe_host): the
+# app TrustedHost allowlist rejects Host: frontend.
+container_site_url() {
+  local url="$1"
+  [[ -n "$url" ]] || {
+    printf '%s' "$url"
+    return
+  }
+  local scheme host port path
+  IFS=$'\t' read -r scheme host port path <<<"$(http_url_parts "$url")"
+  if [[ -z "$scheme" ]]; then
+    printf '%s' "$url"
+    return
+  fi
+  case "$host" in
+    localhost | 127.0.0.1) ;;
+    *)
+      printf '%s' "$url"
+      return
+      ;;
+  esac
+  local internal_host
+  internal_host="$(cfg CHECK_HEALTH_INTERNAL_SITE_HOST frontend)"
+  printf 'https://%s%s' "$internal_host" "$path"
+}
+
+# Echo the Host header to use after container_site_url rewrite: the original
+# loopback hostname (trusted). Empty when no rewrite applies.
+container_site_probe_host() {
+  local url="$1"
+  local scheme host port path
+  IFS=$'\t' read -r scheme host port path <<<"$(http_url_parts "$url")"
+  case "$host" in
+    localhost | 127.0.0.1) printf '%s' "$host" ;;
+    *) printf '' ;;
+  esac
 }
 
 # Echoes tab-separated "host<TAB>port<TAB>user<TAB>db" from a SQLAlchemy URI
@@ -375,8 +434,12 @@ tcp_listen_ok() {
 # SSO checks — following broker redirects can loop on local return_to URLs and
 # hides the initial 302 Location). Response headers are included in
 # HTTP_PROBE_BODY so callers can match Location.
+#
+# Optional fourth argument: Host header override. Used in container mode when
+# connecting to the compose ``frontend`` service while sending the trusted
+# loopback Host from INVENIO_SITE_*_URL (TrustedHost rejects Host: frontend).
 http_probe() {
-  local url="$1" accept="${2:-}" nofollow=0
+  local url="$1" accept="${2:-}" nofollow=0 host_hdr="${4:-}"
   [[ "${3:-}" == "nofollow" ]] && nofollow=1
   local out=""
   if command -v curl >/dev/null 2>&1; then
@@ -387,24 +450,30 @@ http_probe() {
     else
       curl_opts+=(-L)
     fi
+    if [[ -n "$host_hdr" ]]; then
+      curl_opts+=(-H "Host: ${host_hdr}")
+    fi
     if [[ -n "$accept" ]]; then
       out="$(curl "${curl_opts[@]}" -H "Accept: $accept" -w '\n%{http_code}' "$url" 2>&1)"
     else
       out="$(curl "${curl_opts[@]}" -w '\n%{http_code}' "$url" 2>&1)"
     fi
   elif command -v python3 >/dev/null 2>&1; then
-    out="$(HP_URL="$url" HP_ACCEPT="$accept" HP_NOFOLLOW="$nofollow" python3 - <<'PY'
+    out="$(HP_URL="$url" HP_ACCEPT="$accept" HP_NOFOLLOW="$nofollow" HP_HOST="$host_hdr" python3 - <<'PY'
 import os, ssl, sys, urllib.request, urllib.error
 
 url = os.environ.get("HP_URL", "")
 accept = os.environ.get("HP_ACCEPT", "")
 nofollow = os.environ.get("HP_NOFOLLOW", "0") == "1"
+host_hdr = os.environ.get("HP_HOST", "")
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 req = urllib.request.Request(url)
 if accept:
     req.add_header("Accept", accept)
+if host_hdr:
+    req.add_header("Host", host_hdr)
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -1051,30 +1120,37 @@ is_ui_sso_redirect() {
 }
 
 check_site() {
-  local ui_url api_url
+  local ui_url api_url probe_host=""
   ui_url="$(cfg INVENIO_SITE_UI_URL "")"
   api_url="$(cfg INVENIO_SITE_API_URL "")"
 
   if [[ "$MODE" == "local" ]]; then
     ui_url="$(local_nginx_url "$ui_url")"
     api_url="$(local_nginx_url "$api_url")"
+  elif [[ "$MODE" == "container" ]]; then
+    # Capture trusted Host before rewriting the connect URL to frontend.
+    probe_host="$(container_site_probe_host "$ui_url")"
+    [[ -z "$probe_host" ]] && probe_host="$(container_site_probe_host "$api_url")"
+    ui_url="$(container_site_url "$ui_url")"
+    api_url="$(container_site_url "$api_url")"
   fi
 
   if [[ -z "$ui_url" ]]; then
     record_fail "Site UI: missing INVENIO_SITE_UI_URL (env or ${ENV_SOURCE})"
   elif [[ "$MODE" != "local" ]]; then
-    # Nginx /healthcheck is the authoritative liveness probe on staging/production.
-    http_probe "${ui_url%/}/healthcheck"
+    # Nginx /server_health is the cheap liveness probe (no app) on
+    # staging/production and local compose (frontend service).
+    http_probe "${ui_url%/}/server_health" "" "" "$probe_host"
     if [[ "$HTTP_PROBE_CODE" != "200" ]]; then
-      record_fail "Healthcheck: HTTP ${HTTP_PROBE_CODE} (expected 200) GET /healthcheck"
+      record_fail "Server health: HTTP ${HTTP_PROBE_CODE} (expected 200) GET /server_health"
     else
-      report "Healthcheck" "OK - HTTP 200 /healthcheck"
-      detail "${ui_url%/}/healthcheck"
+      report "Server health" "OK - HTTP 200 /server_health"
+      detail "${ui_url%/}/server_health${probe_host:+ (Host: ${probe_host})}"
     fi
-    http_probe "$ui_url" "" nofollow
+    http_probe "$ui_url" "" nofollow "$probe_host"
     if [[ "$HTTP_PROBE_CODE" == "200" ]]; then
       report "Site UI" "OK - HTTP 200"
-      detail "${ui_url}"
+      detail "${ui_url}${probe_host:+ (Host: ${probe_host})}"
     elif is_ui_sso_redirect; then
       report "Site UI" "OK - HTTP 302 SSO redirect"
       detail "${ui_url} (unauthenticated redirect to broker is expected)"
@@ -1103,14 +1179,14 @@ check_site() {
     record_fail "Site API: missing INVENIO_SITE_API_URL (env or ${ENV_SOURCE})"
   else
     local records_url="${api_url%/}/records"
-    http_probe "$records_url" "application/json"
+    http_probe "$records_url" "application/json" "" "$probe_host"
     if [[ "$HTTP_PROBE_CODE" != "200" ]]; then
       local api_brief
       api_brief="$(printf '%s' "$HTTP_PROBE_BODY" | brief_line 240)"
       record_fail "Site API: HTTP ${HTTP_PROBE_CODE} (expected 200) GET /records (JSON). ${api_brief}"
     else
       report "Site API" "OK - HTTP 200 GET /records"
-      detail "${records_url}"
+      detail "${records_url}${probe_host:+ (Host: ${probe_host})}"
     fi
   fi
 }

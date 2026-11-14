@@ -13,6 +13,7 @@
 
 """KCWorks CLI."""
 
+import json
 import sys
 import uuid
 
@@ -32,6 +33,7 @@ from kcworks.services.communities.cli import (
     set_parent,
     update_index_mapping,
 )
+from kcworks.services.health.report import health_report_as_dict, run_health_report
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import (
     change_record_owner_command,
@@ -333,3 +335,112 @@ def kcworks_jobs_upsert(task, title, description, schedule, queue, active, run_n
                 f"Dispatched immediate run {run.id} for job {job.id} "
                 f"(task_id={run.task_id})."
             )
+
+
+@click.group("kcworks-health")
+def kcworks_health():
+    """Stack + outbound Profiles health report."""
+
+
+@kcworks_health.command("check")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    default=False,
+    help="Print the full report as JSON.",
+)
+@click.option(
+    "--include-mutating",
+    is_flag=True,
+    default=False,
+    help="Also POST Profiles works/status and actions/logout (side effects).",
+)
+@click.option(
+    "--skip-stack",
+    is_flag=True,
+    default=False,
+    help="Do not run scripts/check_health.sh.",
+)
+@click.option(
+    "--skip-runtime",
+    is_flag=True,
+    default=False,
+    help="Do not run DB/Redis/Celery/scheduler probes.",
+)
+@click.option(
+    "--skip-outbound",
+    is_flag=True,
+    default=False,
+    help="Do not probe Works → Profiles endpoints.",
+)
+@with_appcontext
+def kcworks_health_check(
+    as_json, include_mutating, skip_stack, skip_runtime, skip_outbound
+):
+    """Run stack, runtime, and outbound Profiles health probes.
+
+    Exit code 0 only when the combined report is ok. Mutating Profiles POSTs
+    are listed as skipped unless --include-mutating is set.
+    """
+    report = run_health_report(
+        include_mutating=include_mutating,
+        skip_stack=skip_stack,
+        skip_runtime=skip_runtime,
+        skip_outbound=skip_outbound,
+    )
+
+    if as_json:
+        click.echo(json.dumps(health_report_as_dict(report), indent=2, sort_keys=True))
+    else:
+        overall = "OK" if report["ok"] else "FAILED"
+        click.echo(f"Health report: {overall}  ({report['checked_at']})")
+        click.echo("")
+        click.echo("Stack (check_health.sh)")
+        stack = report["stack"]
+        if stack.get("error"):
+            click.echo(f"  error: {stack['error']}")
+        click.echo(
+            f"  exit_code={stack.get('exit_code')}  "
+            f"ok={stack.get('ok')}  script={stack.get('script_path')}"
+        )
+        for check in stack.get("checks") or []:
+            implies = check.get("implies") or []
+            imply_s = f"  → {', '.join(implies)}" if implies else ""
+            click.echo(
+                f"  [{check['status']}] {check['name']}: {check['detail']}{imply_s}"
+            )
+        click.echo("")
+        click.echo("Runtime (app context)")
+        runtime = report["runtime"]
+        click.echo(f"  ok={runtime.get('ok')}")
+        for check in runtime.get("checks") or []:
+            skipped = " skipped" if check.get("skipped") else ""
+            implies = check.get("implies") or []
+            imply_s = f"  → {', '.join(implies)}" if implies else ""
+            click.echo(
+                f"  [{check['status']}{skipped}] {check['name']}: "
+                f"{check['detail']}{imply_s}"
+            )
+        click.echo("")
+        click.echo("Services (evidence from OK probes)")
+        for service, info in sorted((report.get("services") or {}).items()):
+            ev = ", ".join(info.get("evidence") or []) or "(none)"
+            click.echo(f"  [{info.get('status')}] {service}: {ev}")
+        click.echo("")
+        click.echo("Outbound (Works → Profiles)")
+        outbound = report["outbound"]
+        click.echo(f"  ok={outbound.get('ok')}")
+        for check in outbound.get("checks") or []:
+            skipped = " skipped" if check.get("skipped") else ""
+            http = (
+                f" HTTP {check['http_status']}"
+                if check.get("http_status") is not None
+                else ""
+            )
+            click.echo(
+                f"  [{check['status']}{skipped}] {check['method']} "
+                f"{check['name']}{http}: {check['detail']}"
+            )
+
+    sys.exit(0 if report["ok"] else 1)

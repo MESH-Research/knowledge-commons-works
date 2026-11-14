@@ -22,12 +22,12 @@ runs `--beat` (or a separate beat process using the default scheduler).
 
 **Sources of truth**
 
-- Beat: `invenio_app_rdm.config.CELERY_BEAT_SCHEDULE` (package default; KCWorks
-  does not replace the dict in `invenio.cfg`), plus
+- Beat: `invenio_app_rdm.config.CELERY_BEAT_SCHEDULE` (package default), plus
   `COMMUNITY_STATS_CELERYBEAT_*` merged at app init when
   `COMMUNITY_STATS_SCHEDULED_AGG_TASKS_ENABLED` /
-  `COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED` are true (both are in
-  `invenio.cfg`).
+  `COMMUNITY_STATS_SCHEDULED_CACHE_TASKS_ENABLED` are true, plus KCWorks
+  additive entries from `KCWORKS_CELERY_BEAT_SCHEDULE` (merged in
+  `KCWorks` init/finalize — never a wholesale replace).
 - Jobs: `scripts/setup-services.sh` and `scripts/setup-services-production.sh`.
 
 **Celery crontab `day_of_week`:** `0` = Sunday … `6` = Saturday.
@@ -97,6 +97,8 @@ hour:minute.
 | Interval | Kind | Id | What | Configured in |
 | -------- | ---- | -- | ---- | ------------- |
 | every 10s | beat | `indexer` | Drain indexer queues | `invenio_records_resources.tasks.manage_indexer_queues` |
+| every 15m | beat | `kcworks-worker-beat-heartbeat` | Stamp cache proving worker embedded beat is live | `KCWORKS_CELERY_BEAT_SCHEDULE` |
+| every 15m | job | `scheduler_heartbeat` | Stamp cache proving `RunScheduler` is dispatching | `setup-services*.sh` |
 | every 1h | beat | `accounts_sessions` | Clean session table | `invenio_accounts.tasks.clean_session_table` |
 | every 1h | beat | `draft_resources` | Cleanup expired drafts | `invenio_drafts_resources` drafts cleanup task |
 | every 1h | beat | `file-checks` | Schedule file checksum verification batches | `invenio_files_rest.tasks.schedule_checksum_verification` |

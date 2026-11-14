@@ -5,8 +5,10 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 from kcworks.views.admin_login.admin_login import AdminLogin
+from kcworks.views.api.health import HealthReportAPI
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.dev_ui_gallery import dev_ui_gallery
+from kcworks.views.health_ui import health_report_page
 from kcworks.views.task_results.task_results import TaskResults
 
 
@@ -38,6 +40,12 @@ def create_blueprint(app):
         methods=["GET"],
     )
 
+    blueprint.add_url_rule(
+        "/health",
+        view_func=health_report_page,
+        methods=["GET"],
+    )
+
     # Register context processor
     # blueprint.app_context_processor(search_app_context)
 
@@ -61,6 +69,12 @@ def create_api_blueprint(app):
             "/users/me/notifications/unread/<string:action>",
             view_func=InternalNotifications.as_view("internal_notifications"),
             methods=["GET", "DELETE"],
+        )
+
+        blueprint.add_url_rule(
+            "/health/report",
+            view_func=HealthReportAPI.as_view("health_report_api"),
+            methods=["GET"],
         )
 
         # Register error handlers
