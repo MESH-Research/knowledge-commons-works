@@ -3,6 +3,13 @@
 
 # Changes
 
+## 1.4.2 (2026-11-14)
+
+- Theme: fix colours for "embargoed" label
+- Tests
+  - fixes for some flaky test assertions
+  - ty and ruff issue fixes
+
 ## 1.4.1 (2026-11-14)
 
 - Bug fix: Fix identifier collision when names sync service encountered two
