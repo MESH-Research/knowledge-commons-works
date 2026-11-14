@@ -3,6 +3,17 @@
 
 # Changes
 
+## 1.4.1 (2026-11-14)
+
+- Bug fix: Fix identifier collision when names sync service encountered two
+  users with different usernames but the same ORCID.
+- Identifiers:
+  - Update creator/contributor schemas to allow multiple identifiers with the
+    same scheme.
+  - Update names sync to _prevent_ merges from leaving multiple same-scheme ids,
+    since the Names schema is not easily overridable.
+- Security: Update soupsieve Python dependency
+
 ## 1.4.0 (2026-11-13)
 
 - Feature
