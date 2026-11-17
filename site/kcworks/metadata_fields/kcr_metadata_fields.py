@@ -110,10 +110,6 @@ KCR_CUSTOM_FIELDS = [
         field_cls=SanitizedUnicode,
         # FIXME: This should be a field that tests the string as iso datetime
     ),  # EDTFDateStringCF,
-    TextCF(
-        name="kcr:remote_data_collection",
-        field_cls=SanitizedUnicode,
-    ),
 ]
 
 KCR_INSTITUTION_DEPARTMENT_FIELD_UI = {
@@ -303,14 +299,4 @@ KCR_COURSE_SECTION_UI = {
     "section": _("Course"),
     "hidden": False,
     "fields": [KCR_COURSE_TITLE_UI],
-}
-
-KCR_REMOTE_DATA_COLLECTION_UI = {
-    "field": "kcr:remote_data_collection",
-    "ui_widget": "RemoteDataCollectionField",
-}
-
-KCR_REMOTE_DATA_COLLECTION_SECTION_UI = {
-    "section": _("Remote Data"),
-    "fields": [KCR_REMOTE_DATA_COLLECTION_UI],
 }

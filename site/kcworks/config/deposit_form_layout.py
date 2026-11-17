@@ -1040,6 +1040,9 @@ _FORM_PAGES = {
                             "label": _("Licenses"),
                             "icon": None,
                             "component": "LicensesComponent",
+                            # Own fieldset + sr-only legend so AT names this group
+                            # "Licenses" (not only the parent "Rights and Permissions").
+                            "wrapped": True,
                             "classnames": "basic",
                         },
                     ],

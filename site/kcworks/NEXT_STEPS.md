@@ -8,15 +8,19 @@ This document outlines the roadmap for implementing the Globus Remote Data Colle
 The next objective is to display a read-only file tree of the linked Globus Guest Collection on the published record's detail page, and eventually support direct file downloads.
 
 ## 2. CURRENT STATE OF THE METADATA
-When a user publishes a record with a linked Globus collection, the application saves the selected endpoint configurations as a stringified JSON object in the record's custom fields. 
+When a user publishes a record with a linked Globus collection, the application saves the selected endpoint configurations as a nested object in the record's custom fields.
 
 *   **Location in payload:** `custom_fields.kcr:remote_data_collection`
 *   **Example payload:**
     ```json
-    "{\"host_endpoint_id\":\"9d3c28f4-dff5-40a8-ac0b-d4a0414ab86b\",\"mapped_collection_id\":\"5fc63b76-751c-4399-b9f5-5d76c6d34c45\",\"guest_collection_id\":\"b2c23a8c-f8db-480d-835b-79e23ab93e72\"}"
+    {
+      "host_endpoint_id": "9d3c28f4-dff5-40a8-ac0b-d4a0414ab86b",
+      "mapped_collection_id": "5fc63b76-751c-4399-b9f5-5d76c6d34c45",
+      "guest_collection_id": "b2c23a8c-f8db-480d-835b-79e23ab93e72"
+    }
     ```
 
-To render the file tree on the detail page, the backend will need to parse this string and extract the `guest_collection_id`.
+To render the file tree on the detail page, read `guest_collection_id` directly from that nested object.
 
 ## 3. RENDERING THE FILE TREE (THE GLOBUS 'LS' CALL)
 To display the contents of the Guest Collection to users viewing the detail page, the application must make a "list directory" (`ls`) call to the Globus Transfer API using the saved `guest_collection_id`.

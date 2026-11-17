@@ -1,1283 +1,37 @@
-import React, { useCallback, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import apiClient from "@js/kcworks/utils/apiClient";
-import {
-  Accordion,
-  AccordionTitle,
-  AccordionContent,
-  Icon,
-  Popup,
-  Menu,
-  Segment,
-  Input,
-  Button,
-  Dropdown,
-  Message,
-  Grid,
-  Checkbox,
-} from "semantic-ui-react";
-import { FieldLabel } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/FieldLabel";
-import { useFormikContext, getIn } from "formik";
+import React, { useState } from "react";
+import { Form, Grid } from "semantic-ui-react";
+import { FieldGroupLabel } from "@js/invenio_modular_deposit_form/field_components/patched/input_controls/FieldGroupLabel";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
-export const TreeItem = ({
-  item,
-  endpointId,
-  path = "/",
-  depth = 0,
-  autoOpen = false,
-  autoCheckAccess = false,
-  selectedFolder,
-  onSelectFolder,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [children, setChildren] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [accessStatus, setAccessStatus] = useState("unknown");
-  const [isHovered, setIsHovered] = useState(false);
+import { EDITING_STEP } from "./remote_collection_components/common";
+import { GuestCollectionUI } from "./remote_collection_components/GuestCollectionUI";
+import { MappedCollectionSelector } from "./remote_collection_components/MappedCollectionSelector";
+import {
+  useGlobusFormikSync,
+  useGlobusTokenFetch,
+  useGlobusRootFiles,
+  useMatchedGuestCollections,
+} from "./remote_collection_components/remoteCollectionHooks";
+import { ServerSelector } from "./remote_collection_components/ServerSelector";
 
-  useEffect(() => {
-    let isMounted = true;
-    if (autoCheckAccess && isDirectory && accessStatus === "unknown") {
-      const checkAccess = async () => {
-        try {
-          await apiClient.get(`/api/globus/ls/${endpointId}`, {
-            params: { path: currentItemPath },
-          });
-          if (isMounted) setAccessStatus("allowed");
-        } catch (err) {
-          if (isMounted && (err.response?.status === 403 || err.response?.status === 401)) {
-            setAccessStatus("denied");
-          }
-        }
-      };
-      checkAccess();
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [autoCheckAccess, isDirectory, endpointId, currentItemPath, accessStatus]);
-
-  const isDirectory = item.type === "dir";
-  const currentItemPath = path === "/" ? `/${item.name}` : `${path}/${item.name}`;
-
-  useEffect(() => {
-    let isMounted = true;
-    const autoFetchChildren = async () => {
-      if (autoOpen && isDirectory && !isOpen && children.length === 0) {
-        setLoading(true);
-        try {
-          const response = await apiClient.get(`/api/globus/ls/${endpointId}`, {
-            params: { path: currentItemPath },
-          });
-          if (isMounted) {
-            setChildren(response.data);
-            setIsOpen(true);
-          }
-        } catch (err) {
-          console.error("Failed to auto-fetch folder contents:", err);
-        } finally {
-          if (isMounted) setLoading(false);
-        }
-      }
-    };
-
-    autoFetchChildren();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [autoOpen, isDirectory, endpointId, currentItemPath]);
-
-  const globusFileManagerUrl = isDirectory
-    ? `https://app.globus.org/file-manager?origin_id=${endpointId}&origin_path=${encodeURIComponent(currentItemPath + "/")}`
-    : null;
-
-  const handleGlobusLinkClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    try {
-      await apiClient.get(`/api/globus/ls/${endpointId}`, {
-        params: { path: currentItemPath },
-      });
-      window.open(globusFileManagerUrl, "_blank");
-    } catch (err) {
-      const status = err.response?.status;
-
-      if (status === 403) {
-        const confirmContinue403 = window.confirm(
-          "You do not have permission to view this folder's contents. " +
-            "If you continue to the Globus File Manager, you will see an empty directory. " +
-            "\n\nDo you still want to continue?"
-        );
-        if (confirmContinue403) {
-          window.open(globusFileManagerUrl, "_blank");
-        }
-      } else if (status === 401) {
-        const confirm401 = window.confirm(
-          "Your session has expired or you are unauthorized to perform this action. " +
-            "\n\nWould you like to be redirected to the login page?"
-        );
-        if (confirm401) {
-          window.location.href = "/globus/login";
-        }
-      } else {
-        window.open(globusFileManagerUrl, "_blank");
-      }
-    }
-  };
-
-  const handleToggle = async () => {
-    if (!isDirectory) return;
-
-    const nextOpenState = !isOpen;
-    setIsOpen(nextOpenState);
-
-    if (nextOpenState && children.length === 0) {
-      setLoading(true);
-      try {
-        const response = await apiClient.get(`/api/globus/ls/${endpointId}`, {
-          params: { path: currentItemPath },
-        });
-        console.log("Fetched folder contents:", response.data);
-        setChildren(response.data);
-      } catch (err) {
-        console.error("Failed to fetch folder contents:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleSelectClick = async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    if (accessStatus === "allowed") {
-      onSelectFolder(currentItemPath);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await apiClient.get(`/api/globus/ls/${endpointId}`, { params: { path: currentItemPath } });
-      setAccessStatus("allowed");
-      onSelectFolder(currentItemPath);
-    } catch (err) {
-      if (err.response?.status === 403 || err.response?.status === 401) {
-        setAccessStatus("denied");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (!isDirectory) {
-    return (
-      <div
-        style={{
-          padding: "5px 0",
-          marginLeft: `${depth > 0 ? 25 : 0}px`,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <Icon name="file outline" />
-        <span style={{ flexGrow: 1, textAlign: "left" }}>{item.name}</span>
-        <Popup
-          content="Open in Globus"
-          trigger={
-            <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
-              <Icon name="external alternate" style={{ marginLeft: "12px", color: "#2185d0" }} />
-            </a>
-          }
-        />
-      </div>
-    );
-  }
-
-  const showSelect =
-    isHovered || selectedFolder === currentItemPath || loading || accessStatus === "denied";
-
-  return (
-    <Accordion style={{ marginLeft: `${depth > 0 ? 15 : 0}px`, marginTop: "0" }}>
-      <AccordionTitle
-        as="div"
-        active={isOpen}
-        onClick={handleToggle}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="ui fluid transparent button file-tree-btn"
-        style={{
-          padding: "5px 0",
-          display: "flex",
-          alignItems: "center",
-          cursor: accessStatus === "denied" ? "not-allowed" : "pointer",
-        }}
-      >
-        <Icon
-          name={isOpen ? "angle down" : "angle right"}
-          style={{ minWidth: "20px", textAlign: "center" }}
-        />
-        <Icon
-          name={isOpen ? "folder open" : "folder"}
-          color="yellow"
-          style={{ marginLeft: "4px", marginRight: "8px" }}
-        />
-
-        <span
-          style={{
-            flexGrow: 1,
-            textAlign: "left",
-            fontWeight: selectedFolder === currentItemPath ? "bold" : "normal",
-            color: selectedFolder === currentItemPath ? "#2185d0" : "inherit",
-          }}
-        >
-          {item.name}
-        </span>
-
-        {isOpen && !loading && children.length === 0 && (
-          <span style={{ fontSize: "0.8em", color: "gray", marginLeft: "10px" }}>(Empty)</span>
-        )}
-
-        <div
-          style={{
-            marginLeft: "15px",
-            minWidth: "70px",
-            textAlign: "right",
-            visibility: showSelect ? "visible" : "hidden",
-          }}
-        >
-          {loading ? (
-            <Icon name="spinner" loading color="blue" />
-          ) : accessStatus === "denied" ? (
-            <span style={{ color: "red", fontSize: "0.85em", fontWeight: "bold" }}>Denied</span>
-          ) : (
-            <Button
-              size="mini"
-              compact
-              color={selectedFolder === currentItemPath ? "blue" : null}
-              onClick={handleSelectClick}
-            >
-              {selectedFolder === currentItemPath ? "Selected" : "Select"}
-            </Button>
-          )}
-        </div>
-
-        {selectedFolder === currentItemPath && (
-          <Popup
-            content="Open in Globus"
-            trigger={
-              <a href={globusFileManagerUrl} onClick={handleGlobusLinkClick}>
-                <Icon name="external alternate" style={{ marginLeft: "12px", color: "#2185d0" }} />
-              </a>
-            }
-          />
-        )}
-      </AccordionTitle>
-
-      <AccordionContent active={isOpen} style={{ paddingTop: "0", paddingBottom: "0" }}>
-        {loading ? (
-          <div style={{ marginLeft: "25px", padding: "5px 0" }}>
-            <Icon name="spinner" loading /> Loading...
-          </div>
-        ) : (
-          children.map((child, idx) => (
-            <TreeItem
-              key={`${depth}-${idx}`}
-              item={child}
-              endpointId={endpointId}
-              path={currentItemPath}
-              depth={depth + 1}
-              autoOpen={false}
-              autoCheckAccess={false}
-              selectedFolder={selectedFolder}
-              onSelectFolder={onSelectFolder}
-            />
-          ))
-        )}
-      </AccordionContent>
-    </Accordion>
-  );
-};
-
-export const FileTree = ({
-  initialFiles,
-  endpointId,
-  fieldPath,
-  selectedFolder,
-  onSelectFolder,
-  netid,
-  searchQuery,
-  containerTerm,
-}) => {
-  let filteredFiles = initialFiles || [];
-  if (searchQuery) {
-    filteredFiles = filteredFiles.filter((f) =>
-      f.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
-
-  const suggestedFiles = [];
-  const otherFiles = [];
-
-  if (netid) {
-    filteredFiles.forEach((f) => {
-      if (f.name.toLowerCase().startsWith(netid.toLowerCase())) {
-        suggestedFiles.push(f);
-      } else {
-        otherFiles.push(f);
-      }
-    });
-  } else {
-    otherFiles.push(...filteredFiles);
-  }
-
-  const autoCheck = initialFiles && initialFiles.length < 15;
-
-  return (
-    <div className="field">
-      <div
-        className="field-label-class invenio-field-label rel-mb-2"
-        id={`${fieldPath}.fileTree.label`}
-        style={{ fontWeight: "bold" }}
-      >
-        <Icon name="sitemap" /> Collection File Tree
-      </div>
-      <div style={{ marginTop: "10px" }}>
-        {/* Suggested Buckets */}
-        {suggestedFiles.length > 0 && (
-          <div style={{ marginBottom: "15px" }}>
-            <h5 className="ui dividing header" style={{ color: "#2185d0" }}>
-              {i18next.t("Suggested {{container}}s (Your NetID)", { container: containerTerm })}
-            </h5>
-            {suggestedFiles.map((item, index) => (
-              <TreeItem
-                key={`suggested-${index}`}
-                item={item}
-                endpointId={endpointId}
-                autoOpen={false}
-                autoCheckAccess={autoCheck}
-                selectedFolder={selectedFolder}
-                onSelectFolder={onSelectFolder}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* All Other Buckets */}
-        {otherFiles.length > 0 && (
-          <div>
-            {suggestedFiles.length > 0 && (
-              <h5 className="ui dividing header">
-                {i18next.t("All Other {{container}}s", { container: containerTerm })}
-              </h5>
-            )}
-            {otherFiles.map((item, index) => (
-              <TreeItem
-                key={`other-${index}`}
-                item={item}
-                endpointId={endpointId}
-                autoOpen={false}
-                autoCheckAccess={autoCheck}
-                selectedFolder={selectedFolder}
-                onSelectFolder={onSelectFolder}
-              />
-            ))}
-          </div>
-        )}
-
-        {filteredFiles.length === 0 && (
-          <div className="ui message info">No files found matching your search.</div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const FolderPicker = ({
-  containerTerm,
-  fieldPath,
-  loadingTree,
-  netid,
-  rootFiles,
-  searchQuery,
-  selectedFolder,
-  selectedMappedCollection,
-  setSearchQuery,
-  setSelectedFolder,
-  treeError,
-}) => {
-  return loadingTree ? (
-    <div className="ui active centered inline loader"></div>
-  ) : treeError ? (
-    <Message negative>{treeError}</Message>
-  ) : (
-    <>
-      <Input
-        icon="search"
-        placeholder={i18next.t("Search {{container}}s...", {
-          container: containerTerm.toLowerCase(),
-        })}
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        fluid
-        style={{ marginBottom: "15px" }}
-      />
-      <div
-        style={{
-          maxHeight: "400px",
-          overflowY: "auto",
-          paddingRight: "10px",
-        }}
-      >
-        <FileTree
-          initialFiles={rootFiles}
-          endpointId={selectedMappedCollection}
-          fieldPath={fieldPath}
-          selectedFolder={selectedFolder}
-          onSelectFolder={setSelectedFolder}
-          netid={netid}
-          searchQuery={searchQuery}
-          containerTerm={containerTerm}
-        />
-      </div>
-    </>
-  );
-};
-
-const HostPicker = ({
-  hostEndpoints,
-  selectedHostEndpoint,
-  updateGlobusState,
-  setEditingStep,
-  setSelectedFolder,
-}) => {
-  return (
-    <Segment style={{ backgroundColor: "#f8f8f9", marginBottom: "15px" }}>
-      <h5 className="ui header">Select Server / Host Endpoint</h5>
-      <div className="grouped fields">
-        {hostEndpoints.length > 0 ? (
-          hostEndpoints.map((host) => (
-            <div className="field" key={host.id}>
-              <div className="ui radio checkbox">
-                <input
-                  id={`radio-host-${host.id}`}
-                  type="radio"
-                  checked={selectedHostEndpoint === host.id}
-                  onChange={() => {
-                    updateGlobusState({
-                      host_endpoint_id: host.id,
-                      mapped_collection_id: "",
-                      guest_collection_id: "",
-                    });
-                    setEditingStep(EDITING_STEP.MAPPED);
-                    setSelectedFolder(null);
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                <label
-                  htmlFor={`radio-host-${host.id}`}
-                  style={{
-                    cursor: "pointer",
-                    fontWeight: selectedHostEndpoint === host.id ? "bold" : "normal",
-                  }}
-                >
-                  {host.display_name}
-                </label>
-              </div>
-            </div>
-          ))
-        ) : (
-          <Message info>No servers found on your account.</Message>
-        )}
-      </div>
-    </Segment>
-  );
-};
-
-const SelectedHost = ({ hostEndpoints, selectedHostEndpoint, setEditingStep }) => {
-  return (
-    <Segment
-      style={{
-        backgroundColor: "#f8f8f9",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "15px",
-      }}
-    >
-      <div>
-        <strong>Selected Server: </strong>
-        {hostEndpoints.find((h) => h.id === selectedHostEndpoint)?.display_name ||
-          selectedHostEndpoint}
-      </div>
-      <Button size="small" basic onClick={() => setEditingStep(EDITING_STEP.HOST)}>
-        Change
-      </Button>
-    </Segment>
-  );
-};
-
-const GlobusLoginButton = ({ fieldPath, label, labelIcon }) => {
+const GlobusLoginButton = () => {
   const currentURL = window.location.pathname + window.location.search;
   const nextUrl = encodeURIComponent(currentURL);
   return (
-    <div className="field mb-20">
-      <FieldLabel htmlFor={fieldPath} id={`${fieldPath}.label`} icon={labelIcon} label={label} />
-      <div className="ui warning message">
-        <p>You must connect your Globus account to upload a dataset.</p>
+    <>
+      <div className="description">
+        {i18next.t("You must connect your Globus account to link a dataset to this record.")}
       </div>
       <a href={`/globus/login/start?next=${nextUrl}`} className="ui primary button">
         Log in with Globus
       </a>
-    </div>
-  );
-};
-
-const MappedCollectionCreator = ({
-  containerTerm,
-  bucketName,
-  setBucketName,
-  selectedMappedCollection,
-  fetchRootFiles,
-  setSelectedFolder,
-  setActiveTab,
-  updateGlobusState,
-}) => {
-  const [provisionError, setProvisionError] = useState(null);
-  const [isProvisioning, setIsProvisioning] = useState(false);
-
-  const handleProvision = async () => {
-    if (!bucketName || !selectedMappedCollection) return;
-    setIsProvisioning(true);
-    setProvisionError(null);
-
-    try {
-      const response = await apiClient.post("/api/globus/provision", {
-        bucket_name: bucketName,
-        mapped_collection_id: selectedMappedCollection,
-      });
-
-      // store new UUIDs into Formik JSON
-      updateGlobusState({
-        bucket_id: response.data.bucket_id,
-        guest_collection_id: response.data.guest_collection_id,
-        folder_path: response.data.path,
-      });
-
-      await fetchRootFiles(selectedMappedCollection);
-      setSelectedFolder(response.data.path);
-      setActiveTab("existing");
-      setBucketName("");
-    } catch (err) {
-      setProvisionError("Failed to provision bucket. Please try again.");
-    } finally {
-      setIsProvisioning(false);
-    }
-  };
-
-  return (
-    <div className="ui form">
-      <div className="field">
-        <label htmlFor="bucketNameInput">
-          {i18next.t("New {{container}} Name", { container: containerTerm })}
-        </label>
-        <Input
-          id="bucketNameInput"
-          placeholder="e.g., my-research-dataset"
-          value={bucketName}
-          onChange={(e) => setBucketName(e.target.value)}
-        />
-      </div>
-      {provisionError && <Message negative>{provisionError}</Message>}
-      <Button
-        primary
-        loading={isProvisioning}
-        disabled={isProvisioning || !bucketName}
-        onClick={handleProvision}
-      >
-        {i18next.t("Provision {{container}}", { container: containerTerm })}
-      </Button>
-    </div>
-  );
-};
-
-const MappedCollectionSelector = ({
-  editingStep,
-  endpoints,
-  selectedHostEndpoint,
-  selectedMappedCollection,
-  setSelectedFolder,
-  setEditingStep,
-  updateGlobusState,
-}) => {
-  const filteredMappedCollections = endpoints.filter((ep) => {
-    const isGCP = ep.entity_type === "GCP_mapped_collection" || !ep.non_functional_endpoint_id;
-    const hostId = isGCP ? ep.id : ep.non_functional_endpoint_id;
-    return hostId === selectedHostEndpoint;
-  });
-
-  const dropdownOptions = filteredMappedCollections.map((ep) => ({
-    key: ep.id,
-    value: ep.id,
-    text: ep.display_name || ep.id,
-  }));
-
-  return !selectedMappedCollection || editingStep === EDITING_STEP.MAPPED ? (
-    <Segment style={{ backgroundColor: "#f8f8f9" }}>
-      <h5 className="ui header">Select Mapped Collection</h5>
-      <div className="grouped fields" style={{ maxHeight: "150px", overflowY: "auto" }}>
-        {filteredMappedCollections.length > 0 ? (
-          filteredMappedCollections.map((ep) => (
-            <div className="field" key={ep.id}>
-              <div className="ui radio checkbox">
-                <input
-                  id={`radio-${ep.id}`}
-                  type="radio"
-                  checked={selectedMappedCollection === ep.id}
-                  onChange={() => {
-                    updateGlobusState({
-                      mapped_collection_id: ep.id,
-                      guest_collection_id: "",
-                    });
-                    setSelectedFolder(null);
-                    setEditingStep(EDITING_STEP.GUEST);
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                <label
-                  htmlFor={`radio-${ep.id}`}
-                  onClick={() => {
-                    if (selectedMappedCollection === ep.id) {
-                      setEditingStep(EDITING_STEP.GUEST);
-                    }
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    fontWeight: selectedMappedCollection === ep.id ? "bold" : "normal",
-                  }}
-                >
-                  {ep.display_name || ep.id}
-                </label>
-              </div>
-            </div>
-          ))
-        ) : (
-          <Message info>No collections found on your account.</Message>
-        )}
-      </div>
-    </Segment>
-  ) : (
-    <Segment
-      style={{
-        backgroundColor: "#f8f8f9",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <strong>Selected Mapped Collection: </strong>
-        {endpoints.find((ep) => ep.id === selectedMappedCollection)?.display_name ||
-          selectedMappedCollection}
-      </div>
-      <Button size="small" basic onClick={() => setEditingStep(EDITING_STEP.MAPPED)}>
-        Change
-      </Button>
-    </Segment>
-  );
-};
-
-const SelectedGuestCollection = ({
-  matchedCollections,
-  selectedGuestCollection,
-  setEditingStep,
-}) => {
-  return (
-    <Segment
-      style={{
-        backgroundColor: "#f8f8f9",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginTop: "20px",
-      }}
-    >
-      <div>
-        <strong>Selected Guest Collection: </strong>
-        {matchedCollections?.find((mc) => mc.id === selectedGuestCollection)?.display_name ||
-          selectedGuestCollection}
-      </div>
-      <Button size="small" basic onClick={() => setEditingStep(EDITING_STEP.GUEST)}>
-        Change
-      </Button>
-    </Segment>
-  );
-};
-
-const GuestCollectionCreator = ({
-  bucketName,
-  containerTerm,
-  fetchMatchedCollections,
-  isPublic,
-  selectedFolder,
-  selectedMappedCollection,
-  setBucketName,
-  setEditingStep,
-  setIsPublic,
-  setSelectedFolder,
-  updateGlobusState,
-}) => {
-  const [isCreatingGC, setIsCreatingGC] = useState(false);
-  const [gcCreationError, setGcCreationError] = useState(null);
-
-  const handleCreateGuestCollection = async () => {
-    if (!bucketName || !selectedFolder || !selectedMappedCollection) return;
-    setIsCreatingGC(true);
-    setGcCreationError(null);
-
-    try {
-      const response = await apiClient.post("/api/globus/guest-collections/create", {
-        mapped_collection_id: selectedMappedCollection,
-        display_name: bucketName,
-        collection_base_path: selectedFolder,
-        public: isPublic,
-      });
-
-      updateGlobusState({
-        guest_collection_id: response.data.guest_collection_id,
-      });
-
-      setBucketName("");
-      await fetchMatchedCollections(selectedMappedCollection);
-    } catch (err) {
-      setGcCreationError(err.response?.data?.error || "Failed to create Guest Collection.");
-    } finally {
-      setIsCreatingGC(false);
-    }
-  };
-
-  return (
-    <div
-      style={{
-        padding: "15px",
-        backgroundColor: "#f8f8f9",
-        border: "1px solid #d4d4d5",
-        borderRadius: "4px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "15px",
-        }}
-      >
-        <h5 className="ui header" style={{ margin: 0 }}>
-          Create a New Guest Collection
-        </h5>
-        <Button size="mini" basic onClick={() => setSelectedFolder(null)}>
-          Cancel
-        </Button>
-      </div>
-      <div style={{ marginBottom: "15px" }}>
-        <strong>
-          {i18next.t("Target {{container}}:", {
-            container: containerTerm,
-          })}
-        </strong>{" "}
-        <code style={{ color: "#2185d0" }}>{selectedFolder}</code>
-      </div>
-      <div className="field">
-        <label htmlFor="newGuestCollectionName">Guest Collection Name</label>
-        <Input
-          id="newGuestCollectionName"
-          placeholder="e.g., My Research Data"
-          value={bucketName}
-          onChange={(e) => setBucketName(e.target.value)}
-          fluid
-        />
-      </div>
-      <div className="field" style={{ marginTop: "15px", marginBottom: "15px" }}>
-        <Checkbox
-          toggle
-          label={isPublic ? "Public Collection" : "Private Collection"}
-          checked={isPublic}
-          onChange={(e, { checked }) => setIsPublic(checked)}
-        />
-        <p
-          style={{
-            fontSize: "0.85em",
-            color: "gray",
-            marginTop: "5px",
-          }}
-        >
-          {isPublic
-            ? "Anyone with the link can access this collection."
-            : "Only you and users you grant access to can view this."}
-        </p>
-      </div>
-      {gcCreationError && <Message negative>{gcCreationError}</Message>}
-      <Button
-        primary
-        disabled={!bucketName || isCreatingGC}
-        loading={isCreatingGC}
-        onClick={async () => {
-          await handleCreateGuestCollection();
-          setEditingStep(EDITING_STEP.NONE);
-        }}
-      >
-        Create & Link Collection
-      </Button>
-    </div>
-  );
-};
-
-const GuestCollectionSelector = ({
-  checkingCollections,
-  checkError,
-  matchedCollections,
-  selectedGuestCollection,
-  setEditingStep,
-  updateGlobusState,
-}) => {
-  return (
-    <>
-      <h5 className="ui dividing header">Your Guest Collections</h5>
-      {checkingCollections ? (
-        <div className="ui active centered inline loader" style={{ margin: "20px" }}></div>
-      ) : checkError ? (
-        <Message negative>{checkError}</Message>
-      ) : matchedCollections && matchedCollections.length > 0 ? (
-        <div
-          className="grouped fields"
-          style={{
-            maxHeight: "350px",
-            overflowY: "auto",
-            marginBottom: "20px",
-          }}
-        >
-          {matchedCollections.map((mc) => (
-            <div className="field" key={mc.id}>
-              <div className="ui radio checkbox">
-                <input
-                  id={`radio-mc-${mc.id}`}
-                  type="radio"
-                  name="matched_guest_collection"
-                  checked={selectedGuestCollection === mc.id}
-                  onChange={() => {
-                    updateGlobusState({ guest_collection_id: mc.id });
-                    setEditingStep(EDITING_STEP.NONE);
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                <label htmlFor={`radio-mc-${mc.id}`} style={{ cursor: "pointer" }}>
-                  <strong>{mc.display_name || "Unnamed Collection"}</strong>
-                  <br />
-                  <span style={{ fontSize: "0.85em", color: "gray" }}>{mc.id}</span>
-                </label>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <Message warning>No guest collections found on this mapped endpoint.</Message>
-      )}
     </>
   );
 };
 
-const ExistingMappedCollectionUI = ({
-  bucketName,
-  checkingCollections,
-  checkError,
-  containerTerm,
-  fetchMatchedCollections,
-  fieldPath,
-  isPublic,
-  loadingTree,
-  matchedCollections,
-  netid,
-  rootFiles,
-  searchQuery,
-  selectedFolder,
-  selectedGuestCollection,
-  selectedMappedCollection,
-  setBucketName,
-  setEditingStep,
-  setIsPublic,
-  setSearchQuery,
-  setSelectedFolder,
-  treeError,
-  updateGlobusState,
-}) => {
-  return (
-    <>
-      <Message info icon>
-        <Icon name="info circle" />
-        <Message.Content>
-          {i18next.t(
-            "Select a {{container}} to create a new Guest Collection on it, or select an existing Guest Collection below.",
-            { container: containerTerm.toLowerCase() }
-          )}
-        </Message.Content>
-      </Message>
-
-      <Grid divided>
-        <Grid.Row>
-          {/* LEFT COLUMN: FILE TREE */}
-          <Grid.Column width={8}>
-            <FolderPicker
-              {...{
-                containerTerm,
-                fieldPath,
-                loadingTree,
-                netid,
-                rootFiles,
-                searchQuery,
-                selectedFolder,
-                selectedMappedCollection,
-                setSearchQuery,
-                setSelectedFolder,
-                treeError,
-              }}
-            />
-          </Grid.Column>
-
-          {/* RIGHT COLUMN: GUEST COLLECTIONS & CREATION */}
-          <Grid.Column width={8}>
-            {selectedFolder ? (
-              <GuestCollectionCreator
-                {...{
-                  bucketName,
-                  containerTerm,
-                  fetchMatchedCollections,
-                  isPublic,
-                  selectedFolder,
-                  selectedMappedCollection,
-                  setBucketName,
-                  setEditingStep,
-                  setIsPublic,
-                  setSelectedFolder,
-                  updateGlobusState,
-                }}
-              />
-            ) : (
-              <GuestCollectionSelector
-                {...{
-                  checkingCollections,
-                  checkError,
-                  matchedCollections,
-                  selectedGuestCollection,
-                  setEditingStep,
-                  updateGlobusState,
-                }}
-              />
-            )}
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </>
-  );
-};
-
-const CollectionSelector = ({
-  activeTab,
-  bucketName,
-  checkingCollections,
-  checkError,
-  currentEndpoint,
-  editingStep,
-  fetchMatchedCollections,
-  fetchRootFiles,
-  fieldPath,
-  isPublic,
-  loadingTree,
-  matchedCollections,
-  netid,
-  rootFiles,
-  searchQuery,
-  selectedFolder,
-  selectedGuestCollection,
-  selectedMappedCollection,
-  setActiveTab,
-  setBucketName,
-  setEditingStep,
-  setIsPublic,
-  setSearchQuery,
-  setSelectedFolder,
-  treeError,
-  updateGlobusState,
-}) => {
-  const containerTerm = i18next.t(currentEndpoint?.container_term || "Folder");
-
-  return (
-    <>
-      {selectedGuestCollection && editingStep !== EDITING_STEP.GUEST ? (
-        <SelectedGuestCollection
-          {...{
-            matchedCollections,
-            selectedGuestCollection,
-            setEditingStep,
-          }}
-        />
-      ) : (
-        <>
-          <Menu pointing secondary color="blue" style={{ marginTop: "20px" }}>
-            <Menu.Item
-              name={i18next.t("Select Existing {{container}}", {
-                container: containerTerm,
-              })}
-              active={activeTab === "existing"}
-              onClick={() => setActiveTab("existing")}
-            />
-            <Menu.Item
-              name={i18next.t("Provision New {{container}}", { container: containerTerm })}
-              active={activeTab === "new"}
-              onClick={() => setActiveTab("new")}
-            />
-          </Menu>
-          <Segment attached="bottom">
-            {/* TAB 1: SIDE-BY-SIDE PANELS */}
-            {activeTab === "existing" && (
-              <ExistingMappedCollectionUI
-                {...{
-                  bucketName,
-                  checkingCollections,
-                  checkError,
-                  containerTerm,
-                  fetchMatchedCollections,
-                  fieldPath,
-                  isPublic,
-                  loadingTree,
-                  matchedCollections,
-                  netid,
-                  rootFiles,
-                  searchQuery,
-                  selectedFolder,
-                  selectedGuestCollection,
-                  selectedMappedCollection,
-                  setBucketName,
-                  setEditingStep,
-                  setIsPublic,
-                  setSearchQuery,
-                  setSelectedFolder,
-                  treeError,
-                  updateGlobusState,
-                }}
-              />
-            )}
-
-            {/* TAB 2: PROVISION NEW BUCKET */}
-            {/* FIXME: ensure underscores etc. are disallowed in bucket names */}
-            {activeTab === "new" && (
-              <MappedCollectionCreator
-                {...{
-                  containerTerm,
-                  bucketName,
-                  setBucketName,
-                  selectedMappedCollection,
-                  fetchRootFiles,
-                  setSelectedFolder,
-                  setActiveTab,
-                  updateGlobusState,
-                }}
-              />
-            )}
-          </Segment>
-        </>
-      )}
-    </>
-  );
-};
-
-const useGlobusTokenFetch = () => {
-  const [hasToken, setHasToken] = useState(false);
-  const [endpoints, setEndpoints] = useState([]);
-  const [loadingInitial, setLoadingInitial] = useState(true);
-  const [netid, setNetid] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient
-      .get("/globus/endpoints")
-      .then((response) => {
-        if (cancelled) {
-          return;
-        }
-        setHasToken(true);
-        setEndpoints(response.data.endpoints || []);
-        setNetid(response.data.netid || "");
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setHasToken(false);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoadingInitial(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { endpoints, hasToken, loadingInitial, netid, setHasToken };
-};
-
-const useGlobusRootFiles = (selectedMappedCollection, setHasToken, setSelectedFolder) => {
-  const [rootFiles, setRootFiles] = useState([]);
-  const [loadingTree, setLoadingTree] = useState(false);
-  const [treeError, setTreeError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const fetchRootFiles = useCallback(
-    async (endpointId) => {
-      if (!endpointId) {
-        return;
-      }
-      setLoadingTree(true);
-      setTreeError(null);
-      try {
-        const response = await apiClient.get(`/api/globus/ls/${endpointId}`, {
-          params: { path: "/" },
-        });
-        setRootFiles(response.data);
-      } catch (err) {
-        console.error("Failed to fetch root files for selected endpoint:", err);
-        if (err.response?.status === 401) {
-          setHasToken(false);
-        } else {
-          setTreeError("Failed to load directory contents. You may not have permission.");
-        }
-      } finally {
-        setLoadingTree(false);
-      }
-    },
-    [setHasToken]
-  );
-
-  useEffect(() => {
-    if (!selectedMappedCollection) {
-      return;
-    }
-    setSelectedFolder(null);
-    setSearchQuery("");
-    fetchRootFiles(selectedMappedCollection);
-  }, [selectedMappedCollection, fetchRootFiles, setSelectedFolder]);
-
-  return {
-    rootFiles,
-    loadingTree,
-    treeError,
-    searchQuery,
-    setSearchQuery,
-    fetchRootFiles,
-  };
-};
-
-const useMatchedGuestCollections = (selectedMappedCollection) => {
-  const [matchedCollections, setMatchedCollections] = useState(null);
-  const [checkingCollections, setCheckingCollections] = useState(false);
-  const [checkError, setCheckError] = useState(null);
-
-  const fetchMatchedCollections = useCallback(async (endpointId) => {
-    if (!endpointId) {
-      setMatchedCollections(null);
-      return;
-    }
-    setCheckingCollections(true);
-    setCheckError(null);
-    try {
-      const response = await apiClient.get("/api/globus/collections/check", {
-        params: { endpoint_id: endpointId },
-      });
-      setMatchedCollections(response.data.matches || []);
-    } catch (err) {
-      console.error("Failed to fetch guest collections:", err);
-      setCheckError("Failed to fetch your guest collections");
-    } finally {
-      setCheckingCollections(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!selectedMappedCollection) {
-      setMatchedCollections(null);
-      return;
-    }
-    fetchMatchedCollections(selectedMappedCollection);
-  }, [selectedMappedCollection, fetchMatchedCollections]);
-
-  return {
-    matchedCollections,
-    checkingCollections,
-    checkError,
-    fetchMatchedCollections,
-  };
-};
-
-const EDITING_STEP = /** @type {const} */ ({
-  HOST: "host",
-  MAPPED: "mapped",
-  GUEST: "guest",
-  NONE: null,
-});
-
-/**
- * Hydrate local Globus UI state from an existing Formik field value on mount.
- *
- * @param {object} values - Formik values
- * @param {string} fieldPath - Path to the Globus field in Formik
- * @param {Function} setGlobusState - Setter for parsed Globus state
- */
-const useFormikHydrate = (values, fieldPath, setGlobusState) => {
-  useEffect(() => {
-    const initialFormikValue = getIn(values, fieldPath, null);
-    if (!initialFormikValue) {
-      return;
-    }
-    try {
-      setGlobusState(JSON.parse(initialFormikValue));
-    } catch (e) {
-      setGlobusState({ guest_collection_id: initialFormikValue });
-    }
-  }, []);
-};
-
-const useGlobusFormikSync = (fieldPath) => {
-  const { values, setFieldValue } = useFormikContext();
-  const [globusState, setGlobusState] = useState({});
-  // watching for internal state changes and syncing them OUT to Formik
-  useEffect(() => {
-    if (Object.keys(globusState).length > 0) {
-      setFieldValue(fieldPath, JSON.stringify(globusState));
-    }
-  }, [globusState, fieldPath, setFieldValue]);
-
-  // helper function to safely update our internal React state
-  const updateGlobusState = (newData) => {
-    setGlobusState((prevState) => ({ ...prevState, ...newData }));
-  };
-
-  useFormikHydrate(values, fieldPath, setGlobusState);
-
-  const fieldValue = getIn(values, fieldPath, null);
-
-  return { fieldValue, globusState, updateGlobusState };
-};
-
-const assembleHostEndpoints = (endpoints) => {
+const assembleServerEndpoints = (endpoints) => {
   const hostEndpoints = [];
-  const hostMap = new Set();
+  const hostMap = new Map();
 
   endpoints.forEach((ep) => {
     const isGCP = ep.entity_type === "GCP_mapped_collection" || !ep.non_functional_endpoint_id;
@@ -1286,9 +40,17 @@ const assembleHostEndpoints = (endpoints) => {
       ? ep.display_name
       : ep.non_functional_endpoint_display_name || "Unknown Server";
 
-    if (hostId && !hostMap.has(hostId)) {
-      hostMap.add(hostId);
-      hostEndpoints.push({ id: hostId, display_name: hostName });
+    if (!hostId) {
+      return;
+    }
+
+    const existing = hostMap.get(hostId);
+    if (!existing) {
+      const host = { id: hostId, display_name: hostName, isGCP, domain: ep.domain };
+      hostMap.set(hostId, host);
+      hostEndpoints.push(host);
+    } else if (!existing.domain && ep.domain) {
+      existing.domain = ep.domain;
     }
   });
 
@@ -1297,23 +59,23 @@ const assembleHostEndpoints = (endpoints) => {
 
 const RemoteDataCollectionField = ({
   fieldPath,
-  description = i18next.t("Link to a Globus guest collection"),
-  helpText,
+  description = i18next.t("Link an existing Globus data collection or create a new one."),
+  helpText = "",
   label = i18next.t("Big Data Collection"),
   labelIcon = "database",
 }) => {
   const { endpoints, hasToken, loadingInitial, netid, setHasToken } = useGlobusTokenFetch();
-  const { fieldValue, globusState, updateGlobusState } = useGlobusFormikSync(fieldPath);
-
-  const [editingStep, setEditingStep] = useState(() =>
-    fieldValue ? EDITING_STEP.NONE : EDITING_STEP.HOST
-  );
+  console.log("endpoints", endpoints);
+  // Default to HOST; hydrate sets NONE once Formik already has a linked collection
+  // (including late localStorage restore after this state has initialized).
+  const [editingStep, setEditingStep] = useState(EDITING_STEP.HOST);
+  const { globusState, updateGlobusState } = useGlobusFormikSync(fieldPath, setEditingStep);
 
   const selectedHostEndpoint = globusState.host_endpoint_id || "";
   const selectedMappedCollection = globusState.mapped_collection_id || "";
   const selectedGuestCollection = globusState.guest_collection_id || "";
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const [activeTab, setActiveTab] = useState("existing");
+  const [activeTab, setActiveTab] = useState("existingGuest");
   const [isPublic, setIsPublic] = useState(false);
   const [bucketName, setBucketName] = useState("");
 
@@ -1325,97 +87,84 @@ const RemoteDataCollectionField = ({
     useMatchedGuestCollections(selectedMappedCollection);
 
   const currentEndpoint = endpoints.find((ep) => ep.id === selectedMappedCollection);
-  const hostEndpoints = assembleHostEndpoints(endpoints);
-
-  if (loadingInitial) {
-    return (
-      <div className="field mb-20">
-        <FieldLabel htmlFor={fieldPath} id={`${fieldPath}.label`} icon={labelIcon} label={label} />
-        <div className="ui active centered inline loader"></div>
-      </div>
-    );
-  }
-
-  if (!hasToken) {
-    return <GlobusLoginButton {...{ fieldPath, label, labelIcon }} />;
-  }
+  const serverEndpoints = assembleServerEndpoints(endpoints);
+  const selectedServer = serverEndpoints.find((s) => s.id === selectedHostEndpoint);
+  const globusAppDomain = currentEndpoint?.domain || selectedServer?.domain;
 
   return (
-    <div className="field mb-20">
-      <FieldLabel htmlFor={fieldPath} icon="cloud download" label="Globus Transfer Configuration" />
-      <p style={{ color: "#666", marginBottom: "1em" }}>
-        Link an existing Data Hub Guest Collection or provision a new bucket.
-      </p>
-
-      {!selectedHostEndpoint || editingStep === EDITING_STEP.HOST ? (
-        <HostPicker
-          {...{
-            hostEndpoints,
-            selectedHostEndpoint,
-            updateGlobusState,
-            setEditingStep,
-            setSelectedFolder,
-          }}
-        />
+    <Form.Field>
+      <FieldGroupLabel icon={labelIcon} label={label} />
+      <div className={`${fieldPath} description`}>{description}</div>
+      {loadingInitial ? (
+        <div className="ui active centered inline loader"></div>
+      ) : !hasToken ? (
+        <GlobusLoginButton {...{ fieldPath, label, labelIcon }} />
       ) : (
-        <SelectedHost
-          {...{
-            hostEndpoints,
-            selectedHostEndpoint,
-            setEditingStep,
-          }}
-        />
-      )}
-
-      {/* 1. MAPPED COLLECTION SELECTOR (COLLAPSIBLE) */}
-      {selectedHostEndpoint && editingStep !== EDITING_STEP.HOST && (
-        <>
-          <MappedCollectionSelector
+        <Grid relaxed className="field mb-20">
+          <ServerSelector
             {...{
               editingStep,
-              endpoints,
+              serverEndpoints,
               selectedHostEndpoint,
-              selectedMappedCollection,
-              setSelectedFolder,
-              setEditingStep,
               updateGlobusState,
+              setEditingStep,
+              setSelectedFolder,
             }}
           />
-          {selectedMappedCollection && editingStep !== EDITING_STEP.MAPPED && (
-            <CollectionSelector
-              {...{
-                activeTab,
-                bucketName,
-                checkingCollections,
-                checkError,
-                currentEndpoint,
-                editingStep,
-                fetchMatchedCollections,
-                fetchRootFiles,
-                fieldPath,
-                isPublic,
-                loadingTree,
-                matchedCollections,
-                netid,
-                rootFiles,
-                searchQuery,
-                selectedFolder,
-                selectedGuestCollection,
-                selectedMappedCollection,
-                setActiveTab,
-                setBucketName,
-                setEditingStep,
-                setIsPublic,
-                setSearchQuery,
-                setSelectedFolder,
-                treeError,
-                updateGlobusState,
-              }}
-            />
+
+          {/* 1. MAPPED COLLECTION SELECTOR (COLLAPSIBLE) */}
+          {selectedHostEndpoint && editingStep !== EDITING_STEP.HOST && (
+            <>
+              <MappedCollectionSelector
+                {...{
+                  editingStep,
+                  endpoints,
+                  globusAppDomain,
+                  selectedHostEndpoint,
+                  selectedMappedCollection,
+                  setSelectedFolder,
+                  setEditingStep,
+                  updateGlobusState,
+                }}
+              />
+              {selectedMappedCollection && editingStep !== EDITING_STEP.MAPPED && (
+                <GuestCollectionUI
+                  {...{
+                    activeTab,
+                    bucketName,
+                    checkingCollections,
+                    checkError,
+                    currentEndpoint,
+                    editingStep,
+                    fetchMatchedCollections,
+                    fetchRootFiles,
+                    fieldPath,
+                    globusAppDomain,
+                    isPublic,
+                    loadingTree,
+                    matchedCollections,
+                    netid,
+                    rootFiles,
+                    searchQuery,
+                    selectedFolder,
+                    selectedGuestCollection,
+                    selectedMappedCollection,
+                    setActiveTab,
+                    setBucketName,
+                    setEditingStep,
+                    setIsPublic,
+                    setSearchQuery,
+                    setSelectedFolder,
+                    treeError,
+                    updateGlobusState,
+                  }}
+                />
+              )}
+            </>
           )}
-        </>
+        </Grid>
       )}
-    </div>
+    </Form.Field>
   );
 };
 

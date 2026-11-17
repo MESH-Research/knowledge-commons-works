@@ -66,12 +66,15 @@ from kcworks.metadata_fields.kcr_metadata_fields import (
     KCR_MEETING_SECTION_EXTRAS_UI,
     KCR_NAMESPACE,
     KCR_PROJECT_SECTION_UI,
-    KCR_REMOTE_DATA_COLLECTION_SECTION_UI,
     KCR_THESIS_SECTION_EXTRAS_UI,
 )
 from kcworks.metadata_fields.kcr_notes_fields import (
     KCR_NOTES_FIELDS,
     KCR_NOTES_SECTION_UI,
+)
+from kcworks.metadata_fields.kcr_remote_data_collection_field import (
+    KCR_REMOTE_DATA_COLLECTION_FIELDS,
+    KCR_REMOTE_DATA_COLLECTION_SECTION_UI,
 )
 from kcworks.metadata_fields.kcr_series_field import (
     KCR_SERIES_FIELDS,
@@ -105,6 +108,7 @@ RDM_CUSTOM_FIELDS = [
     *HCLEGACY_GROUPS_FOR_DEPOSIT_FIELD,
     *KCR_AI_USAGE_FIELDS,
     *KCR_SERIES_FIELDS,
+    *KCR_REMOTE_DATA_COLLECTION_FIELDS,
 ]
 
 RDM_CUSTOM_FIELDS_UI = [

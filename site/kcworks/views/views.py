@@ -65,12 +65,6 @@ def create_blueprint(app):
         view_func=GlobusStart.as_view("globus_start"),
     )
 
-    blueprint.add_url_rule(
-        "/globus/endpoints",
-        view_func=GlobusEndpointInfo.as_view("globus_endpoint_info"),
-        methods=["GET"],
-    )
-
     # Register context processor
     # blueprint.app_context_processor(search_app_context)
 
@@ -97,6 +91,12 @@ def create_api_blueprint(app):
         )
 
         # --- GLOBUS API ROUTES ---
+        blueprint.add_url_rule(
+            "/globus/endpoints",
+            view_func=GlobusEndpointInfo.as_view("globus_endpoint_info"),
+            methods=["GET"],
+        )
+
         blueprint.add_url_rule(
             "/globus/ls/<string:endpoint_id>",
             view_func=GlobusFolderLS.as_view("globus_folder_ls"),
