@@ -4,14 +4,14 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Variables related to request handling and response serving."""
+
 import os
 
 from flask.helpers import get_debug_flag
 
 from kcworks.config.search import SEARCH_DOMAIN
 from kcworks.config.site_urls import KC_WORDPRESS_DOMAIN
-
-"""Variables related to request handling and response serving."""
 
 # Define the value of the cache control header `max-age` returned by the
 # server when serving public files. Files will be cached by the browser

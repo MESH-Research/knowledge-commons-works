@@ -4,9 +4,9 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-import os
-
 """Configuration variables related to the database."""
+
+import os
 
 # Flask-SQLAlchemy
 # ================

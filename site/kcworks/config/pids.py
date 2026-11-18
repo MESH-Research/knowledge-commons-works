@@ -19,7 +19,7 @@ config surface; this module just supplies KCWorks' values.
 
 import os
 
-from idutils import is_doi, normalize_doi
+from idutils import is_doi, normalize_doi  # ty: ignore[missing-module-member]
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids import providers
 

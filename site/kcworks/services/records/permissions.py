@@ -131,7 +131,7 @@ def per_field_edit_permission_factory(
     Raises:
         PermissionError: If there's an error creating the permission policy.
     """
-    role_generators: list[type[Generator] | Generator] = [
+    role_generators: list[type[Generator]] = [
         SystemProcess,
         Administration,
     ]
@@ -152,9 +152,7 @@ def per_field_edit_permission_factory(
                     [g for r, g in community_role_generators.items() if r in roles]
                 )
             else:
-                role_generators.extend(
-                    cast(Sequence[type[Generator] | Generator], roles)
-                )
+                role_generators.extend(cast(Sequence[type[Generator]], roles))
 
         # Handle community ID
         if community_id and community_id != "default":

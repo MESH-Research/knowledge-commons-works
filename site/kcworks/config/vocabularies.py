@@ -13,7 +13,12 @@
 Flask's config loader picks them up as instance config.
 """
 
-from idutils import is_doi, is_gnd, is_isni, is_ror
+from idutils import (
+    is_doi,  # ty: ignore[missing-module-member]
+    is_gnd,  # ty: ignore[missing-module-member]
+    is_isni,  # ty: ignore[missing-module-member]
+    is_ror,  # ty: ignore[missing-module-member]
+)
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.config import (
     RDM_RECORDS_IDENTIFIERS_SCHEMES,

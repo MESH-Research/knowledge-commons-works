@@ -30,7 +30,7 @@ class BookSeriesCF(BaseListCF):
         )
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """Notes search mappings."""
         return {
             "type": "object",

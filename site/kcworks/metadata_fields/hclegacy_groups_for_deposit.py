@@ -34,7 +34,7 @@ class GroupsForDepositCF(BaseListCF):
         )
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """groups_for_deposit search mappings."""
         return {
             "type": "object",

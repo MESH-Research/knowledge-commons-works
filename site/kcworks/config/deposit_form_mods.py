@@ -4,9 +4,9 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-from invenio_i18n import lazy_gettext as _
-
 """Configuration variables that modify deposit form field behaviour."""
+
+from invenio_i18n import lazy_gettext as _
 
 MODULAR_DEPOSIT_FORM_ICON_MODIFICATIONS = {
     "audiovisual": {

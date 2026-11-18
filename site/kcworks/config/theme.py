@@ -4,15 +4,14 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Configuration variables related to theme and page templates."""
+
 from invenio_i18n import lazy_gettext as _
 
 from kcworks.config.site_urls import (
     KC_HELP_URL,
     KC_WORDPRESS_DOMAIN,
 )
-
-"""Configuration variables related to theme and page templates."""
-
 
 # Use rspack instead of webpack for the frontend build (faster, Rust-based).
 WEBPACKEXT_PROJECT = "invenio_assets.webpack:rspack_project"
