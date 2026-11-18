@@ -4,9 +4,9 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-from marshmallow import Schema, fields
-
 """Configuration variables related to users and accounts."""
+
+from marshmallow import Schema, fields
 
 # isort: split
 

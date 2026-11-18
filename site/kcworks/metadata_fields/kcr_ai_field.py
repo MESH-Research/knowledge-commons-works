@@ -31,12 +31,12 @@ class AiUsageCF(BaseCF):
         )
 
     @property
-    def field(self):
+    def field(self):  # ty: ignore[incompatible-property-override]
         """AiUsage fields definitions."""
         return Nested({"ai_used": Boolean(), "ai_description": SanitizedUnicode()})
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """AiUsage search mappings."""
         return {
             "type": "object",

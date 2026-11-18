@@ -4,11 +4,11 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Configuration variables related to the deposit form (other than layout)."""
+
 from datetime import UTC, datetime
 
 from invenio_i18n import lazy_gettext as _
-
-"""Configuration variables related to the deposit form (other than layout)."""
 
 APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED = True
 APP_RDM_DEPOSIT_FORM_TEMPLATE = "invenio_modular_deposit_form/deposit.html"

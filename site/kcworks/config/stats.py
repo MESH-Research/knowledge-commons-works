@@ -4,6 +4,8 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Configuration variables for stats aggregation and the stats dashboard."""
+
 from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.resources.stats.event_builders import (
@@ -29,8 +31,6 @@ from invenio_stats_dashboard.aggregations import (
     register_aggregations as register_community_aggregations,
 )
 from invenio_stats_dashboard.config import COMMUNITY_STATS_QUERIES
-
-"""Configuration variables for stats aggregation and the stats dashboard."""
 
 # Invenio-Stats-Dashboard
 STATS_DASHBOARD_ROUTES = {
@@ -107,7 +107,9 @@ STATS_EVENTS = {
         },
     },
     "record-view": {
-        "templates": "invenio_stats_dashboard.search_indices.search_templates.record_view",
+        "templates": (
+            "invenio_stats_dashboard.search_indices.search_templates.record_view"
+        ),
         # "templates": "invenio_rdm_records.records.stats.templates."
         # "events.record_view",
         "event_builders": [

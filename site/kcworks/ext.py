@@ -52,6 +52,9 @@ from kcworks.services.communities.community_parent import (
 from kcworks.services.communities.default_branding import (
     DefaultBrandingComponent,
 )
+from kcworks.services.communities.parent_records_backfill import (
+    ParentRecordsBackfillComponent,
+)
 from kcworks.services.communities.permissions import KCWorksCommunityPermissionPolicy
 
 # Bisect: disabled with the finalize calls below.
@@ -89,6 +92,7 @@ from kcworks.templates.template_filters import (
     user_profile_dict,
 )
 from kcworks.utils.menu_utils import alter_menu_from_config
+from kcworks.utils.ordering import ensure_order
 from kcworks.views.error_handlers import (
     install_api_error_transforms,
     register_themed_error_handlers,
@@ -189,13 +193,16 @@ class KCWorks:
         _community_components = [
             _replace_community_component(c) for c in existing_community_components
         ]
-        # DefaultBrandingComponent must run AFTER PIDComponent (so
-        # record.id and record.slug are stable), OwnershipComponent, and
-        # CommunityThemeComponent (so any user-supplied theme survives
-        # and we only fill in missing keys). Appending last satisfies
-        # all three.
-        if DefaultBrandingComponent not in _community_components:
-            _community_components.append(DefaultBrandingComponent)
+        # Relative order (see each component's docstring for why):
+        # - `ParentRecordsBackfillComponent` before parent assignment
+        # - `KCWorksCommunityParentComponent` (swapped in above)
+        # - `DefaultBrandingComponent` after PID / ownership / theme
+        _community_components = ensure_order(
+            _community_components,
+            ParentRecordsBackfillComponent,
+            KCWorksCommunityParentComponent,
+            DefaultBrandingComponent,
+        )
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
         app.config["COMMUNITIES_PERMISSION_POLICY"] = KCWorksCommunityPermissionPolicy
 
@@ -425,13 +432,13 @@ def _static_token_before_request() -> None:
     scopes = {
         sid for sid, _ in current_oauth2server.scope_choices(exclude_internal=False)
     }
-    request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
+    request.oauth = OAuthStandIn(  # ty: ignore[missing-attribute]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
     )
     # Skip CSRF and OAuth verification.
-    request.skip_csrf_check = True  # ty: ignore[unresolved-attribute]
-    request.oauth_verify_has_run = True  # ty: ignore[unresolved-attribute]
+    request.skip_csrf_check = True  # ty: ignore[missing-attribute]
+    request.oauth_verify_has_run = True  # ty: ignore[missing-attribute]
 
 
 def _setup_csrf_protected_routes() -> None:
@@ -445,7 +452,7 @@ def _setup_csrf_protected_routes() -> None:
         current_app.config.get("KCWORKS_EXTRA_CSRF_PROTECTED_ROUTES") or []
     )
     if any(request.path.startswith(r) for r in protected_routes):
-        request.csrf_cookie_needs_reset = True  # ty: ignore[unresolved-attribute]
+        request.csrf_cookie_needs_reset = True  # ty: ignore[missing-attribute]
 
 
 def _check_oauth_token_scopes() -> None:

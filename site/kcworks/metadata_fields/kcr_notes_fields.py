@@ -50,7 +50,7 @@ class NotesCF(BaseCF):
         )
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """Notes search mappings."""
         return {
             "type": "object",

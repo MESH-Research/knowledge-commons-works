@@ -4,16 +4,16 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Config variables related to communities."""
+
 from flask_menu import current_menu
 from invenio_i18n import lazy_gettext as _
 
-from kcworks.services.records.record_communities.inclusion_requests import (  # noqa: E402, F401
+from kcworks.services.records.record_communities.inclusion_requests import (  # noqa: F401
     KCWorksCommunityInclusion,
     KCWorksCommunitySubmission,
 )
 from kcworks.utils.community_utils import get_community_deposit_args
-
-"""Config variables related to communities."""
 
 # Site-neutral community theme colors used when the logo is user-uploaded
 # (not the slug-derived geopattern default). See

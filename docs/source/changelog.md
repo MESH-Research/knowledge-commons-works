@@ -3,6 +3,29 @@
 
 # Changes
 
+## 1.5.2 (2026-11-18)
+
+- **Upload form**: tweak layout of the error messages
+- **Importer**: reorganize the importer test suite in preparation for expanding
+  coverage of edge cases
+- **Testing**: updates to accommodate changes in the ty type-checker's rules and
+  rule naming after recent updates
+
+## 1.5.1 (2026-11-18)
+
+- **Admin**: Updated task_results endpoint for listing running Celery tasks by
+  ID (admin restricted)
+- **Security**: updated dependency pins for filelock, maxminddb, platformdirs,
+  python-discovery, ty
+- **Testing**: updated test fixtures submodule
+
+## 1.5.0 (2026-11-17)
+
+- Collections (feature): subcollections now add their pre-existing records to
+  the contents of their new parent collection and any other new ancestors.
+- Bug fix (importer): fix changed-files handling for published same-metadata
+  records
+
 ## 1.4.2 (2026-11-14)
 
 - Theme: fix colours for "embargoed" label
