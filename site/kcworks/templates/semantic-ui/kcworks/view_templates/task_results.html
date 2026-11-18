@@ -1,34 +1,125 @@
 {%- extends "invenio_theme/page.html" %}
 
+{% block page_title %}{{ _("Asynchronous task results") }}{% endblock %}
+
 {% block page_body %}
-    <div id="task-results-page" class="ui container">
-        <h1>Asynchronous task results</h1>
-        {% block root_section %}
-            <div id="root-container" class="panel-body">
-                <table>
-                <tr>
-                    <td>id</td>
-                    <td>{{ task_result.id }}</td>
-                </tr>
-                <tr>
-                    <td>status</td>
-                    <td>{{ task_result.status }}</td>
-                </tr>
-                <tr>
-                    <td>successful</td>
-                    <td>{{ task_result.successful() }}</td>
-                </tr>
-                <tr>
-                    <td>failed</td>
-                    <td>{{ task_result.failed() }}</td>
-                </tr>
-                <tr>
-                    <td>value</td>
-                    <td>{{ task_result.result if task_result.ready() else None }},</td>
-                </tr>
-                </table>
-            </div>
-        {% endblock %}
+    <div id="task-results-page" class="ui container" style="padding: 2rem 0;">
+        <h1 class="ui header">{{ _("Asynchronous task results") }}</h1>
+
+        {% if mode == "list" %}
+            <p class="ui grey text">
+                {{ _("Best-effort live snapshot from Celery") }}
+                <code>inspect active / reserved / scheduled</code>.
+                {{ _("Queued-but-unclaimed tasks are not shown.") }}
+            </p>
+            {% if snapshot.ok %}
+                <div class="ui positive message">{{ snapshot.detail }}</div>
+            {% else %}
+                <div class="ui negative message">{{ snapshot.detail }}</div>
+            {% endif %}
+            {% if snapshot.workers_responded %}
+                <p class="ui grey text">
+                    {{ _("Workers") }}:
+                    {{ snapshot.workers_responded|join(", ") }}
+                </p>
+            {% endif %}
+
+            <table class="ui celled compact table">
+                <thead>
+                    <tr>
+                        <th>{{ _("ID") }}</th>
+                        <th>{{ _("Name") }}</th>
+                        <th>{{ _("Status") }}</th>
+                        <th>{{ _("Worker") }}</th>
+                        <th>{{ _("Started") }}</th>
+                        <th>{{ _("Args") }}</th>
+                        <th>{{ _("Kwargs") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in snapshot.tasks %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('kcworks.task_results', task_id=row.id) }}">
+                                <code>{{ row.id }}</code>
+                            </a>
+                        </td>
+                        <td><code>{{ row.name }}</code></td>
+                        <td>{{ row.status }}</td>
+                        <td>{{ row.worker }}</td>
+                        <td>{{ row.time_start or "—" }}</td>
+                        <td><code>{{ row.args }}</code></td>
+                        <td><code>{{ row.kwargs }}</code></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">{{ _("No in-flight tasks reported.") }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <p>
+                <a href="{{ url_for('kcworks.task_results') }}">
+                    ← {{ _("All running tasks") }}
+                </a>
+            </p>
+            <table class="ui celled definition compact table">
+                <tbody>
+                    <tr>
+                        <td>{{ _("id") }}</td>
+                        <td><code>{{ task.id }}</code></td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("name") }}</td>
+                        <td><code>{{ task.name }}</code></td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("status") }}</td>
+                        <td>{{ task.status }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("successful") }}</td>
+                        <td>{{ task.successful }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("failed") }}</td>
+                        <td>{{ task.failed }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("ready") }}</td>
+                        <td>{{ task.ready }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("worker") }}</td>
+                        <td>{{ task.worker or "—" }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("date_done") }}</td>
+                        <td>{{ task.date_done or "—" }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("args") }}</td>
+                        <td><code>{{ task.args or "—" }}</code></td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("kwargs") }}</td>
+                        <td><code>{{ task.kwargs or "—" }}</code></td>
+                    </tr>
+                    <tr>
+                        <td>{{ _("info / result") }}</td>
+                        <td><code>{{ task.info or "—" }}</code></td>
+                    </tr>
+                    {% if task.traceback %}
+                    <tr>
+                        <td>{{ _("traceback") }}</td>
+                        <td><pre style="white-space: pre-wrap; font-size: 0.85em;">{{ task.traceback }}</pre></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
 {% endblock %}
 

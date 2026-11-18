@@ -3,6 +3,11 @@
 
 # Changes
 
+## Unreleased
+
+- Updated task_results endpoint for listing running Celery tasks by ID (admin
+  restricted)
+
 ## 1.5.0 (2026-11-17)
 
 - Collections (feature): subcollections now add their pre-existing records to
