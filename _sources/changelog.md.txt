@@ -3,10 +3,13 @@
 
 # Changes
 
-## Unreleased
+## 1.5.1 (2026-11-18)
 
-- Updated task_results endpoint for listing running Celery tasks by ID (admin
-  restricted)
+- **Admin**: Updated task_results endpoint for listing running Celery tasks by
+  ID (admin restricted)
+- **Security**: updated dependency pins for filelock, maxminddb, platformdirs,
+  python-discovery, ty
+- **Testing**: updated test fixtures submodule
 
 ## 1.5.0 (2026-11-17)
 
