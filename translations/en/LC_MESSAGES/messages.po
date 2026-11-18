@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-11-18 02:42+0000\n"
+"POT-Creation-Date: 2026-11-18 19:54+0000\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1963,7 +1963,7 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/config/pids.py:49
 #: /opt/invenio/src/site/kcworks/config/pids.py:56
 #: /opt/invenio/src/site/kcworks/config/pids.py:72
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:115
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:120
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:89
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:368
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:375
@@ -2098,107 +2098,107 @@ msgid ""
 "dashboard."
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:68
+#: /opt/invenio/src/site/kcworks/config/theme.py:67
 msgid "Help & FAQ"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:70
+#: /opt/invenio/src/site/kcworks/config/theme.py:69
 msgid "Terms of use"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:74
+#: /opt/invenio/src/site/kcworks/config/theme.py:73
 msgid "Privacy policy"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:78
+#: /opt/invenio/src/site/kcworks/config/theme.py:77
 msgid "Guidelines for use"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:81
+#: /opt/invenio/src/site/kcworks/config/theme.py:80
 msgid "Mesh Research"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:88
+#: /opt/invenio/src/site/kcworks/config/theme.py:87
 msgid "Knowledge Commons"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:90
+#: /opt/invenio/src/site/kcworks/config/theme.py:89
 msgid "LinkedIn"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:95
+#: /opt/invenio/src/site/kcworks/config/theme.py:94
 msgid "hcommons.social"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:100
+#: /opt/invenio/src/site/kcworks/config/theme.py:99
 msgid "Newsletter"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:108
+#: /opt/invenio/src/site/kcworks/config/theme.py:107
 msgid "Supporters"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:117
+#: /opt/invenio/src/site/kcworks/config/theme.py:116
 msgid "Michigan State University"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:119
+#: /opt/invenio/src/site/kcworks/config/theme.py:118
 msgid "National Science Foundation"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/theme.py:124
+#: /opt/invenio/src/site/kcworks/config/theme.py:123
 msgid "National Endowment for the Humanities"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:34
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:39
 msgid "Humanities Commons Legacy PID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:39
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:44
 msgid "Humanities Commons Legacy Record ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:44
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:49
 msgid "DOI (DataCite)"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:49
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:54
 msgid "Alternate DOI"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:54
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:59
 msgid "Import record ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:59
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:64
 msgid "NEH record ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:68
 #: /opt/invenio/src/site/kcworks/config/vocabularies.py:73
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:106
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:78
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:111
 msgid "KC member"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:78
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:83
 msgid "NEH user ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:83
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:88
 msgid "Import user ID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:88
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:93
 msgid "Email"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:96
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:101
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:92
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:44
 msgid "GRID"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:97
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:102
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:72
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:45
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:126
@@ -2206,7 +2206,7 @@ msgstr ""
 msgid "GND"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:98
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:103
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:71
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:100
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:46
@@ -2214,7 +2214,7 @@ msgstr ""
 msgid "ISNI"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/config/vocabularies.py:99
+#: /opt/invenio/src/site/kcworks/config/vocabularies.py:104
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/config.py:73
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/config.py:47
 msgid "ROR"
