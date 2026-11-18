@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-11-14 06:50+0000\n"
+"POT-Creation-Date: 2026-11-18 01:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2228,6 +2228,7 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:55
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:90
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:117
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:31
 msgid "Name"
 msgstr ""
 
@@ -2585,6 +2586,7 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:56
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:91
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:119
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:32
 msgid "Status"
 msgstr ""
 
@@ -4638,6 +4640,7 @@ msgid "The vocabulary type does not exists."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/services/config.py:90
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:30
 msgid "ID"
 msgstr ""
 
@@ -4992,6 +4995,95 @@ msgstr ""
 
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:120
 msgid "HTTP"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:3
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:7
+msgid "Asynchronous task results"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:11
+msgid "Best-effort live snapshot from Celery"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:13
+msgid "Queued-but-unclaimed tasks are not shown."
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:22
+msgid "Workers"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:33
+msgid "Worker"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:34
+msgid "Started"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:35
+msgid "Args"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:36
+msgid "Kwargs"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:56
+msgid "No in-flight tasks reported."
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:65
+msgid "All running tasks"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:71
+msgid "id"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:75
+msgid "name"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:79
+msgid "status"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:83
+msgid "successful"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:87
+msgid "failed"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:91
+msgid "ready"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:95
+msgid "worker"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:99
+msgid "date_done"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:103
+msgid "args"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:107
+msgid "kwargs"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:111
+msgid "info / result"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:116
+msgid "traceback"
 msgstr ""
 
 #: /opt/invenio/src/templates/ai_usage.html:16
