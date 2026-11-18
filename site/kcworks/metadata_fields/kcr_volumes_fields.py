@@ -23,14 +23,14 @@ class VolumesCF(BaseCF):
     """Nested custom field."""
 
     @property
-    def field(self):
+    def field(self):  # ty: ignore[incompatible-property-override]
         """Volumes fields definitions."""
         return fields.Nested(
             {"total_volumes": SanitizedUnicode(), "volume": SanitizedUnicode()}
         )
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """Volumes search mappings."""
         return {
             "type": "object",

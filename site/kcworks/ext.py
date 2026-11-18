@@ -432,13 +432,13 @@ def _static_token_before_request() -> None:
     scopes = {
         sid for sid, _ in current_oauth2server.scope_choices(exclude_internal=False)
     }
-    request.oauth = OAuthStandIn(  # ty: ignore[unresolved-attribute]
+    request.oauth = OAuthStandIn(  # ty: ignore[missing-attribute]
         user=user,
         access_token=AccessTokenStandIn(scopes=scopes),
     )
     # Skip CSRF and OAuth verification.
-    request.skip_csrf_check = True  # ty: ignore[unresolved-attribute]
-    request.oauth_verify_has_run = True  # ty: ignore[unresolved-attribute]
+    request.skip_csrf_check = True  # ty: ignore[missing-attribute]
+    request.oauth_verify_has_run = True  # ty: ignore[missing-attribute]
 
 
 def _setup_csrf_protected_routes() -> None:
@@ -452,7 +452,7 @@ def _setup_csrf_protected_routes() -> None:
         current_app.config.get("KCWORKS_EXTRA_CSRF_PROTECTED_ROUTES") or []
     )
     if any(request.path.startswith(r) for r in protected_routes):
-        request.csrf_cookie_needs_reset = True  # ty: ignore[unresolved-attribute]
+        request.csrf_cookie_needs_reset = True  # ty: ignore[missing-attribute]
 
 
 def _check_oauth_token_scopes() -> None:

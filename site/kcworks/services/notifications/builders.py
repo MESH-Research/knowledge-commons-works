@@ -340,7 +340,7 @@ class FirstRecordCreatedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.create"
 
     @classmethod
-    def build(  # ty: ignore[invalid-method-override]
+    def build(  # ty: ignore[incompatible-method-override]
         cls,
         *,
         data: dict,
@@ -413,7 +413,7 @@ class FirstRecordPublishedNotificationBuilder(NotificationBuilder):
     type = "user-first-record.publish"
 
     @classmethod
-    def build(  # ty: ignore[invalid-method-override]
+    def build(  # ty: ignore[incompatible-method-override]
         cls,
         *,
         draft: RDMDraft,

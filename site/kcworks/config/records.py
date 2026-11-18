@@ -4,12 +4,12 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-from kcworks.services.records.record_communities.community_change_permissions_component import (
+"""Configuration variables related to the RDM Records service."""
+
+from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
 from kcworks.services.records.schemas import KCWorksRDMRecordSchema
-
-"""Configuration variables related to the RDM Records service."""
 
 RDM_RECORDS_MAX_TITLE_LENGTH = 260
 """Maximum length for record and additional title fields (metadata validation)."""

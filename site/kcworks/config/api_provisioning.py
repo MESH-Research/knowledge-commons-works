@@ -4,6 +4,8 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Configuration variables related to provisioning external services."""
+
 import os
 
 from kcworks.api_helpers import (
@@ -15,8 +17,6 @@ from kcworks.api_helpers import (
     record_publish_url_factory,
 )
 from kcworks.config.site_urls import KC_SEARCH_URL_DOCS
-
-"""Configuration variables related to provisioning external services."""
 
 # we are only indexing published records, not drafts
 REMOTE_API_PROVISIONER_EVENTS = {

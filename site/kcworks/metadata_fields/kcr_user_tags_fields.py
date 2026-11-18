@@ -35,7 +35,7 @@ class UserTagsCF(BaseListCF):
     #     )
 
     @property
-    def mapping(self):
+    def mapping(self):  # ty: ignore[incompatible-property-override]
         """user_defined_tags search mappings."""
         return {
             "type": "keyword",

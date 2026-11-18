@@ -562,7 +562,7 @@ def _make_logging_wrapper(
         )
         return result
 
-    _logged._kcworks_logged = True  # ty: ignore[unresolved-attribute]
+    _logged._kcworks_logged = True  # ty: ignore[missing-attribute]
     return _logged
 
 
@@ -660,7 +660,7 @@ def _wrap_view(view: Callable[..., Any], endpoint: str) -> Callable[..., Any]:
             )
             raise mapped from exc
 
-    wrapped._kcworks_api_error_wrapped = True  # ty: ignore[unresolved-attribute]
+    wrapped._kcworks_api_error_wrapped = True  # ty: ignore[missing-attribute]
     return wrapped
 
 

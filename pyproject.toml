@@ -281,8 +281,8 @@ rules.redundant-cast = "warn"
 # warn_unused_ignores = false → don't warn about unused type: ignore
 rules.unused-ignore-comment = "ignore"
 rules.unused-type-ignore-comment = "ignore"
-# ignore_missing_imports = true → suppress unresolved-import
-rules.unresolved-import = "ignore"
+# ignore_missing_imports = true → suppress import-not-found
+rules.import-not-found = "ignore"
 # allow_untyped_globals = true → don't error on undeclared globals
 rules.unresolved-global = "ignore"
 # Suppress unresolved-import for modules we don't type-check (optional extra)
