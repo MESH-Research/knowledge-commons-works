@@ -196,13 +196,21 @@ class KCWorks:
         # Relative order (see each component's docstring for why):
         # - `ParentRecordsBackfillComponent` before parent assignment
         # - `KCWorksCommunityParentComponent` (swapped in above)
-        # - `DefaultBrandingComponent` after PID / ownership / theme
+        # - `DefaultBrandingComponent` after every upstream RDM community
+        #   component (including ContentModeration). Do not put branding in
+        #   the contiguous ensure_order block with backfill/parent — that
+        #   would insert it before ContentModeration.
         _community_components = ensure_order(
             _community_components,
             ParentRecordsBackfillComponent,
             KCWorksCommunityParentComponent,
-            DefaultBrandingComponent,
         )
+        _community_components = [
+            c
+            for c in _community_components
+            if c is not DefaultBrandingComponent
+        ]
+        _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
         app.config["COMMUNITIES_PERMISSION_POLICY"] = KCWorksCommunityPermissionPolicy
 
