@@ -24,9 +24,17 @@ def create_blueprint(app):
         template_folder="../templates",
     )
 
+    task_results_view = TaskResults.as_view("task_results")
+    blueprint.add_url_rule(
+        "/task_results",
+        view_func=task_results_view,
+        defaults={"task_id": None},
+        methods=["GET"],
+    )
     blueprint.add_url_rule(
         "/task_results/<task_id>",
-        view_func=TaskResults.as_view("task_results"),
+        view_func=task_results_view,
+        methods=["GET"],
     )
 
     blueprint.add_url_rule(
