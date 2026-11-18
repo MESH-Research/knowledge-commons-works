@@ -3,6 +3,13 @@
 
 # Changes
 
+## 1.5.0 (2026-11-17)
+
+- Collections (feature): subcollections now add their pre-existing records to
+  the contents of their new parent collection and any other new ancestors.
+- Bug fix (importer): fix changed-files handling for published same-metadata
+  records
+
 ## 1.4.2 (2026-11-14)
 
 - Theme: fix colours for "embargoed" label
