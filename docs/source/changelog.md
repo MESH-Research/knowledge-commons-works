@@ -3,6 +3,14 @@
 
 # Changes
 
+## 1.5.2 (2026-11-18)
+
+- **Upload form**: tweak layout of the error messages
+- **Importer**: reorganize the importer test suite in preparation for expanding
+  coverage of edge cases
+- **Testing**: updates to accommodate changes in the ty type-checker's rules and
+  rule naming after recent updates
+
 ## 1.5.1 (2026-11-18)
 
 - **Admin**: Updated task_results endpoint for listing running Celery tasks by
