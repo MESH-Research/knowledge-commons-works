@@ -101,7 +101,7 @@ const AccessRightField = ({
                   record={record}
                   recordRestrictionGracePeriod={recordRestrictionGracePeriod}
                   allowRecordRestriction={allowRecordRestriction}
-                  className="mt-20"
+                  className="mt-10"
                 />
               )}
 

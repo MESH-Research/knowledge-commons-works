@@ -40,7 +40,7 @@ FRONTPAGE_GUIDE_LINKS = [
     ),
     (
         _("Publish"),
-        f"{KC_HELP_URL}/how-do-i-upload-to-kcworks/",
+        f"{KC_HELP_URL}/adding-updating-and-removing-works/",
         "bullhorn",
     ),
     (

@@ -3,6 +3,17 @@
 
 # Changes
 
+## Unreleased
+
+- Front page:
+  - fixed obsolete "publish" help link
+- Upload form:
+  - clarified and added an extra sharing link to the access settings restricted
+    messages
+- Bug fixes:
+  - Fix regression in the ordering of CommunityService components in ext.py
+  - Fix ruff errors
+
 ## 1.5.2 (2026-11-18)
 
 - **Upload form**: tweak layout of the error messages
