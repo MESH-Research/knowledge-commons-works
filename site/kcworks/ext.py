@@ -62,6 +62,10 @@ from kcworks.services.communities.permissions import KCWorksCommunityPermissionP
 from kcworks.services.jobs.wrap_runscheduler_job_context import (
     wrap_runscheduler_for_job_context,
 )
+from kcworks.services.networks.resolver_service import (
+    NetworkResolver,
+    ensure_sso_before_network_resolver,
+)
 from kcworks.services.notifications.service import (
     InternalNotificationService,
     InternalNotificationServiceConfig,
@@ -211,9 +215,7 @@ class KCWorks:
             KCWorksCommunityParentComponent,
         )
         _community_components = [
-            c
-            for c in _community_components
-            if c is not DefaultBrandingComponent
+            c for c in _community_components if c is not DefaultBrandingComponent
         ]
         _community_components.append(DefaultBrandingComponent)
         app.config["COMMUNITIES_SERVICE_COMPONENTS"] = _community_components
@@ -386,14 +388,18 @@ def finalize_app(app: Flask) -> None:
     skipped (still works, just no logging).
     """
     funcs = app.before_request_funcs.get(None, [])
-    app.before_request_funcs[None] = [_setup_csrf_protected_routes] + funcs
+    prepend_funcs = [
+        _setup_csrf_protected_routes,
+        NetworkResolver.resolve_network_context,
+    ]
+    append_funcs = []
+    app.before_request_funcs[None] = prepend_funcs + funcs + append_funcs
+    ensure_sso_before_network_resolver(app)
     _schedule_community_menu_overrides(app)
     register_themed_error_handlers(app)
     wrap_error_handlers_with_logging(app)
     wrap_runscheduler_for_job_context(app)
     _merge_kcworks_celery_beat_schedule(app)
-    # Bisect: disabled while staging UI hangs after health deploy.
-    # log_if_scheduler_heartbeat_job_missing(app)
 
 
 def _static_token_before_request() -> None:

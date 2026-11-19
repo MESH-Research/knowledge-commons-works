@@ -17,8 +17,9 @@ import os
 
 from invenio_i18n import lazy_gettext as _
 
-SITE_UI_URL = os.getenv("INVENIO_SITE_UI_URL", "https://localhost")
-SITE_API_URL = os.getenv("INVENIO_SITE_API_URL", "https://localhost/api")
+SITE_UI_PROTOCOL = os.getenv("INVENIO_SITE_UI_PROTOCOL", "https")
+SITE_UI_URL = os.getenv("INVENIO_SITE_UI_URL", f"{SITE_UI_PROTOCOL}://localhost")
+SITE_API_URL = os.getenv("INVENIO_SITE_API_URL", f"{SITE_UI_PROTOCOL}://localhost/api")
 
 COMMONS_API_REQUEST_PROTOCOL = os.getenv(
     "INVENIO_COMMONS_API_REQUEST_PROTOCOL", "https"

@@ -11,7 +11,7 @@ import os
 from flask.helpers import get_debug_flag
 
 from kcworks.config.search import SEARCH_DOMAIN
-from kcworks.config.site_urls import KC_WORDPRESS_DOMAIN
+from kcworks.config.site_urls import KC_WORDPRESS_DOMAIN, KCWORKS_NETWORKS
 
 # Define the value of the cache control header `max-age` returned by the
 # server when serving public files. Files will be cached by the browser
@@ -33,6 +33,8 @@ TRUSTED_HOSTS = os.getenv(
     "localhost,127.0.0.1,*.hcommons-staging.org,*.hcommons.org,*.kcommons.org",
 ).split(",")
 TRUSTED_HOSTS.append("pub.orcid.org")  # For ORCID typeahead search
+for network in KCWORKS_NETWORKS.values():
+    TRUSTED_HOSTS.extend(network.allowed_hosts)
 
 # Path-style S3 object URLs for CSP (one bucket per env). Empty when unset
 # (e.g. local filesystem storage) so we do not emit a blank/None CSP token.
