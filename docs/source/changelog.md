@@ -3,7 +3,7 @@
 
 # Changes
 
-## Unreleased
+## 1.5.3 (2026-11-20)
 
 - Front page:
   - fixed obsolete "publish" help link
@@ -11,6 +11,8 @@
   - clarified and added an extra sharing link to the access settings restricted
     messages
 - Bug fixes:
+  - Fix importer issue where metadata-only API imports were triggering an
+    attempt to sanitize local filenames
   - Fix regression in the ordering of CommunityService components in ext.py
   - Fix ruff errors
 
