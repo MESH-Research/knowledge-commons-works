@@ -600,11 +600,11 @@ Content-Type: application/json
 This response will include a JSON object with the following fields:
 
 - `status`: The status of the import request, which will be "success" if the import request was successful.
-- `data`: An array of JSON objects, one for each record that was created in the operation
-- `errors`: An array of JSON objects, one for each record that failed to be created. (In a successful import, this array will be empty.)
 - `message`: A message describing the import request. (In a successful import, this will be "All records were successfully imported".)
+- `errors`: An array of JSON objects, one for each record that failed to be created. (In a successful import, this array will be empty.)
+- `imported_records`: An array of JSON objects, one for each record that was successfully imported (created or updated) in the operation.
 
-Each object in the `data` array will have the following fields:
+Each object in the `imported_records` array will have the following fields:
 
 | key             | type      | description                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | --------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -622,7 +622,9 @@ The response object will be shaped like this:
 ```json
 {
   "status": "success",
-  "data": [
+  "message": "All records were successfully imported.",
+  "errors": [],
+  "imported_records": [
     {
       "item_index": 0,
       "record_id": "1234567890",
@@ -651,9 +653,7 @@ The response object will be shaped like this:
         /* ... */
       }
     }
-  ],
-  "errors": [],
-  "message": "All records were successfully imported."
+  ]
 }
 ```
 
@@ -692,7 +692,7 @@ When `all_or_none` is `"true"` and a later item fails after earlier items alread
 The response will include a JSON object with the same shape as the successful response, but with the following differences:
 
 - The `status` field will be "error".
-- The `data` field will be an empty array.
+- The `imported_records` field will be an empty array.
 - The `errors` field will be an array of objects, each of which describes a work that failed to be created. In each object the `record_id` and `record_url` fields will be `null`, since the work was not created. The `errors` field will be an array of objects, each of which describes an error that occurred during the attempt to create the work. The `metadata` field will still contain the metadata that was provided in the request for reference.
 
 ```json
@@ -703,7 +703,6 @@ The response will include a JSON object with the same shape as the successful re
         "in the 'errors' field for more information. Each failed item should have its own "
         "list of specific errors."
     ),
-    "data": [],
     "errors": [
         {
             "item_index": 0,
@@ -741,13 +740,14 @@ The response will include a JSON object with the same shape as the successful re
                 /* ... */
             }
         }
-    ]
+    ],
+    "imported_records": []
 }
 ```
 
 ### A partially successful import response
 
-If only some of the works to be imported are malformed or invalid, and the `all_or_none` request parameter is set to "false", the response will be `207 Multi-Status`. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in _both_ the `data` and `errors` arrays. The items in the `data` array will be works that were successfully created (or successfully updated, when the import matched an existing work), and the items in the `errors` array will be works that failed. With `all_or_none` false there is no rollback of the successes.
+If only some of the works to be imported are malformed or invalid, and the `all_or_none` request parameter is set to "false", the response will be `207 Multi-Status`. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in _both_ the `imported_records` and `errors` arrays. The items in the `imported_records` array will be works that were successfully created (or successfully updated, when the import matched an existing work), and the items in the `errors` array will be works that failed. With `all_or_none` false there is no rollback of the successes.
 
 The response will be shaped like this:
 
@@ -759,23 +759,6 @@ The response will be shaped like this:
         "list of failed records in the 'errors' field for more information. Each failed "
         "item should have its own list of specific errors."
     ),
-    "data": [
-        {
-            "item_index": 1,
-            "record_id": "1234567891",
-            "source_id": "xxx1234567891",
-            "record_url": "https://works.hcommons.org/records/1234567891",
-            "files": {
-                "file1.pdf": ["success", []],
-                "file2.pdf": ["success", []]
-            },
-            "collection_id": "1234567890",
-            "errors": [],
-            "metadata": {
-                /* ... */
-            }
-        }
-    ],
     "errors": [
         {
             "item_index": 0,
@@ -794,6 +777,23 @@ The response will be shaped like this:
                 /* ... */
             }
         },
+    ],
+    "imported_records": [
+        {
+            "item_index": 1,
+            "record_id": "1234567891",
+            "source_id": "xxx1234567891",
+            "record_url": "https://works.hcommons.org/records/1234567891",
+            "files": {
+                "file1.pdf": ["success", []],
+                "file2.pdf": ["success", []]
+            },
+            "collection_id": "1234567890",
+            "errors": [],
+            "metadata": {
+                /* ... */
+            }
+        }
     ]
 }
 ```
@@ -815,7 +815,6 @@ If the file content is uploaded but for some reason is considered corrupted or i
         "in the 'errors' field for more information. Each failed item should have its own "
         "list of specific errors."
     ),
-    "data": [],
     "errors": [
         {
             "item_index": 0,
@@ -870,7 +869,8 @@ If the file content is uploaded but for some reason is considered corrupted or i
                 /* ... */
             }
         }
-    ]
+    ],
+    "imported_records": []
 }
 ```
 
