@@ -3,6 +3,11 @@
 
 # Changes
 
+## 1.5.5 (2026-11-21)
+
+- **Importer**: Fix lazy string evaluation bug with some validation errors when
+  collecting error messages.
+
 ## 1.5.4 (2026-11-20)
 
 - Updates to record importer (now 1.1.0)
