@@ -1,0 +1,40 @@
+---
+description: Python docstrings use Google style with Markdown; never RST double backticks
+globs: "**/*.py"
+alwaysApply: true
+---
+
+# Python docstrings (Markdown, not RST)
+
+Google-style docstrings. Format with **Markdown**, not Sphinx/RST.
+
+## Inline code: one backtick pair only
+
+Markdown inline code uses a **single** opening backtick and a **single** closing backtick.
+
+- Right: one backtick, then `DOI`, then one backtick
+- Wrong: RST-style **two** backticks on each side of the token
+
+Never write RST double-backtick inline code in Python docstrings, comments, or other prose inside `.py` files.
+
+## Example
+
+```python
+# BAD — RST double backticks
+def f(id_type: str) -> str:
+    """Build a message.
+
+    Args:
+        id_type: Kind of identifier (e.g. ``DOI``, ``import-recid``).
+    """
+
+# GOOD — Markdown single backticks
+def f(id_type: str) -> str:
+    """Build a message.
+
+    Args:
+        id_type: Kind of identifier (e.g. `DOI`, `import-recid`).
+    """
+```
+
+Canonical toolchain notes remain in root `AGENTS.md`. This rule exists so the backtick rule is hard to miss while editing Python.
