@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="API credentials and CLI authentication" href="api_credentials.html"><link rel="prev" title="Metadata Schema, Vocabularies, and Identifiers" href="metadata.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>API - Knowledge Commons Works 1.5.3 documentation</title>
+        <title>API - Knowledge Commons Works 1.5.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.5.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.5.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.5.3 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.5.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -638,7 +638,7 @@ Authorization: Bearer &lt;your-api-key&gt;
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">all_or_none</span></code></p></td>
 <td><p>no</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">text/plain</span></code></p></td>
-<td><p>A string representation of a boolean (either “true” or “false”) indicating whether the entire import request should be rejected if any of the works fail to be created (whether for validation errors, upload errors, or other reasons). If this value is “false”, the import request will be accepted even if some of the works cannot be created. The response in this case will include a list of works that were successfully created and a list of errors for the works that failed to be created. (Default: “true”)</p></td>
+<td><p>A string representation of a boolean (either “true” or “false”) indicating whether the entire import request should be aborted if any of the works fail (validation, upload, or other errors). If “false”, earlier successes are kept and the response lists both created works and failures (<code class="docutils literal notranslate"><span class="pre">207</span></code> when mixed). If “true” (default), the batch stops on the first failure and the importer attempts to roll back earlier successes in <strong>this request only</strong>. See the warning below: rollback of successful edits to pre-existing works is <strong>not</strong> guaranteed.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">notify_record_owners</span></code></p></td>
 <td><p>no</p></td>
@@ -662,6 +662,12 @@ Authorization: Bearer &lt;your-api-key&gt;
 </tr>
 </tbody>
 </table>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> does <strong>not</strong> guarantee a full rollback when a later item fails after earlier items succeeded.</p>
+<p>What <em>can</em> be undone: works <strong>newly created</strong> in this request (still draft or already published), and an <strong>edit draft this import opened</strong> on a published work (reconcile found no existing draft and called <code class="docutils literal notranslate"><span class="pre">edit()</span></code>, and that draft is still open).</p>
+<p>What <strong>cannot</strong> be undone: successful metadata or file edits to <strong>pre-existing</strong> works once those changes have been applied—especially once re-published—and updates to a draft that already existed before the request. There is no stored prior snapshot of metadata or files, so <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> must not be treated as a transactional guarantee for idempotent re-imports that update existing records.</p>
 </div>
 </section>
 <section id="identifying-the-owners-of-the-work">
@@ -1256,6 +1262,7 @@ python<span class="w"> </span>-m<span class="w"> </span>kcworks_import_client.ap
 a. the <code class="docutils literal notranslate"><span class="pre">strict_validation</span></code> request parameter was set to “true” and all of the supplied metadata objects raise validation errors, or
 b. the <code class="docutils literal notranslate"><span class="pre">strict_validation</span></code> parameter is set to “false”, but the validation errors affected fields that are required for the works to be created.
 c. the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter is set to “true” and some of the supplied metadata objects raise validation errors.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;true&quot;</span></code> and a later item fails after earlier items already succeeded, the importer tries to undo those earlier successes before returning this error response. As warned above, that is <strong>not</strong> a full transactional rollback: successful edits to pre-existing records may remain. Only new creations and still-open edit drafts this import opened are deleted; drafts that already existed, and updates already re-published onto a pre-existing work, are left as-is.</p>
 <p>The response will include a JSON object with the same shape as the successful response, but with the following differences:</p>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">status</span></code> field will be “error”.</p></li>
@@ -1315,10 +1322,7 @@ c. the <code class="docutils literal notranslate"><span class="pre">all_or_none<
 </section>
 <section id="a-partially-successful-import-response">
 <h3>A partially successful import response<a class="headerlink" href="#a-partially-successful-import-response" title="Link to this heading">¶</a></h3>
-<blockquote>
-<div><p>NOT YET IMPLEMENTED. At present the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter will always be “true”.</p>
-</div></blockquote>
-<p>If only some of the works to be imported are malformed or invalid, and the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter is set to “false”, the response will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code>. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in <em>both</em> the <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">errors</span></code> arrays. The items in the <code class="docutils literal notranslate"><span class="pre">data</span></code> array will be works that were successfully created, and the items in the <code class="docutils literal notranslate"><span class="pre">errors</span></code> array will be works that failed to be created.</p>
+<p>If only some of the works to be imported are malformed or invalid, and the <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> request parameter is set to “false”, the response will be <code class="docutils literal notranslate"><span class="pre">207</span> <span class="pre">Multi-Status</span></code>. In this case the response will be shaped much like the successful and unsuccessful responses described above, but there will be items in <em>both</em> the <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">errors</span></code> arrays. The items in the <code class="docutils literal notranslate"><span class="pre">data</span></code> array will be works that were successfully created (or successfully updated, when the import matched an existing work), and the items in the <code class="docutils literal notranslate"><span class="pre">errors</span></code> array will be works that failed. With <code class="docutils literal notranslate"><span class="pre">all_or_none</span></code> false there is no rollback of the successes.</p>
 <p>The response will be shaped like this:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"multi_status"</span><span class="p">,</span>
@@ -2896,7 +2900,7 @@ automatically purged entirely from the database. There is also no API mechanism 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d75fd82e"></script>
+</div><script src="../_static/documentation_options.js?v=1cd648e3"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

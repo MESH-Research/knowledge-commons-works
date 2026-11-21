@@ -3,6 +3,40 @@
 
 # Changes
 
+## 1.5.4 (2026-11-20)
+
+- Updates to record importer (now 1.1.0)
+  - **Error reporting**
+    - Normalize validation errors from all origins to a consistent format: lists
+      of {field, messages} with dot-separated field paths for readability.
+    - Catch ValidationErrorWithMessageAsList raised by PID failures on
+      publication _after_ schema validation passes. (This was causing 502 errors
+      that short-circuited the proper result reporting.)
+  - **Safer record cleanup**
+    - Avoid deleting records or files that weren't created during the current
+      import session. (Pre-existing drafts, but especially pre-existing
+      published records.)
+    - Document limitations to rollback of earlier successfully imported records
+      after a subsequent failure with the `all_or_none` flag.
+  - **Better partial-success handling**
+    - Correctly return HTTP 207 response after a partial success (with
+      `all_or_none=False`);
+  - **Pre-existing reviews**
+    - Properly cancel pre-existing reviews before trying to delete them.
+    - Centralize review cancellation logic in a new ReviewsHelper
+      (`services/reviews.py`)
+  - **Other refactoring**
+    - Encapsulate DOI/source-id deleted-record paths;
+  - **Other bug fixes**
+    - Fix key error caused by empty DOI field.
+  - **New/updated tests**
+    - Mixed publish-validation REST cases (all_or_none true/false)
+    - Empty-DOI / metadata error typing fixes
+    - Soft-deleted re-import service test (new)
+    - Records-helper coverage additions
+    - conftest / uv.lock tweaks
+    - tests/fixtures pointer: a18ce09 → f027b59 (source of the 3 ruff fails)
+
 ## 1.5.3 (2026-11-20)
 
 - Front page:
