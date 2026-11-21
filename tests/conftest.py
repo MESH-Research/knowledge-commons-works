@@ -78,6 +78,7 @@ pytest_plugins = (
     "tests.fixtures.vocabularies.funding_and_awards",
     "tests.fixtures.vocabularies.languages",
     "tests.fixtures.vocabularies.licenses",
+    "tests.fixtures.vocabularies.removal_reasons",
     "tests.fixtures.vocabularies.resource_types",
     "tests.fixtures.vocabularies.roles",
     "tests.fixtures.vocabularies.subjects",
