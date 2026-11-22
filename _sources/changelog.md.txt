@@ -5,8 +5,12 @@
 
 ## 1.5.5 (2026-11-21)
 
-- **Importer**: Fix lazy string evaluation bug with some validation errors when
-  collecting error messages.
+- **Importer**:
+  - Fix owner comparison failure if owner of existing record is "system".
+  - Fix lazy string evaluation bug with some validation errors when collecting
+    error messages.
+  - Improve order and naming of JSON result report keys for better readability.
+  - Update import client to work with new JSON report shape.
 
 ## 1.5.4 (2026-11-20)
 
