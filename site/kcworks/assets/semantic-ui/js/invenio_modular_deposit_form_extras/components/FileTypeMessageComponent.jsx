@@ -134,6 +134,7 @@ const FileTypeMessageComponent = () => {
     (state) => state.deposit?.config?.previewable_extensions ?? []
   );
   const fileEntries = useSelector((state) => state.files?.entries ?? {});
+  const filesEnabled = useSelector((state) => state.files?.enabled ?? false);
   const [isOpen, setIsOpen] = useState(false);
 
   if (!previewableExtensions.length) return null;
@@ -151,7 +152,7 @@ const FileTypeMessageComponent = () => {
   console.log("nonPreviewableFiles", nonPreviewableFiles.length);
   console.log("nonPreviewableFiles", nonPreviewableFiles.length > 0);
 
-  return (
+  return filesEnabled ? (
     <>
       {nonPreviewableFiles.length > 0 && (
         <Message icon className="negative mt-0 mb-0">
@@ -209,7 +210,7 @@ const FileTypeMessageComponent = () => {
         </Accordion.Content>
       </Accordion>
     </>
-  );
+  ) : null;
 };
 
 export { FileTypeMessageComponent };

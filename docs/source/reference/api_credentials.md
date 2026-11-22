@@ -69,7 +69,7 @@ on webhook / group-collections views. Unmapped routes in the central map are
 not denied today. Permission policy on the token owner’s identity still
 applies in all cases — scopes narrow the **token**, capability roles gate the
 **account**. Route inventory: {doc}`service_accounts_and_scopes`. Registration
-and request-time details: {doc}`../developing/oauth_scopes`.
+and request-time details: {doc}`../developing/authentication`.
 
 ## In-process CLI authentication
 

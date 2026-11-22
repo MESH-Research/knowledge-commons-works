@@ -20,6 +20,11 @@ from __future__ import annotations
 import os
 from datetime import timedelta
 
+from kcworks.services.remote_data_collections.globus_api import (
+    GLOBUS_API_REMOTE_APP,
+    GLOBUS_API_REMOTE_REST_APP,
+)
+
 from .site_urls import COMMONS_API_REQUEST_PROTOCOL, KC_PROFILES_DOMAIN
 
 KCWORKS_ADMIN_ROLES = ["administration", "administration-moderation"]
@@ -92,7 +97,24 @@ STATIC_API_TOKEN_ROUTES = {
 
 # CILogon OAuth is no longer used directly. Authentication is delegated
 # to the KC Profiles microservice via the SSO broker.
-OAUTHCLIENT_REMOTE_APPS = {}
+# We declare the globus app here in order to use oauthclient infrastructure
+# to manage users' secondary authentication with Globus.
+#
+# ``GLOBUS_API_CREDENTIALS`` is the Flask-OAuthlib ``app_key`` for that remote
+# app (see ``GlobusAPIOAuthSettingsHelper``). Client ID/secret come from the
+# environment — never commit plaintext values.
+GLOBUS_API_CREDENTIALS = {
+    "consumer_key": os.getenv("GLOBUS_CLIENT_ID"),
+    "consumer_secret": os.getenv("GLOBUS_CLIENT_SECRET"),
+}
+
+OAUTHCLIENT_REMOTE_APPS = {
+    "globus": GLOBUS_API_REMOTE_APP,
+}
+OAUTHCLIENT_REST_REMOTE_APPS = {
+    "globus": GLOBUS_API_REMOTE_REST_APP,
+}
+
 OAUTHCLIENT_AUTO_REDIRECT_TO_EXTERNAL_LOGIN = False
 # Import string: resolved by invenio-accounts via ``obj_or_import_string``.
 ACCOUNTS_LOGIN_VIEW_FUNCTION = "invenio_remote_user_data_kcworks.views:sso_broker_login"
@@ -122,6 +144,8 @@ SSO_BROKER_VERIFY_NONCE_URL = (
 SSO_BROKER_RETRY_COOKIE_NAME = "_sso_checked"
 
 KC_REMOTE_IDPS = ["cilogon"]
+
+SSO_BROKER_SILENT_CHECK_EXCLUDE_ROUTES = ["/oauth/authorized/"]
 
 # Remote User Data
 # -----------------

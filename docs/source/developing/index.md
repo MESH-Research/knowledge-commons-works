@@ -10,7 +10,7 @@ workflow.md
 testing.md
 how_tos.md
 menus.md
-oauth_scopes.md
+authentication.md
 knowledge_base_sync.md
 building.md
 stats.md

@@ -21,6 +21,7 @@ import { SeriesComponent } from "./components/SeriesComponent";
 import { SponsoringInstitutionComponent } from "./components/SponsoringInstitutionComponent";
 import { TotalVolumesComponent } from "./components/TotalVolumesComponent";
 import { VolumeComponent } from "./components/VolumeComponent";
+import { RemoteDataCollectionComponent } from "./components/RemoteDataCollectionComponent";
 
 const componentsRegistry = {
   CommunitiesAlternateComponent: [CommunitiesAlternateComponent, []],
@@ -90,6 +91,10 @@ const componentsRegistry = {
   PublicationURLComponent: [
     PublicationURLComponent,
     ["custom_fields.kcr:publication_url"],
+  ],
+  RemoteDataCollectionComponent: [
+    RemoteDataCollectionComponent,
+    ["custom_fields.kcr:remote_data_collection"],
   ],
   SeriesComponent: [SeriesComponent, ["custom_fields.kcr:book_series"]],
   SponsoringInstitutionComponent: [

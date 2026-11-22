@@ -56,6 +56,7 @@
 #   --mock-profiles      profiles-mock CA + URL/token env + update-ca-certificates
 #   --image-tag TAG      Sets IMAGE_TAG for this run (same as IMAGE_TAG=TAG in the environment)
 #   --build              Pass --build to docker compose up
+#   --force-recreate     Pass --force-recreate to docker compose up
 #
 # Requires aws CLI be configured on the host machine
 #
@@ -69,7 +70,7 @@ cd "$REPO_ROOT"
 RUNTIME_SECRET_HOST_FILE="/tmp/kcworks-runtime-secrets.env"
 
 usage() {
-  sed -n '2,62p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,63p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
 }
 
@@ -77,7 +78,7 @@ usage() {
 # COMMONS_PROFILES_API_TOKEN is included by default; --mock-profiles strips it after resolve
 # so the mock overlay token is not overridden by staging SM.
 DEFAULT_SM_SECRET_ID="staging/kcworks"
-DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN"
+DEFAULT_SM_KEYS="INVENIO_DATACITE_PASSWORD,SPARKPOST_USERNAME,SPARKPOST_API_KEY,COMMONS_PROFILES_API_TOKEN,COMMONS_SEARCH_API_TOKEN,ICER_DATA_HUB_PROVISIONING_TOKEN,GLOBUS_CLIENT_ID,GLOBUS_CLIENT_SECRET"
 
 # Filled after option parsing: CLI --secret-id / --keys, else env, else DEFAULT_SM_* above.
 SECRET_ID=""
@@ -86,6 +87,7 @@ REGION=()
 ALLOW_MISSING=0
 IMAGE_TAG_ARG=""
 BUILD_ARG=0
+FORCE_RECREATE_ARG=0
 PROD_MODE=0
 MOCK_PROFILES=0
 
@@ -109,6 +111,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --build)
     BUILD_ARG=1
+    shift
+    ;;
+  --force-recreate)
+    FORCE_RECREATE_ARG=1
     shift
     ;;
   --prod)
@@ -147,7 +153,10 @@ if [[ "$MOCK_PROFILES" -eq 1 ]]; then
       [[ "$key" == "COMMONS_PROFILES_API_TOKEN" ]] && continue
       filtered+=("$key")
     done
-    (IFS=','; echo "${filtered[*]}")
+    (
+      IFS=','
+      echo "${filtered[*]}"
+    )
   )
 fi
 
@@ -250,9 +259,12 @@ elif [[ -z "${IMAGE_TAG:-}" ]]; then
   fi
 fi
 
-BUILD_FLAGS=()
+UP_FLAGS=()
 if [[ "$BUILD_ARG" -eq 1 ]]; then
-  BUILD_FLAGS+=(--build)
+  UP_FLAGS+=(--build)
+fi
+if [[ "$FORCE_RECREATE_ARG" -eq 1 ]]; then
+  UP_FLAGS+=(--force-recreate)
 fi
 
 COMPOSE_FILES=(--file docker-compose.yml)
@@ -289,7 +301,7 @@ run_compose() {
 }
 
 run_compose_up() {
-  run_compose up -d "${BUILD_FLAGS[@]}" "$@"
+  run_compose up -d "${UP_FLAGS[@]}" "$@"
 }
 
 if [[ "$PROD_MODE" -eq 1 ]]; then

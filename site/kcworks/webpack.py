@@ -97,6 +97,7 @@ theme = WebpackThemeBundle(
             "aliases": {
                 "@js/kcworks": "js",
                 "@js/kcworks/collections": "js/collections",
+                "@js/kcworks/utils": "js/utils",
                 "@translations/kcworks": "translations/kcworks",
                 "@translations": "translations",
                 # Intercept react-invenio-forms / Invenio ``require("tinymce/tinymce")``

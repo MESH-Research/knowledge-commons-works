@@ -1,4 +1,11 @@
-"""Additional views."""
+# Part of Knowledge Commons Works
+# Copyright (C) 2023-2026, MESH Research
+#
+# Knowledge-Commons-Works is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more details.
+
+
+"""Additional KCWorks views."""
 
 from flask import Blueprint, jsonify, make_response
 from invenio_records_resources.services.errors import PermissionDeniedError
@@ -89,12 +96,10 @@ def create_api_blueprint(app):
         blueprint.register_error_handler(
             Forbidden,
             lambda e: make_response(
-                jsonify(
-                    {
-                        "message": "You are not authorized to perform this action",
-                        "status": 403,
-                    }
-                ),
+                jsonify({
+                    "message": "You are not authorized to perform this action",
+                    "status": 403,
+                }),
                 403,
             ),
         )
@@ -107,12 +112,10 @@ def create_api_blueprint(app):
         blueprint.register_error_handler(
             PermissionDeniedError,
             lambda e: make_response(
-                jsonify(
-                    {
-                        "message": "You are not authorized to perform this action",
-                        "status": 403,
-                    }
-                ),
+                jsonify({
+                    "message": "You are not authorized to perform this action",
+                    "status": 403,
+                }),
                 403,
             ),
         )

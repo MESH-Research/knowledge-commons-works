@@ -1010,6 +1010,12 @@ _FORM_PAGES = {
                     "classnames": "basic pt-0 mt-0",
                 },
                 {
+                    "section": "remote_data_collection",
+                    "label": _("Data Collection"),
+                    "component": "RemoteDataCollectionComponent",
+                    "classnames": "basic prominent-field-label",
+                },
+                {
                     "section": "rights",
                     "label": _("Rights and Permissions"),
                     "icon": "copyright outline",
@@ -1034,6 +1040,9 @@ _FORM_PAGES = {
                             "label": _("Licenses"),
                             "icon": None,
                             "component": "LicensesComponent",
+                            # Own fieldset + sr-only legend so AT names this group
+                            # "Licenses" (not only the parent "Rights and Permissions").
+                            "wrapped": True,
                             "classnames": "basic",
                         },
                     ],

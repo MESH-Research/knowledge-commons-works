@@ -4,7 +4,7 @@ Service accounts and OAuth scopes
 Inventory of inter-app **service accounts** (capability roles / access actions)
 and **OAuth scopes** (routes they gate). For credential variables and CLI vs
 HTTP auth, see {doc}`api_credentials`. For how scopes are registered and
-checked, see {doc}`../developing/oauth_scopes`.
+checked, see {doc}`../developing/authentication`.
 
 ## Service accounts
 
