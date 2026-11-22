@@ -162,7 +162,7 @@ def import_test_records_command(
         )
         successes = [
             r["metadata"]["id"]
-            for r in results["data"]
+            for r in results["imported_records"]
             if r["metadata"] and "id" in r["metadata"]
         ]
         failures = [
