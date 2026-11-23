@@ -72,6 +72,7 @@ optional-dependencies.dev = [
   "jsonlines",
   "psycopg2-binary>=2.9.10",
   "types-requests",
+  "wcmatch>=11.2",
 ]
 optional-dependencies.docs = [
   "furo",
@@ -153,6 +154,7 @@ dev = [
   "jsonlines",
   "kc-knowledge-base-sync",
   "psycopg2-binary>=2.9.10",
+  "wcmatch>=11.2",
 ]
 docs = [
   "furo",
