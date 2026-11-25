@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="User Data Management" href="user_data_management.html"><link rel="prev" title="Running Commands from the KCWorks Back End" href="running_commands.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Hard-delete records (API and CLI)" href="record_hard_delete.html"><link rel="prev" title="Running Commands from the KCWorks Back End" href="running_commands.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Content Moderation - Knowledge Commons Works 1.5.5 documentation</title>
+        <title>Content Moderation - Knowledge Commons Works 1.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.5.5 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.5.5 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,6 +200,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="record_hard_delete.html">Hard-delete records (API and CLI)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
@@ -310,6 +311,12 @@ In the record deletion modal interface, select “Public” so that the tombston
 <h4>Removed records and DataCite<a class="headerlink" href="#removed-records-and-datacite" title="Link to this heading">¶</a></h4>
 <p>When a record with a DOI is removed, its registration with DataCite cannot be removed. By default, DataCite will continue to resolve the DOI to a tombstone page, even though the record is no longer available on KCWorks, and the DataCite metadata will still be visible. But the record’s DataCite state is updated from “findable” to “registered”, meaning that the record is no longer findable on DataCite.</p>
 </section>
+<section id="permanent-hard-delete-no-tombstone">
+<h4>Permanent hard-delete (no tombstone)<a class="headerlink" href="#permanent-hard-delete-no-tombstone" title="Link to this heading">¶</a></h4>
+<p>Soft-delete is the normal moderation path. If a record must be <strong>permanently</strong>
+purged (no tombstone, no restore), operators can hard-delete via API or CLI.
+See <a class="reference internal" href="record_hard_delete.html"><span class="std std-doc">Hard-delete records (API and CLI)</span></a>.</p>
+</section>
 </section>
 <section id="restoring-removed-records">
 <h3>Restoring Removed Records<a class="headerlink" href="#restoring-removed-records" title="Link to this heading">¶</a></h3>
@@ -358,12 +365,12 @@ In the record deletion modal interface, select “Public” so that the tombston
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="user_data_management.html">
+          <a class="next-page" href="record_hard_delete.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">User Data Management</div>
+                <div class="title">Hard-delete records (API and CLI)</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -413,6 +420,7 @@ In the record deletion modal interface, select “Public” so that the tombston
 <li><a class="reference internal" href="#handling-inappropriate-content">Handling Inappropriate Content</a><ul>
 <li><a class="reference internal" href="#removing-records">Removing Records</a><ul>
 <li><a class="reference internal" href="#removed-records-and-datacite">Removed records and DataCite</a></li>
+<li><a class="reference internal" href="#permanent-hard-delete-no-tombstone">Permanent hard-delete (no tombstone)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#restoring-removed-records">Restoring Removed Records</a></li>
@@ -434,7 +442,7 @@ In the record deletion modal interface, select “Public” so that the tombston
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b8aeccfa"></script>
+</div><script src="../_static/documentation_options.js?v=72d88caf"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

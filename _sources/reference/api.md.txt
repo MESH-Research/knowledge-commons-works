@@ -101,6 +101,21 @@ If the collection in question requires review before publication, the request wi
 
 - Step 7: Accept and publish the record
 
+## Hard-delete records (admin)
+
+KCWorks adds irreversible hard-delete endpoints for published or soft-deleted
+records (not part of upstream InvenioRDM soft-delete). Prefer soft-delete for
+moderation; use hard-delete only when a permanent purge is required.
+
+| Operation | Auth | Endpoint |
+| --- | --- | --- |
+| Hard-delete one record | Bearer + scope `records:delete`; administration identity | `DELETE /api/records/{id}/hard-delete` |
+| Hard-delete many (one `id_type`) | same | `POST /api/records/hard-delete` |
+
+Operator procedures, identifier types (`recid` / `doi` / `import-recid`), bulk
+caps, response codes (including **207** on partial failure), and the matching
+CLI: [Hard-delete records (API and CLI)](../admin_guide/record_hard_delete.md).
+
 ## Streamlined Import API
 
 In order to streamline the process of uploading works to KCWorks, particularly for works intended for publication in a collection, KCWorks provides a streamlined import API. This API allows clients to upload a work and its files in a single step, without the need to create a draft record, initialize file uploads, commit file uploads, or submit a review request.

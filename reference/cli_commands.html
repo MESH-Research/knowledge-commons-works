@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Customizations to InvenioRDM" href="../customizations.html"><link rel="prev" title="Outgoing Signals" href="outgoing_signals.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>CLI Commands - Knowledge Commons Works 1.5.5 documentation</title>
+        <title>CLI Commands - Knowledge Commons Works 1.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.5.5 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.5.5 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,6 +200,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../admin_guide/index.html">Administrator Guide</a><input aria-label="Toggle navigation of Administrator Guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/running_commands.html">Running Commands from the KCWorks Back End</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/moderation.html">Content Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_guide/record_hard_delete.html">Hard-delete records (API and CLI)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/organization_management.html">Organization Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../admin_guide/collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
@@ -431,6 +432,38 @@ qualify. See <a class="reference internal" href="api_credentials.html"><span cla
 </div>
 <p>Example of importing 2 records with specific record IDs:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>import-test-records<span class="w"> </span>user@example.com<span class="w"> </span><span class="m">2</span><span class="w"> </span>--record-ids<span class="w"> </span><span class="s2">"1234567890,1234567891"</span>
+</pre></div>
+</div>
+</section>
+<section id="invenio-kcworks-records-hard-delete">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">hard-delete</span></code><a class="headerlink" href="#invenio-kcworks-records-hard-delete" title="Link to this heading">¶</a></h4>
+<p>Permanently hard-deletes one or more published or soft-deleted records. <strong>Cannot
+be undone.</strong> Prefer soft-delete in the admin UI for moderation; see the
+operator guide <a class="reference internal" href="../admin_guide/record_hard_delete.html"><span class="std std-doc">Hard-delete records (API and CLI)</span></a>.</p>
+<p>Runs in-process with <code class="docutils literal notranslate"><span class="pre">system_identity</span></code> and <code class="docutils literal notranslate"><span class="pre">can_hard_delete</span></code> (administration /
+system). Continues on per-id failures, prints a summary, and exits non-zero if
+any failed. Cap: 100 unique ids per identifier scheme. Mixed
+<code class="docutils literal notranslate"><span class="pre">doi:</span></code> / <code class="docutils literal notranslate"><span class="pre">import-recid:</span></code> / <code class="docutils literal notranslate"><span class="pre">recid:</span></code> prefixes are grouped into separate batches.</p>
+<p>Arguments / options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ids</span></code> (optional positional): one or more identifier strings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--from-file</span></code>: one id per line (<code class="docutils literal notranslate"><span class="pre">#</span></code> comments and blanks ignored)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--id-type</span></code>: default type for bare ids (<code class="docutils literal notranslate"><span class="pre">recid</span></code>, <code class="docutils literal notranslate"><span class="pre">doi</span></code>, <code class="docutils literal notranslate"><span class="pre">import-recid</span></code>;
+default <code class="docutils literal notranslate"><span class="pre">recid</span></code>; prefixes override)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--yes-i-know</span></code>: required confirmation flag</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--note</span></code>: optional ops note for the audit log only</p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>hard-delete<span class="w"> </span>--yes-i-know<span class="w"> </span>abc12-def34
+
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>hard-delete<span class="w"> </span>--yes-i-know<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>abc12-def34<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>doi:10.1234/example.v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--note<span class="w"> </span><span class="s2">"purge duplicate"</span>
+
+invenio<span class="w"> </span>kcworks-records<span class="w"> </span>hard-delete<span class="w"> </span>--yes-i-know<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--id-type<span class="w"> </span>doi<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--from-file<span class="w"> </span>/tmp/dois-to-purge.txt
 </pre></div>
 </div>
 </section>
@@ -974,6 +1007,7 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
 <li><a class="reference internal" href="#invenio-kcworks-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span></code></a><ul>
 <li><a class="reference internal" href="#invenio-kcworks-records-export-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-import-test-records"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">import-test-records</span></code></a></li>
+<li><a class="reference internal" href="#invenio-kcworks-records-hard-delete"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">hard-delete</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-bulk-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-change-record-owner"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-update-contributors-username"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code></a></li>
@@ -1025,7 +1059,7 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b8aeccfa"></script>
+</div><script src="../_static/documentation_options.js?v=72d88caf"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
