@@ -81,6 +81,7 @@ permission policies.
 | Command | Local authz | Outbound HTTP credential |
 | --- | --- | --- |
 | `invenio kcworks-records export-records` | `system_identity` + `RecordExportPermissionPolicy` (`can_export_records`: elevated community roles when scoped to a community; subject user when an owner/contributor filter identifies their account; administration; system process) | None — local RDM services only |
+| `invenio kcworks-records hard-delete` | `system_identity` + `KCWorksRecordsPermissionPolicy` (`can_hard_delete`: administration; system process) | None — local RDM services only |
 | `invenio kcworks-records import-test-records` | Local import runs in-process (record importer services; no local API token) | **`--api-token` (required)** — bearer for **reads from the remote** instance that supplies sample metadata/files. Not used to authorize the local CLI itself |
 | Record importer package CLI / service | Local services + importer permission policy | None |
 

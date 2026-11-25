@@ -72,6 +72,7 @@ include **all** listed ids):
 | --- | --- |
 | `records:read` | `/records/` `GET`; `/records/<pid_value>` `GET`; `/records/<pid_value>/versions` `GET`; `/records/<pid_value>/versions/latest` `GET`; `/records/<pid_value>/files` `GET`; `/records/<pid_value>/files/<path:key>` `GET`; `/records/<pid_value>/files/<path:key>/content` `GET` |
 | `records:write` | `/records/` `POST`; `/records/<pid_value>` `DELETE`; `/records/<pid_value>/draft` `GET` `PUT` `DELETE` `POST`; `/records/<pid_value>/draft/actions/publish` `POST`; `/records/<pid_value>/versions` `POST` |
+| `records:delete` | `/records/<pid_value>/hard-delete` `DELETE`; `/records/hard-delete` `POST` |
 | `files:write` | `/records/<pid_value>/draft/files` `GET` `POST`; `/records/<pid_value>/draft/files/<path:key>` `GET` `DELETE`; `/records/<pid_value>/draft/files/<path:key>/content` `POST` `PUT`; `/records/<pid_value>/draft/files/<path:key>/commit` `POST`; `/records/<pid_value>/draft/actions/files-import` `POST` |
 | `communities:read` | `/communities` `GET`; `/communities/<pid_value>` `GET`; `/communities/<pid_value>/members` `GET`; `/communities/<pid_value>/invitations` `GET`; `/communities/<pid_value>/membership-requests` `GET` |
 | `communities:write` | `/communities` `POST`; `/communities/<pid_value>` `PUT` `DELETE`; `/communities/<pid_value>/members` `POST` `PUT` `DELETE`; `/communities/<pid_value>/invitations` `POST`; `/communities/<pid_value>/membership-requests` `POST` |

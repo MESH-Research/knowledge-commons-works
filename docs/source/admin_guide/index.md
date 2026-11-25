@@ -5,6 +5,7 @@
 
 running_commands.md
 moderation.md
+record_hard_delete.md
 user_data_management.md
 organization_management.md
 collection_hierarchy.md

@@ -26,6 +26,12 @@ In the record deletion modal interface, select "Public" so that the tombstone pa
 
 When a record with a DOI is removed, its registration with DataCite cannot be removed. By default, DataCite will continue to resolve the DOI to a tombstone page, even though the record is no longer available on KCWorks, and the DataCite metadata will still be visible. But the record's DataCite state is updated from "findable" to "registered", meaning that the record is no longer findable on DataCite.
 
+#### Permanent hard-delete (no tombstone)
+
+Soft-delete is the normal moderation path. If a record must be **permanently**
+purged (no tombstone, no restore), operators can hard-delete via API or CLI.
+See [Hard-delete records (API and CLI)](record_hard_delete.md).
+
 ### Restoring Removed Records
 
 If a record has been soft-deleted, it can be restored from the "Records" tab of the admin interface. Click the "Deleted" button at the top of the "Records" admin page and either search or browse to find the record. Then click the "Restore record" button near the right end of the row containing the record.

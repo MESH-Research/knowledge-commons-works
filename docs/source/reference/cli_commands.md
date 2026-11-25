@@ -161,6 +161,41 @@ invenio kcworks-records import-test-records user@example.com 2 --record-ids "123
 ```
 
 
+#### `invenio kcworks-records hard-delete`
+
+Permanently hard-deletes one or more published or soft-deleted records. **Cannot
+be undone.** Prefer soft-delete in the admin UI for moderation; see the
+operator guide [Hard-delete records (API and CLI)](../admin_guide/record_hard_delete.md).
+
+Runs in-process with `system_identity` and `can_hard_delete` (administration /
+system). Continues on per-id failures, prints a summary, and exits non-zero if
+any failed. Cap: 100 unique ids per identifier scheme. Mixed
+`doi:` / `import-recid:` / `recid:` prefixes are grouped into separate batches.
+
+Arguments / options:
+
+- `ids` (optional positional): one or more identifier strings
+- `--from-file`: one id per line (`#` comments and blanks ignored)
+- `--id-type`: default type for bare ids (`recid`, `doi`, `import-recid`;
+  default `recid`; prefixes override)
+- `--yes-i-know`: required confirmation flag
+- `--note`: optional ops note for the audit log only
+
+Examples:
+
+```shell
+invenio kcworks-records hard-delete --yes-i-know abc12-def34
+
+invenio kcworks-records hard-delete --yes-i-know \
+  abc12-def34 \
+  doi:10.1234/example.v1 \
+  --note "purge duplicate"
+
+invenio kcworks-records hard-delete --yes-i-know \
+  --id-type doi \
+  --from-file /tmp/dois-to-purge.txt
+```
+
 #### `invenio kcworks-records bulk-update`
 
 Updates a single metadata field to a single new fixed value for **every** record in a community.
