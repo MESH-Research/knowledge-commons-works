@@ -4,13 +4,14 @@
 # Knowledge Commons Works is free software; you can redistribute and/or
 # modify it under the terms of the MIT License; see LICENSE file for more details.
 
-"""DataCite PID provider that retries transient client API failures."""
+"""DataCite PID provider with retry and test-mode delete policy."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from datacite.errors import HttpError
+from datacite.errors import DataCiteError, DataCiteNotFoundError, HttpError
+from flask import current_app
 from invenio_rdm_records.services.pids.providers import (
     DataCiteClient,
     DataCitePIDProvider,
@@ -121,10 +122,13 @@ class RetryingDataCiteClientProxy:
 
 
 class RetryingDataCitePIDProvider(DataCitePIDProvider):
-    """`DataCitePIDProvider` whose DataCite HTTP client retries transients.
+    """`DataCitePIDProvider` with retrying HTTP and test-mode delete policy.
 
-    Provider methods are inherited unchanged from upstream. Only the client
-    `.api` surface is wrapped.
+    The DataCite client `.api` surface retries transient transport/5xx
+    failures. `delete` also mirrors upstream `restore`: under
+    `DATACITE_TEST_MODE`, a remote `DataCiteNotFoundError` is tolerated so
+    local PID cleanup can finish (avoids ERROR cascades on soft-delete /
+    import rollback when the DOI was never present remotely).
     """
 
     def __init__(self, id_, client=None, **kwargs):
@@ -141,3 +145,53 @@ class RetryingDataCitePIDProvider(DataCitePIDProvider):
         if not isinstance(client, RetryingDataCiteClientProxy):
             client = RetryingDataCiteClientProxy(client)
         super().__init__(id_, client=client, **kwargs)
+
+    def delete(self, pid, soft_delete=False, **kwargs):
+        """Delete/unregister a DOI; tolerate NotFound when test mode is on.
+
+        Same remote steps as upstream `DataCitePIDProvider.delete`, but if
+        DataCite returns NotFound and `DATACITE_TEST_MODE` is true, continue
+        with local PID cleanup instead of logging an error and returning
+        `False` (aligned with upstream `restore` and KCWorks hard-delete
+        test-mode policy).
+
+        Args:
+            pid: Persistent identifier to delete.
+            soft_delete: When False, remove the local PID row after a
+                successful (or test-mode-tolerated) remote step.
+            **kwargs: Forwarded to the base PID provider delete.
+
+        Returns:
+            Result of local PID delete, or `False` when a non-tolerated
+            remote DataCite error occurs.
+        """
+        try:
+            if pid.is_reserved():
+                self.client.api.delete_doi(pid.pid_value)
+            elif pid.is_registered():
+                self.client.api.hide_doi(pid.pid_value)
+        except DataCiteNotFoundError as exc:
+            if not current_app.config["DATACITE_TEST_MODE"]:
+                current_app.logger.warning(
+                    "DataCite provider error when deleting DOI for %s",
+                    pid.pid_value,
+                )
+                self._log_errors(exc)
+                return False
+            current_app.logger.info(
+                "DataCite DOI %s not found during delete (test mode); "
+                "continuing with local PID cleanup.",
+                pid.pid_value,
+            )
+        except DataCiteError as exc:
+            current_app.logger.warning(
+                "DataCite provider error when deleting DOI for %s",
+                pid.pid_value,
+            )
+            self._log_errors(exc)
+            return False
+
+        # Skip upstream DataCitePIDProvider.delete (would re-hit the API).
+        return super(DataCitePIDProvider, self).delete(
+            pid, soft_delete=soft_delete, **kwargs
+        )

@@ -20,11 +20,19 @@ RATELIMIT_AUTHENTICATED_USER = "50000 per hour;1000 per minute"
 RATELIMIT_GUEST_USER = "10000 per hour;200 per minute"
 RATELIMIT_ENABLED = True if os.getenv("INVENIO_RATELIMIT_ENABLED") == "True" else False
 
+# Limit on individual non-file parts of multipart/form data
+MAX_FORM_MEMORY_SIZE = 1024 * 500  # 500 Kb, the Werkzeug default
+# NOTE: overridden to 10 Mb for importer endpoints (in RequestMultipartParser)
+
 # File size limits need to match client_max_body_size in
 # nginx_production/conf.d/default.conf
 # For multi-part form data uploads like avatar images
 MAX_CONTENT_LENGTH = (1024 * 1024) * 100  # 100 MB
-# Bulk import (/api/import) raises this per-request via the importer blueprint
+# NOTE: overridden for importer endpoints to 500 GB (in RequestMultipartParser)
+# NOTE: this does not normally affect upload form files because
+# those are streamed directly to S3
+
+# Bulk import (/api/import) raises this per-request via RequestMultipartParser
 # to RECORD_IMPORTER_MAX_CONTENT_LENGTH (default 500 GB); nginx /api/import
 # is 500G. Do not raise the global MAX_CONTENT_LENGTH for all of /api.
 # For deposit file uploads

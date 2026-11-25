@@ -29,6 +29,7 @@ Canonical **commands and toolchain** (uv, pnpm, ruff, ty, test scripts) live in 
 ## Style and tooling
 
 - **Python**: PEP 8, type hints, imports at top (stdlib → third-party → local).
-- **Python docstrings**: **Google-style** (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability.
+- **Python annotations**: Do **not** add `from __future__ import annotations`. The project requires Python ≥ 3.12, so native `list[str]`, `dict[str, Any]`, `X | Y`, etc. are enough. Quote a forward reference only when the name is not defined yet at runtime.
+- **Python docstrings**: **Google-style** (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability. Never use RST double-backtick inline code (see `python-docstring-markdown.mdc`).
 - **JS/TS**: ES2020, camelCase / PascalCase, alphabetized imports where consistent with the file. Use **JSDoc** where it adds clarity (for example `@param`, `@returns`, `@typedef`, `@template`), especially for exports and plain JavaScript.
 - **Error handling**: meaningful context in logs; never log secrets.
