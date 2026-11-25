@@ -40,6 +40,15 @@ REMOTE_API_PROVISIONER_EVENTS = {
                 ),
                 "auth_token": os.getenv("COMMONS_SEARCH_API_TOKEN"),
             },
+            "hard_delete": {
+                "http_method": "DELETE",
+                "with_record_owner": True,
+                "url_factory": lambda identity, *args, **kwargs: (
+                    f"{KC_SEARCH_URL_DOCS}/"
+                    f"{kwargs['record']['custom_fields'].get('kcr:commons_search_recid', '')}"  # noqa: E501
+                ),
+                "auth_token": os.getenv("COMMONS_SEARCH_API_TOKEN"),
+            },
             "delete": {
                 "http_method": "DELETE",
                 "with_record_owner": True,

@@ -3,6 +3,22 @@
 
 # Changes
 
+## 1.6.0 (2026-11-25)
+
+- **Hard delete**: Introduces the ability to completely and permanently delete a
+  record and all of its associated PIDs and artifacts from KCWorks. (This does
+  not extend to removing the record from external services we do not control.)
+  Includes API and CLI interfaces restricted to administrative users with the
+  required OAuth scope.
+- **Importer**:
+  - Changes the default "all_or_none" and "clean_filesnames" settings. By
+    default the importer will not continue after errors or failures with
+    individual import records and report the mixed success and failure results.
+    It will also now sanitize filenames by default, ensuring any problematic
+    characters are removed.
+  - Raises request body size limits for the import endpoint to allow large JSON
+    metadata payloads (up to 10 Mb).
+
 ## 1.5.5 (2026-11-21)
 
 - **Importer**:

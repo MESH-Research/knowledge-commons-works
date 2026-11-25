@@ -1,6 +1,7 @@
 """CLI commands for record operations."""
 
 import ast
+import sys
 import traceback
 from pprint import pformat
 
@@ -10,6 +11,7 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.proxies import current_datastore
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.requests.user_moderation.utils import get_user_records
+from invenio_search.cli import abort_if_false
 
 from invenio_record_importer_kcworks.services.records import RecordsHelper
 from invenio_remote_user_data_kcworks.proxies import (
@@ -18,9 +20,178 @@ from invenio_remote_user_data_kcworks.proxies import (
 from invenio_remote_user_data_kcworks.tasks import (
     rewrite_records_for_kc_username_change,
 )
+from kcworks.proxies import current_kcworks_records_service
 from kcworks.services.records.bulk_operations import update_community_records_metadata
 from kcworks.services.records.export import KCWorksRecordsExporter
+from kcworks.services.records.service import (
+    HARD_DELETE_BATCH_MAX,
+    RECORD_ID_TYPES,
+)
 from kcworks.services.records.test_data import import_test_records
+
+_HARD_DELETE_ID_PREFIXES = ("import-recid:", "doi:", "recid:")
+
+
+def _parse_hard_delete_cli_id(
+    raw: str, default_id_type: str
+) -> tuple[str, str]:
+    """Parse a CLI id, honoring `doi:` / `import-recid:` / `recid:` prefixes.
+
+    Args:
+        raw: Argument or file line.
+        default_id_type: Type used when no prefix is present.
+
+    Returns:
+        `(id, id_type)`.
+    """
+    text = raw.strip()
+    lowered = text.lower()
+    for prefix in _HARD_DELETE_ID_PREFIXES:
+        if lowered.startswith(prefix):
+            return text[len(prefix) :].strip(), prefix[:-1]
+    return text, default_id_type
+
+
+@click.command("hard-delete")
+@click.argument("ids", nargs=-1, type=str)
+@click.option(
+    "--from-file",
+    "from_file",
+    type=click.Path(exists=True, dir_okay=False, readable=True),
+    default=None,
+    help=(
+        "File with one id per line (# comments and blanks ignored). "
+        "Lines may use doi:/import-recid:/recid: prefixes."
+    ),
+)
+@click.option(
+    "--id-type",
+    "id_type",
+    type=click.Choice(sorted(RECORD_ID_TYPES)),
+    default="recid",
+    show_default=True,
+    help="Default id type for bare arguments/lines (prefixes override).",
+)
+@click.option(
+    "--yes-i-know",
+    is_flag=True,
+    callback=abort_if_false,
+    expose_value=False,
+    prompt=(
+        "Do you know that you are going to permanently hard-delete "
+        "these record(s)?"
+    ),
+)
+@click.option(
+    "--note",
+    type=str,
+    default="",
+    help="Optional ops note recorded in the audit log only.",
+)
+@with_appcontext
+def hard_delete_command(
+    ids: tuple[str, ...],
+    from_file: str | None,
+    id_type: str,
+    note: str,
+) -> None:
+    """Permanently hard-delete one or more published/soft-deleted records.
+
+    THIS CANNOT BE UNDONE. Pass id arguments and/or `--from-file`. Ids may be
+    recids (default), DOIs, or import-recid values (`--id-type` or
+    `doi:` / `import-recid:` / `recid:` prefixes). Mixed schemes in one run are
+    grouped and deleted in separate homogeneous batches (cap
+    `HARD_DELETE_BATCH_MAX` unique ids per scheme). Continues on per-id
+    failures and prints a summary; exits non-zero if any failed.
+
+    Raises:
+        click.ClickException: When no ids are given or a batch is too large.
+    """
+    parsed: list[tuple[str, str]] = [
+        _parse_hard_delete_cli_id(raw, id_type) for raw in ids
+    ]
+    if from_file:
+        with open(from_file, encoding="utf-8") as handle:
+            for line in handle:
+                text = line.strip()
+                if not text or text.startswith("#"):
+                    continue
+                parsed.append(_parse_hard_delete_cli_id(text, id_type))
+
+    if not parsed:
+        raise click.ClickException(
+            "Provide at least one id argument and/or --from-file."
+        )
+
+    # Preserve first-seen order of schemes and of ids within each scheme.
+    grouped: dict[str, list[str]] = {}
+    for value, scheme in parsed:
+        bucket = grouped.setdefault(scheme, [])
+        if value not in bucket:
+            bucket.append(value)
+
+    click.secho(
+        f"Permanently hard-deleting {sum(len(v) for v in grouped.values())} "
+        f"id(s) across {len(grouped)} scheme(s) "
+        f"(cap {HARD_DELETE_BATCH_MAX} per scheme)...",
+        fg="red",
+        bold=True,
+        file=sys.stderr,
+    )
+
+    all_results: list[dict] = []
+    total = 0
+    succeeded = 0
+    failed = 0
+    for scheme, batch_ids in grouped.items():
+        try:
+            batch = current_kcworks_records_service.hard_delete_records(
+                system_identity,
+                batch_ids,
+                id_type=scheme,
+                note=note or None,
+            )
+        except ValueError as exc:
+            raise click.ClickException(str(exc)) from exc
+        all_results.extend(batch["results"])
+        total += batch["total"]
+        succeeded += batch["succeeded"]
+        failed += batch["failed"]
+
+    for item in all_results:
+        label = f"{item['id_type']}={item['id']}"
+        if item.get("recid"):
+            label = f"{label} (recid={item['recid']})"
+        if item["ok"]:
+            summary = item["summary"]
+            click.echo(
+                f"OK {label}: parent_purged={summary['parent_purged']}"
+            )
+        else:
+            click.secho(
+                f"FAIL {label}: {item['error']}: {item['message']}",
+                fg="red",
+                file=sys.stderr,
+            )
+
+    click.echo("")
+    click.echo(
+        f"Summary: total={total} succeeded={succeeded} failed={failed}"
+    )
+    if failed:
+        failed_labels = [
+            f"{item['id_type']}={item['id']}"
+            for item in all_results
+            if not item["ok"]
+        ]
+        click.secho(
+            f"Failed ids: {', '.join(failed_labels)}",
+            fg="red",
+            file=sys.stderr,
+        )
+        raise click.ClickException(
+            f"{failed} of {total} hard-delete(s) failed."
+        )
 
 
 @click.command("bulk-update")

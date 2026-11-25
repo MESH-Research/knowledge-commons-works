@@ -43,7 +43,8 @@ Then from the repo root:
 
 ## Code Style Guidelines
 - **Python**: PEP8, type hints required. Put all imports at the top of the file unless that would cause major unnecessary overhead or circular dependencies. Imports sorted: stdlib → third-party → local.
-- **Python docstrings**: Use **Google-style** docstrings (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability.
+- **Python annotations**: Do **not** add `from __future__ import annotations`. Requires Python ≥ 3.12 (`list[str]`, `X | Y`, etc. work natively). Quote forward references only when the name is not yet defined.
+- **Python docstrings**: Use **Google-style** docstrings (for example `Args`, `Returns`, `Raises`). Use **Markdown** in docstrings for formatting (lists, `` `inline code` ``, links) where it improves readability. Never RST double-backtick inline code (see `.cursor/rules/python-docstring-markdown.mdc`).
 - **JS/TS**: ES2020, camelCase vars, PascalCase components. Alphabetized imports. Use **JSDoc** where it adds clarity (for example `@param`, `@returns`, `@typedef`, `@template`), especially for exports and plain JavaScript.
 - **Types**: TypeScript interfaces for public API shapes; Python type checking via [ty](https://github.com/astral-sh/ty) (not mypy).
 - **Error Handling**: `try/catch` blocks, context-rich logs, never log secrets.

@@ -4,7 +4,7 @@ requires = ["babel>2.8", "setuptools>=83", "wheel"]
 
 [project]
 name = "kcworks"
-version = "1.5.5"
+version = "1.6.0"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
@@ -72,6 +72,7 @@ optional-dependencies.dev = [
   "jsonlines",
   "psycopg2-binary>=2.9.10",
   "types-requests",
+  "wcmatch>=11.2",
 ]
 optional-dependencies.docs = [
   "furo",
@@ -120,6 +121,7 @@ entry-points."invenio_base.blueprints".kcworks_views = "kcworks.views.views:crea
 entry-points."invenio_base.blueprints".knowledge_commons_works_menu = "kcworks.blueprints.menu_customization:create_blueprint"
 entry-points."invenio_base.finalize_app".kcworks = "kcworks.ext:finalize_app"
 entry-points."invenio_celery.tasks".kcworks_default_branding = "kcworks.services.communities.tasks"
+entry-points."invenio_celery.tasks".kcworks_files = "kcworks.services.files.tasks"
 entry-points."invenio_celery.tasks".kcworks_health = "kcworks.services.health.tasks"
 entry-points."invenio_i18n.translations_bundle".kcworks = "kcworks"
 entry-points."invenio_jobs.jobs".scheduler_heartbeat = "kcworks.services.health.jobs:SchedulerHeartbeatJob"
@@ -131,6 +133,7 @@ entry-points."invenio_oauth2server.scopes".communities_write = "kcworks.services
 entry-points."invenio_oauth2server.scopes".files_write = "kcworks.services.auth.scopes:files_write_scope"
 entry-points."invenio_oauth2server.scopes".groups_read = "kcworks.services.auth.scopes:groups_read_scope"
 entry-points."invenio_oauth2server.scopes".groups_write = "kcworks.services.auth.scopes:groups_write_scope"
+entry-points."invenio_oauth2server.scopes".records_delete = "kcworks.services.auth.scopes:records_delete_scope"
 entry-points."invenio_oauth2server.scopes".records_export = "kcworks.services.auth.scopes:records_export_scope"
 entry-points."invenio_oauth2server.scopes".records_read = "kcworks.services.auth.scopes:records_read_scope"
 entry-points."invenio_oauth2server.scopes".records_write = "kcworks.services.auth.scopes:records_write_scope"
@@ -153,6 +156,7 @@ dev = [
   "jsonlines",
   "kc-knowledge-base-sync",
   "psycopg2-binary>=2.9.10",
+  "wcmatch>=11.2",
 ]
 docs = [
   "furo",
@@ -387,7 +391,7 @@ run.omit = [
 ]
 
 [tool.bumpversion]
-current_version = "1.5.5"
+current_version = "1.6.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"
