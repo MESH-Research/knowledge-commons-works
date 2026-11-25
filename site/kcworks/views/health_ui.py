@@ -6,6 +6,8 @@
 
 """Browser UI for the KCWorks health report at ``GET /health``."""
 
+from importlib.metadata import version
+
 from flask import abort, g, render_template, request
 from flask_login import current_user, login_required
 
@@ -39,7 +41,9 @@ def health_report_page():
         skip_runtime=_flag("skip_runtime"),
         skip_outbound=_flag("skip_outbound"),
     )
+    version_string = version("kcworks")
     return render_template(
         "kcworks/view_templates/health_report.html",
         report=report,
+        version_string=version_string,
     )
