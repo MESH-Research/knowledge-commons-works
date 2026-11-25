@@ -16,3 +16,8 @@ current_internal_notifications = LocalProxy(
     lambda: current_app.extensions["kcworks"].internal_notifications_service
 )
 """Proxy for the instantiated internal notifications service."""
+
+current_kcworks_records_service = LocalProxy(
+    lambda: current_app.extensions["kcworks"].records_service
+)
+"""Proxy for the instantiated KCWorks records service."""

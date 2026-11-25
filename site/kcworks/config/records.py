@@ -6,10 +6,22 @@
 
 """Configuration variables related to the RDM Records service."""
 
+from enum import StrEnum
+
 from kcworks.services.records.record_communities.community_change_permissions_component import (  # noqa: E501
     CommunityChangePermissionsComponent,
 )
 from kcworks.services.records.schemas import KCWorksRDMRecordSchema
+
+
+class HardDeleteLookupErrorCode(StrEnum):
+    """Machine-readable codes for hard-delete identifier lookup failures."""
+
+    INVALID_ID_TYPE = "invalid_id_type"
+    PARENT_DOI = "parent_doi"
+    AMBIGUOUS = "ambiguous"
+    DRAFT_ONLY = "draft_only"
+
 
 RDM_RECORDS_MAX_TITLE_LENGTH = 260
 """Maximum length for record and additional title fields (metadata validation)."""

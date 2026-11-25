@@ -41,6 +41,12 @@ records_export_scope = Scope(
     help_text=_("Export records for download."),
 )
 
+records_delete_scope = Scope(
+    id_="records:delete",
+    group="records",
+    help_text=_("Hard-delete published records (irreversible)."),
+)
+
 files_write_scope = Scope(
     id_="files:write",
     group="files",

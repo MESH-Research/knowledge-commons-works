@@ -5,6 +5,10 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from werkzeug.exceptions import Forbidden, MethodNotAllowed
 
 from kcworks.views.admin_login.admin_login import AdminLogin
+from kcworks.views.api.hard_delete import (
+    RecordHardDeleteAPI,
+    RecordsHardDeleteBulkAPI,
+)
 from kcworks.views.api.health import HealthReportAPI
 from kcworks.views.api.notifications import InternalNotifications
 from kcworks.views.dev_ui_gallery import dev_ui_gallery
@@ -83,6 +87,19 @@ def create_api_blueprint(app):
             "/health/report",
             view_func=HealthReportAPI.as_view("health_report_api"),
             methods=["GET"],
+        )
+
+        blueprint.add_url_rule(
+            "/records/<pid_value>/hard-delete",
+            view_func=RecordHardDeleteAPI.as_view("record_hard_delete_api"),
+            methods=["DELETE"],
+        )
+        blueprint.add_url_rule(
+            "/records/hard-delete",
+            view_func=RecordsHardDeleteBulkAPI.as_view(
+                "records_hard_delete_bulk_api"
+            ),
+            methods=["POST"],
         )
 
         # Register error handlers

@@ -3577,6 +3577,7 @@ dependencies = [
     { name = "psutil" },
     { name = "pydantic" },
     { name = "tqdm" },
+    { name = "wcmatch" },
 ]
 
 [package.metadata]
@@ -3614,6 +3615,7 @@ requires-dist = [
     { name = "sphinx-design", marker = "extra == 'docs'", specifier = ">=0.3" },
     { name = "tqdm", specifier = ">=4.66" },
     { name = "uc-micro-py", marker = "extra == 'docs'", specifier = ">=1" },
+    { name = "wcmatch", specifier = ">=12.0.4" },
 ]
 provides-extras = ["dev", "docs", "tests"]
 
@@ -4172,7 +4174,6 @@ dependencies = [
     { name = "urllib3" },
     { name = "uwsgi" },
     { name = "virtualenv" },
-    { name = "wcmatch" },
     { name = "werkzeug" },
 ]
 
@@ -4185,6 +4186,7 @@ dev = [
     { name = "jsonlines" },
     { name = "psycopg2-binary" },
     { name = "types-requests" },
+    { name = "wcmatch" },
 ]
 docs = [
     { name = "furo" },
@@ -4219,6 +4221,7 @@ dev = [
     { name = "jsonlines" },
     { name = "kc-knowledge-base-sync" },
     { name = "psycopg2-binary" },
+    { name = "wcmatch" },
 ]
 docs = [
     { name = "furo" },
@@ -4315,7 +4318,7 @@ requires-dist = [
     { name = "urllib3", specifier = ">=2.8" },
     { name = "uwsgi", specifier = ">=2.0.23" },
     { name = "virtualenv", specifier = ">=21.14.13" },
-    { name = "wcmatch", specifier = ">=11.2" },
+    { name = "wcmatch", marker = "extra == 'dev'", specifier = ">=11.2" },
     { name = "werkzeug", specifier = ">=3.1.9" },
 ]
 provides-extras = ["dev", "docs", "tests"]
@@ -4329,6 +4332,7 @@ dev = [
     { name = "jsonlines" },
     { name = "kc-knowledge-base-sync", editable = "site/kcworks/dependencies/kc-knowledge-base-sync" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "wcmatch", specifier = ">=11.2" },
 ]
 docs = [
     { name = "furo" },

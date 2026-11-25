@@ -37,6 +37,7 @@ from kcworks.services.health.report import health_report_as_dict, run_health_rep
 from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import (
     change_record_owner_command,
+    hard_delete_command,
     import_test_records_command,
     migrate_user_command,
     update_contributors_username_command,
@@ -143,6 +144,7 @@ def kcworks_records():
 
 
 kcworks_records.add_command(bulk_update_command)
+kcworks_records.add_command(hard_delete_command)
 kcworks_records.add_command(import_test_records_command)
 kcworks_records.add_command(export_records_command)
 kcworks_records.add_command(change_record_owner_command)

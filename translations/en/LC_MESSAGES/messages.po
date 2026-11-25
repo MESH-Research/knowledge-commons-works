@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-11-21 16:51+0000\n"
+"POT-Creation-Date: 2026-11-25 03:10+0000\n"
 "PO-Revision-Date: 2025-04-24 10:38-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -4841,38 +4841,42 @@ msgid "Export records for download."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:47
-msgid "Upload, replace, and delete draft files."
+msgid "Hard-delete published records (irreversible)."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:53
-msgid "Read collections (communities) and membership information."
+msgid "Upload, replace, and delete draft files."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:59
-msgid "Create and manage collections, members, and invitations."
+msgid "Read collections (communities) and membership information."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:65
-msgid "View and act on requests and reviews."
+msgid "Create and manage collections, members, and invitations."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:71
-msgid "Read user accounts and profiles via the API."
+msgid "View and act on requests and reviews."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:77
-msgid "Modify user accounts via the API (admin actions)."
+msgid "Read user accounts and profiles via the API."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:83
-msgid "Read permission groups (roles) via the API."
+msgid "Modify user accounts via the API (admin actions)."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:89
-msgid "Modify permission groups (roles) via the API."
+msgid "Read permission groups (roles) via the API."
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/services/auth/scopes.py:95
+msgid "Modify permission groups (roles) via the API."
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/services/auth/scopes.py:101
 msgid "Query usage statistics."
 msgstr ""
 

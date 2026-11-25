@@ -84,6 +84,10 @@ from kcworks.services.records.record_communities.community_change_permissions_co
 from kcworks.services.records.record_communities.record_community_ancestor_component import (  # noqa: E501
     RecordCommunityAncestorComponent,
 )
+from kcworks.services.records.service import (
+    KCWorksRecordsService,
+    KCWorksRecordsServiceConfig,
+)
 from kcworks.services.users.patch_avatar_etag import patch_avatar_etag
 from kcworks.templates.template_filters import (
     community_breadcrumb_items,
@@ -164,6 +168,7 @@ class KCWorks:
         self.internal_notifications_service = InternalNotificationService(
             InternalNotificationServiceConfig.build(app)
         )
+        self.records_service = KCWorksRecordsService(KCWorksRecordsServiceConfig)
 
     def init_components(self, app: Flask) -> None:
         """Initialize service components for the KCWorks extension.

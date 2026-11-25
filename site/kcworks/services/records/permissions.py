@@ -99,6 +99,12 @@ class RecordExportPermissionPolicy(BasePermissionPolicy):
     ]
 
 
+class KCWorksRecordsPermissionPolicy(BasePermissionPolicy):
+    """Permission policy for `KCWorksRecordsService` actions."""
+
+    can_hard_delete = [Administration(), SystemProcess()]
+
+
 def per_field_edit_permission_factory(
     community_id: str | None, roles: Sequence[str | Generator | type]
 ) -> Permission:

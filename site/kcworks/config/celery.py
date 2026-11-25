@@ -28,4 +28,14 @@ KCWORKS_CELERY_BEAT_SCHEDULE = {
         "task": "kcworks.services.health.tasks.worker_beat_heartbeat",
         "schedule": timedelta(minutes=15),
     },
+    # Reclaims finalized OV-orphans left after hard-delete teardown.
+    # Skips multipart-linked / writable / younger-than-min-age FileInstances.
+    "clear-orphan-files": {
+        "task": "kcworks.services.files.tasks.clear_orphaned_files_forced",
+        "schedule": timedelta(days=1),
+        "kwargs": {
+            "limit": 1000,
+            "min_age_hours": 24,
+        },
+    },
 }

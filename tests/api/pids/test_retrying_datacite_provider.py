@@ -11,6 +11,7 @@ from unittest.mock import MagicMock
 import pytest
 from datacite.errors import (
     DataCiteBadRequestError,
+    DataCiteNotFoundError,
     DataCiteServerError,
     HttpError,
 )
@@ -178,3 +179,79 @@ def test_provider_register_returns_false_after_retries(appctx, mocker):
     finally:
         appctx.config["DATACITE_RETRY_ATTEMPTS"] = previous_attempts
         appctx.config["DATACITE_RETRY_BACKOFF_SECONDS"] = previous_backoff
+
+
+def _registered_pid_mock() -> MagicMock:
+    """PID that looks registered so delete uses `hide_doi`.
+
+    Returns:
+        A `MagicMock` PID with reserved=False and registered=True.
+    """
+    pid = MagicMock()
+    pid.pid_value = "10.17613/example"
+    pid.is_reserved.return_value = False
+    pid.is_registered.return_value = True
+    pid.delete.return_value = True
+    return pid
+
+
+def test_provider_delete_tolerates_not_found_in_test_mode(appctx, mocker):
+    """Under DATACITE_TEST_MODE, hide_doi NotFound still finishes local delete."""
+    previous = appctx.config["DATACITE_TEST_MODE"]
+    appctx.config["DATACITE_TEST_MODE"] = True
+    try:
+        api = MagicMock()
+        api.hide_doi.side_effect = DataCiteNotFoundError("missing")
+        inner = MagicMock()
+        inner.api = api
+        provider = _provider_with_mock_client(inner)
+        log_errors = mocker.patch.object(provider, "_log_errors")
+        pid = _registered_pid_mock()
+
+        assert provider.delete(pid, soft_delete=False) is True
+        api.hide_doi.assert_called_once_with(pid.pid_value)
+        pid.delete.assert_called_once()
+        log_errors.assert_not_called()
+    finally:
+        appctx.config["DATACITE_TEST_MODE"] = previous
+
+
+def test_provider_delete_returns_false_on_not_found_outside_test_mode(appctx, mocker):
+    """Outside test mode, hide_doi NotFound is a failed remote delete."""
+    previous = appctx.config["DATACITE_TEST_MODE"]
+    appctx.config["DATACITE_TEST_MODE"] = False
+    try:
+        api = MagicMock()
+        api.hide_doi.side_effect = DataCiteNotFoundError("missing")
+        inner = MagicMock()
+        inner.api = api
+        provider = _provider_with_mock_client(inner)
+        log_errors = mocker.patch.object(provider, "_log_errors")
+        pid = _registered_pid_mock()
+
+        assert provider.delete(pid, soft_delete=False) is False
+        api.hide_doi.assert_called_once_with(pid.pid_value)
+        pid.delete.assert_not_called()
+        log_errors.assert_called_once()
+    finally:
+        appctx.config["DATACITE_TEST_MODE"] = previous
+
+
+def test_provider_delete_returns_false_on_other_datacite_errors(appctx, mocker):
+    """Non-NotFound DataCite errors still fail delete (even in test mode)."""
+    previous = appctx.config["DATACITE_TEST_MODE"]
+    appctx.config["DATACITE_TEST_MODE"] = True
+    try:
+        api = MagicMock()
+        api.hide_doi.side_effect = DataCiteBadRequestError("bad request")
+        inner = MagicMock()
+        inner.api = api
+        provider = _provider_with_mock_client(inner)
+        log_errors = mocker.patch.object(provider, "_log_errors")
+        pid = _registered_pid_mock()
+
+        assert provider.delete(pid, soft_delete=False) is False
+        pid.delete.assert_not_called()
+        log_errors.assert_called_once()
+    finally:
+        appctx.config["DATACITE_TEST_MODE"] = previous
