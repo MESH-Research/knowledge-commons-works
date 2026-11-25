@@ -9,7 +9,7 @@ from typing import Any
 import requests
 from flask import current_app as app
 from flask_principal import Identity
-from idutils import normalize_doi
+from idutils import normalize_doi  # ty: ignore[missing-module-member]
 from invenio_access.permissions import system_identity
 from invenio_db import db
 from invenio_pidstore.errors import PIDDoesNotExistError
@@ -27,6 +27,7 @@ from invenio_records_resources.services.uow import (
     RecordCommitOp,
     RecordDeleteOp,
     TaskOp,
+    UnitOfWork,
     unit_of_work,
 )
 from invenio_requests import current_requests_service
@@ -244,7 +245,7 @@ class KCWorksRecordsService(Service):
         *,
         id_type: str = "recid",
         note: str | None = None,
-        uow=None,
+        uow: UnitOfWork | None = None,
     ) -> dict[str, Any]:
         """Irreversibly remove all data for a published (or soft-deleted) record.
 
@@ -264,6 +265,7 @@ class KCWorksRecordsService(Service):
             Summary dict with `id`, `id_type`, `recid`, `parent_purged`, and
             `doi_actions`.
         """
+        assert uow is not None  # injected by `@unit_of_work()`
         scheme = (id_type or "recid").strip().lower()
         input_id = (id_ or "").strip() or id_
         record = self.resolve_record(identity, id_, id_type=scheme)
