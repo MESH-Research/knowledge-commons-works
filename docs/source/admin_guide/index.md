@@ -8,6 +8,7 @@ moderation.md
 record_hard_delete.md
 user_data_management.md
 organization_management.md
+group_collections.md
 collection_hierarchy.md
 record_access.md
 record_search.md

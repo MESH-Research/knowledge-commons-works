@@ -907,19 +907,41 @@ In the absence of such a unique identifier, however, KCWorks will not try to det
 https://works.hcommons.org/api/group_collections
 ```
 
-The `group_collections` REST API endpoint allows a client to create, read, modify, or delete a collection in KCWorks owned and administered by a Knowledge Commons group. GET requests to retrieve information about group collections are open to all clients. POST, PUT, and DELETE requests are secured by an oauth token that must be obtained from the Knowledge Commons Works administrator.
+The `group_collections` REST API endpoint allows a client to create, read,
+associate, transfer, or delete a collection in KCWorks owned and administered
+by a Knowledge Commons group. Requests require an OAuth token with
+`group-collections:read` (GET) or `group-collections:write` (POST / PATCH /
+DELETE). A token owned by the `svc-group-collections` service account may be 
+used for any of these tasks. (See {doc}`service_accounts_and_scopes`.) Otherwise
+methods that change collection data may only be used by an admin user or by
+a user who is both (a) an admin of the associated KC Group, and (b) an owner 
+of any pre-existing KCWorks collections being modified.
 
-This endpoint is not configured to receive all of the metadata required to create or modify group collections. Rather, the `group_collections` endpoint receives minimal signals from a Commons Instance and then obtains the full required metadata via an API callback to the Commons instance.
+This endpoint is not configured to receive all of the metadata about associated KC Groups directly. Rather, the `group_collections` endpoint obtains the full required metadata via an API callback to the Commons instance.
 
 ```{note}
 KCWorks uses the term "collection" in place of the default term "community" employed in other InvenioRDM installations. This is partly to accommodate exactly the integration with Knowledge Commons groups that is discussed here.
 ```
 
-### Group collection owner
+### Group collection ownership and membership
 
-InvenioRDM does not allow groups to be owners of a collection (community). When a collection is created for a group, though, we do not know which of the group's administrators to assign as the individual owner. It is also awkward to change ownership of a collection later on if the group's administrativer personnel change. So the collection is owned by an administrative user who is assigned the role `group-collections-owner`. The group's administrators are then assigned privileges as "managers" of the group collection. This allows them to manage the collection's settings and membership, but not to delete the collection or change its ownership.
+Invenio communities are owned by users or account roles, not by a Commons group
+as such. When a group collection is **created**, KCWorks:
 
-Before the invenio_group_collections_kcworks module can be used, the administrator must create a role called `group-collections-owner` and assign membership in that role to one administrative user account. If multiple user accounts belong to that role, the first user account in the list will be assigned as the owner of group collections. If no user accounts belong to the role, the group collection creation will fail with a NoOwnerAvailable error.
+1. Adds the site `administration` role as a community **owner** (group-type
+   member), so site admins can manage the collection without tying ownership to
+   a single person’s account.
+2. Creates Invenio account roles for the Commons group’s configured remote
+   roles (`{commons_instance}---{commons_group_id}|{label}`) and adds them as
+   community members at the permission levels from
+   `REMOTE_USER_DATA_API_ENDPOINTS[…].groups.group_roles` (for example
+   `owner`, `manager`, `curator`, `reader`).
+
+**Associate** and **transfer** attach (or swap) those Commons group roles and
+`kcr:commons_*` fields the same way; they do not invent a separate
+`group-collections-owner` user. Individual people who hold the Commons group
+admin role locally satisfy the non-admin permission path for associate/transfer
+when they are also community owners.
 
 ### Endpoint configuration
 
@@ -956,7 +978,7 @@ Four optional query parameters can be used to filter the results:
 
 | Parameter name     | Description                                                                                                                                                              |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `commons_instance` | the name of the Commons instance to which the group belongs. If this parameter is provided, the response will only include collections owned by groups in that instance. |
+| `commons_instance` | the name of the Commons instance to which the group belongs. Defaults to `knowledgeCommons` when omitted. Filters to collections owned by groups in that instance. |
 | `commons_group_id` | the ID of the Commons group. If this parameter is provided, the response will only include collections owned by that group.                                              |
 | `collection`       | the slug of the collection. If this parameter is provided, the response will include only metadata for that collection.                                                  |
 | `page`             | the page number of the results                                                                                                                                           |
@@ -1500,7 +1522,7 @@ The request body must be a JSON object with the following fields:
 
 | Field name              | Required | Description                                                                                                                                                                            |
 | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `commons_instance`      | Y        | The name of the Commons instance to which the group belongs. This must be the same string used to identify the instance in the `GROUP_COLLECTIONS_METADATA_ENDPOINTS` config variable. |
+| `commons_instance`      | N        | The name of the Commons instance to which the group belongs. Must match a key in `GROUP_COLLECTIONS_METADATA_ENDPOINTS`. [default: `knowledgeCommons`]                                  |
 | `commons_group_id`      | Y        | The ID of the Commons group that will own the collection.                                                                                                                              |
 | `collection_visibility` | N        | The visibility setting for the collection to be created. Must be either "public" or "restricted". [default: "restricted"]                                                              |
 
@@ -1535,20 +1557,33 @@ The resulting request body will be shaped like this:
 - 403 Forbidden: The request is not authorized to modify the collection.
 - 409 Conflict: A collection already exists in Knowledge Commons Works linked to the specified group.
 
-### Changing the Group Ownership of a Collection (PATCH)
+### Associating an Existing Collection (PATCH …/associate)
 
-```{warning}
-PATCH requests to change group ownership of the collection are not yet implemented.
-```
+Associates an existing KCWorks collection (community) that is **not** yet
+linked to a Commons group. The path `<slug>` is the collection being linked.
+This does not create a new community; it writes `kcr:commons_*` custom fields
+and adds group roles as members. Collection title, description, and website
+are left unchanged.
 
-A PATCH request to this endpoint modifies an existing collection in Invenio by changing the Commons group to which it belongs. This is the _only_ modification that can be made to a collection via this endpoint. Other modifications to Commons group metadata should be handled by signalling the Invenio webhook for commons group metadata updates. Modifications to internal metadata or settings for the Invenio collection should be made view the Invenio "communities" API or the collection settings UI.
+Other modifications to Commons group metadata should be handled by signalling
+the Commons group metadata update webhook. Modifications to internal metadata
+or settings for the Invenio collection should be made via the `communities`
+API or the collection settings UI.
 
-Note that the collection memberships in Invenio will be automatically transferred to the new Commons group. The corporate roles for the old Commons group will be removed from the collection and corporate roles for the new Commons group will be added to its membership with appropriate permissions. But any individual memberships that have been granted through the Invenio UI will be left unchanged. If the new collection administrators wish to change these individual memberships, they will need to do so through the Invenio UI.
+Authorization (in addition to the `group-collections:write` OAuth scope):
+
+- the `group-collections-write` capability role (assigned by KCWorks admins), or
+- Administration / system process, or
+- community ownership **and** the KC group admin role for the target group
+  (`{commons_instance}---{commons_group_id}|administrator`)
+
+For operator steps, see
+{doc}`../admin_guide/group_collections`.
 
 #### Request
 
 ```http
-PATCH https://works.hcommons.org/api/group_collections/my-collection-slug HTTP/1.1
+PATCH https://works.hcommons.org/api/group_collections/my-collection-slug/associate HTTP/1.1
 ```
 
 Required request headers:
@@ -1563,12 +1598,13 @@ Required request headers:
 ```json
 {
   "commons_instance": "knowledgeCommons",
-  "old_commons_group_id": "12345",
-  "new_commons_group_id": "67890",
-  "new_commons_group_name": "My Group",
+  "commons_group_id": "12345",
   "collection_visibility": "public"
 }
 ```
+
+`commons_instance` defaults to `knowledgeCommons` when omitted.
+`collection_visibility` is optional.
 
 #### Successful response status code
 
@@ -1578,30 +1614,106 @@ Required request headers:
 
 ```json
 {
-    "collection": "my-collection-slug"
-    "old_commons_group_id": "12345",
-    "new_commons_group_id": "67890",
+  "commons_group_id": "12345",
+  "collection": "my-collection-slug",
+  "collection_id": "…"
 }
 ```
 
 #### Unsuccessful response codes
 
-- 400 Bad Request: The request body is missing required fields or contains
-  invalid data.
-- 404 Not Found: The collection does not exist.
-- 403 Forbidden: The request is not authorized to modify the collection.
-- 304 Not Modified: The collection is already owned by the specified
-  Commons group.
+- 400 Bad Request: Required fields missing.
+- 403 Forbidden: Caller lacks the write capability, administration, or
+  ownership plus KC group admin role.
+- 404 Not Found: Collection or Commons group not found.
+- 409 Conflict: Collection already linked to another group (use transfer), or
+  the target group already owns a different active collection.
+
+### Transferring Group Ownership (PATCH …/transfer)
+
+Moves an **already linked** collection from one Commons group to another. The
+path `<slug>` is the collection being transferred. Old group role memberships
+are removed via disown (individuals are re-added as individual members); new
+group roles are attached. Individual memberships granted through the Invenio
+UI are left unchanged.
+
+Authorization (in addition to the `group-collections:write` OAuth scope):
+
+- the `group-collections-write` capability role, or
+- Administration / system process, or
+- community ownership **and** the KC group admin role for **both** old and
+  new groups
+
+For operator steps, see
+{doc}`../admin_guide/group_collections`.
+
+#### Request
+
+```http
+PATCH https://works.hcommons.org/api/group_collections/my-collection-slug/transfer HTTP/1.1
+```
+
+Required request headers:
+
+| Header name   | Header value       |
+| ------------- | ------------------ |
+| Content-Type  | `application/json` |
+| Authorization | `Bearer <token>`   |
+
+#### Request body
+
+```json
+{
+  "commons_instance": "knowledgeCommons",
+  "commons_group_id": "67890",
+  "old_commons_instance": "knowledgeCommons",
+  "old_commons_group_id": "12345",
+  "collection_visibility": "public"
+}
+```
+
+`commons_instance` defaults to `knowledgeCommons` when omitted. `old_*` must
+match the collection’s current link. `collection_visibility` is optional.
+
+#### Successful response status code
+
+`200 OK`
+
+#### Successful response body
+
+```json
+{
+  "commons_group_id": "67890",
+  "old_commons_group_id": "12345",
+  "collection": "my-collection-slug",
+  "collection_id": "…"
+}
+```
+
+#### Unsuccessful response codes
+
+- 400 Bad Request: Required fields missing, collection is unlinked (use
+  associate), or `old_*` does not match the current link.
+- 403 Forbidden: Caller lacks the write capability, administration, or
+  ownership plus KC admin on both groups.
+- 404 Not Found: Collection or target Commons group not found.
+- 409 Conflict: Target group already owns a different active collection.
+
+`PATCH /group_collections/<slug>` (without `/associate` or `/transfer`)
+returns `501` and directs clients to the paths above.
 
 ### Deleting a Group's Collection (DELETE)
 
-A DELETE request to this endpoint deletes a collection in Invenio owned by the specified Commons group. Note that the request must include all of:
+A DELETE request to this endpoint soft-deletes a collection in Invenio owned
+by the specified Commons group. The request must include:
 
 - the collection slug as the url path parameter
-- the identifier of the Commons instance to which the group belongs, in the `commons_instance` query parameter
-- the Commons identifier of the group which owns the collection, in the `commons_group_id` query parameter
+- the Commons identifier of the group which owns the collection, in the
+  `commons_group_id` query parameter
 
-If any of these is missing the request will fail with a `400 Bad Request` error. This is to ensure that collections are not deleted accidentally or by agents without authorization.
+The `commons_instance` query parameter is optional and defaults to
+`knowledgeCommons`. If the slug or `commons_group_id` is missing the request
+will fail with a `400 Bad Request` error.
 
 If the collection is successfully deleted, the response status code will be 204 No Content.
 

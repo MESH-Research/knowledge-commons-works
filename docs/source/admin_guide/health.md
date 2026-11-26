@@ -301,6 +301,8 @@ Often called with an OAuth token for `svc-group-collections`
 | `GET` | `https://works.hcommons.org/api/group_collections?commons_instance=&commons_group_id=` | Filtered list |
 | `GET` | `https://works.hcommons.org/api/group_collections/{slug}` | Read one |
 | `POST` | `https://works.hcommons.org/api/group_collections` | Create (Works then GETs Profiles group metadata) |
+| `PATCH` | `https://works.hcommons.org/api/group_collections/{slug}/associate` | Link an existing unlinked collection to a Commons group |
+| `PATCH` | `https://works.hcommons.org/api/group_collections/{slug}/transfer` | Move a linked collection to a different Commons group |
 | `DELETE` | `https://works.hcommons.org/api/group_collections/{slug}?commons_instance=&commons_group_id=` | Soft-delete |
 
 ```bash
@@ -330,11 +332,36 @@ curl -sS -X POST \
   }' \
   'https://works.hcommons.org/api/group_collections'
 
+curl -sS -X PATCH \
+  -H "Authorization: Bearer ${WORKS_API_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "commons_instance": "knowledgeCommons",
+    "commons_group_id": "REPLACE_WITH_REAL_GROUP_ID"
+  }' \
+  "https://works.hcommons.org/api/group_collections/${COLLECTION_SLUG}/associate"
+
+curl -sS -X PATCH \
+  -H "Authorization: Bearer ${WORKS_API_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "commons_instance": "knowledgeCommons",
+    "commons_group_id": "REPLACE_WITH_NEW_GROUP_ID",
+    "old_commons_instance": "knowledgeCommons",
+    "old_commons_group_id": "REPLACE_WITH_OLD_GROUP_ID"
+  }' \
+  "https://works.hcommons.org/api/group_collections/${COLLECTION_SLUG}/transfer"
+
 curl -sS -X DELETE \
   -H "Authorization: Bearer ${WORKS_API_TOKEN}" \
   -H 'Accept: application/json' \
   "https://works.hcommons.org/api/group_collections/${COLLECTION_SLUG}?commons_instance=knowledgeCommons&commons_group_id=${COMMONS_GROUP_ID}"
 ```
+
+Operator how-to:
+{doc}`group_collections`.
 
 ---
 
