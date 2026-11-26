@@ -3,6 +3,11 @@
 
 # Changes
 
+## 1.7.1 (2026-11-26)
+
+- Update user data test to fit new behaviour.
+- Raise uwsgi timeout limit to match nginx for import route.
+
 ## 1.7.0 (2026-11-26)
 
 - **Group collecctions**: associate existing collection or transfer collection
