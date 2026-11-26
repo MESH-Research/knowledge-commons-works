@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: scottia4@msu.edu\n"
-"POT-Creation-Date: 2026-11-26 01:49+0000\n"
+"POT-Creation-Date: 2026-11-26 16:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2225,9 +2225,9 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/funders/config.py:60
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/names/config.py:55
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-vocabularies/invenio_vocabularies/contrib/subjects/config.py:72
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:55
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:90
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:117
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:58
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:98
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:131
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:31
 msgid "Name"
 msgstr ""
@@ -2583,9 +2583,9 @@ msgstr ""
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-communities/invenio_communities/members/services/facets.py:42
 #: /opt/invenio/src/site/kcworks/dependencies/invenio-rdm-records/invenio_rdm_records/services/facets.py:42
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:27
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:56
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:91
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:119
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:59
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:99
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:133
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/task_results.html:32
 msgid "Status"
 msgstr ""
@@ -4901,25 +4901,29 @@ msgstr ""
 msgid "Or"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:3
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:8
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:2
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:6
 msgid "KCWorks health report"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:10
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:8
 msgid "OK"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:12
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:10
 msgid "FAILED"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:16
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:14
 msgid "Checked at"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:18
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:16
 msgid "JSON"
+msgstr ""
+
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:19
+msgid "KCWorks"
 msgstr ""
 
 #: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:21
@@ -4938,66 +4942,66 @@ msgstr ""
 msgid "Evidence"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:42
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:44
 msgid "Stack"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:44
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:47
 msgid "Stack checks passed"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:47
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:50
 msgid "Stack checks failed"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:57
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:92
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:60
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:100
 msgid "Implies"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:58
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:93
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:121
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:61
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:101
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:135
 msgid "Detail"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:70
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:76
 msgid "No parsed check lines (see raw output)."
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:76
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:83
 msgid "Raw script output"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:81
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:88
 msgid "Runtime"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:83
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:91
 msgid "Runtime probes passed"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:85
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:93
 msgid "One or more runtime probes failed"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:108
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:121
 msgid "Outbound"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:110
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:124
 msgid "Outbound probes passed (skipped entries do not fail the report)"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:112
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:126
 msgid "One or more outbound probes failed"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:118
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:132
 msgid "Method"
 msgstr ""
 
-#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:120
+#: /opt/invenio/src/site/kcworks/templates/semantic-ui/kcworks/view_templates/health_report.html:134
 msgid "HTTP"
 msgstr ""
 
