@@ -418,6 +418,27 @@ function create_test_symlinks() {
     fi
   fi
 
+  submodule_tests_dir="site/kcworks/dependencies/invenio-group-collections-kcworks/tests"
+  if [ ! -d "$submodule_tests_dir" ]; then
+    echo "Warning: Submodule tests directory not found at $submodule_tests_dir"
+  else
+    if [ -d "$submodule_tests_dir/api" ]; then
+      rm -f "tests/api/group_collections"
+      ln -s "../../$submodule_tests_dir/api" "tests/api/group_collections"
+      echo "Created symlink: tests/api/group_collections -> $submodule_tests_dir/api"
+    fi
+    if [ -d "$submodule_tests_dir/cli" ]; then
+      rm -f "tests/cli/group_collections"
+      ln -s "../../$submodule_tests_dir/cli" "tests/cli/group_collections"
+      echo "Created symlink: tests/cli/group_collections -> $submodule_tests_dir/cli"
+    fi
+    if [ -d "$submodule_tests_dir/ui" ]; then
+      rm -f "tests/ui/group_collections"
+      ln -s "../../$submodule_tests_dir/ui" "tests/ui/group_collections"
+      echo "Created symlink: tests/ui/group_collections -> $submodule_tests_dir/ui"
+    fi
+  fi
+
   submodule_tests_dir="site/kcworks/dependencies/kcworks-import-client/tests"
   if [ ! -d "$submodule_tests_dir" ]; then
     echo "Warning: Submodule tests directory not found at $submodule_tests_dir"

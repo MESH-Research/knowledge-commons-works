@@ -4,7 +4,7 @@ requires = ["babel>2.8", "setuptools>=83", "wheel"]
 
 [project]
 name = "kcworks"
-version = "1.6.0"
+version = "1.7.0"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Mesh Research", email = "scottia4@msu.edu" }]
@@ -322,7 +322,7 @@ ini_options.addopts = """
 --ignore=site/kcworks/config
 --ignore=site/kcworks/services/search/index_templates
 --ignore=tests/helpers
---cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov-report=term-missing
+--cov=kcworks --cov=invenio_stats_dashboard --cov=invenio_record_importer_kcworks --cov=invenio_group_collections_kcworks --cov-report=term-missing
 """
 ini_options.norecursedirs = [
   "site/kcworks/config",
@@ -377,7 +377,6 @@ ini_options.plugins = [
 [tool.coverage]
 run.omit = [
   "site/kcworks/dependencies/invenio-communities/*",
-  "site/kcworks/dependencies/invenio-group-collections-kcworks/*",
   "site/kcworks/dependencies/invenio-modular-deposit-form/*",
   "site/kcworks/dependencies/invenio-modular-detail-page/*",
   "site/kcworks/dependencies/invenio-rdm-records/*",
@@ -391,7 +390,7 @@ run.omit = [
 ]
 
 [tool.bumpversion]
-current_version = "1.6.0"
+current_version = "1.7.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"

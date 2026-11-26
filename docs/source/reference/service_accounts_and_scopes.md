@@ -30,7 +30,7 @@ only). Do **not** grant them `administration` / `admin`.
 | --- | --- |
 | `svc-commons-profiles` | `RemoteUserDataPermissionPolicy`: `can_trigger_users_sync`, `can_trigger_groups_sync` |
 | `svc-commons-sso` | `RemoteUserDataPermissionPolicy`: `can_trigger_logout_user` |
-| `svc-group-collections` | `GroupCollectionsPermissionPolicy`: create / update / delete group collections (search/read stay ordinary community visibility) |
+| `svc-group-collections` | `GroupCollectionsPermissionPolicy`: create / update / delete / associate / transfer group collections (search/read stay ordinary community visibility) |
 
 ### Inbound static webhook impersonation
 
@@ -91,7 +91,7 @@ Registered but not yet mapped to a route in that table (UI / future use):
 | `webhooks:user-data` | `/api/webhooks/users/update`, `/api/webhooks/user_data_update` (deprecated) | `GET`, `POST` | Internal scope; `@require_oauth_scopes` on RUD views. Static bearer → `svc-commons-profiles`. |
 | `webhooks:logout` | `/api/webhooks/users/logout` | `GET`, `POST` | Internal scope; `@require_oauth_scopes` on RUD views. Static bearer → `svc-commons-sso`. |
 | `group-collections:read` | `/api/group_collections/`, `/api/group_collections/<slug>` | `GET` | `@require_oauth_scopes` on GC resource. |
-| `group-collections:write` | `/api/group_collections/` `POST`; `/api/group_collections/<slug>` `PUT` `PATCH` `DELETE` | as listed | `@require_oauth_scopes` on GC resource. Prefer token owned by `svc-group-collections`. |
+| `group-collections:write` | `/api/group_collections/` `POST`; `/api/group_collections/<slug>` `PUT` `DELETE`; `/api/group_collections/<slug>/associate` `PATCH`; `/api/group_collections/<slug>/transfer` `PATCH` | as listed | `@require_oauth_scopes` on GC resource. Prefer token owned by `svc-group-collections`. Bare `PATCH /<slug>` returns `501`. |
 
 ### Upstream scopes
 
