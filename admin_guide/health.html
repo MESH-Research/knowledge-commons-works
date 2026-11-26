@@ -203,6 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="record_hard_delete.html">Hard-delete records (API and CLI)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_data_management.html">User Data Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="organization_management.html">Organization Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group_collections.html">Group collections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collection_hierarchy.html">Collection hierarchy and subcollection requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="record_access.html">Record access: requests and grants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="record_search.html">Record search</a></li>
@@ -696,6 +697,14 @@ curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span
 <td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections</span></code></p></td>
 <td><p>Create (Works then GETs Profiles group metadata)</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections/{slug}/associate</span></code></p></td>
+<td><p>Link an existing unlinked collection to a Commons group</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PATCH</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections/{slug}/transfer</span></code></p></td>
+<td><p>Move a linked collection to a different Commons group</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DELETE</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">https://works.hcommons.org/api/group_collections/{slug}?commons_instance=&amp;commons_group_id=</span></code></p></td>
 <td><p>Soft-delete</p></td>
@@ -729,12 +738,36 @@ curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span
 <span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span><span class="s1">'https://works.hcommons.org/api/group_collections'</span>
 
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "commons_instance": "knowledgeCommons",</span>
+<span class="s1">    "commons_group_id": "REPLACE_WITH_REAL_GROUP_ID"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">/associate"</span>
+
+curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "commons_instance": "knowledgeCommons",</span>
+<span class="s1">    "commons_group_id": "REPLACE_WITH_NEW_GROUP_ID",</span>
+<span class="s1">    "old_commons_instance": "knowledgeCommons",</span>
+<span class="s1">    "old_commons_group_id": "REPLACE_WITH_OLD_GROUP_ID"</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">/transfer"</span>
+
 curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="si">${</span><span class="nv">WORKS_API_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span><span class="s2">"https://works.hcommons.org/api/group_collections/</span><span class="si">${</span><span class="nv">COLLECTION_SLUG</span><span class="si">}</span><span class="s2">?commons_instance=knowledgeCommons&amp;commons_group_id=</span><span class="si">${</span><span class="nv">COMMONS_GROUP_ID</span><span class="si">}</span><span class="s2">"</span>
 </pre></div>
 </div>
+<p>Operator how-to:
+<a class="reference internal" href="group_collections.html"><span class="doc">Group collections</span></a>.</p>
 </section>
 </section>
 <hr class="docutils" />
