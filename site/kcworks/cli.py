@@ -34,14 +34,13 @@ from kcworks.services.communities.cli import (
     update_index_mapping,
 )
 from kcworks.services.health.report import health_report_as_dict, run_health_report
-from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import (
     change_record_owner_command,
     hard_delete_command,
     import_test_records_command,
     migrate_user_command,
-    update_contributors_username_command,
 )
+from kcworks.services.records.cli import bulk_update as bulk_update_command
 from kcworks.services.records.cli import export_records as export_records_command
 from kcworks.services.search.indices import delete_index
 from kcworks.services.users.cli import (
@@ -50,7 +49,6 @@ from kcworks.services.users.cli import (
 from kcworks.services.users.cli import find_duplicates as find_duplicates_command
 from kcworks.services.users.cli import group_users as group_users_command
 from kcworks.services.users.cli import groups as groups_command
-from kcworks.services.users.cli import name_parts as name_parts_command
 from kcworks.services.users.cli import read as read_command
 from kcworks.services.users.cli import user_groups as user_groups_command
 
@@ -74,7 +72,6 @@ def kcworks_users():
     pass
 
 
-kcworks_users.add_command(name_parts_command)
 kcworks_users.add_command(read_command)
 kcworks_users.add_command(find_duplicates_command)
 kcworks_users.add_command(groups_command)
@@ -148,7 +145,6 @@ kcworks_records.add_command(hard_delete_command)
 kcworks_records.add_command(import_test_records_command)
 kcworks_records.add_command(export_records_command)
 kcworks_records.add_command(change_record_owner_command)
-kcworks_records.add_command(update_contributors_username_command)
 kcworks_records.add_command(migrate_user_command)
 
 

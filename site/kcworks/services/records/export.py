@@ -17,7 +17,7 @@ from invenio_records_resources.services.base import Service
 from invenio_records_resources.services.base.config import ServiceConfig
 
 from kcworks.services.records.permissions import RecordExportPermissionPolicy
-from kcworks.services.users.service import UserSearchHelper
+from kcworks.services.search.user_search import UserSearchHelper
 
 
 class KCWorksRecordsExporterConfig(ServiceConfig):

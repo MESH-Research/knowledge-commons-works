@@ -164,9 +164,10 @@ invenio kcworks-jobs upsert process_fast_subject_updates \
     --schedule "crontab:minute=0,hour=2,day_of_week=3" \
     --queue celery
 
-# Names vocabulary maintenance (event-driven USER/CITED upserts still run
-# without these). Order: ORCID merge, then soft-duplicate scan, then missing
-# USER backfill. Offset after the ROR/awards window so index load is staggered.
+# Names vocabulary maintenance (event-driven kcworks-user / kcworks-cited
+# upserts still run without these). Order: ORCID merge, then soft-duplicate
+# scan, then missing kcworks-user backfill. Offset after the ROR/awards window
+# so index load is staggered.
 echo -e "${yellow}Registering scheduled Names vocabulary jobs...${clear}"
 invenio kcworks-jobs upsert merge_names_orcid_duplicates \
     --title "Merge Names ORCID duplicates" \
@@ -177,7 +178,7 @@ invenio kcworks-jobs upsert find_names_duplicates \
     --schedule "crontab:minute=0,hour=8,day_of_week=0" \
     --queue celery
 invenio kcworks-jobs upsert sync_names_missing_users \
-    --title "Sync missing Names USER records" \
+    --title "Sync missing kcworks-user Names records" \
     --schedule "crontab:minute=0,hour=9,day_of_week=0" \
     --queue celery
 

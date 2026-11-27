@@ -242,32 +242,12 @@ invenio kcworks-records change-record-owner --record-id abc123-def456 --new-owne
 invenio kcworks-records change-record-owner --old-owner-id 100 --new-owner-id 200
 ```
 
-#### `invenio kcworks-records update_contributors_username`
-
-Rewrites `kc_username` identifiers in record `metadata.creators` and
-`metadata.contributors`. For account merge/migration after
-`change-record-owner` when creator blocks still cite the duplicate's KC
-username. Calls `rewrite_records_for_kc_username_change` with
-`prune_names=False` (record metadata only; no Names prune).
-
-Named options:
-
-- `--old-kc-username` / `-o` (required): KC username on matching creator/contributor entries.
-- `--new-kc-username` / `-n` (required): KC username to write in its place.
-- `--dry-run`: list matching record IDs without writing changes.
-- `--background`: queue the rewrite on Celery instead of running synchronously.
-
-```shell
-invenio kcworks-records update_contributors_username \
-  -o duplicateuser \
-  -n canonicaluser
-```
-
 #### `invenio kcworks-records migrate_user`
 
 Runs account merge in two steps: `change-record-owner` (all published records
 from `--old-owner-id` to `--new-owner-id`), then
-`update_contributors_username` (`--old-kc-username` to `--new-kc-username`).
+`user-data records update_contributors_username` (`--old-kc-username` to
+`--new-kc-username`).
 
 Named options:
 
@@ -290,24 +270,6 @@ invenio kcworks-records migrate_user \
 ### `invenio kcworks-users`
 
 - **provided by the main KCWorks package** (kcworks/site/cli.py and kcworks/services/users/cli.py)
-
-#### `invenio kcworks-users name-parts`
-Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata. Updates also queue an asynchronous Names vocabulary sync for the user.
-
-Positional arguments:
-- `user_id`: the ID of the user to read or update.
-
-Named arguments:
-- `--given` (-g): the first or given name of the user.
-- `--family` (-f): the last or family name of the user.
-- `--middle` (-m): one or more middle names, separated by spaces.
-- `--suffix` (-s): a suffix that follows the last name (e.g. 'Jr., III'). This is moved behind the first name when names are listed with the last name first.
-- `--family-prefix` (-r): a prefix introducing the family name (like 'von', etc.) that is not kept in front of the family name for last-name-first display.
-- `--family-prefix-fixed` (-x): a prefix introducing the family name (like 'ibn', 'van der', 'de la', 'de', 'von', etc.) that is kept in front of the family name for last-name-first display.
-- `--spousal` (-u): a spousal family name that is kept in front of the family name for last-name-first display (e.g. 'Garcia' + 'Martinez' -> 'Garcia Martinez').
-- `--parental` (-p): a parental name, like a patronymic or matronymic, that comes between the first and last names but is not included with the last names for last-name-first display.
-- `--undivided` (-n): a name string that should not be divided into parts, but should be kept the same in any alphabetical list.
-- `--nickname` (-k): the nickname of the user.
 
 #### `invenio kcworks-users read`
 Reads a KCWorks user's data from the database, including associated KC account
@@ -631,8 +593,9 @@ Detailed option reference for these commands lives in the package source at `sit
 
 Subgroups:
 
-- `invenio user-data users` — bulk user provisioning and re-pull from Profiles
+- `invenio user-data users` — bulk user provisioning / re-pull from Profiles, local name-parts, `display_name` backfill
 - `invenio user-data names` — Names vocabulary maintenance and duplicate review
+- `invenio user-data records` — creatibutor username / display_name rewrites on RDM records
 
 See [User Data Management](../admin_guide/user_data_management.md) for operational workflows.
 
@@ -662,6 +625,90 @@ invenio user-data users update user@example.org --by-email
 #### `invenio user-data users ingest-profiles-dump`
 
 Bulk-creates or updates local users from a Profiles API JSONL dump or a CSV of usernames. Accepts `--background` to queue the work on Celery instead of running synchronously.
+
+#### `invenio user-data users name-parts`
+
+Reads or updates the local name-parts override (`user_profile.name_parts_local`)
+used to construct display strings and deposit autofill. A successful update
+also refreshes persisted `user_profile.display_name` (inverted form) and queues
+an asynchronous Names vocabulary sync for the user.
+
+Positional arguments:
+
+- `user_id`: the local Invenio user id to read or update.
+
+Named arguments:
+
+- `--given` (`-g`): given / first name
+- `--family` (`-f`): family / last name
+- `--middle` (`-m`): one or more middle names, separated by spaces
+- `--suffix` (`-s`): suffix after the family name (e.g. `Jr.`, `III`)
+- `--family-prefix` (`-r`): family-name particle not kept for alphabetical sorting
+- `--family-prefix-fixed` (`-x`): family-name particle kept for alphabetical sorting
+- `--spousal` (`-u`): spousal family name kept ahead of the family name for sorting
+- `--parental` (`-p`): parental / patronymic name between given and family
+- `--undivided` (`-n`): undivided name string for alphabetical lists
+- `--nickname` (`-k`): nickname
+
+```shell
+invenio user-data users name-parts 12345
+invenio user-data users name-parts 12345 --given "María" --family "García López"
+```
+
+#### `invenio user-data users backfill-display-names`
+
+Fills empty `user_profile.display_name` values from `name_parts_local` or
+`name_parts` (inverted form). Does not rewrite creatibutor strings on records
+(use `user-data records backfill-creatibutor-names` for that).
+
+Named options:
+
+- `--dry-run`: count would-be writes without committing
+- `--force`: overwrite existing non-empty `display_name` values
+- `--limit`: stop after this many profile updates
+- `--sync-names`: upsert each updated user's Names vocabulary entry
+
+```shell
+invenio user-data users backfill-display-names --dry-run
+invenio user-data users backfill-display-names --sync-names
+```
+
+#### `invenio user-data records update_contributors_username`
+
+Rewrites `kc_username` identifiers in record `metadata.creators` and
+`metadata.contributors`. For account merge/migration after
+`change-record-owner` when creator blocks still cite the duplicate's KC
+username. Calls `rewrite_records_for_kc_username_change` with
+`prune_names=False` (record metadata only; no Names prune).
+
+Named options:
+
+- `--old-kc-username` / `-o` (required): KC username on matching creator/contributor entries.
+- `--new-kc-username` / `-n` (required): KC username to write in its place.
+- `--dry-run`: list matching record IDs without writing changes.
+- `--background`: queue the rewrite on Celery instead of running synchronously.
+
+```shell
+invenio user-data records update_contributors_username \
+  -o duplicateuser \
+  -n canonicaluser
+```
+
+#### `invenio user-data records backfill-creatibutor-names`
+
+Sets creatibutor `person_or_org.name` to each matched user's profile
+`display_name` (by `kc_username` / `orcid` / `email` identifiers). Requires
+`display_name` to already be set (`user-data users backfill-display-names`).
+
+Named options:
+
+- `--dry-run`: report what would change without writing.
+- `--limit`: stop after updating this many records (published + drafts).
+- `--user-id`: only process creatibutors for one local user id.
+
+```shell
+invenio user-data records backfill-creatibutor-names --dry-run
+```
 
 #### `invenio user-data names`
 

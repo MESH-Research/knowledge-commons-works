@@ -169,7 +169,7 @@ invenio kcworks-jobs upsert find_names_duplicates \
     --schedule "crontab:minute=0,hour=8,day_of_week=0" \
     --queue celery
 invenio kcworks-jobs upsert sync_names_missing_users \
-    --title "Sync missing Names USER records" \
+    --title "Sync missing kcworks-user Names records" \
     --schedule "crontab:minute=0,hour=9,day_of_week=0" \
     --queue celery
 

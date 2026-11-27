@@ -3,10 +3,26 @@
 
 # Changes
 
+## Unreleased
+
+- **Names / profiles**: Persist inverted `user_profile.display_name` alongside
+  `full_name` and structured name parts. Remote sync, local name-parts edits,
+  Names `kcworks-user` upserts, and deposit autofill share that inverted form. New CLI:
+  `user-data users name-parts`, `user-data users backfill-display-names`, and
+  `user-data records backfill-creatibutor-names` (with
+  `update_contributors_username` moved under `user-data records`). See
+  [User Data Management](admin_guide/user_data_management.md#how-are-names-represented).
+
 ## 1.7.1 (2026-11-26)
 
-- Update user data test to fit new behaviour.
-- Raise uwsgi timeout limit to match nginx for import route.
+- **Testing**: Update user data test to fit new behaviour.
+- **Importer**: Raise uwsgi timeout limit to match nginx for import route.
+- **Security (JS assets)**:
+  - raise pinned minimum package versions for js packages affected by current
+    dependabot alerts: `axios`, `react-router-dom`, `lodash`, `video.js`,
+    `admin-lte`, `shell-quote`.
+  - sync root `package.json` and `pnpm.lock` (used for testing) with the dynamic
+    versions built inside app containers by invenio-assets.
 
 ## 1.7.0 (2026-11-26)
 

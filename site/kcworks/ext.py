@@ -93,7 +93,7 @@ from kcworks.templates.template_filters import (
     community_breadcrumb_items,
     community_dashboard_request_url,
     community_theme_settings_menu_visible,
-    user_profile_dict,
+    user_works_search_url,
 )
 from kcworks.utils.menu_utils import alter_menu_from_config
 from kcworks.utils.ordering import ensure_order
@@ -317,7 +317,7 @@ class KCWorks:
         app.jinja_env.filters["community_theme_settings_menu_visible"] = (
             community_theme_settings_menu_visible
         )
-        app.jinja_env.filters["user_profile_dict"] = user_profile_dict
+        app.jinja_env.filters["user_works_search_url"] = user_works_search_url
         app.add_template_global(community_dashboard_request_url)
 
 

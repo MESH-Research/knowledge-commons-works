@@ -76,7 +76,7 @@ hits. Notable examples:
 | ----- | --------------- |
 | `title` | Main title and additional titles (`metadata.title`, `metadata.additional_titles.title`) |
 | `description` / `abstract` | Main description and additional descriptions (`metadata.description`, `metadata.additional_descriptions.description`) |
-| `author` / `contributor` / `creator` | Creators and contributors: names and person/org identifiers (`metadata.creators.person_or_org.name`, `metadata.contributors.person_or_org.name`, and the corresponding `….identifiers.identifier` paths) |
+| `author` / `contributor` / `creator` | Creators and contributors: names and person/org identifiers (`metadata.creators.person_or_org.name`, `metadata.contributors.person_or_org.name`, and the corresponding `….identifiers.identifier` paths). The dashboard **My Works** link builds a query that ORs the current user's `full_name`, `display_name`, name aliases, and profile identifiers so works remain findable across natural and inverted forms. |
 | `affiliation` | Creator and contributor affiliation names and identifiers (`metadata.creators.affiliations.name`, `metadata.contributors.affiliations.name`, and the corresponding `….identifiers.identifier` paths) |
 | `funder` | Funder name and funder identifiers (`metadata.funding.funder.name`, `metadata.funding.funder.identifiers.identifier`) |
 | `award` | Award title (all languages) and award number (`metadata.funding.award.title.*`, `metadata.funding.award.number`) |

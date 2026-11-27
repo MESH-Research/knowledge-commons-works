@@ -190,9 +190,17 @@ The array of owners, if provided in a metadata object's `parent.access.owned_by`
 
 | key           | required | type     | description                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `full_name`   | yes      | `string` | The full name of the user.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `full_name`   | yes      | `string` | The full name of the user (natural order).                                                                                                                                                                                                                                                                                                                                                                            |
 | `email`       | yes      | `string` | The email address of the user.                                                                                                                                                                                                                                                                                                                                                                                        |
 | `identifiers` | no       | `array`  | An array of identifiers for the user. Any identifier schemes supported by KCWorks will be accepted. If the user already has a KCWorks account, the `kc_username` scheme should be used and the user's username provided as the identifier. If you wish to provide an ORCID, it is recommended to use the `orcid` scheme. Identifiers for external organizations should be provided using the `import_user_id` scheme. |
+
+```{note}
+Import owners only require `full_name` (plus `email`). Once a local account
+exists, KCWorks also persists `user_profile.display_name` (inverted /
+bibliographic form) alongside `full_name`, structured name parts, and
+identifiers. See
+[How are names represented?](../admin_guide/user_data_management.md#how-are-names-represented).
+```
 
 The resulting `owners` list should be shaped like this:
 

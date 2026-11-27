@@ -11,17 +11,10 @@
 This module contains custom Jinja2 template filters for KCWorks.
 """
 
-import json
-
-from flask import current_app
+from flask import current_app, url_for
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities as communities
-
-from invenio_remote_user_data_kcworks.utils.names import (
-    get_full_name,
-    get_full_name_inverted,
-    get_given_name,
-)
+from kcworks.services.search.user_search import UserSearchHelper
 
 
 def community_breadcrumb_items(community_ui):
@@ -105,61 +98,24 @@ def community_theme_settings_menu_visible(community_ui: dict) -> bool:
     return bool(theme.get("enabled"))
 
 
-def user_profile_dict(user_profile):
-    """Convert a user profile object to a dictionary with all profile fields.
+def user_works_search_url(user):
+    """Build the dashboard "My Works" search URL for a user.
 
-    Include all possible name variants in the dictionary.
-    Returns {} for anonymous users or when the profile has no user_profile data.
+    Uses `UserSearchHelper.query_string_for_user_url_encoded` so the link
+    matches backend works-by-user search (names, aliases, and creatibutor
+    identifiers).
 
     Args:
-        user_profile: The user profile object to convert
+        user: An authenticated Invenio `User` (e.g. `current_user`).
 
     Returns:
-        dict: A dictionary containing all user profile fields
+        Search UI URL with a prebuilt `q` parameter, or the bare search
+        URL when `user` is missing.
     """
-    profile_data = getattr(user_profile, "user_profile", None) if user_profile else None
-    if not profile_data:
-        return {}
-
-    # Get the profile fields from config
-    profile_fields = current_app.config.get(
-        "ACCOUNTS_USER_PROFILE_SCHEMA", {}
-    ).fields.keys()
-
-    # Create base dictionary with id
-    profile_id = getattr(user_profile, "id", None) if user_profile else None
-    profile_dict = {"id": profile_id if profile_id else ""}
-
-    # Add all profile fields
-    for field in profile_fields:
-        profile_dict[field] = profile_data.get(field, "")
-
-    name_parts = profile_data.get("name_parts_local") or profile_data.get("name_parts")
-
-    if name_parts:
-        try:
-            parts = (
-                json.loads(name_parts) if isinstance(name_parts, str) else name_parts
-            )
-        except (TypeError, ValueError, json.JSONDecodeError):
-            parts = {}
-        if isinstance(parts, dict):
-            # Remote sync uses "first"; local name parts use "given".
-            # Never fall back to full_name here — callers use email instead.
-            given = get_given_name(parts).strip()
-            if given:
-                profile_dict["first_name"] = given
-
-        full_name = get_full_name(name_parts, json_input=True)
-        full_name_inverted = get_full_name_inverted(name_parts, json_input=True)
-        profile_dict["full_name_alt"] = full_name_inverted
-
-        if profile_data.get("full_name"):
-            if profile_data.get("full_name") == full_name_inverted:
-                profile_dict["full_name_alt"] = full_name
-            elif profile_data.get("full_name") != full_name:
-                profile_dict["full_name_alt_b"] = full_name
-        else:
-            profile_dict["full_name"] = full_name
-
-    return profile_dict
+    base = url_for("invenio_search_ui.search")
+    if not user:
+        return base
+    query = UserSearchHelper.query_string_for_user_url_encoded(user)
+    if not query:
+        return base
+    return f"{base}?q={query}"

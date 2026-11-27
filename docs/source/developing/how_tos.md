@@ -24,7 +24,13 @@ Remember to restart the KCWorks docker-compose project with both the `docker-com
 
 Operations to read, write, or modify user data in KCWorks can be performed via the `User` API object and the `invenio_accounts.datastore` service object. There is also a higher-level `UsersService` class provided by `invenio_users_resources` that aggregates this user information together with some additional data and offers some convenient methods, but it is used primarily for read operations and not modification.
 
-There is also a `kcworks-users` CLI command that provides some convenient methods for working with user profile data.
+Local name-field reads/writes and `display_name` backfill live in
+`invenio-remote-user-data-kcworks` (`UserProfileService` and the
+`invenio user-data users` CLI). Account inspection helpers such as
+`invenio kcworks-users read` / `find-duplicates` remain on the main KCWorks
+package. For the operator view of how profile, Names, and creatibutor strings
+relate, see
+[How are names represented?](../admin_guide/user_data_management.md#how-are-names-represented).
 
 ### The User API object
 
@@ -45,10 +51,17 @@ The `User` object has the following properties:
 - `username` (str)
     - system generates "displayname" with case preserved and makes username lowercase to enforce uniqueness
 - `user_profile` (UserProfileDict)
-    - a dictionary with keys
-        - full_name
-        - affiliations
-    - not regular dict: this is a UserProfileDict from `invenio_accounts.profiles`
+    - a dictionary shaped by `ACCOUNTS_USER_PROFILE_SCHEMA` (see
+      `site/kcworks/config/users.py`), including:
+        - `full_name` — natural-order display string (usually from Profiles)
+        - `display_name` — inverted / bibliographic form (`Family, Given …`)
+        - `name_parts` — JSON string of remote-synced structured parts
+        - `name_parts_local` — JSON string of admin/local override parts
+        - `affiliations`
+        - `identifier_kc_username`, `identifier_orcid`, `identifier_email`,
+          `identifier_other`
+        - `unread_notifications`
+    - not a plain dict: this is a `UserProfileDict` from `invenio_accounts.profiles`
 - `roles` (list)
 - `preferences` (PreferencesDict)
     - not regular dict: this is a PreferencesDict from `invenio_accounts.profiles`
