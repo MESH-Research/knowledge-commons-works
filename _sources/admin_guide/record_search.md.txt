@@ -57,7 +57,8 @@ for how quotes behave with single words):
 | ------- | ------- |
 | `title:climate` | Title fields contain the term `climate` (`metadata.title`, `metadata.additional_titles.title`) |
 | `title:"open science"` | Phrase `open science` in those same title fields (in order, adjacent) |
-| `author:smith` | Creator or contributor name or person/org identifier matches (`metadata.creators…` / `metadata.contributors…`) |
+| `author:smith` | Resolve-first person search (see below); on miss, creator/contributor name or person/org identifier matches |
+| `user:jdoe` / `name:"Jane Doe"` | Same resolve-first person behavior as `author:` (KC username, ORCID, or exact profile name) |
 | `keyword:methodology` | User-defined keyword/tag (`custom_fields.kcr:user_defined_tags`) |
 | `subject:history` | Controlled subject vocabulary term (`metadata.subjects.subject`) |
 | `doi:10.1234/example` | DOI identifier (`pids.doi.identifier`) |
@@ -76,7 +77,7 @@ hits. Notable examples:
 | ----- | --------------- |
 | `title` | Main title and additional titles (`metadata.title`, `metadata.additional_titles.title`) |
 | `description` / `abstract` | Main description and additional descriptions (`metadata.description`, `metadata.additional_descriptions.description`) |
-| `author` / `contributor` / `creator` | Creators and contributors: names and person/org identifiers (`metadata.creators.person_or_org.name`, `metadata.contributors.person_or_org.name`, and the corresponding `….identifiers.identifier` paths) |
+| `author` / `authors` / `contributor` / `creator` / `user` / `name` | **Resolve-first:** if the value matches a local Works user (ORCID, email, KC username, or exact `full_name` / `display_name`), expand like **My Works** — OR of that user's name variants and profile identifiers on creator/contributor paths. On miss (or wildcards like `author:smi*`), fall back to literal multi-field OR over creatibutor `name` and `identifiers.identifier`. |
 | `affiliation` | Creator and contributor affiliation names and identifiers (`metadata.creators.affiliations.name`, `metadata.contributors.affiliations.name`, and the corresponding `….identifiers.identifier` paths) |
 | `funder` | Funder name and funder identifiers (`metadata.funding.funder.name`, `metadata.funding.funder.identifiers.identifier`) |
 | `award` | Award title (all languages) and award number (`metadata.funding.award.title.*`, `metadata.funding.award.number`) |
@@ -136,11 +137,11 @@ Aliases are defined in `site/kcworks/config/search.py` as
 (`custom_fields.code:codeRepository`)
 
 **People / orgs:** `contributor` / `contributors` / `creator` / `creators` /
-`author` / `authors` (see multi-field table under author); `affiliation` /
-`affiliations` (see multi-field table); `funder` / `funding` (see multi-field
-table); `award` (see multi-field table); `ror` (see multi-field table);
-`organization` / `institution` (see multi-field table); `university` (see
-multi-field table); `sponsoring_institution` / `sponsor`
+`author` / `authors` / `user` / `name` (resolve-first; see multi-field table);
+`affiliation` / `affiliations` (see multi-field table); `funder` / `funding`
+(see multi-field table); `award` (see multi-field table); `ror` (see
+multi-field table); `organization` / `institution` (see multi-field table);
+`university` (see multi-field table); `sponsoring_institution` / `sponsor`
 (`custom_fields.kcr:sponsoring_institution`)
 
 **Subjects / tags:** `subject` / `subjects` (`metadata.subjects.subject`);
@@ -194,7 +195,8 @@ There is no one-word `thesis` alias. Use `thesis_university`, `thesis_type`,
 | Piece | Role |
 | ----- | ---- |
 | `site/kcworks/config/search.py` | `RECORD_SEARCH_FIELD_ALIASES` and `RECORD_SEARCH_QUERY_PARSER` |
-| `site/kcworks/services/search/queryparser/transformer.py` | `MultiFieldSearchTransformer` (expands multi-path aliases to OR) |
+| `site/kcworks/services/search/queryparser/transformer.py` | `MultiFieldSearchTransformer` (multi-path OR; person resolve-first) |
+| `site/kcworks/services/search/user_search.py` | `UserSearchHelper` (My Works + person-alias expansion) |
 | `invenio.cfg` → `RDM_SEARCH["query_parser_cls"]` | Wires the parser into record and community-records **API** search |
 | `invenio.cfg` → `RDM_SEARCH_DRAFTS["query_parser_cls"]` | Same parser for user uploads / drafts **API** search |
 

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Organization Management" href="organization_management.html"><link rel="prev" title="Hard-delete records (API and CLI)" href="record_hard_delete.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>User Data Management - Knowledge Commons Works 1.7.0 documentation</title>
+        <title>User Data Management - Knowledge Commons Works 1.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.7.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -291,9 +291,12 @@
 <p>KCWorks stores user profile data locally and keeps it in sync with the Knowledge
 Commons Profiles service. Administrators can provision users in bulk, inspect
 accounts, merge duplicate local accounts, correct how a user’s name is divided
-into parts, and maintain the Names vocabulary that powers creator lookup in the
-upload form. For how and when Names index entries are created, updated, merged,
-or flagged, see <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
+into parts, backfill <code class="docutils literal notranslate"><span class="pre">display_name</span></code> / creatibutor strings, and maintain the
+Names vocabulary that powers creator lookup in the upload form. For how profile
+fields, Names records tagged <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>, and record creatibutors stay
+aligned, see <a class="reference internal" href="#how-are-names-represented"><span class="xref myst">How are names represented?</span></a>.
+For how and when Names index entries are created, updated, merged, or flagged,
+see <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
 <p>All of the operations below are run from the KCWorks UI app container. See
 <a class="reference internal" href="running_commands.html#starting-interactive-shell"><span class="std std-ref">Starting an interactive shell</span></a>
 for how to open a shell session on staging or production.</p>
@@ -365,6 +368,198 @@ stripping a <code class="docutils literal notranslate"><span class="pre">knowled
 <li><p><a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-user-groups"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">user-groups</span></code></span></a></p></li>
 </ul>
 </section>
+<section id="how-are-names-represented">
+<h2>How are names represented?<a class="headerlink" href="#how-are-names-represented" title="Link to this heading">¶</a></h2>
+<p>KCWorks keeps name data for a user aligned across three places: the local
+account profile, the Names vocabulary entry for that account, and creatibutor
+blocks on records. The chart below shows which fields correspond (or have no
+counterpart).</p>
+<p>Account-backed Names entries are tagged <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>; ORCID creatibutor stubs
+are tagged <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code>. See
+<a class="reference internal" href="names_vocabulary.html#what-kinds-of-names-records-does-kcworks-write"><span class="std std-ref">What kinds of Names records does KCWorks write?</span></a>.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Role</p></th>
+<th class="head"><p>Local <code class="docutils literal notranslate"><span class="pre">user_profile</span></code></p></th>
+<th class="head"><p>Names (<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>)</p></th>
+<th class="head"><p>Record creatibutor (<code class="docutils literal notranslate"><span class="pre">person_or_org</span></code>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Natural-order name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">full_name</span></code></p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rich inverted / bibliographic name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">props.display_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Naive inverted composition</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (always rewritten by upstream <code class="docutils literal notranslate"><span class="pre">NameSchema</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;family,</span> <span class="pre">given&quot;</span></code> when both parts exist)</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>Structured parts (remote)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name_parts</span></code> (JSON string)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">props.name_parts</span></code> (object; from local override if set, else remote)</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>Structured parts (local override)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> (JSON string)</p></td>
+<td><p>(feeds <code class="docutils literal notranslate"><span class="pre">props.name_parts</span></code> when present)</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>Given / family tokens</p></td>
+<td><p>(derived from preferred parts)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">given_name</span></code> / <code class="docutils literal notranslate"><span class="pre">family_name</span></code> (also the inputs to naive <code class="docutils literal notranslate"><span class="pre">name</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">given_name</span></code> / <code class="docutils literal notranslate"><span class="pre">family_name</span></code> when set by deposit autofill</p></td>
+</tr>
+<tr class="row-even"><td><p>KC username</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (PID) and <code class="docutils literal notranslate"><span class="pre">identifiers[]</span></code> (<code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">kc_username</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifiers[]</span></code> (<code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">kc_username</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ORCID</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifier_orcid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifiers[]</span></code> (<code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">orcid</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifiers[]</span></code> (<code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">orcid</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>Email</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifier_email</span></code></p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identifiers[]</span></code> (<code class="docutils literal notranslate"><span class="pre">scheme:</span> <span class="pre">email</span></code>) when present</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Do not conflate Names <code class="docutils literal notranslate"><span class="pre">name</span></code> with the rich inverted/bibliographic name we
+compose from name_parts(_local). <code class="docutils literal notranslate"><span class="pre">NameSchema</span></code> overwrites the top-level <code class="docutils literal notranslate"><span class="pre">name</span></code>
+field to a naive <code class="docutils literal notranslate"><span class="pre">&quot;family,</span> <span class="pre">given&quot;</span></code> composition. The preferred bibliographic
+form, including any user corrections, is <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code> ↔ Names
+<code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> ↔ creatibutor <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code>.</p>
+<p>Data flow (the user’s <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> is the source of truth for the Names item
+and record creator/contributor):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>name_parts_local ─┐
+                  ├─► given_name / family_name ──► Names.name  ("family, given", naive)
+name_parts ───────┘         │
+                            ├─► user_profile.display_name ──► Names.props.display_name
+                            │                              └──► creatibutor person_or_org.name
+                            │
+                            └─► (also used when composing display_name)
+
+identifier_kc_username / orcid / email
+        └──► Names identifiers[]  and  creatibutor identifiers[]
+</pre></div>
+</div>
+<section id="where-does-inverted-name-composition-happen">
+<h3>Where does inverted name composition happen?<a class="headerlink" href="#where-does-inverted-name-composition-happen" title="Link to this heading">¶</a></h3>
+<p>Rich inverted strings (particles, suffixes, multi-part given names, and so on)
+are composed by <code class="docutils literal notranslate"><span class="pre">get_full_name_inverted</span></code> in
+<code class="docutils literal notranslate"><span class="pre">invenio-remote-user-data-kcworks</span></code> (<code class="docutils literal notranslate"><span class="pre">utils/names.py</span></code>), from the structured
+parts (<code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> preferred over <code class="docutils literal notranslate"><span class="pre">name_parts</span></code>). This central logic is
+applied in several places:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>When</p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p>What gets written</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Profiles sync / login refresh</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CILogonHelpers.calculate_user_changes</span></code> → <code class="docutils literal notranslate"><span class="pre">UserProfileService.compute_display_name_from_profile</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Admin edits local parts</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span></code> → <code class="docutils literal notranslate"><span class="pre">UserProfileService.update_local_name_parts</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> and refreshed <code class="docutils literal notranslate"><span class="pre">display_name</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Bulk fill empty profiles</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code> → <code class="docutils literal notranslate"><span class="pre">UserProfileService.backfill_display_names</span></code></p></td>
+<td><p>empty <code class="docutils literal notranslate"><span class="pre">display_name</span></code> values (or all with <code class="docutils literal notranslate"><span class="pre">--force</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Names <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> upsert</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NamesSyncService.build_name_payload_from_user</span></code></p></td>
+<td><p>prefers stored <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code>; otherwise composes into <code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> (top-level Names <code class="docutils literal notranslate"><span class="pre">name</span></code> is still naive via <code class="docutils literal notranslate"><span class="pre">NameSchema</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>Deposit autofill</p></td>
+<td><p>modular deposit form (<code class="docutils literal notranslate"><span class="pre">creatibutorDisplayName.js</span></code>)</p></td>
+<td><p>creatibutor <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code> from profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> or Names <code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> (fallbacks: profile <code class="docutils literal notranslate"><span class="pre">full_name</span></code>, Names <code class="docutils literal notranslate"><span class="pre">name</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Record backfill</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code></p></td>
+<td><p>creatibutor <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code> ← profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> (no re-composition; requires <code class="docutils literal notranslate"><span class="pre">display_name</span></code> already set)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Composition is <strong>not</strong> re-run inside the creatibutor backfill CLI: that path
+copies the already-persisted profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> onto matching record
+entries.</p>
+</section>
+<section id="when-does-orcid-name-data-come-into-play">
+<h3>When does ORCID name data come into play?<a class="headerlink" href="#when-does-orcid-name-data-come-into-play" title="Link to this heading">¶</a></h3>
+<p>ORCID shows up in different roles—do not mix them up with Profiles-driven
+<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> name composition.</p>
+<ol class="arabic simple">
+<li><p><strong>On a local account</strong> — Profiles sync may set
+<code class="docutils literal notranslate"><span class="pre">user_profile.identifier_orcid</span></code>. That identifier is copied onto the
+<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> Names record and can appear on creatibutors. It does <strong>not</strong>
+pull the person’s ORCID public-record name into <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code>;
+account display strings still come from Profiles / local name parts as above.</p></li>
+<li><p><strong>On a work as a creatibutor (often ORCID-sourced)</strong> — The deposit
+creatibutor picker merges local <code class="docutils literal notranslate"><span class="pre">/api/names</span></code> hits with ORCID Public API
+<code class="docutils literal notranslate"><span class="pre">expanded-search</span></code> results. For a direct ORCID hit, <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code> is
+set from ORCID’s <strong><code class="docutils literal notranslate"><span class="pre">credit-name</span></code></strong> when present (the researcher’s chosen
+citation form); otherwise from a naive <code class="docutils literal notranslate"><span class="pre">&quot;family-names,</span> <span class="pre">given-names&quot;</span></code> join.
+<code class="docutils literal notranslate"><span class="pre">family_name</span></code> / <code class="docutils literal notranslate"><span class="pre">given_name</span></code> come from ORCID’s <code class="docutils literal notranslate"><span class="pre">family-names</span></code> /
+<code class="docutils literal notranslate"><span class="pre">given-names</span></code>, with affiliations and the ORCID identifier copied alongside.
+The local index data used in case of a Names hit may already be
+ORCID-derived (if that Names item was a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub). Manual entry
+that only attaches an ORCID is also possible, but does not automatically
+bring in user data from ORCID.</p></li>
+<li><p><strong>In a Names index item tagged <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code></strong> — On draft save
+(<code class="docutils literal notranslate"><span class="pre">CitedNamesUpsertComponent</span></code>) or via
+<code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">backfill-cited-from-records</span></code>, KCWorks copies any
+ORCID-derived creatibutor metadata into a Names index item tagged
+<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> (PID = the bare ORCID) rather than a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> item.
+If a Names item tagged <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> already lists that ORCID, this path
+does not keep a separate <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub (see the next point). See
+<a class="reference internal" href="names_vocabulary.html#when-are-kcworks-cited-records-created-or-updated"><span class="std std-ref">When are kcworks-cited records created or updated?</span></a>.</p></li>
+<li><p><strong>Later merge of ORCID and Profiles data in one Names index item</strong> — If the
+person already has, or later creates, a KC account whose Names item is
+tagged <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> and lists that ORCID, the <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub is
+merged into that account-backed item instead of remaining separate. On
+merge, <strong><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> name fields (<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">given_name</span></code>, <code class="docutils literal notranslate"><span class="pre">family_name</span></code>)
+and <code class="docutils literal notranslate"><span class="pre">props</span></code> win</strong>; <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> data mainly contributes identifiers and
+affiliations. Until that happens, the Names index keeps the ORCID-sourced
+<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> item. See
+<a class="reference internal" href="names_vocabulary.html#when-are-records-merged"><span class="std std-ref">When are records merged?</span></a>.</p></li>
+</ol>
+<p>Rules of thumb:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> wins over <code class="docutils literal notranslate"><span class="pre">name_parts</span></code></strong> for composition (local admin
+split survives remote Profiles re-sync).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">display_name</span></code> is the inverted citation string</strong> (<code class="docutils literal notranslate"><span class="pre">Family,</span> <span class="pre">Given</span> <span class="pre">…</span></code>).
+Remote sync and <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span></code> refresh it from the preferred
+parts. Bulk fill empty values with
+<code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">full_name</span></code> is natural order</strong> (<code class="docutils literal notranslate"><span class="pre">Given</span> <span class="pre">Family</span> <span class="pre">…</span></code>), usually from Profiles.</p></li>
+<li><p><strong>Names <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> upserts</strong> read the current local profile (no Profiles
+API call inside the Names task) and prefer stored <code class="docutils literal notranslate"><span class="pre">display_name</span></code> when
+present.</p></li>
+<li><p><strong>Creatibutor strings on already-published works do not update
+automatically</strong> when a profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> changes. Use
+<code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code> after profiles are correct.</p></li>
+</ol>
+<p>See also <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a> and
+<a class="reference internal" href="#how-do-i-change-a-user-s-name-division"><span class="xref myst">How do I change a user’s name division?</span></a>.</p>
+</section>
+</section>
 <section id="how-do-i-change-a-user-s-name-division">
 <h2>How do I change a user’s name division?<a class="headerlink" href="#how-do-i-change-a-user-s-name-division" title="Link to this heading">¶</a></h2>
 <p>Sometimes, profile data synced from Knowledge Commons does not divide a user’s
@@ -372,20 +567,23 @@ name correctly—for example, a compound surname or patronymic is split in the
 wrong place. Administrators can override the division locally. KCWorks stores
 these overrides in the user’s <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> profile field. The override is
 used when auto-filling creator fields on the upload form and when displaying the
-user’s name elsewhere in KCWorks.</p>
-<ol class="arabic simple">
-<li><p>Look up the user’s local Invenio user id (see
-<a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>).</p></li>
+user’s name elsewhere in KCWorks. Updating parts also refreshes persisted
+<code class="docutils literal notranslate"><span class="pre">display_name</span></code> (inverted form).</p>
+<ol class="arabic">
+<li><p>Look up the user’s local Invenio user id (see</p>
+<p><a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>).</p>
+</li>
 <li><p>To view the current local name parts without making changes, run:</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
-<li><p>To set one or more name parts, pass the relevant flags. Only the flags you
-supply are updated; omitted parts are left unchanged:</p></li>
+<ol class="arabic" start="3">
+<li><p>To set one or more name parts, pass the relevant flags. Only the flags you</p>
+<p>supply are updated; omitted parts are left unchanged:</p>
+</li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;<span class="w"> </span><span class="se">\</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>name-parts<span class="w"> </span>&lt;user_id&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--given<span class="w"> </span><span class="s2">"María"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--family<span class="w"> </span><span class="s2">"García López"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--family-prefix-fixed<span class="w"> </span><span class="s2">"de la"</span>
@@ -393,7 +591,7 @@ supply are updated; omitted parts are left unchanged:</p></li>
 </div>
 <p>Available name-part flags include <code class="docutils literal notranslate"><span class="pre">--given</span></code>, <code class="docutils literal notranslate"><span class="pre">--family</span></code>, <code class="docutils literal notranslate"><span class="pre">--middle</span></code>, <code class="docutils literal notranslate"><span class="pre">--suffix</span></code>,
 <code class="docutils literal notranslate"><span class="pre">--family-prefix</span></code>, <code class="docutils literal notranslate"><span class="pre">--family-prefix-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">--spousal</span></code>, <code class="docutils literal notranslate"><span class="pre">--parental</span></code>,
-<code class="docutils literal notranslate"><span class="pre">--undivided</span></code>, and <code class="docutils literal notranslate"><span class="pre">--nickname</span></code>. Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span> <span class="pre">--help</span></code>
+<code class="docutils literal notranslate"><span class="pre">--undivided</span></code>, and <code class="docutils literal notranslate"><span class="pre">--nickname</span></code>. Run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span> <span class="pre">--help</span></code>
 for descriptions of each.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -403,7 +601,43 @@ re-run it, see
 <a class="reference internal" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data"><span class="xref myst">How do I update a KCWorks user’s Names index entry with new data?</span></a>.</p>
 </div>
 <p>CLI reference:
-<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-name-parts"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></span></a>.</p>
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-name-parts"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span></code></span></a>.</p>
+</section>
+<section id="how-do-i-backfill-profile-display-name-values">
+<h2>How do I backfill profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> values?<a class="headerlink" href="#how-do-i-backfill-profile-display-name-values" title="Link to this heading">¶</a></h2>
+<p>Use this when older accounts have usable <code class="docutils literal notranslate"><span class="pre">name_parts</span></code> / <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> but
+an empty <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code>. Prefer a dry run first:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>backfill-display-names<span class="w"> </span>--dry-run
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>backfill-display-names
+</pre></div>
+</div>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--force</span></code> — recompute and overwrite existing non-empty <code class="docutils literal notranslate"><span class="pre">display_name</span></code> values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code> — stop after this many profile updates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--sync-names</span></code> — after each profile write, upsert the user’s Names vocabulary
+entry so <code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> matches (for Names-only refresh without profile
+writes, use <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">sync-now</span> <span class="pre">--all</span></code>)</p></li>
+</ul>
+<p>This command does <strong>not</strong> rewrite creatibutor strings on existing records. After
+profiles look correct, run
+<a class="reference internal" href="#how-do-i-backfill-creatibutor-names-on-records"><span class="xref myst">How do I backfill creatibutor names on records?</span></a>.</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-users-backfill-display-names"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code></span></a>.</p>
+</section>
+<section id="how-do-i-backfill-creatibutor-names-on-records">
+<h2>How do I backfill creatibutor names on records?<a class="headerlink" href="#how-do-i-backfill-creatibutor-names-on-records" title="Link to this heading">¶</a></h2>
+<p>Once local profiles have <code class="docutils literal notranslate"><span class="pre">display_name</span></code> set, rewrite matching personal
+creators/contributors so <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code> matches that inverted form.
+Matches are by profile identifiers (<code class="docutils literal notranslate"><span class="pre">kc_username</span></code>, <code class="docutils literal notranslate"><span class="pre">orcid</span></code>, <code class="docutils literal notranslate"><span class="pre">email</span></code>) only:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>records<span class="w"> </span>backfill-creatibutor-names<span class="w"> </span>--dry-run
+invenio<span class="w"> </span>user-data<span class="w"> </span>records<span class="w"> </span>backfill-creatibutor-names
+</pre></div>
+</div>
+<p>Optional: <code class="docutils literal notranslate"><span class="pre">--limit</span></code> (max records updated across published + drafts) and
+<code class="docutils literal notranslate"><span class="pre">--user-id</span></code> (only creatibutors for one local account).</p>
+<p>CLI reference:
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-records-backfill-creatibutor-names"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code></span></a>.</p>
 </section>
 <section id="how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles">
 <h2>How do I sync a KCWorks user’s data with KCProfiles?<a class="headerlink" href="#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles" title="Link to this heading">¶</a></h2>
@@ -431,8 +665,8 @@ result and a summary when it finishes.</p>
 <h2>How do I update a KCWorks user’s Names index entry with new data?<a class="headerlink" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data" title="Link to this heading">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Lifecycle overview (USER vs CITED, draft-save stubs, merge rules):
-<a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
+<p>Lifecycle overview (<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> vs <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code>, draft-save stubs, merge
+rules): <a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a>.</p>
 </div>
 <p>KCWorks maintains a search index (or “vocabulary”) of names–along with the
 individual’s affiliations and identifiers–for quickly populating the names
@@ -540,12 +774,14 @@ duplicate accounts automatically, but a manual merge can be performed via a CLI
 command.</p>
 <p>A full account merge involves two distinct operations, although they are both
 triggered in one command:</p>
-<ol class="arabic simple">
-<li><p><a class="reference internal" href="#how-do-i-transfer-record-ownership"><span class="xref myst">transferring ownership</span></a> of all work
-records to the canonical account;</p></li>
-<li><p><a class="reference internal" href="#how-do-i-update-someone-s-username-in-record-citations"><span class="xref myst">updating the user’s <code class="docutils literal notranslate"><span class="pre">kc_username</span></code></span></a>
-ids in <strong>all their “Contributor” citations</strong> in work records with the
-canonical account’s username.</p></li>
+<ol class="arabic">
+<li><p><a class="reference internal" href="#how-do-i-transfer-record-ownership"><span class="xref myst">transferring ownership</span></a> of all work</p>
+<p>records to the canonical account;</p>
+</li>
+<li><p>[updating the user’s <code class="docutils literal notranslate"><span class="pre">kc_username](#how-do-i-update-someone-s-username-in-record-citations)</span></code></p>
+<p>ids in <strong>all their “Contributor” citations</strong> in work records with the
+canonical account’s username.</p>
+</li>
 </ol>
 <p>You can also run the two underlying commands separately when you need only one
 part of the merge; see the linked sections above.</p>
@@ -562,14 +798,15 @@ one local account to another.</p>
 </div>
 <section id="before-you-start">
 <h3>Before you start<a class="headerlink" href="#before-you-start" title="Link to this heading">¶</a></h3>
-<ol class="arabic simple">
-<li><p>Decide which local account is <strong>canonical</strong> and which is the <strong>duplicate</strong> to
-retire. Use
+<ol class="arabic">
+<li><p>Decide which local account is <strong>canonical</strong> and which is the <strong>duplicate</strong> to</p>
+<p>retire. Use
 <a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli"><span class="xref myst">How do I retrieve a user’s details via the CLI?</span></a>
 to compare user ids, KC usernames, and OAuth linkage. To scan the whole
 database for likely duplicates first, run
 <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code> (see
-<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-find-duplicates"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></span></a>).</p></li>
+<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-users-find-duplicates"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></span></a>).</p>
+</li>
 <li><p>If you need an inventory of the duplicate’s works, you can use:</p>
 <ul class="simple">
 <li><p>the <strong>Records</strong> tab in the admin interface to search for the duplicate
@@ -580,9 +817,10 @@ export an inventory; record UUIDs appear in the archive metadata JSON. (See
 <a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-export-records"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">export-records</span></code></span></a>).</p></li>
 </ul>
 </li>
-<li><p>Plan for <strong>both</strong> steps below: ownership transfer alone does not rewrite
-creator/contributor citations, and updating citations alone does not change
-who owns a work.</p></li>
+<li><p>Plan for <strong>both</strong> steps below: ownership transfer alone does not rewrite</p>
+<p>creator/contributor citations, and updating citations alone does not change
+who owns a work.</p>
+</li>
 </ol>
 </section>
 <section id="run-the-migrate-user-command">
@@ -680,8 +918,8 @@ the section above
 <p>In some situations, as when two accounts need to be merged, a user’s identifiers
 might need to be updated in record metadata. You can update any <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>
 identifier in a <strong>creator or contributor</strong> entry on a record with a new value
-using the <code class="docutils literal notranslate"><span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code> command.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
+using the <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">update_contributors_username</span></code> command.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-o<span class="w"> </span>&lt;old_kc_username&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-n<span class="w"> </span>&lt;new_kc_username&gt;
 </pre></div>
@@ -702,14 +940,15 @@ instead. It runs this step automatically. See
 Names entries—the old username may still belong to a separate valid local account.</p>
 </div>
 <p>CLI reference:
-<a class="reference internal" href="../reference/cli_commands.html#invenio-kcworks-records-update-contributors-username"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code></span></a>.</p>
+<a class="reference internal" href="../reference/cli_commands.html#invenio-user-data-records-update-contributors-username"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">update_contributors_username</span></code></span></a>.</p>
 </section>
 <section id="how-do-i-backfill-or-refresh-the-names-vocabulary">
 <h2>How do I backfill or refresh the Names vocabulary?<a class="headerlink" href="#how-do-i-backfill-or-refresh-the-names-vocabulary" title="Link to this heading">¶</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="names_vocabulary.html"><span class="std std-doc">Names Vocabulary Lifecycle</span></a> for when automatic sync,
-draft-save CITED stubs, and ORCID merge apply versus these bulk commands.</p>
+draft-save <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stubs, and ORCID merge apply versus these bulk
+commands.</p>
 </div>
 <p>The Names vocabulary is an index of user identities used for user name searches,
 as in the “contributor” fields on the upload form. It includes names and
@@ -749,16 +988,16 @@ elsewhere.</p>
 <section id="backfill-cited-names-from-published-records">
 <h3>Backfill cited names from published records<a class="headerlink" href="#backfill-cited-names-from-published-records" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">backfill-cited-from-records</span></code> scans published work
-records and creates Names index entries for each creator/contributor who is
-listed with an ORCIDs. This is idempotent: The Names index entries for existing
-KCWorks users are gap-filled from ORCID data where local metadata is missing,
-and existing ORCID-based Names entries are refreshed with live ORCID metadata.
-Missing entries are created from creator/contributor ORCID identifiers. Run it
-once after deployment to cover records published before the Names sync component
-existed.</p>
-<p>(Note: This command only pulls in Names entries based on ORCID identifiers,
-<em>not</em> KC usernames. Names entries for KC users are kept updated automatically
-through the usual user data sync/update process.)</p>
+records and upserts a Names entry for each creator/contributor who carries an
+ORCID. Payloads come from the creatibutor metadata already on the work (often
+ORCID-sourced via the deposit picker)—the command does not call the ORCID API.
+If a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record already lists that ORCID, the path gap-fills /
+merges into it; otherwise it creates or refreshes a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub. Run
+it once after deployment to cover records published before the draft-save
+component existed.</p>
+<p>(Note: This command only walks ORCID-bearing creatibutors, not KC usernames.
+Account-backed Names entries are kept updated through the usual user-data
+sync/update process.)</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run — count what would change without writing</span>
 invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class="w"> </span>backfill-cited-from-records<span class="w"> </span>--dry-run
 
@@ -797,7 +1036,8 @@ index entries for the same person.</p>
 <p>Corpus-wide ORCID merge and soft-duplicate scanning run on a <strong>weekly
 schedule</strong> once the Names jobs are registered (see
 <a class="reference internal" href="names_vocabulary.html#scheduled-jobs-invenio-jobs"><span class="std std-ref">Names Vocabulary Lifecycle — scheduled jobs</span></a>).
-Opportunistic ORCID merges also happen during normal USER/CITED upserts.
+Opportunistic ORCID merges also happen during normal <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> /
+<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> upserts.
 Reviewing and dismissing soft-duplicate pairs remains a <strong>manual</strong> admin step
 (<code class="docutils literal notranslate"><span class="pre">list-duplicates</span></code>, <code class="docutils literal notranslate"><span class="pre">dismiss-duplicate</span></code>, …).</p>
 </div>
@@ -822,13 +1062,15 @@ KCWorks accounts from a file of KC usernames. For each username, KCWorks fetches
 the user’s profile from the live Profiles API and provisions or updates the
 matching local account.</p>
 <p>For the import you will need either:</p>
-<ol class="arabic simple">
-<li><p>A CSV file with one KC username per line. A <code class="docutils literal notranslate"><span class="pre">username</span></code> header row is optional
-and is skipped automatically. Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> and blank lines are
+<ol class="arabic">
+<li><p>A CSV file with one KC username per line. A <code class="docutils literal notranslate"><span class="pre">username</span></code> header row is optional</p>
+<p>and is skipped automatically. Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> and blank lines are
 also ignored. If the file has extra columns, only the first column (the
-username) is used.</p></li>
-<li><p>A JSONL file with KC profiles data in the same shape that would be returned
-by a <code class="docutils literal notranslate"><span class="pre">members</span></code> endpoint API request.</p></li>
+username) is used.</p>
+</li>
+<li><p>A JSONL file with KC profiles data in the same shape that would be returned</p>
+<p>by a <code class="docutils literal notranslate"><span class="pre">members</span></code> endpoint API request.</p>
+</li>
 </ol>
 <p>In either case, copy the file into the <code class="docutils literal notranslate"><span class="pre">ui</span></code> container, or place it somewhere
 already mounted inside the container (for example under
@@ -913,7 +1155,14 @@ seen, processed, skipped, and errors.</p>
 <li><a class="reference internal" href="#">User Data Management</a><ul>
 <li><a class="reference internal" href="#how-does-kcworks-sync-user-data-with-kcprofiles">How does KCWorks sync user data with KCProfiles?</a></li>
 <li><a class="reference internal" href="#how-do-i-retrieve-a-user-s-details-via-the-cli">How do I retrieve a user’s details via the CLI?</a></li>
+<li><a class="reference internal" href="#how-are-names-represented">How are names represented?</a><ul>
+<li><a class="reference internal" href="#where-does-inverted-name-composition-happen">Where does inverted name composition happen?</a></li>
+<li><a class="reference internal" href="#when-does-orcid-name-data-come-into-play">When does ORCID name data come into play?</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#how-do-i-change-a-user-s-name-division">How do I change a user’s name division?</a></li>
+<li><a class="reference internal" href="#how-do-i-backfill-profile-display-name-values">How do I backfill profile <code class="docutils literal notranslate"><span class="pre">display_name</span></code> values?</a></li>
+<li><a class="reference internal" href="#how-do-i-backfill-creatibutor-names-on-records">How do I backfill creatibutor names on records?</a></li>
 <li><a class="reference internal" href="#how-do-i-sync-a-kcworks-user-s-data-with-kcprofiles">How do I sync a KCWorks user’s data with KCProfiles?</a></li>
 <li><a class="reference internal" href="#how-do-i-update-a-kcworks-user-s-names-index-entry-with-new-data">How do I update a KCWorks user’s Names index entry with new data?</a></li>
 <li><a class="reference internal" href="#how-do-i-transfer-record-ownership">How do I transfer record ownership?</a><ul>
@@ -954,7 +1203,7 @@ seen, processed, skipped, and errors.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=030dc6f6"></script>
+</div><script src="../_static/documentation_options.js?v=b51e6972"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

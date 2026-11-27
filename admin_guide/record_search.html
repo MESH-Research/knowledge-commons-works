@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Export formats" href="export_formats.html"><link rel="prev" title="Record access: requests and grants" href="record_access.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Record search - Knowledge Commons Works 1.7.0 documentation</title>
+        <title>Record search - Knowledge Commons Works 1.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.7.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -348,18 +348,21 @@ for how quotes behave with single words):</p>
 <td><p>Phrase <code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">science</span></code> in those same title fields (in order, adjacent)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">author:smith</span></code></p></td>
-<td><p>Creator or contributor name or person/org identifier matches (<code class="docutils literal notranslate"><span class="pre">metadata.creators…</span></code> / <code class="docutils literal notranslate"><span class="pre">metadata.contributors…</span></code>)</p></td>
+<td><p>Resolve-first person search (see below); on miss, creator/contributor name or person/org identifier matches</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">keyword:methodology</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">user:jdoe</span></code> / <code class="docutils literal notranslate"><span class="pre">name:&quot;Jane</span> <span class="pre">Doe&quot;</span></code></p></td>
+<td><p>Same resolve-first person behavior as <code class="docutils literal notranslate"><span class="pre">author:</span></code> (KC username, ORCID, or exact profile name)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">keyword:methodology</span></code></p></td>
 <td><p>User-defined keyword/tag (<code class="docutils literal notranslate"><span class="pre">custom_fields.kcr:user_defined_tags</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">subject:history</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">subject:history</span></code></p></td>
 <td><p>Controlled subject vocabulary term (<code class="docutils literal notranslate"><span class="pre">metadata.subjects.subject</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">doi:10.1234/example</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">doi:10.1234/example</span></code></p></td>
 <td><p>DOI identifier (<code class="docutils literal notranslate"><span class="pre">pids.doi.identifier</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ror:01ggx4157</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ror:01ggx4157</span></code></p></td>
 <td><p>Identifier value on affiliation, funder, or person/org identifier fields</p></td>
 </tr>
 </tbody>
@@ -387,8 +390,8 @@ hits. Notable examples:</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">description</span></code> / <code class="docutils literal notranslate"><span class="pre">abstract</span></code></p></td>
 <td><p>Main description and additional descriptions (<code class="docutils literal notranslate"><span class="pre">metadata.description</span></code>, <code class="docutils literal notranslate"><span class="pre">metadata.additional_descriptions.description</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">author</span></code> / <code class="docutils literal notranslate"><span class="pre">contributor</span></code> / <code class="docutils literal notranslate"><span class="pre">creator</span></code></p></td>
-<td><p>Creators and contributors: names and person/org identifiers (<code class="docutils literal notranslate"><span class="pre">metadata.creators.person_or_org.name</span></code>, <code class="docutils literal notranslate"><span class="pre">metadata.contributors.person_or_org.name</span></code>, and the corresponding <code class="docutils literal notranslate"><span class="pre">….identifiers.identifier</span></code> paths)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">author</span></code> / <code class="docutils literal notranslate"><span class="pre">authors</span></code> / <code class="docutils literal notranslate"><span class="pre">contributor</span></code> / <code class="docutils literal notranslate"><span class="pre">creator</span></code> / <code class="docutils literal notranslate"><span class="pre">user</span></code> / <code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p><strong>Resolve-first:</strong> if the value matches a local Works user (ORCID, email, KC username, or exact <code class="docutils literal notranslate"><span class="pre">full_name</span></code> / <code class="docutils literal notranslate"><span class="pre">display_name</span></code>), expand like <strong>My Works</strong> — OR of that user’s name variants and profile identifiers on creator/contributor paths. On miss (or wildcards like <code class="docutils literal notranslate"><span class="pre">author:smi*</span></code>), fall back to literal multi-field OR over creatibutor <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">identifiers.identifier</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">affiliation</span></code></p></td>
 <td><p>Creator and contributor affiliation names and identifiers (<code class="docutils literal notranslate"><span class="pre">metadata.creators.affiliations.name</span></code>, <code class="docutils literal notranslate"><span class="pre">metadata.contributors.affiliations.name</span></code>, and the corresponding <code class="docutils literal notranslate"><span class="pre">….identifiers.identifier</span></code> paths)</p></td>
@@ -491,11 +494,11 @@ hits. Notable examples:</p>
 (<code class="docutils literal notranslate"><span class="pre">custom_fields.meeting:meeting.url</span></code>); <code class="docutils literal notranslate"><span class="pre">repository_url</span></code> / <code class="docutils literal notranslate"><span class="pre">repository</span></code>
 (<code class="docutils literal notranslate"><span class="pre">custom_fields.code:codeRepository</span></code>)</p>
 <p><strong>People / orgs:</strong> <code class="docutils literal notranslate"><span class="pre">contributor</span></code> / <code class="docutils literal notranslate"><span class="pre">contributors</span></code> / <code class="docutils literal notranslate"><span class="pre">creator</span></code> / <code class="docutils literal notranslate"><span class="pre">creators</span></code> /
-<code class="docutils literal notranslate"><span class="pre">author</span></code> / <code class="docutils literal notranslate"><span class="pre">authors</span></code> (see multi-field table under author); <code class="docutils literal notranslate"><span class="pre">affiliation</span></code> /
-<code class="docutils literal notranslate"><span class="pre">affiliations</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">funder</span></code> / <code class="docutils literal notranslate"><span class="pre">funding</span></code> (see multi-field
-table); <code class="docutils literal notranslate"><span class="pre">award</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">ror</span></code> (see multi-field table);
-<code class="docutils literal notranslate"><span class="pre">organization</span></code> / <code class="docutils literal notranslate"><span class="pre">institution</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">university</span></code> (see
-multi-field table); <code class="docutils literal notranslate"><span class="pre">sponsoring_institution</span></code> / <code class="docutils literal notranslate"><span class="pre">sponsor</span></code>
+<code class="docutils literal notranslate"><span class="pre">author</span></code> / <code class="docutils literal notranslate"><span class="pre">authors</span></code> / <code class="docutils literal notranslate"><span class="pre">user</span></code> / <code class="docutils literal notranslate"><span class="pre">name</span></code> (resolve-first; see multi-field table);
+<code class="docutils literal notranslate"><span class="pre">affiliation</span></code> / <code class="docutils literal notranslate"><span class="pre">affiliations</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">funder</span></code> / <code class="docutils literal notranslate"><span class="pre">funding</span></code>
+(see multi-field table); <code class="docutils literal notranslate"><span class="pre">award</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">ror</span></code> (see
+multi-field table); <code class="docutils literal notranslate"><span class="pre">organization</span></code> / <code class="docutils literal notranslate"><span class="pre">institution</span></code> (see multi-field table);
+<code class="docutils literal notranslate"><span class="pre">university</span></code> (see multi-field table); <code class="docutils literal notranslate"><span class="pre">sponsoring_institution</span></code> / <code class="docutils literal notranslate"><span class="pre">sponsor</span></code>
 (<code class="docutils literal notranslate"><span class="pre">custom_fields.kcr:sponsoring_institution</span></code>)</p>
 <p><strong>Subjects / tags:</strong> <code class="docutils literal notranslate"><span class="pre">subject</span></code> / <code class="docutils literal notranslate"><span class="pre">subjects</span></code> (<code class="docutils literal notranslate"><span class="pre">metadata.subjects.subject</span></code>);
 <code class="docutils literal notranslate"><span class="pre">keyword</span></code> / <code class="docutils literal notranslate"><span class="pre">keywords</span></code> (<code class="docutils literal notranslate"><span class="pre">custom_fields.kcr:user_defined_tags</span></code>)</p>
@@ -550,12 +553,15 @@ multi-field table); <code class="docutils literal notranslate"><span class="pre"
 <td><p><code class="docutils literal notranslate"><span class="pre">RECORD_SEARCH_FIELD_ALIASES</span></code> and <code class="docutils literal notranslate"><span class="pre">RECORD_SEARCH_QUERY_PARSER</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">site/kcworks/services/search/queryparser/transformer.py</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">MultiFieldSearchTransformer</span></code> (expands multi-path aliases to OR)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MultiFieldSearchTransformer</span></code> (multi-path OR; person resolve-first)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> → <code class="docutils literal notranslate"><span class="pre">RDM_SEARCH[&quot;query_parser_cls&quot;]</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site/kcworks/services/search/user_search.py</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">UserSearchHelper</span></code> (My Works + person-alias expansion)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> → <code class="docutils literal notranslate"><span class="pre">RDM_SEARCH[&quot;query_parser_cls&quot;]</span></code></p></td>
 <td><p>Wires the parser into record and community-records <strong>API</strong> search</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> → <code class="docutils literal notranslate"><span class="pre">RDM_SEARCH_DRAFTS[&quot;query_parser_cls&quot;]</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">invenio.cfg</span></code> → <code class="docutils literal notranslate"><span class="pre">RDM_SEARCH_DRAFTS[&quot;query_parser_cls&quot;]</span></code></p></td>
 <td><p>Same parser for user uploads / drafts <strong>API</strong> search</p></td>
 </tr>
 </tbody>
@@ -698,7 +704,7 @@ each surface exposes (keep lists aligned where the UX should match)</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=030dc6f6"></script>
+</div><script src="../_static/documentation_options.js?v=b51e6972"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

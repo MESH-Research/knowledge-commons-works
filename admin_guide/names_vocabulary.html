@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="File Storage Administration" href="file_storage.html"><link rel="prev" title="Vocabulary Management" href="vocabulary_management.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>Names Vocabulary Lifecycle - Knowledge Commons Works 1.7.0 documentation</title>
+        <title>Names Vocabulary Lifecycle - Knowledge Commons Works 1.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.7.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -305,35 +305,33 @@ apart from bulk-loaded or third-party Names data.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Kind</p></th>
-<th class="head"><p>Tag</p></th>
+<tr class="row-odd"><th class="head"><p>Tag</p></th>
 <th class="head"><p>Typical PID</p></th>
 <th class="head"><p>Meaning</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>USER</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code></p></td>
 <td><p>KC username (<code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code>)</p></td>
 <td><p>Mirrors a local KCWorks account</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CITED</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code></p></td>
 <td><p>Bare ORCID iD</p></td>
-<td><p>Person referenced with an ORCID who is not (yet) represented by a USER record</p></td>
+<td><p>Person referenced with an ORCID who is not (yet) represented by a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>A USER record also stores identifiers in its <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> list: at least
-<code class="docutils literal notranslate"><span class="pre">kc_username</span></code>, and <code class="docutils literal notranslate"><span class="pre">orcid</span></code> when the local profile has one. That list is what
-upstream <code class="docutils literal notranslate"><span class="pre">NamesService.resolve(value,</span> <span class="pre">scheme)</span></code> searches — it is <strong>not</strong> a PID
-lookup. So a USER at PID=<code class="docutils literal notranslate"><span class="pre">alice</span></code> can still be found by ORCID if
-<code class="docutils literal notranslate"><span class="pre">identifiers</span></code> contains that ORCID.</p>
-<p>CITED stubs exist so ORCID-bearing creators on drafts/records are searchable
-even when there is no local account. When the same person later has a USER
-record with that ORCID, KCWorks prefers the USER record and folds CITED data
-into it (see <a class="reference internal" href="#when-are-records-merged"><span class="xref myst">Merging</span></a>).</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record also stores identifiers in its <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> list: at
+least <code class="docutils literal notranslate"><span class="pre">kc_username</span></code>, and <code class="docutils literal notranslate"><span class="pre">orcid</span></code> when the local profile has one. That list is
+what upstream <code class="docutils literal notranslate"><span class="pre">NamesService.resolve(value,</span> <span class="pre">scheme)</span></code> searches — it is <strong>not</strong> a
+PID lookup. So a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> entry at PID=<code class="docutils literal notranslate"><span class="pre">alice</span></code> can still be found by ORCID
+if <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> contains that ORCID.</p>
+<p><code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stubs exist so ORCID-bearing creators on drafts/records are
+searchable even when there is no local account. When the same person later has
+a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record with that ORCID, KCWorks prefers the <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>
+record and folds <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> data into it (see
+<a class="reference internal" href="#when-are-records-merged"><span class="xref myst">Merging</span></a>).</p>
 </section>
 <section id="what-runs-automatically-vs-what-you-run-by-hand">
 <h2>What runs automatically vs what you run by hand?<a class="headerlink" href="#what-runs-automatically-vs-what-you-run-by-hand" title="Link to this heading">¶</a></h2>
@@ -349,14 +347,14 @@ invenio-jobs</strong>, and <strong>operator CLI</strong> for one-offs and triage
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>USER create/update from local profile</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> create/update from local profile</p></td>
 <td><p>After local account create/update/association (Profiles webhook, login refresh, <code class="docutils literal notranslate"><span class="pre">users</span> <span class="pre">update</span></code>, name-parts change, etc.) via <code class="docutils literal notranslate"><span class="pre">sync_user_to_names</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>CITED create/update from draft metadata</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> create/update from draft metadata</p></td>
 <td><p>On deposit draft create/update (<code class="docutils literal notranslate"><span class="pre">CitedNamesUpsertComponent</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p>Merge CITED → USER for a shared ORCID</p></td>
-<td><p>As a side effect of the two paths above when <code class="docutils literal notranslate"><span class="pre">resolve(orcid)</span></code> finds a USER (and auto-merge is enabled)</p></td>
+<tr class="row-even"><td><p>Merge <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> → <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> for a shared ORCID</p></td>
+<td><p>As a side effect of the two paths above when <code class="docutils literal notranslate"><span class="pre">resolve(orcid)</span></code> finds a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record (and auto-merge is enabled)</p></td>
 </tr>
 </tbody>
 </table>
@@ -379,7 +377,7 @@ schedule (beat + jobs), see <a class="reference internal" href="scheduled_events
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">merge_names_orcid_duplicates</span></code></p></td>
 <td><p>Sunday 07:00</p></td>
-<td><p>Auto-merge ORCID-sharing Names pairs (CITED → USER where safe)</p></td>
+<td><p>Auto-merge ORCID-sharing Names pairs (<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> → <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> where safe)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">find_names_duplicates</span></code></p></td>
 <td><p>Sunday 08:00</p></td>
@@ -387,7 +385,7 @@ schedule (beat + jobs), see <a class="reference internal" href="scheduled_events
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sync_names_missing_users</span></code></p></td>
 <td><p>Sunday 09:00</p></td>
-<td><p>Bulk USER backfill with <code class="docutils literal notranslate"><span class="pre">missing_only=True</span></code></p></td>
+<td><p>Bulk <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> backfill with <code class="docutils literal notranslate"><span class="pre">missing_only=True</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -402,7 +400,7 @@ invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span c
 <span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=8,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--queue<span class="w"> </span>celery
 invenio<span class="w"> </span>kcworks-jobs<span class="w"> </span>upsert<span class="w"> </span>sync_names_missing_users<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Sync missing Names USER records"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--title<span class="w"> </span><span class="s2">"Sync missing kcworks-user Names records"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--schedule<span class="w"> </span><span class="s2">"crontab:minute=0,hour=9,day_of_week=0"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--queue<span class="w"> </span>celery
 </pre></div>
@@ -421,10 +419,10 @@ re-run of the setup-services schedule section).</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Refresh specific USERs / full <code class="docutils literal notranslate"><span class="pre">--all</span></code> refresh (not missing-only)</p></td>
+<tr class="row-even"><td><p>Refresh specific <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> entries / full <code class="docutils literal notranslate"><span class="pre">--all</span></code> refresh (not missing-only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">sync-now</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Bulk CITED backfill from published records</p></td>
+<tr class="row-odd"><td><p>Bulk <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> backfill from published records</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">backfill-cited-from-records</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>Review / dismiss soft-duplicate pairs</p></td>
@@ -438,11 +436,20 @@ re-run of the setup-services schedule section).</p>
 </div>
 </section>
 </section>
-<section id="when-are-user-records-created-or-updated">
-<h2>When are USER records created or updated?<a class="headerlink" href="#when-are-user-records-created-or-updated" title="Link to this heading">¶</a></h2>
-<p>USER records are written by <code class="docutils literal notranslate"><span class="pre">NamesSyncService.upsert_name_for_user</span></code> (also
-reached via the Celery task <code class="docutils literal notranslate"><span class="pre">sync_user_to_names</span></code>). The payload is built from the
-<strong>current local</strong> <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> (no Profiles API call inside the Names upsert).</p>
+<section id="when-are-kcworks-user-records-created-or-updated">
+<h2>When are kcworks-user records created or updated?<a class="headerlink" href="#when-are-kcworks-user-records-created-or-updated" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> records are written by <code class="docutils literal notranslate"><span class="pre">NamesSyncService.upsert_name_for_user</span></code>
+(also reached via the Celery task <code class="docutils literal notranslate"><span class="pre">sync_user_to_names</span></code>). The payload is built
+from the <strong>current local</strong> <code class="docutils literal notranslate"><span class="pre">user_profile</span></code> (no Profiles API call inside the Names
+upsert).</p>
+<p>For display strings, the upsert prefers a stored <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code>
+when present; otherwise it composes the inverted form from <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code>
+(then <code class="docutils literal notranslate"><span class="pre">name_parts</span></code>) into <strong><code class="docutils literal notranslate"><span class="pre">props.display_name</span></code></strong>. Upstream <code class="docutils literal notranslate"><span class="pre">NameSchema</span></code> still
+rewrites top-level Names <strong><code class="docutils literal notranslate"><span class="pre">name</span></code></strong> to a naive <code class="docutils literal notranslate"><span class="pre">&quot;family,</span> <span class="pre">given&quot;</span></code> composition
+whenever both parts exist—so <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> are not the same
+field. Deposit autofill and creatibutor backfill align with the rich form
+(<code class="docutils literal notranslate"><span class="pre">props.display_name</span></code> / <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code>), not the naive <code class="docutils literal notranslate"><span class="pre">name</span></code>. See
+<a class="reference internal" href="user_data_management.html#how-are-names-represented"><span class="std std-ref">How are names represented?</span></a>.</p>
 <p>Typical triggers:</p>
 <ol class="arabic simple">
 <li><p><strong>Automatic, after local profile changes</strong> — user create/update/association
@@ -456,19 +463,19 @@ flows that sync from KCProfiles (webhooks, login refresh, CLI
 </ol>
 <p>Eligibility for bulk sync:</p>
 <ul class="simple">
-<li><p>No <code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> → skipped (cannot choose a USER PID).</p></li>
+<li><p>No <code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code> → skipped (cannot choose a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> PID).</p></li>
 <li><p>With <code class="docutils literal notranslate"><span class="pre">--missing-only</span></code>, users who already have a Names record at that username
 PID are skipped.</p></li>
 </ul>
 <p>Idempotent: re-running upsert for an unchanged user is effectively a read plus
 an update with the same payload.</p>
-<p>After a successful USER upsert, if the profile has an ORCID, KCWorks attempts
-to merge any CITED (or other non-USER) Names record at PID=ORCID into the USER
-record — see below.</p>
+<p>After a successful <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> upsert, if the profile has an ORCID, KCWorks
+attempts to merge any <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> (or other non-<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>) Names record
+at PID=ORCID into the <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record — see below.</p>
 </section>
-<section id="when-are-cited-records-created-or-updated">
-<h2>When are CITED records created or updated?<a class="headerlink" href="#when-are-cited-records-created-or-updated" title="Link to this heading">¶</a></h2>
-<p>CITED records are written by <code class="docutils literal notranslate"><span class="pre">NamesSyncService.upsert_cited_orcid_name</span></code>.</p>
+<section id="when-are-kcworks-cited-records-created-or-updated">
+<h2>When are kcworks-cited records created or updated?<a class="headerlink" href="#when-are-kcworks-cited-records-created-or-updated" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> records are written by <code class="docutils literal notranslate"><span class="pre">NamesSyncService.upsert_cited_orcid_name</span></code>.</p>
 <section id="on-draft-save">
 <h3>On draft save<a class="headerlink" href="#on-draft-save" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">CitedNamesUpsertComponent</span></code> runs when a deposit draft is created or updated. It
@@ -486,22 +493,24 @@ published before the component existed). Safe to re-run.</p>
 <section id="decision-order-inside-upsert-cited-orcid-name">
 <h3>Decision order inside <code class="docutils literal notranslate"><span class="pre">upsert_cited_orcid_name</span></code><a class="headerlink" href="#decision-order-inside-upsert-cited-orcid-name" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p><strong>Look for an existing USER</strong> that already carries this ORCID in
+<li><p><strong>Look for an existing <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code></strong> that already carries this ORCID in
 <code class="docutils literal notranslate"><span class="pre">identifiers</span></code>, via <code class="docutils literal notranslate"><span class="pre">NamesService.resolve(orcid,</span> <span class="pre">&quot;orcid&quot;,</span> <span class="pre">many=True)</span></code>, then
 keep the first hit tagged <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code>.</p></li>
-<li><p>If a USER is found → <strong>do not create a CITED stub</strong>. Gap-fill / merge into
-the USER (<code class="docutils literal notranslate"><span class="pre">merge_cited_orcid_into_kc</span></code>) and best-effort delete any leftover
-stub at PID=ORCID.</p></li>
-<li><p>If no USER is found → <strong>create</strong> a CITED record at PID=ORCID, or <strong>update</strong>
-that PID if a CITED (or untagged) record already sits there.</p></li>
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> is found → <strong>do not create a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub</strong>.
+Gap-fill / merge into the <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record (<code class="docutils literal notranslate"><span class="pre">merge_cited_orcid_into_kc</span></code>)
+and best-effort delete any leftover stub at PID=ORCID.</p></li>
+<li><p>If no <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> is found → <strong>create</strong> a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> record at
+PID=ORCID, or <strong>update</strong> that PID if a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> (or untagged) record
+already sits there.</p></li>
 </ol>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The draft path does <strong>not</strong> look up by KC username. If a USER record exists but
-does not yet list the ORCID in <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> (or OpenSearch has not refreshed),
-<code class="docutils literal notranslate"><span class="pre">resolve</span></code> misses the USER and a CITED stub can still be created at PID=ORCID.
-Re-syncing the USER (so ORCID is on the Names record and indexed), then merging
-or running ORCID duplicate merge, consolidates the pair.</p>
+<p>The draft path does <strong>not</strong> look up by KC username. If a <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record
+exists but does not yet list the ORCID in <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> (or OpenSearch has not
+refreshed), <code class="docutils literal notranslate"><span class="pre">resolve</span></code> misses it and a <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub can still be created
+at PID=ORCID. Re-syncing the <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> entry (so ORCID is on the Names
+record and indexed), then merging or running ORCID duplicate merge, consolidates
+the pair.</p>
 </div>
 </section>
 </section>
@@ -511,22 +520,23 @@ or running ORCID duplicate merge, consolidates the pair.</p>
 <code class="docutils literal notranslate"><span class="pre">REMOTE_USER_DATA_NAMES_AUTO_MERGE_ON_ORCID</span></code> (default on).</p>
 <p><code class="docutils literal notranslate"><span class="pre">merge_cited_orcid_into_kc</span></code>:</p>
 <ul class="simple">
-<li><p>Treats the <strong>USER</strong> record as canonical (KC scalar names / <code class="docutils literal notranslate"><span class="pre">props</span></code> win).</p></li>
+<li><p>Treats the <strong><code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code></strong> record as canonical (<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">given_name</span></code>,
+<code class="docutils literal notranslate"><span class="pre">family_name</span></code>, and <code class="docutils literal notranslate"><span class="pre">props</span></code> win).</p></li>
 <li><p>Unions <code class="docutils literal notranslate"><span class="pre">identifiers</span></code> and <code class="docutils literal notranslate"><span class="pre">affiliations</span></code>.</p></li>
-<li><p>Updates the USER record, then tries to <strong>delete</strong> the CITED stub at
-PID=ORCID.</p></li>
+<li><p>Updates the <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record, then tries to <strong>delete</strong> the
+<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> stub at PID=ORCID.</p></li>
 </ul>
 <p>It runs when:</p>
 <ul class="simple">
-<li><p>A USER upsert finds an ORCID on the profile and a non-USER record exists at
-that ORCID PID.</p></li>
-<li><p>A CITED upsert finds an existing USER that already carries that ORCID
-(<code class="docutils literal notranslate"><span class="pre">upsert_cited_orcid_name</span></code> step 2 above).</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> upsert finds an ORCID on the profile and a
+non-<code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> record exists at that ORCID PID.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> upsert finds an existing <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> that already carries
+that ORCID (<code class="docutils literal notranslate"><span class="pre">upsert_cited_orcid_name</span></code> step 2 above).</p></li>
 <li><p>Administrators run <code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">merge-orcid-duplicates</span></code> (bulk
 ORCID-sharing pairs).</p></li>
 </ul>
-<p>Two distinct USER records that share an ORCID are <strong>not</strong> silently merged;
-that case is treated as a duplicate-user anomaly for review.</p>
+<p>Two distinct <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> records that share an ORCID are <strong>not</strong> silently
+merged; that case is treated as a duplicate-user anomaly for review.</p>
 </section>
 <section id="when-are-pairs-flagged-for-review">
 <h2>When are pairs flagged for review?<a class="headerlink" href="#when-are-pairs-flagged-for-review" title="Link to this heading">¶</a></h2>
@@ -543,9 +553,9 @@ a shared ORCID). Soft-duplicate flagging is driven by the scheduled
 <p>Recommended order (also the default Sunday schedule): ORCID merge first
 (<code class="docutils literal notranslate"><span class="pre">merge_names_orcid_duplicates</span></code>), then soft-duplicate scan
 (<code class="docutils literal notranslate"><span class="pre">find_names_duplicates</span></code>).</p>
-<p>ORCID-identical pairs that <em>can</em> be folded during normal USER/CITED upserts are
-still merged opportunistically (see <a class="reference internal" href="#when-are-records-merged"><span class="xref myst">Merging</span></a>); they do
-not wait for the weekly job.</p>
+<p>ORCID-identical pairs that <em>can</em> be folded during normal <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> /
+<code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> upserts are still merged opportunistically (see
+<a class="reference internal" href="#when-are-records-merged"><span class="xref myst">Merging</span></a>); they do not wait for the weekly job.</p>
 </section>
 <section id="how-do-i-inspect-or-force-a-refresh">
 <h2>How do I inspect or force a refresh?<a class="headerlink" href="#how-do-i-inspect-or-force-a-refresh" title="Link to this heading">¶</a></h2>
@@ -560,19 +570,19 @@ not wait for the weekly job.</p>
 <tr class="row-even"><td><p>See one Names record</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">show</span> <span class="pre">&lt;pid_or_orcid&gt;</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Refresh one USER from local profile</p></td>
+<tr class="row-odd"><td><p>Refresh one <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> from local profile</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span> <span class="pre">sync-now</span> <span class="pre">…</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Preview would-be USER payload (no write)</p></td>
+<tr class="row-even"><td><p>Preview would-be <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> payload (no write)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sync-now</span> <span class="pre">--dry-run</span></code> with positional ids (pretty-prints the dict)</p></td>
 </tr>
-<tr class="row-odd"><td><p>Backfill missing USERs</p></td>
+<tr class="row-odd"><td><p>Backfill missing <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> entries</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sync-now</span> <span class="pre">--all</span> <span class="pre">--missing-only</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Refresh all eligible USERs</p></td>
+<tr class="row-even"><td><p>Refresh all eligible <code class="docutils literal notranslate"><span class="pre">kcworks-user</span></code> entries</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sync-now</span> <span class="pre">--all</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Backfill CITEDs from published works</p></td>
+<tr class="row-odd"><td><p>Backfill <code class="docutils literal notranslate"><span class="pre">kcworks-cited</span></code> from published works</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">backfill-cited-from-records</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>Auto-merge ORCID duplicates</p></td>
@@ -591,17 +601,17 @@ not wait for the weekly job.</p>
 </section>
 <section id="mental-model-short">
 <h2>Mental model (short)<a class="headerlink" href="#mental-model-short" title="Link to this heading">¶</a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Local KC user profile ──upsert_name_for_user──► USER (PID = kc_username)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Local KC user profile ──upsert_name_for_user──► kcworks-user (PID = kc_username)
         │                                         │
-        │ ORCID on profile                        │ resolve(orcid) finds USER
+        │ ORCID on profile                        │ resolve(orcid) finds kcworks-user
         └──────── merge_cited_orcid_into_kc ◄─────┤
                                                   │
 Draft / published creatibutor with ORCID          │
         │                                         │
         └──upsert_cited_orcid_name────────────────┤
               │                                   │
-              ├─ USER found by ORCID? ── merge ───┘
-              └─ else ── create/update CITED (PID = orcid)
+              ├─ kcworks-user found by ORCID? ── merge ───┘
+              └─ else ── create/update kcworks-cited (PID = orcid)
 
 Similar names, no safe ORCID merge ──► find_names_duplicates (scheduled / CLI)
                                               └──► list-duplicates / dismiss
@@ -673,8 +683,8 @@ Similar names, no safe ORCID merge ──► find_names_duplicates (scheduled / 
 <li><a class="reference internal" href="#manual-cli-only">Manual CLI only</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#when-are-user-records-created-or-updated">When are USER records created or updated?</a></li>
-<li><a class="reference internal" href="#when-are-cited-records-created-or-updated">When are CITED records created or updated?</a><ul>
+<li><a class="reference internal" href="#when-are-kcworks-user-records-created-or-updated">When are kcworks-user records created or updated?</a></li>
+<li><a class="reference internal" href="#when-are-kcworks-cited-records-created-or-updated">When are kcworks-cited records created or updated?</a><ul>
 <li><a class="reference internal" href="#on-draft-save">On draft save</a></li>
 <li><a class="reference internal" href="#bulk-backfill-from-published-records">Bulk backfill from published records</a></li>
 <li><a class="reference internal" href="#decision-order-inside-upsert-cited-orcid-name">Decision order inside <code class="docutils literal notranslate"><span class="pre">upsert_cited_orcid_name</span></code></a></li>
@@ -695,7 +705,7 @@ Similar names, no safe ORCID merge ──► find_names_duplicates (scheduled / 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=030dc6f6"></script>
+</div><script src="../_static/documentation_options.js?v=b51e6972"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

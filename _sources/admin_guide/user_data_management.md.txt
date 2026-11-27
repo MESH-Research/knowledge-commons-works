@@ -3,9 +3,12 @@
 KCWorks stores user profile data locally and keeps it in sync with the Knowledge
 Commons Profiles service. Administrators can provision users in bulk, inspect
 accounts, merge duplicate local accounts, correct how a user's name is divided
-into parts, and maintain the Names vocabulary that powers creator lookup in the
-upload form. For how and when Names index entries are created, updated, merged,
-or flagged, see [Names Vocabulary Lifecycle](names_vocabulary.md).
+into parts, backfill `display_name` / creatibutor strings, and maintain the
+Names vocabulary that powers creator lookup in the upload form. For how profile
+fields, Names records tagged `kcworks-user`, and record creatibutors stay
+aligned, see [How are names represented?](#how-are-names-represented).
+For how and when Names index entries are created, updated, merged, or flagged,
+see [Names Vocabulary Lifecycle](names_vocabulary.md).
 
 All of the operations below are run from the KCWorks UI app container. See
 [Starting an interactive shell](running_commands.md#starting-interactive-shell)
@@ -87,6 +90,133 @@ CLI reference:
 - [`invenio kcworks-users group-users`](../reference/cli_commands.md#invenio-kcworks-users-group-users)
 - [`invenio kcworks-users user-groups`](../reference/cli_commands.md#invenio-kcworks-users-user-groups)
 
+## How are names represented?
+
+KCWorks keeps name data for a user aligned across three places: the local
+account profile, the Names vocabulary entry for that account, and creatibutor
+blocks on records. The chart below shows which fields correspond (or have no
+counterpart).
+
+Account-backed Names entries are tagged `kcworks-user`; ORCID creatibutor stubs
+are tagged `kcworks-cited`. See
+[What kinds of Names records does KCWorks write?](names_vocabulary.md#what-kinds-of-names-records-does-kcworks-write).
+
+| Role | Local `user_profile` | Names (`kcworks-user`) | Record creatibutor (`person_or_org`) |
+| ---- | -------------------- | ---------------------- | ------------------------------------ |
+| Natural-order name | `full_name` | — | — |
+| Rich inverted / bibliographic name | `display_name` | `props.display_name` | `name` |
+| Naive inverted composition | — | `name` (always rewritten by upstream `NameSchema` to `"family, given"` when both parts exist) | — |
+| Structured parts (remote) | `name_parts` (JSON string) | `props.name_parts` (object; from local override if set, else remote) | — |
+| Structured parts (local override) | `name_parts_local` (JSON string) | (feeds `props.name_parts` when present) | — |
+| Given / family tokens | (derived from preferred parts) | `given_name` / `family_name` (also the inputs to naive `name`) | `given_name` / `family_name` when set by deposit autofill |
+| KC username | `identifier_kc_username` | `id` (PID) and `identifiers[]` (`scheme: kc_username`) | `identifiers[]` (`scheme: kc_username`) |
+| ORCID | `identifier_orcid` | `identifiers[]` (`scheme: orcid`) | `identifiers[]` (`scheme: orcid`) |
+| Email | `identifier_email` | — | `identifiers[]` (`scheme: email`) when present |
+
+Do not conflate Names `name` with the rich inverted/bibliographic name we
+compose from name_parts(_local). `NameSchema` overwrites the top-level `name`
+field to a naive `"family, given"` composition. The preferred bibliographic
+form, including any user corrections, is `user_profile.display_name` ↔ Names
+`props.display_name` ↔ creatibutor `person_or_org.name`.
+
+Data flow (the user's `user_profile` is the source of truth for the Names item
+and record creator/contributor):
+
+```text
+name_parts_local ─┐
+                  ├─► given_name / family_name ──► Names.name  ("family, given", naive)
+name_parts ───────┘         │
+                            ├─► user_profile.display_name ──► Names.props.display_name
+                            │                              └──► creatibutor person_or_org.name
+                            │
+                            └─► (also used when composing display_name)
+
+identifier_kc_username / orcid / email
+        └──► Names identifiers[]  and  creatibutor identifiers[]
+```
+
+### Where does inverted name composition happen?
+
+Rich inverted strings (particles, suffixes, multi-part given names, and so on)
+are composed by `get_full_name_inverted` in
+`invenio-remote-user-data-kcworks` (`utils/names.py`), from the structured
+parts (`name_parts_local` preferred over `name_parts`). This central logic is
+applied in several places:
+
+| When | Where | What gets written |
+| ---- | ----- | ----------------- |
+| Profiles sync / login refresh | `CILogonHelpers.calculate_user_changes` → `UserProfileService.compute_display_name_from_profile` | `user_profile.display_name` |
+| Admin edits local parts | `user-data users name-parts` → `UserProfileService.update_local_name_parts` | `name_parts_local` and refreshed `display_name` |
+| Bulk fill empty profiles | `user-data users backfill-display-names` → `UserProfileService.backfill_display_names` | empty `display_name` values (or all with `--force`) |
+| Names `kcworks-user` upsert | `NamesSyncService.build_name_payload_from_user` | prefers stored `user_profile.display_name`; otherwise composes into `props.display_name` (top-level Names `name` is still naive via `NameSchema`) |
+| Deposit autofill | modular deposit form (`creatibutorDisplayName.js`) | creatibutor `person_or_org.name` from profile `display_name` or Names `props.display_name` (fallbacks: profile `full_name`, Names `name`) |
+| Record backfill | `user-data records backfill-creatibutor-names` | creatibutor `person_or_org.name` ← profile `display_name` (no re-composition; requires `display_name` already set) |
+
+Composition is **not** re-run inside the creatibutor backfill CLI: that path
+copies the already-persisted profile `display_name` onto matching record
+entries.
+
+### When does ORCID name data come into play?
+
+ORCID shows up in different roles—do not mix them up with Profiles-driven
+`kcworks-user` name composition.
+
+1. **On a local account** — Profiles sync may set
+   `user_profile.identifier_orcid`. That identifier is copied onto the
+   `kcworks-user` Names record and can appear on creatibutors. It does **not**
+   pull the person's ORCID public-record name into `user_profile.display_name`;
+   account display strings still come from Profiles / local name parts as above.
+
+2. **On a work as a creatibutor (often ORCID-sourced)** — The deposit
+   creatibutor picker merges local `/api/names` hits with ORCID Public API
+   `expanded-search` results. For a direct ORCID hit, `person_or_org.name` is
+   set from ORCID's **`credit-name`** when present (the researcher's chosen
+   citation form); otherwise from a naive `"family-names, given-names"` join.
+   `family_name` / `given_name` come from ORCID's `family-names` /
+   `given-names`, with affiliations and the ORCID identifier copied alongside.
+   The local index data used in case of a Names hit may already be
+   ORCID-derived (if that Names item was a `kcworks-cited` stub). Manual entry
+   that only attaches an ORCID is also possible, but does not automatically
+   bring in user data from ORCID.
+
+3. **In a Names index item tagged `kcworks-cited`** — On draft save
+   (`CitedNamesUpsertComponent`) or via
+   `user-data names backfill-cited-from-records`, KCWorks copies any
+   ORCID-derived creatibutor metadata into a Names index item tagged
+   `kcworks-cited` (PID = the bare ORCID) rather than a `kcworks-user` item.
+   If a Names item tagged `kcworks-user` already lists that ORCID, this path
+   does not keep a separate `kcworks-cited` stub (see the next point). See
+   [When are kcworks-cited records created or updated?](names_vocabulary.md#when-are-kcworks-cited-records-created-or-updated).
+
+4. **Later merge of ORCID and Profiles data in one Names index item** — If the
+   person already has, or later creates, a KC account whose Names item is
+   tagged `kcworks-user` and lists that ORCID, the `kcworks-cited` stub is
+   merged into that account-backed item instead of remaining separate. On
+   merge, **`kcworks-user` name fields (`name`, `given_name`, `family_name`)
+   and `props` win**; `kcworks-cited` data mainly contributes identifiers and
+   affiliations. Until that happens, the Names index keeps the ORCID-sourced
+   `kcworks-cited` item. See
+   [When are records merged?](names_vocabulary.md#when-are-records-merged).
+
+Rules of thumb:
+
+1. **`name_parts_local` wins over `name_parts`** for composition (local admin
+   split survives remote Profiles re-sync).
+2. **`display_name` is the inverted citation string** (`Family, Given …`).
+   Remote sync and `user-data users name-parts` refresh it from the preferred
+   parts. Bulk fill empty values with
+   `user-data users backfill-display-names`.
+3. **`full_name` is natural order** (`Given Family …`), usually from Profiles.
+4. **Names `kcworks-user` upserts** read the current local profile (no Profiles
+   API call inside the Names task) and prefer stored `display_name` when
+   present.
+5. **Creatibutor strings on already-published works do not update
+   automatically** when a profile `display_name` changes. Use
+   `user-data records backfill-creatibutor-names` after profiles are correct.
+
+See also [Names Vocabulary Lifecycle](names_vocabulary.md) and
+[How do I change a user's name division?](#how-do-i-change-a-user-s-name-division).
+
 ## How do I change a user's name division?
 
 Sometimes, profile data synced from Knowledge Commons does not divide a user's
@@ -94,21 +224,24 @@ name correctly—for example, a compound surname or patronymic is split in the
 wrong place. Administrators can override the division locally. KCWorks stores
 these overrides in the user's `name_parts_local` profile field. The override is
 used when auto-filling creator fields on the upload form and when displaying the
-user's name elsewhere in KCWorks.
+user's name elsewhere in KCWorks. Updating parts also refreshes persisted
+`display_name` (inverted form).
 
 1. Look up the user's local Invenio user id (see
+
    [How do I retrieve a user's details via the CLI?](#how-do-i-retrieve-a-user-s-details-via-the-cli)).
 2. To view the current local name parts without making changes, run:
 
 ```shell
-invenio kcworks-users name-parts <user_id>
+invenio user-data users name-parts <user_id>
 ```
 
 3. To set one or more name parts, pass the relevant flags. Only the flags you
+
    supply are updated; omitted parts are left unchanged:
 
 ```shell
-invenio kcworks-users name-parts <user_id> \
+invenio user-data users name-parts <user_id> \
   --given "María" \
   --family "García López" \
   --family-prefix-fixed "de la"
@@ -116,7 +249,7 @@ invenio kcworks-users name-parts <user_id> \
 
 Available name-part flags include `--given`, `--family`, `--middle`, `--suffix`,
 `--family-prefix`, `--family-prefix-fixed`, `--spousal`, `--parental`,
-`--undivided`, and `--nickname`. Run `invenio kcworks-users name-parts --help`
+`--undivided`, and `--nickname`. Run `invenio user-data users name-parts --help`
 for descriptions of each.
 
 ```{note}
@@ -127,7 +260,49 @@ re-run it, see
 ```
 
 CLI reference:
-[`invenio kcworks-users name-parts`](../reference/cli_commands.md#invenio-kcworks-users-name-parts).
+[`invenio user-data users name-parts`](../reference/cli_commands.md#invenio-user-data-users-name-parts).
+
+## How do I backfill profile `display_name` values?
+
+Use this when older accounts have usable `name_parts` / `name_parts_local` but
+an empty `user_profile.display_name`. Prefer a dry run first:
+
+```shell
+invenio user-data users backfill-display-names --dry-run
+invenio user-data users backfill-display-names
+```
+
+Named options:
+
+- `--force` — recompute and overwrite existing non-empty `display_name` values
+- `--limit` — stop after this many profile updates
+- `--sync-names` — after each profile write, upsert the user's Names vocabulary
+entry so `props.display_name` matches (for Names-only refresh without profile
+writes, use `user-data names sync-now --all`)
+
+This command does **not** rewrite creatibutor strings on existing records. After
+profiles look correct, run
+[How do I backfill creatibutor names on records?](#how-do-i-backfill-creatibutor-names-on-records).
+
+CLI reference:
+[`invenio user-data users backfill-display-names`](../reference/cli_commands.md#invenio-user-data-users-backfill-display-names).
+
+## How do I backfill creatibutor names on records?
+
+Once local profiles have `display_name` set, rewrite matching personal
+creators/contributors so `person_or_org.name` matches that inverted form.
+Matches are by profile identifiers (`kc_username`, `orcid`, `email`) only:
+
+```shell
+invenio user-data records backfill-creatibutor-names --dry-run
+invenio user-data records backfill-creatibutor-names
+```
+
+Optional: `--limit` (max records updated across published + drafts) and
+`--user-id` (only creatibutors for one local account).
+
+CLI reference:
+[`invenio user-data records backfill-creatibutor-names`](../reference/cli_commands.md#invenio-user-data-records-backfill-creatibutor-names).
 
 ## How do I sync a KCWorks user's data with KCProfiles?
 
@@ -157,8 +332,8 @@ CLI reference:
 ## How do I update a KCWorks user's Names index entry with new data?
 
 ```{seealso}
-Lifecycle overview (USER vs CITED, draft-save stubs, merge rules):
-[Names Vocabulary Lifecycle](names_vocabulary.md).
+Lifecycle overview (`kcworks-user` vs `kcworks-cited`, draft-save stubs, merge
+rules): [Names Vocabulary Lifecycle](names_vocabulary.md).
 ```
 
 KCWorks maintains a search index (or "vocabulary") of names--along with the
@@ -257,13 +432,13 @@ ownership to the second. Unpublished drafts are not included.
 ### Related operations
 
 - **Org collection membership** is separate from ownership. To add a user's
-  works to an org community without changing who owns them, see
-  [Organization Management](organization_management.md).
+works to an org community without changing who owns them, see
+[Organization Management](organization_management.md).
 - **Blocking** a user soft-deletes their published works and does not transfer
-  ownership. Transfer or otherwise disposition works _before_ blocking when the
-  content should remain visible under another account.
+ownership. Transfer or otherwise disposition works _before_ blocking when the
+content should remain visible under another account.
 - CLI reference:
-  [`invenio kcworks-records change-record-owner`](../reference/cli_commands.md#invenio-kcworks-records-change-record-owner).
+[`invenio kcworks-records change-record-owner`](../reference/cli_commands.md#invenio-kcworks-records-change-record-owner).
 
 ## How do I merge two user accounts?
 
@@ -278,10 +453,12 @@ A full account merge involves two distinct operations, although they are both
 triggered in one command:
 
 1. [transferring ownership](#how-do-i-transfer-record-ownership) of all work
+
    records to the canonical account;
-2. [updating the user's `kc_username`](#how-do-i-update-someone-s-username-in-record-citations)
+2. [updating the user's `kc_username](#how-do-i-update-someone-s-username-in-record-citations)`
+
    ids in **all their "Contributor" citations** in work records with the
-   canonical account's username.
+    canonical account's username.
 
 You can also run the two underlying commands separately when you need only one
 part of the merge; see the linked sections above.
@@ -300,22 +477,24 @@ one local account to another.
 ### Before you start
 
 1. Decide which local account is **canonical** and which is the **duplicate** to
+
    retire. Use
-   [How do I retrieve a user's details via the CLI?](#how-do-i-retrieve-a-user-s-details-via-the-cli)
-   to compare user ids, KC usernames, and OAuth linkage. To scan the whole
-   database for likely duplicates first, run
-   `invenio kcworks-users find-duplicates` (see
-   [`invenio kcworks-users find-duplicates`](../reference/cli_commands.md#invenio-kcworks-users-find-duplicates)).
+    [How do I retrieve a user's details via the CLI?](#how-do-i-retrieve-a-user-s-details-via-the-cli)
+    to compare user ids, KC usernames, and OAuth linkage. To scan the whole
+    database for likely duplicates first, run
+    `invenio kcworks-users find-duplicates` (see
+    [`invenio kcworks-users find-duplicates`](../reference/cli_commands.md#invenio-kcworks-users-find-duplicates)).
 2. If you need an inventory of the duplicate's works, you can use:
    - the **Records** tab in the admin interface to search for the duplicate
-     user's works (using `parent.access.owned_by:<duplicate_user_id>`);
+    user's works (using `parent.access.owned_by:<duplicate_user_id>`);
    - the CLI command
-     `invenio kcworks-records export-records --owner-id <duplicate_user_id>` to
-     export an inventory; record UUIDs appear in the archive metadata JSON. (See
-     [`invenio kcworks-records export-records`](../reference/cli_commands.md#invenio-kcworks-records-export-records)).
+   `invenio kcworks-records export-records --owner-id <duplicate_user_id>` to
+   export an inventory; record UUIDs appear in the archive metadata JSON. (See
+   [`invenio kcworks-records export-records`](../reference/cli_commands.md#invenio-kcworks-records-export-records)).
 3. Plan for **both** steps below: ownership transfer alone does not rewrite
+
    creator/contributor citations, and updating citations alone does not change
-   who owns a work.
+    who owns a work.
 
 ### Run the `migrate_user` command
 
@@ -349,7 +528,7 @@ CLI reference:
 
 - [`invenio kcworks-records migrate_user`](../reference/cli_commands.md#invenio-kcworks-records-migrate-user)
 - [`invenio kcworks-records export-records`](../reference/cli_commands.md#invenio-kcworks-records-export-records)
-  (inventory of the duplicate's works)
+(inventory of the duplicate's works)
 
 ## How do I change someone's username?
 
@@ -420,10 +599,10 @@ CLI reference:
 In some situations, as when two accounts need to be merged, a user's identifiers
 might need to be updated in record metadata. You can update any `kc_username`
 identifier in a **creator or contributor** entry on a record with a new value
-using the `kcworks-records update_contributors_username` command.
+using the `user-data records update_contributors_username` command.
 
 ```shell
-invenio kcworks-records update_contributors_username \
+invenio user-data records update_contributors_username \
   -o <old_kc_username> \
   -n <new_kc_username>
 ```
@@ -446,13 +625,14 @@ Names entries—the old username may still belong to a separate valid local acco
 ```
 
 CLI reference:
-[`invenio kcworks-records update_contributors_username`](../reference/cli_commands.md#invenio-kcworks-records-update-contributors-username).
+[`invenio user-data records update_contributors_username`](../reference/cli_commands.md#invenio-user-data-records-update-contributors-username).
 
 ## How do I backfill or refresh the Names vocabulary?
 
 ```{seealso}
 [Names Vocabulary Lifecycle](names_vocabulary.md) for when automatic sync,
-draft-save CITED stubs, and ORCID merge apply versus these bulk commands.
+draft-save `kcworks-cited` stubs, and ORCID merge apply versus these bulk
+commands.
 ```
 
 The Names vocabulary is an index of user identities used for user name searches,
@@ -498,17 +678,17 @@ elsewhere.
 ### Backfill cited names from published records
 
 `invenio user-data names backfill-cited-from-records` scans published work
-records and creates Names index entries for each creator/contributor who is
-listed with an ORCIDs. This is idempotent: The Names index entries for existing
-KCWorks users are gap-filled from ORCID data where local metadata is missing,
-and existing ORCID-based Names entries are refreshed with live ORCID metadata.
-Missing entries are created from creator/contributor ORCID identifiers. Run it
-once after deployment to cover records published before the Names sync component
-existed.
+records and upserts a Names entry for each creator/contributor who carries an
+ORCID. Payloads come from the creatibutor metadata already on the work (often
+ORCID-sourced via the deposit picker)—the command does not call the ORCID API.
+If a `kcworks-user` record already lists that ORCID, the path gap-fills /
+merges into it; otherwise it creates or refreshes a `kcworks-cited` stub. Run
+it once after deployment to cover records published before the draft-save
+component existed.
 
-(Note: This command only pulls in Names entries based on ORCID identifiers,
-_not_ KC usernames. Names entries for KC users are kept updated automatically
-through the usual user data sync/update process.)
+(Note: This command only walks ORCID-bearing creatibutors, not KC usernames.
+Account-backed Names entries are kept updated through the usual user-data
+sync/update process.)
 
 ```shell
 # Dry run — count what would change without writing
@@ -549,7 +729,8 @@ index entries for the same person.
 Corpus-wide ORCID merge and soft-duplicate scanning run on a **weekly
 schedule** once the Names jobs are registered (see
 [Names Vocabulary Lifecycle — scheduled jobs](names_vocabulary.md#scheduled-jobs-invenio-jobs)).
-Opportunistic ORCID merges also happen during normal USER/CITED upserts.
+Opportunistic ORCID merges also happen during normal `kcworks-user` /
+`kcworks-cited` upserts.
 Reviewing and dismissing soft-duplicate pairs remains a **manual** admin step
 (`list-duplicates`, `dismiss-duplicate`, …).
 ```
@@ -581,10 +762,12 @@ matching local account.
 For the import you will need either:
 
 1. A CSV file with one KC username per line. A `username` header row is optional
+
    and is skipped automatically. Lines starting with `#` and blank lines are
-   also ignored. If the file has extra columns, only the first column (the
-   username) is used.
+    also ignored. If the file has extra columns, only the first column (the
+    username) is used.
 2. A JSONL file with KC profiles data in the same shape that would be returned
+
    by a `members` endpoint API request.
 
 In either case, copy the file into the `ui` container, or place it somewhere
@@ -605,9 +788,9 @@ Useful options:
 
 - `--limit N` — process only the first _N_ rows (helpful for a trial run).
 - `--rate-per-second 2` — throttle live Profiles API calls (default `2`; set `0`
-  to disable pacing; decimal numbers allow rates of less than 1/second).
+to disable pacing; decimal numbers allow rates of less than 1/second).
 - `--background` — enqueue the work as a Celery task and return immediately with
-  a task id (recommended for large lists).
+a task id (recommended for large lists).
 
 When the command finishes synchronously, it prints a summary with counts of rows
 seen, processed, skipped, and errors.

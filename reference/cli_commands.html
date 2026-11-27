@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Customizations to InvenioRDM" href="../customizations.html"><link rel="prev" title="Outgoing Signals" href="outgoing_signals.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>CLI Commands - Knowledge Commons Works 1.7.0 documentation</title>
+        <title>CLI Commands - Knowledge Commons Works 1.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.7.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -512,31 +512,12 @@ invenio<span class="w"> </span>kcworks-records<span class="w"> </span>change-rec
 </pre></div>
 </div>
 </section>
-<section id="invenio-kcworks-records-update-contributors-username">
-<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code><a class="headerlink" href="#invenio-kcworks-records-update-contributors-username" title="Link to this heading">¶</a></h4>
-<p>Rewrites <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> identifiers in record <code class="docutils literal notranslate"><span class="pre">metadata.creators</span></code> and
-<code class="docutils literal notranslate"><span class="pre">metadata.contributors</span></code>. For account merge/migration after
-<code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> when creator blocks still cite the duplicate’s KC
-username. Calls <code class="docutils literal notranslate"><span class="pre">rewrite_records_for_kc_username_change</span></code> with
-<code class="docutils literal notranslate"><span class="pre">prune_names=False</span></code> (record metadata only; no Names prune).</p>
-<p>Named options:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-o</span></code> (required): KC username on matching creator/contributor entries.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code> (required): KC username to write in its place.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: list matching record IDs without writing changes.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code>: queue the rewrite on Celery instead of running synchronously.</p></li>
-</ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>kcworks-records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span>duplicateuser<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-n<span class="w"> </span>canonicaluser
-</pre></div>
-</div>
-</section>
 <section id="invenio-kcworks-records-migrate-user">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">migrate_user</span></code><a class="headerlink" href="#invenio-kcworks-records-migrate-user" title="Link to this heading">¶</a></h4>
 <p>Runs account merge in two steps: <code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> (all published records
 from <code class="docutils literal notranslate"><span class="pre">--old-owner-id</span></code> to <code class="docutils literal notranslate"><span class="pre">--new-owner-id</span></code>), then
-<code class="docutils literal notranslate"><span class="pre">update_contributors_username</span></code> (<code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> to <code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code>).</p>
+<code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">update_contributors_username</span></code> (<code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> to
+<code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code>).</p>
 <p>Named options:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--old-owner-id</span></code> (required): duplicate account local user id.</p></li>
@@ -560,27 +541,6 @@ from <code class="docutils literal notranslate"><span class="pre">--old-owner-id
 <ul class="simple">
 <li><p><strong>provided by the main KCWorks package</strong> (kcworks/site/cli.py and kcworks/services/users/cli.py)</p></li>
 </ul>
-<section id="invenio-kcworks-users-name-parts">
-<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code><a class="headerlink" href="#invenio-kcworks-users-name-parts" title="Link to this heading">¶</a></h4>
-<p>Either reads or updates the dictionary of name parts that KCWorks will use to construct the full name of a user (e.g., first name, last name, middle name, etc.) for display in the UI and in creating record metadata. Updates also queue an asynchronous Names vocabulary sync for the user.</p>
-<p>Positional arguments:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: the ID of the user to read or update.</p></li>
-</ul>
-<p>Named arguments:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--given</span></code> (-g): the first or given name of the user.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--family</span></code> (-f): the last or family name of the user.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--middle</span></code> (-m): one or more middle names, separated by spaces.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--suffix</span></code> (-s): a suffix that follows the last name (e.g. ‘Jr., III’). This is moved behind the first name when names are listed with the last name first.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix</span></code> (-r): a prefix introducing the family name (like ‘von’, etc.) that is not kept in front of the family name for last-name-first display.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix-fixed</span></code> (-x): a prefix introducing the family name (like ‘ibn’, ‘van der’, ‘de la’, ‘de’, ‘von’, etc.) that is kept in front of the family name for last-name-first display.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--spousal</span></code> (-u): a spousal family name that is kept in front of the family name for last-name-first display (e.g. ‘Garcia’ + ‘Martinez’ -&gt; ‘Garcia Martinez’).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--parental</span></code> (-p): a parental name, like a patronymic or matronymic, that comes between the first and last names but is not included with the last names for last-name-first display.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--undivided</span></code> (-n): a name string that should not be divided into parts, but should be kept the same in any alphabetical list.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--nickname</span></code> (-k): the nickname of the user.</p></li>
-</ul>
-</section>
 <section id="invenio-kcworks-users-read">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code><a class="headerlink" href="#invenio-kcworks-users-read" title="Link to this heading">¶</a></h4>
 <p>Reads a KCWorks user’s data from the database, including associated KC account
@@ -895,8 +855,9 @@ are preserved by regular community updates and by backfill unless
 </ul>
 <p>Subgroups:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span></code> — bulk user provisioning and re-pull from Profiles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span></code> — bulk user provisioning / re-pull from Profiles, local name-parts, <code class="docutils literal notranslate"><span class="pre">display_name</span></code> backfill</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code> — Names vocabulary maintenance and duplicate review</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span></code> — creatibutor username / display_name rewrites on RDM records</p></li>
 </ul>
 <p>See <a class="reference internal" href="../admin_guide/user_data_management.html"><span class="std std-doc">User Data Management</span></a> for operational workflows.</p>
 <section id="invenio-user-data-users-update">
@@ -923,6 +884,86 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class
 <section id="invenio-user-data-users-ingest-profiles-dump">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code><a class="headerlink" href="#invenio-user-data-users-ingest-profiles-dump" title="Link to this heading">¶</a></h4>
 <p>Bulk-creates or updates local users from a Profiles API JSONL dump or a CSV of usernames. Accepts <code class="docutils literal notranslate"><span class="pre">--background</span></code> to queue the work on Celery instead of running synchronously.</p>
+</section>
+<section id="invenio-user-data-users-name-parts">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span></code><a class="headerlink" href="#invenio-user-data-users-name-parts" title="Link to this heading">¶</a></h4>
+<p>Reads or updates the local name-parts override (<code class="docutils literal notranslate"><span class="pre">user_profile.name_parts_local</span></code>)
+used to construct display strings and deposit autofill. A successful update
+also refreshes persisted <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code> (inverted form) and queues
+an asynchronous Names vocabulary sync for the user.</p>
+<p>Positional arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: the local Invenio user id to read or update.</p></li>
+</ul>
+<p>Named arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--given</span></code> (<code class="docutils literal notranslate"><span class="pre">-g</span></code>): given / first name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family</span></code> (<code class="docutils literal notranslate"><span class="pre">-f</span></code>): family / last name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--middle</span></code> (<code class="docutils literal notranslate"><span class="pre">-m</span></code>): one or more middle names, separated by spaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--suffix</span></code> (<code class="docutils literal notranslate"><span class="pre">-s</span></code>): suffix after the family name (e.g. <code class="docutils literal notranslate"><span class="pre">Jr.</span></code>, <code class="docutils literal notranslate"><span class="pre">III</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix</span></code> (<code class="docutils literal notranslate"><span class="pre">-r</span></code>): family-name particle not kept for alphabetical sorting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--family-prefix-fixed</span></code> (<code class="docutils literal notranslate"><span class="pre">-x</span></code>): family-name particle kept for alphabetical sorting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--spousal</span></code> (<code class="docutils literal notranslate"><span class="pre">-u</span></code>): spousal family name kept ahead of the family name for sorting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--parental</span></code> (<code class="docutils literal notranslate"><span class="pre">-p</span></code>): parental / patronymic name between given and family</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--undivided</span></code> (<code class="docutils literal notranslate"><span class="pre">-n</span></code>): undivided name string for alphabetical lists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--nickname</span></code> (<code class="docutils literal notranslate"><span class="pre">-k</span></code>): nickname</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>name-parts<span class="w"> </span><span class="m">12345</span>
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>name-parts<span class="w"> </span><span class="m">12345</span><span class="w"> </span>--given<span class="w"> </span><span class="s2">"María"</span><span class="w"> </span>--family<span class="w"> </span><span class="s2">"García López"</span>
+</pre></div>
+</div>
+</section>
+<section id="invenio-user-data-users-backfill-display-names">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code><a class="headerlink" href="#invenio-user-data-users-backfill-display-names" title="Link to this heading">¶</a></h4>
+<p>Fills empty <code class="docutils literal notranslate"><span class="pre">user_profile.display_name</span></code> values from <code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> or
+<code class="docutils literal notranslate"><span class="pre">name_parts</span></code> (inverted form). Does not rewrite creatibutor strings on records
+(use <code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code> for that).</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: count would-be writes without committing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--force</span></code>: overwrite existing non-empty <code class="docutils literal notranslate"><span class="pre">display_name</span></code> values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code>: stop after this many profile updates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--sync-names</span></code>: upsert each updated user’s Names vocabulary entry</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>backfill-display-names<span class="w"> </span>--dry-run
+invenio<span class="w"> </span>user-data<span class="w"> </span>users<span class="w"> </span>backfill-display-names<span class="w"> </span>--sync-names
+</pre></div>
+</div>
+</section>
+<section id="invenio-user-data-records-update-contributors-username">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">update_contributors_username</span></code><a class="headerlink" href="#invenio-user-data-records-update-contributors-username" title="Link to this heading">¶</a></h4>
+<p>Rewrites <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> identifiers in record <code class="docutils literal notranslate"><span class="pre">metadata.creators</span></code> and
+<code class="docutils literal notranslate"><span class="pre">metadata.contributors</span></code>. For account merge/migration after
+<code class="docutils literal notranslate"><span class="pre">change-record-owner</span></code> when creator blocks still cite the duplicate’s KC
+username. Calls <code class="docutils literal notranslate"><span class="pre">rewrite_records_for_kc_username_change</span></code> with
+<code class="docutils literal notranslate"><span class="pre">prune_names=False</span></code> (record metadata only; no Names prune).</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--old-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-o</span></code> (required): KC username on matching creator/contributor entries.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-kc-username</span></code> / <code class="docutils literal notranslate"><span class="pre">-n</span></code> (required): KC username to write in its place.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: list matching record IDs without writing changes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background</span></code>: queue the rewrite on Celery instead of running synchronously.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>records<span class="w"> </span>update_contributors_username<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>duplicateuser<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-n<span class="w"> </span>canonicaluser
+</pre></div>
+</div>
+</section>
+<section id="invenio-user-data-records-backfill-creatibutor-names">
+<h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code><a class="headerlink" href="#invenio-user-data-records-backfill-creatibutor-names" title="Link to this heading">¶</a></h4>
+<p>Sets creatibutor <code class="docutils literal notranslate"><span class="pre">person_or_org.name</span></code> to each matched user’s profile
+<code class="docutils literal notranslate"><span class="pre">display_name</span></code> (by <code class="docutils literal notranslate"><span class="pre">kc_username</span></code> / <code class="docutils literal notranslate"><span class="pre">orcid</span></code> / <code class="docutils literal notranslate"><span class="pre">email</span></code> identifiers). Requires
+<code class="docutils literal notranslate"><span class="pre">display_name</span></code> to already be set (<code class="docutils literal notranslate"><span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code>).</p>
+<p>Named options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>: report what would change without writing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code>: stop after updating this many records (published + drafts).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--user-id</span></code>: only process creatibutors for one local user id.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>invenio<span class="w"> </span>user-data<span class="w"> </span>records<span class="w"> </span>backfill-creatibutor-names<span class="w"> </span>--dry-run
+</pre></div>
+</div>
 </section>
 <section id="invenio-user-data-names">
 <h4><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code><a class="headerlink" href="#invenio-user-data-names" title="Link to this heading">¶</a></h4>
@@ -1011,12 +1052,10 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
 <li><a class="reference internal" href="#invenio-kcworks-records-hard-delete"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">hard-delete</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-bulk-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">bulk-update</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-change-record-owner"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">change-record-owner</span></code></a></li>
-<li><a class="reference internal" href="#invenio-kcworks-records-update-contributors-username"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">update_contributors_username</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-records-migrate-user"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-records</span> <span class="pre">migrate_user</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#invenio-kcworks-users"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span></code></a><ul>
-<li><a class="reference internal" href="#invenio-kcworks-users-name-parts"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">name-parts</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-read"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-find-duplicates"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">find-duplicates</span></code></a></li>
 <li><a class="reference internal" href="#invenio-kcworks-users-groups"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">groups</span></code></a></li>
@@ -1044,6 +1083,10 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
 <li><a class="reference internal" href="#invenio-user-data"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span></code></a><ul>
 <li><a class="reference internal" href="#invenio-user-data-users-update"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">update</span></code></a></li>
 <li><a class="reference internal" href="#invenio-user-data-users-ingest-profiles-dump"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">ingest-profiles-dump</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-users-name-parts"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">name-parts</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-users-backfill-display-names"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span> <span class="pre">backfill-display-names</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-records-update-contributors-username"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">update_contributors_username</span></code></a></li>
+<li><a class="reference internal" href="#invenio-user-data-records-backfill-creatibutor-names"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">records</span> <span class="pre">backfill-creatibutor-names</span></code></a></li>
 <li><a class="reference internal" href="#invenio-user-data-names"><code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">names</span></code></a></li>
 </ul>
 </li>
@@ -1060,7 +1103,7 @@ invenio<span class="w"> </span>user-data<span class="w"> </span>names<span class
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=030dc6f6"></script>
+</div><script src="../_static/documentation_options.js?v=b51e6972"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

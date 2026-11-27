@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Menus (Flask-Menu)" href="menus.html"><link rel="prev" title="Automated Testing" href="testing.html">
 
     <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
-        <title>How Tos - Knowledge Commons Works 1.7.0 documentation</title>
+        <title>How Tos - Knowledge Commons Works 1.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Knowledge Commons Works 1.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">Knowledge Commons Works 1.7.0 documentation</span>
+  <span class="sidebar-brand-text">Knowledge Commons Works 1.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -318,7 +318,13 @@
 <section id="working-with-user-data-and-profiles">
 <h2>Working with User Data and Profiles<a class="headerlink" href="#working-with-user-data-and-profiles" title="Link to this heading">¶</a></h2>
 <p>Operations to read, write, or modify user data in KCWorks can be performed via the <code class="docutils literal notranslate"><span class="pre">User</span></code> API object and the <code class="docutils literal notranslate"><span class="pre">invenio_accounts.datastore</span></code> service object. There is also a higher-level <code class="docutils literal notranslate"><span class="pre">UsersService</span></code> class provided by <code class="docutils literal notranslate"><span class="pre">invenio_users_resources</span></code> that aggregates this user information together with some additional data and offers some convenient methods, but it is used primarily for read operations and not modification.</p>
-<p>There is also a <code class="docutils literal notranslate"><span class="pre">kcworks-users</span></code> CLI command that provides some convenient methods for working with user profile data.</p>
+<p>Local name-field reads/writes and <code class="docutils literal notranslate"><span class="pre">display_name</span></code> backfill live in
+<code class="docutils literal notranslate"><span class="pre">invenio-remote-user-data-kcworks</span></code> (<code class="docutils literal notranslate"><span class="pre">UserProfileService</span></code> and the
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">user-data</span> <span class="pre">users</span></code> CLI). Account inspection helpers such as
+<code class="docutils literal notranslate"><span class="pre">invenio</span> <span class="pre">kcworks-users</span> <span class="pre">read</span></code> / <code class="docutils literal notranslate"><span class="pre">find-duplicates</span></code> remain on the main KCWorks
+package. For the operator view of how profile, Names, and creatibutor strings
+relate, see
+<a class="reference internal" href="../admin_guide/user_data_management.html#how-are-names-represented"><span class="std std-ref">How are names represented?</span></a>.</p>
 <section id="the-user-api-object">
 <h3>The User API object<a class="headerlink" href="#the-user-api-object" title="Link to this heading">¶</a></h3>
 <p>The user’s data is stored primarily in the <code class="docutils literal notranslate"><span class="pre">accounts_user</span></code> db table, but also in <code class="docutils literal notranslate"><span class="pre">accounts_useridentity</span></code>, <code class="docutils literal notranslate"><span class="pre">accounts_userrole</span></code>, <code class="docutils literal notranslate"><span class="pre">accounts_user_session_activity</span></code> and <code class="docutils literal notranslate"><span class="pre">accounts_user_login_information</span></code>. This data is available via the <code class="docutils literal notranslate"><span class="pre">User</span></code> API object (in <code class="docutils literal notranslate"><span class="pre">invenio_accounts.models.User</span></code>).</p>
@@ -348,13 +354,20 @@
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">user_profile</span></code> (UserProfileDict)</p>
 <ul>
-<li><p>a dictionary with keys</p>
+<li><p>a dictionary shaped by <code class="docutils literal notranslate"><span class="pre">ACCOUNTS_USER_PROFILE_SCHEMA</span></code> (see
+<code class="docutils literal notranslate"><span class="pre">site/kcworks/config/users.py</span></code>), including:</p>
 <ul>
-<li><p>full_name</p></li>
-<li><p>affiliations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_name</span></code> — natural-order display string (usually from Profiles)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> — inverted / bibliographic form (<code class="docutils literal notranslate"><span class="pre">Family,</span> <span class="pre">Given</span> <span class="pre">…</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name_parts</span></code> — JSON string of remote-synced structured parts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name_parts_local</span></code> — JSON string of admin/local override parts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">affiliations</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">identifier_kc_username</span></code>, <code class="docutils literal notranslate"><span class="pre">identifier_orcid</span></code>, <code class="docutils literal notranslate"><span class="pre">identifier_email</span></code>,
+<code class="docutils literal notranslate"><span class="pre">identifier_other</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unread_notifications</span></code></p></li>
 </ul>
 </li>
-<li><p>not regular dict: this is a UserProfileDict from <code class="docutils literal notranslate"><span class="pre">invenio_accounts.profiles</span></code></p></li>
+<li><p>not a plain dict: this is a <code class="docutils literal notranslate"><span class="pre">UserProfileDict</span></code> from <code class="docutils literal notranslate"><span class="pre">invenio_accounts.profiles</span></code></p></li>
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">roles</span></code> (list)</p></li>
@@ -1210,7 +1223,7 @@ afterward.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=030dc6f6"></script>
+</div><script src="../_static/documentation_options.js?v=b51e6972"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -193,6 +193,11 @@ User data is synced uni-directionally from KC to KCWorks. A user's data is synce
 2. the user logs into KCWorks
 3. a webhook signal is received by KCWorks from KC
 
+Local accounts persist both `full_name` (natural order) and `display_name`
+(inverted / bibliographic), plus structured `name_parts` / `name_parts_local`.
+Operator docs:
+[How are names represented?](admin_guide/user_data_management.md#how-are-names-represented).
+
 ### KC Search Provisioning (invenio-remote-api-provisioner)
 
 ### SAML Authentication
