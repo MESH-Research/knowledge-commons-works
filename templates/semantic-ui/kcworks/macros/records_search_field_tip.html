@@ -1,0 +1,39 @@
+{# -*- coding: utf-8 -*-
+  Copyright (C) 2026 Mesh Research
+
+  Knowledge Commons Works is free software; you can redistribute it
+  and/or modify it under the terms of the MIT License; see LICENSE
+  file for more details.
+
+  Random fielded-query tip above records / community-records search.
+#}
+{% macro records_search_field_tip() -%}
+  {%- set tip = ([
+    {
+    "lead": _("Find people like "),
+    "examples": ['author:"Toni Morrison"', "user:tmorrison"],
+    },
+    {
+    "lead": _("Find titles like "),
+    "examples": ['title:"open research"'],
+    },
+    {
+    "lead": _("Find a DOI like "),
+    "examples": ["doi:10.1234/example"],
+    },
+    {
+    "lead": _("Find subjects like "),
+    "examples": ['subject:"Art Criticism"', "subject:methodology"],
+    },
+    ] | random) -%}
+  <p class="records-search-field-tip text size small text-muted mb-10">
+    {{ tip.lead }}
+    {%- for example in tip.examples %}
+      {%- if not loop.first %} {{ _("or") }}
+      {% endif -%}
+      <b>{{ example }}</b>
+    {%- endfor %}
+    —
+    <a href="/help/search">{{ _("search tips") }}</a>
+  </p>
+{%- endmacro %}

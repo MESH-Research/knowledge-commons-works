@@ -24,11 +24,34 @@ from invenio_records_resources.services.records.queryparser.transformer import (
     RestrictedTermValue,
     SearchFieldTransformer,
 )
-from luqum.tree import Group, OrOperation, SearchField
+from luqum.tree import (
+    Fuzzy,
+    Group,
+    OrOperation,
+    Phrase,
+    Range,
+    Regex,
+    SearchField,
+    Word,
+)
 
 # OpenSearch query_string treats `:` as field/value separator; Invenio custom
 # field paths include namespace colons (e.g. `custom_fields.kcr:tags`).
 _UNESCAPED_COLON = re.compile(r"(?<!\\):")
+
+# Person aliases that resolve a local Works user before literal multi-field OR.
+# Keep in sync with keys mapped to `_CREATORS_AND_CONTRIBUTORS_FIELD` in
+# `kcworks.config.search`.
+PERSON_RESOLVING_ALIASES = frozenset({
+    "author",
+    "authors",
+    "creator",
+    "creators",
+    "contributor",
+    "contributors",
+    "user",
+    "name",
+})
 
 
 def escape_query_string_field(field_name: str) -> str:
@@ -44,6 +67,36 @@ def escape_query_string_field(field_name: str) -> str:
     return _UNESCAPED_COLON.sub(r"\:", field_name)
 
 
+def extract_plain_person_term(node: SearchField) -> str | None:
+    """Extract a plain Word/Phrase value suitable for user resolution.
+
+    Wildcards, fuzzy, regex, ranges, and grouped expressions return `None`
+    so the caller keeps literal multi-field expansion.
+
+    Args:
+        node: A luqum `SearchField` whose expr is the typed value.
+
+    Returns:
+        Unquoted term string, or `None` when resolve should be skipped.
+    """
+    expr = node.expr
+    if isinstance(expr, Word):
+        value = expr.value or ""
+        if any(ch in value for ch in "*?"):
+            return None
+        return value
+    if isinstance(expr, Phrase):
+        raw = expr.value or ""
+        if len(raw) >= 2 and raw[0] == '"' and raw[-1] == '"':
+            raw = raw[1:-1]
+        if any(ch in raw for ch in "*?"):
+            return None
+        return raw
+    if isinstance(expr, (Fuzzy, Regex, Range)):
+        return None
+    return None
+
+
 class MultiFieldSearchTransformer(SearchFieldTransformer):
     r"""Transform user-friendly field names to internal field names.
 
@@ -53,6 +106,10 @@ class MultiFieldSearchTransformer(SearchFieldTransformer):
       single fielded clause into an OR group.
     - Colons in resolved field paths are escaped for `query_string` (needed
       for Invenio custom fields such as `custom_fields.kcr:…`).
+    - Person aliases in `PERSON_RESOLVING_ALIASES` first try to resolve a
+      local KCWorks user and expand via `UserSearchHelper` (same clause set as
+      My Works). On miss, wildcards, or non-plain values, falls back to the
+      multi-field path OR.
 
     Example:
 
@@ -80,12 +137,19 @@ class MultiFieldSearchTransformer(SearchFieldTransformer):
 
         Yields:
             A rewritten `SearchField`, or a `Group` of OR-ed `SearchField`
-            nodes when the mapping target is a sequence of paths.
+            nodes when the mapping target is a sequence of paths (or when a
+            person alias resolves to local user clause expansion).
 
         Raises:
             QuerystringValidationError: If the field is restricted or not
                 allowed by `allow_list`.
         """
+        if node.name in PERSON_RESOLVING_ALIASES:
+            resolved = self._try_resolve_person_alias(node)
+            if resolved is not None:
+                yield resolved
+                return
+
         # Use the node name if not mapped for transformation.
         term_name = self._mapping.get(node.name, node.name)
         field_value_mapper = None
@@ -140,3 +204,24 @@ class MultiFieldSearchTransformer(SearchFieldTransformer):
             child_node.children = list(self.clone_children(node, child_node, context))
             operands.append(child_node)
         yield Group(OrOperation(*operands))
+
+    def _try_resolve_person_alias(self, node: SearchField):
+        """Resolve a person alias to UserSearchHelper expansion, or None.
+
+        Args:
+            node: Original `SearchField` (alias name still on `node.name`).
+
+        Returns:
+            Expanded luqum node when users resolve; otherwise `None` to keep
+            the literal multi-field path.
+        """
+        # Lazy import avoids cycle with user_search → (none) / config → this.
+        from kcworks.services.search.user_search import UserSearchHelper
+
+        term = extract_plain_person_term(node)
+        if term is None:
+            return None
+        users = UserSearchHelper.resolve_users_from_search_term(term)
+        if not users:
+            return None
+        return UserSearchHelper.group_for_users(users)

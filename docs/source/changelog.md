@@ -3,15 +3,42 @@
 
 # Changes
 
-## Unreleased
+## 1.8.0 (2026-11-27)
 
-- **Names / profiles**: Persist inverted `user_profile.display_name` alongside
-  `full_name` and structured name parts. Remote sync, local name-parts edits,
-  Names `kcworks-user` upserts, and deposit autofill share that inverted form. New CLI:
-  `user-data users name-parts`, `user-data users backfill-display-names`, and
-  `user-data records backfill-creatibutor-names` (with
-  `update_contributors_username` moved under `user-data records`). See
-  [User Data Management](admin_guide/user_data_management.md#how-are-names-represented).
+- **Smarter person search**: Search with person-related fields or aliases now
+  tries first to resolve a specific KC user. If it finds one, it does an
+  intelligent search for all of that users name forms and identifiers.
+
+- **Name handling**: Harmonize natural vs inverted names across profiles,
+  search, deposit, CLI, and the remote-user-data package.
+
+  Scattered name logic treated `full_name` inconsistently as natural or inverted
+  form. This release adds inverted `user_profile.display_name` on the KCWorks
+  profile schema and wires the rest of the stack to that field.
+  - Add `display_name` to `CustomUserProfileSchema`.
+  - Bump `invenio-remote-user-data-kcworks` for centralized profile/Names/
+    creatibutor sync (`UserProfileService`, `RecordCreatibutorSyncService`,
+    Jinja `user_profile_dict`, `user-data users|records` CLIs). See that
+    package's 1.1.0 notes.
+  - Bump `invenio-modular-deposit-form` so creatibutor `person_or_org.name`
+    autofill prefers inverted/bibliographic form from profile `display_name`,
+    Names `props.display_name`, or ORCID `credit-name`.
+  - Move name-parts / creatibutor-username CLI ownership into `user-data` (drop
+    `kcworks-users name-parts` and
+    `kcworks-records update_contributors_username`; `migrate_user` now calls the
+    `user-data records` command).
+  - Relocate `UserSearchHelper` under `services/search/` and build **My Works**
+    queries from `full_name`, `display_name`, name aliases, and profile
+    identifiers so works stay findable across name forms.
+  - Resolve-first person aliases on record search (`author` / `creator` /
+    `contributor` / `user` / `name`): match a local Works user, then expand with
+    the same creatibutor clause set as My Works; fall back to literal
+    multi-field OR on miss or wildcards.
+  - Keep only `user_works_search_url` in kcworks template filters;
+    `user_profile_dict` now registers from the remote-user-data extension.
+  - Docs: field chart / ORCID provenance / `kcworks-user`·`kcworks-cited` tags
+    in user-data and Names guides; CLI and My Works search notes. See
+    [User Data Management](admin_guide/user_data_management.md#how-are-names-represented).
 
 ## 1.7.1 (2026-11-26)
 

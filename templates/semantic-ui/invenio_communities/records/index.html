@@ -17,9 +17,14 @@
     {{ webpack['invenio-app-rdm-community-records-search-custom.js'] }}
 {%- endblock %}
 
+{%- from "kcworks/macros/records_search_field_tip.html" import records_search_field_tip %}
+
 {%- block page_body %}
 {{ super() }}
 
+<div class="ui container">
+  {{ records_search_field_tip() }}
+</div>
 <div id="communities-details-search" data-invenio-search-config='{{
   search_app_communities_records_config(app_id="InvenioCommunities.DetailsSearch",
   endpoint=endpoint) | tojson }}'></div>

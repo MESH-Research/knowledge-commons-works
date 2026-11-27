@@ -7,9 +7,10 @@
 """Search queryparser customizations for KCWorks."""
 
 from .query import MemberQueryParser
-from .transformer import MultiFieldSearchTransformer
+from .transformer import PERSON_RESOLVING_ALIASES, MultiFieldSearchTransformer
 
 __all__ = (
     "MemberQueryParser",
     "MultiFieldSearchTransformer",
+    "PERSON_RESOLVING_ALIASES",
 )

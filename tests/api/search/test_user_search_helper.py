@@ -98,3 +98,50 @@ def test_user_works_search_url_embeds_helper_query(user_factory, app):
     assert "q=" not in empty or empty.endswith("/search") or empty.rstrip("/").endswith(
         "search"
     )
+
+
+def test_resolve_users_from_search_term_by_orcid_username_name_email(user_factory):
+    """Cascade: ORCID, email, username, then exact name; empty on miss."""
+    u = user_factory(
+        email="cascade@example.org",
+        kc_username="cascade_user",
+        orcid="0000-0002-1825-0097",
+    )
+    _set_profile(
+        u.user,
+        full_name="Cascade Example",
+        display_name="Example, Cascade",
+        identifier_email="cascade@example.org",
+    )
+
+    by_orcid = UserSearchHelper.resolve_users_from_search_term(
+        "https://orcid.org/0000-0002-1825-0097"
+    )
+    by_email = UserSearchHelper.resolve_users_from_search_term("cascade@example.org")
+    by_username = UserSearchHelper.resolve_users_from_search_term("cascade_user")
+    by_display = UserSearchHelper.resolve_users_from_search_term("Example, Cascade")
+    by_full = UserSearchHelper.resolve_users_from_search_term("cascade example")
+    miss = UserSearchHelper.resolve_users_from_search_term("no-such-person")
+
+    assert [x.id for x in by_orcid] == [u.user.id]
+    assert [x.id for x in by_email] == [u.user.id]
+    assert [x.id for x in by_username] == [u.user.id]
+    assert [x.id for x in by_display] == [u.user.id]
+    assert [x.id for x in by_full] == [u.user.id]
+    assert miss == []
+
+
+def test_group_for_users_builds_or_of_search_fields(user_factory):
+    """AST builder emits SearchField phrases for name variants."""
+    from luqum.tree import Group, SearchField
+
+    u = user_factory(email="ast@example.org", kc_username="astuser")
+    _set_profile(u.user, full_name="Ada Lovelace", display_name="Lovelace, Ada")
+
+    node = UserSearchHelper.group_for_users([u.user])
+    assert node is not None
+    assert isinstance(node, (Group, SearchField))
+    rendered = str(node)
+    assert "Lovelace, Ada" in rendered
+    assert "metadata.creators.person_or_org.name" in rendered
+    assert "astuser" in rendered
