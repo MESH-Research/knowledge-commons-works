@@ -14,11 +14,8 @@ from invenio_rdm_records.requests.user_moderation.utils import get_user_records
 from invenio_search.cli import abort_if_false
 
 from invenio_record_importer_kcworks.services.records import RecordsHelper
-from invenio_remote_user_data_kcworks.proxies import (
-    current_record_kc_username_sync_service,
-)
-from invenio_remote_user_data_kcworks.tasks import (
-    rewrite_records_for_kc_username_change,
+from invenio_remote_user_data_kcworks.cli.records import (
+    update_contributors_username_command,
 )
 from kcworks.proxies import current_kcworks_records_service
 from kcworks.services.records.bulk_operations import update_community_records_metadata
@@ -612,120 +609,6 @@ def change_record_owner_command(record_id, old_owner_id, new_owner_id, new_owner
         raise click.Abort()
 
 
-@click.command("update_contributors_username")
-@click.option(
-    "--old-kc-username",
-    "-o",
-    required=True,
-    help=(
-        "KC username currently stored on matching creator/contributor metadata entries."
-    ),
-)
-@click.option(
-    "--new-kc-username",
-    "-n",
-    required=True,
-    help="KC username to write in place of the old value.",
-)
-@click.option(
-    "--dry-run",
-    is_flag=True,
-    default=False,
-    help=(
-        "List published and draft record IDs that would be updated, without "
-        "writing changes."
-    ),
-)
-@click.option(
-    "--background",
-    is_flag=True,
-    default=False,
-    help=(
-        "Queue the rewrite on Celery and return immediately with the task id, "
-        "instead of running synchronously in the CLI."
-    ),
-)
-@with_appcontext
-def update_contributors_username_command(
-    old_kc_username: str,
-    new_kc_username: str,
-    dry_run: bool,
-    background: bool,
-) -> None:
-    """Update kc_username on record creators and contributors.
-
-    For account merge/migration: updates metadata citations from
-    `--old-kc-username` to `--new-kc-username`. Does not change record
-    ownership or Names vocabulary entries. Uses
-    `rewrite_records_for_kc_username_change` with Names pruning disabled.
-
-    Raises:
-        click.UsageError: When usernames are empty or identical, or when
-            `--dry-run` is combined with `--background`.
-        click.Abort: When the rewrite reports phase errors.
-    """
-    old_kc_username = old_kc_username.strip()
-    new_kc_username = new_kc_username.strip()
-    if not old_kc_username or not new_kc_username:
-        raise click.UsageError(
-            "Both --old-kc-username and --new-kc-username are required."
-        )
-    if old_kc_username == new_kc_username:
-        raise click.UsageError("Old and new KC usernames must differ.")
-    if dry_run and background:
-        raise click.UsageError("--dry-run cannot be used with --background.")
-
-    if dry_run:
-        click.echo(
-            f"Records that would update kc_username "
-            f"{old_kc_username!r} -> {new_kc_username!r}:"
-        )
-        matches = (
-            current_record_kc_username_sync_service.find_record_ids_for_kc_username(
-                old_kc_username
-            )
-        )
-        total = 0
-        for phase in ("published", "drafts"):
-            record_ids = matches.get(phase) or []
-            total += len(record_ids)
-            click.echo(f"{phase} ({len(record_ids)} record(s)):")
-            for record_id in record_ids:
-                click.echo(f"  {record_id}")
-        click.echo(f"Total: {total} record(s) would be updated.")
-        return
-
-    click.echo(f"Rewriting kc_username {old_kc_username!r} -> {new_kc_username!r}")
-
-    if background:
-        async_result = rewrite_records_for_kc_username_change.delay(
-            0,
-            old_kc_username,
-            new_kc_username,
-            prune_names=False,
-        )
-        click.echo(f"Queued rewrite task: {async_result.id}")
-        return
-
-    summary = rewrite_records_for_kc_username_change(
-        0,
-        old_kc_username,
-        new_kc_username,
-        prune_names=False,
-    )
-    records = summary.get("records") or {}
-    for phase in ("published", "drafts"):
-        phase_stats = records.get(phase) or {}
-        click.echo(
-            f"{phase}: matched={phase_stats.get('matched', 0)} "
-            f"updated={phase_stats.get('updated', 0)} "
-            f"failed={phase_stats.get('failed', 0)}"
-        )
-    if summary.get("errors"):
-        click.secho(f"Phase errors: {summary['errors']}", fg="red")
-        raise click.Abort()
-
-
 @click.command("migrate_user")
 @click.option(
     "--old-owner-id",
@@ -787,9 +670,9 @@ def migrate_user_command(
 
     1. `change-record-owner` — transfer all **published** records from
        `--old-owner-id` to `--new-owner-id`.
-    2. `update_contributors_username` — rewrite creator/contributor
-       `kc_username` citations from `--old-kc-username` to
-       `--new-kc-username`.
+    2. `user-data records update_contributors_username` — rewrite
+       creator/contributor `kc_username` citations from
+       `--old-kc-username` to `--new-kc-username`.
 
     Does not deactivate the duplicate account or change Names entries.
 

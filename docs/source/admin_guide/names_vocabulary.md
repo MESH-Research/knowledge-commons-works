@@ -15,21 +15,22 @@ apart from bulk-loaded or third-party Names data.
 
 ## What kinds of Names records does KCWorks write?
 
-| Kind | Tag | Typical PID | Meaning |
-| ---- | --- | ----------- | ------- |
-| **USER** | `kcworks-user` | KC username (`identifier_kc_username`) | Mirrors a local KCWorks account |
-| **CITED** | `kcworks-cited` | Bare ORCID iD | Person referenced with an ORCID who is not (yet) represented by a USER record |
+| Tag | Typical PID | Meaning |
+| --- | ----------- | ------- |
+| `kcworks-user` | KC username (`identifier_kc_username`) | Mirrors a local KCWorks account |
+| `kcworks-cited` | Bare ORCID iD | Person referenced with an ORCID who is not (yet) represented by a `kcworks-user` record |
 
-A USER record also stores identifiers in its `identifiers` list: at least
-`kc_username`, and `orcid` when the local profile has one. That list is what
-upstream `NamesService.resolve(value, scheme)` searches — it is **not** a PID
-lookup. So a USER at PID=`alice` can still be found by ORCID if
-`identifiers` contains that ORCID.
+A `kcworks-user` record also stores identifiers in its `identifiers` list: at
+least `kc_username`, and `orcid` when the local profile has one. That list is
+what upstream `NamesService.resolve(value, scheme)` searches — it is **not** a
+PID lookup. So a `kcworks-user` entry at PID=`alice` can still be found by ORCID
+if `identifiers` contains that ORCID.
 
-CITED stubs exist so ORCID-bearing creators on drafts/records are searchable
-even when there is no local account. When the same person later has a USER
-record with that ORCID, KCWorks prefers the USER record and folds CITED data
-into it (see [Merging](#when-are-records-merged)).
+`kcworks-cited` stubs exist so ORCID-bearing creators on drafts/records are
+searchable even when there is no local account. When the same person later has
+a `kcworks-user` record with that ORCID, KCWorks prefers the `kcworks-user`
+record and folds `kcworks-cited` data into it (see
+[Merging](#when-are-records-merged)).
 
 ## What runs automatically vs what you run by hand?
 
@@ -40,9 +41,9 @@ invenio-jobs**, and **operator CLI** for one-offs and triage.
 
 | Activity | When it runs |
 | -------- | ------------ |
-| USER create/update from local profile | After local account create/update/association (Profiles webhook, login refresh, `users update`, name-parts change, etc.) via `sync_user_to_names` |
-| CITED create/update from draft metadata | On deposit draft create/update (`CitedNamesUpsertComponent`) |
-| Merge CITED → USER for a shared ORCID | As a side effect of the two paths above when `resolve(orcid)` finds a USER (and auto-merge is enabled) |
+| `kcworks-user` create/update from local profile | After local account create/update/association (Profiles webhook, login refresh, `users update`, name-parts change, etc.) via `sync_user_to_names` |
+| `kcworks-cited` create/update from draft metadata | On deposit draft create/update (`CitedNamesUpsertComponent`) |
+| Merge `kcworks-cited` → `kcworks-user` for a shared ORCID | As a side effect of the two paths above when `resolve(orcid)` finds a `kcworks-user` record (and auto-merge is enabled) |
 
 ### Scheduled jobs (invenio-jobs)
 
@@ -53,9 +54,9 @@ schedule (beat + jobs), see [Scheduled events](scheduled_events.md).
 
 | Job task id | Default schedule (UTC) | What it does |
 | ----------- | ---------------------- | ------------ |
-| `merge_names_orcid_duplicates` | Sunday 07:00 | Auto-merge ORCID-sharing Names pairs (CITED → USER where safe) |
+| `merge_names_orcid_duplicates` | Sunday 07:00 | Auto-merge ORCID-sharing Names pairs (`kcworks-cited` → `kcworks-user` where safe) |
 | `find_names_duplicates` | Sunday 08:00 | Soft-duplicate scan; persists candidates for review |
-| `sync_names_missing_users` | Sunday 09:00 | Bulk USER backfill with `missing_only=True` |
+| `sync_names_missing_users` | Sunday 09:00 | Bulk `kcworks-user` backfill with `missing_only=True` |
 
 Re-register or change a schedule (same pattern as ROR jobs):
 
@@ -69,7 +70,7 @@ invenio kcworks-jobs upsert find_names_duplicates \
     --schedule "crontab:minute=0,hour=8,day_of_week=0" \
     --queue celery
 invenio kcworks-jobs upsert sync_names_missing_users \
-    --title "Sync missing Names USER records" \
+    --title "Sync missing kcworks-user Names records" \
     --schedule "crontab:minute=0,hour=9,day_of_week=0" \
     --queue celery
 ```
@@ -82,15 +83,26 @@ re-run of the setup-services schedule section).
 
 | Activity | Command / notes |
 | -------- | --------------- |
-| Refresh specific USERs / full `--all` refresh (not missing-only) | `user-data names sync-now` |
-| Bulk CITED backfill from published records | `backfill-cited-from-records` |
+| Refresh specific `kcworks-user` entries / full `--all` refresh (not missing-only) | `user-data names sync-now` |
+| Bulk `kcworks-cited` backfill from published records | `backfill-cited-from-records` |
 | Review / dismiss soft-duplicate pairs | `list-duplicates`, `dismiss-duplicate`, `undismiss-duplicate`, … |
 | One-shot CLI equivalents of the jobs | `merge-orcid-duplicates`, `find-duplicates`, `sync-now --all --missing-only` |
-## When are USER records created or updated?
 
-USER records are written by `NamesSyncService.upsert_name_for_user` (also
-reached via the Celery task `sync_user_to_names`). The payload is built from the
-**current local** `user_profile` (no Profiles API call inside the Names upsert).
+## When are kcworks-user records created or updated?
+
+`kcworks-user` records are written by `NamesSyncService.upsert_name_for_user`
+(also reached via the Celery task `sync_user_to_names`). The payload is built
+from the **current local** `user_profile` (no Profiles API call inside the Names
+upsert).
+
+For display strings, the upsert prefers a stored `user_profile.display_name`
+when present; otherwise it composes the inverted form from `name_parts_local`
+(then `name_parts`) into **`props.display_name`**. Upstream `NameSchema` still
+rewrites top-level Names **`name`** to a naive `"family, given"` composition
+whenever both parts exist—so `name` and `props.display_name` are not the same
+field. Deposit autofill and creatibutor backfill align with the rich form
+(`props.display_name` / `user_profile.display_name`), not the naive `name`. See
+[How are names represented?](user_data_management.md#how-are-names-represented).
 
 Typical triggers:
 
@@ -105,20 +117,20 @@ Typical triggers:
 
 Eligibility for bulk sync:
 
-- No `identifier_kc_username` → skipped (cannot choose a USER PID).
+- No `identifier_kc_username` → skipped (cannot choose a `kcworks-user` PID).
 - With `--missing-only`, users who already have a Names record at that username
   PID are skipped.
 
 Idempotent: re-running upsert for an unchanged user is effectively a read plus
 an update with the same payload.
 
-After a successful USER upsert, if the profile has an ORCID, KCWorks attempts
-to merge any CITED (or other non-USER) Names record at PID=ORCID into the USER
-record — see below.
+After a successful `kcworks-user` upsert, if the profile has an ORCID, KCWorks
+attempts to merge any `kcworks-cited` (or other non-`kcworks-user`) Names record
+at PID=ORCID into the `kcworks-user` record — see below.
 
-## When are CITED records created or updated?
+## When are kcworks-cited records created or updated?
 
-CITED records are written by `NamesSyncService.upsert_cited_orcid_name`.
+`kcworks-cited` records are written by `NamesSyncService.upsert_cited_orcid_name`.
 
 ### On draft save
 
@@ -136,21 +148,23 @@ published before the component existed). Safe to re-run.
 
 ### Decision order inside `upsert_cited_orcid_name`
 
-1. **Look for an existing USER** that already carries this ORCID in
+1. **Look for an existing `kcworks-user`** that already carries this ORCID in
    `identifiers`, via `NamesService.resolve(orcid, "orcid", many=True)`, then
    keep the first hit tagged `kcworks-user`.
-2. If a USER is found → **do not create a CITED stub**. Gap-fill / merge into
-   the USER (`merge_cited_orcid_into_kc`) and best-effort delete any leftover
-   stub at PID=ORCID.
-3. If no USER is found → **create** a CITED record at PID=ORCID, or **update**
-   that PID if a CITED (or untagged) record already sits there.
+2. If a `kcworks-user` is found → **do not create a `kcworks-cited` stub**.
+   Gap-fill / merge into the `kcworks-user` record (`merge_cited_orcid_into_kc`)
+   and best-effort delete any leftover stub at PID=ORCID.
+3. If no `kcworks-user` is found → **create** a `kcworks-cited` record at
+   PID=ORCID, or **update** that PID if a `kcworks-cited` (or untagged) record
+   already sits there.
 
 ```{important}
-The draft path does **not** look up by KC username. If a USER record exists but
-does not yet list the ORCID in `identifiers` (or OpenSearch has not refreshed),
-`resolve` misses the USER and a CITED stub can still be created at PID=ORCID.
-Re-syncing the USER (so ORCID is on the Names record and indexed), then merging
-or running ORCID duplicate merge, consolidates the pair.
+The draft path does **not** look up by KC username. If a `kcworks-user` record
+exists but does not yet list the ORCID in `identifiers` (or OpenSearch has not
+refreshed), `resolve` misses it and a `kcworks-cited` stub can still be created
+at PID=ORCID. Re-syncing the `kcworks-user` entry (so ORCID is on the Names
+record and indexed), then merging or running ORCID duplicate merge, consolidates
+the pair.
 ```
 
 ## When are records merged?
@@ -160,22 +174,23 @@ Merging is ORCID-centric and controlled by
 
 `merge_cited_orcid_into_kc`:
 
-- Treats the **USER** record as canonical (KC scalar names / `props` win).
+- Treats the **`kcworks-user`** record as canonical (`name`, `given_name`,
+  `family_name`, and `props` win).
 - Unions `identifiers` and `affiliations`.
-- Updates the USER record, then tries to **delete** the CITED stub at
-  PID=ORCID.
+- Updates the `kcworks-user` record, then tries to **delete** the
+  `kcworks-cited` stub at PID=ORCID.
 
 It runs when:
 
-- A USER upsert finds an ORCID on the profile and a non-USER record exists at
-  that ORCID PID.
-- A CITED upsert finds an existing USER that already carries that ORCID
-  (`upsert_cited_orcid_name` step 2 above).
+- A `kcworks-user` upsert finds an ORCID on the profile and a
+  non-`kcworks-user` record exists at that ORCID PID.
+- A `kcworks-cited` upsert finds an existing `kcworks-user` that already carries
+  that ORCID (`upsert_cited_orcid_name` step 2 above).
 - Administrators run `invenio user-data names merge-orcid-duplicates` (bulk
   ORCID-sharing pairs).
 
-Two distinct USER records that share an ORCID are **not** silently merged;
-that case is treated as a duplicate-user anomaly for review.
+Two distinct `kcworks-user` records that share an ORCID are **not** silently
+merged; that case is treated as a duplicate-user anomaly for review.
 
 ## When are pairs flagged for review?
 
@@ -193,20 +208,20 @@ Recommended order (also the default Sunday schedule): ORCID merge first
 (`merge_names_orcid_duplicates`), then soft-duplicate scan
 (`find_names_duplicates`).
 
-ORCID-identical pairs that *can* be folded during normal USER/CITED upserts are
-still merged opportunistically (see [Merging](#when-are-records-merged)); they do
-not wait for the weekly job.
+ORCID-identical pairs that *can* be folded during normal `kcworks-user` /
+`kcworks-cited` upserts are still merged opportunistically (see
+[Merging](#when-are-records-merged)); they do not wait for the weekly job.
 
 ## How do I inspect or force a refresh?
 
 | Goal | Command / path |
 | ---- | -------------- |
 | See one Names record | `invenio user-data names show <pid_or_orcid>` |
-| Refresh one USER from local profile | `invenio user-data names sync-now …` |
-| Preview would-be USER payload (no write) | `sync-now --dry-run` with positional ids (pretty-prints the dict) |
-| Backfill missing USERs | `sync-now --all --missing-only` |
-| Refresh all eligible USERs | `sync-now --all` |
-| Backfill CITEDs from published works | `backfill-cited-from-records` |
+| Refresh one `kcworks-user` from local profile | `invenio user-data names sync-now …` |
+| Preview would-be `kcworks-user` payload (no write) | `sync-now --dry-run` with positional ids (pretty-prints the dict) |
+| Backfill missing `kcworks-user` entries | `sync-now --all --missing-only` |
+| Refresh all eligible `kcworks-user` entries | `sync-now --all` |
+| Backfill `kcworks-cited` from published works | `backfill-cited-from-records` |
 | Auto-merge ORCID duplicates | `merge-orcid-duplicates` |
 | Review soft duplicates | `find-duplicates` / `list-duplicates` |
 
@@ -218,17 +233,17 @@ Step-by-step recipes:
 ## Mental model (short)
 
 ```text
-Local KC user profile ──upsert_name_for_user──► USER (PID = kc_username)
+Local KC user profile ──upsert_name_for_user──► kcworks-user (PID = kc_username)
         │                                         │
-        │ ORCID on profile                        │ resolve(orcid) finds USER
+        │ ORCID on profile                        │ resolve(orcid) finds kcworks-user
         └──────── merge_cited_orcid_into_kc ◄─────┤
                                                   │
 Draft / published creatibutor with ORCID          │
         │                                         │
         └──upsert_cited_orcid_name────────────────┤
               │                                   │
-              ├─ USER found by ORCID? ── merge ───┘
-              └─ else ── create/update CITED (PID = orcid)
+              ├─ kcworks-user found by ORCID? ── merge ───┘
+              └─ else ── create/update kcworks-cited (PID = orcid)
 
 Similar names, no safe ORCID merge ──► find_names_duplicates (scheduled / CLI)
                                               └──► list-duplicates / dismiss

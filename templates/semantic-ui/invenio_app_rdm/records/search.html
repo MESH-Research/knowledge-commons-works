@@ -12,6 +12,7 @@
 #}
 {%- set title = _("Search") + " | " + config.THEME_SHORT_TITLE %}
 {%- extends config.BASE_TEMPLATE %}
+{%- from "kcworks/macros/records_search_field_tip.html" import records_search_field_tip %}
 
 {%- block javascript %}
     {{ super() }}
@@ -54,6 +55,7 @@
   <div class="ui grid search-app">
     <div class="ui two column row">
       <div class="column eleven wide computer eleven wide large screen sixteen wide mobile sixteen wide tablet eleven wide widescreen column">
+        {{ records_search_field_tip() }}
         <div id="header-search-bar" data-options='{{ options | tojson }}'>
           <div class="ui fluid search">
             <div class="ui icon input">
@@ -69,6 +71,7 @@
               <i aria-hidden="true" class="search icon"></i>
             </div>
           </div>
+        </div>
       </div>
       <div class="column computer large screen only four wide computer three wide large screen three wide widescreen column">
       </div>

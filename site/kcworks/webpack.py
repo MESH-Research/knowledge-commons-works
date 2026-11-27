@@ -66,23 +66,42 @@ theme = WebpackThemeBundle(
                 "main_ui_main_nav": "./js/main_ui/main_nav.js",
             },
             "dependencies": {
+                # Security floors for the assembled UI assets install (pywebpack
+                # same-major merge). follow-redirects: covered by axios ^1.21.1
+                # (axios depends on follow-redirects ^1.16.2). @xmldom/xmldom:
+                # covered by video.js ^8.24.2 (inlined in video.min.js for
+                # invenio_previewer — a separate xmldom dep would not retarget
+                # that bundle). lodash host floor is here; Uppy may still nest
+                # 4.17.x under pnpm until an assembled-tree force if needed.
+                "admin-lte": "~2.4.18",
                 "angular": "^1.8.3",
-                "axios": "^1.20.0",
+                "axios": "^1.21.1",
                 "lodash": "^4.18.1",
                 "orcid-utils": "^1.2.2",
                 "yup": "^0.32.11",
                 "moment": "^2.31.0",
                 "prismjs": "^1.30.0",
                 "qs": "^6.16.1",
+                "react-router-dom": "^6.30.6",
                 "replaywebpage": "^2.5.3",
+                "shell-quote": "^1.9.0",
                 "ajv": "^8.20.0",
                 "bootstrap-sass": "^3.4.3",
                 "jquery": "^3.5.0",
                 "@babel/core": "^7.29.6",
                 "pdfjs-dist": "5.3.93",
+                "video.js": "^8.24.2",
             },
             "devDependencies": {
+                # Jest / Testing Library — root-only until next assets create;
+                # keep pins here so create→sync includes them.
+                "@babel/preset-env": "7.29.0",
+                "@babel/preset-react": "7.28.5",
                 "@reduxjs/toolkit": "1.9.7",
+                "@testing-library/jest-dom": "5.17.0",
+                "@testing-library/react": "12.1.5",
+                "@testing-library/user-event": "12.8.3",
+                "babel-jest": "29.7.0",
                 "geopattern": "^1.2.3",
                 "@babel/eslint-parser": "^7.26.10",
                 "eslint": "^8.57.1",
@@ -92,6 +111,8 @@ theme = WebpackThemeBundle(
                 "i18next-conv": "^15.1.2",
                 "i18next-scanner": "^4.6.0",
                 "identity-obj-proxy": "^3.0.0",
+                "jest": "27.5.1",
+                "jest-environment-jsdom": "27.5.1",
                 "react-test-renderer": "^16.14.0",
             },
             "aliases": {

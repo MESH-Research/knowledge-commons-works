@@ -20,6 +20,7 @@ from invenio_records_resources.services.records.queryparser.transformer import (
 )
 
 from kcworks.services.search.queryparser import MultiFieldSearchTransformer
+from kcworks.services.search.queryparser.transformer import PERSON_RESOLVING_ALIASES
 
 # OpenSearch configuration
 # =======================
@@ -192,12 +193,16 @@ RECORD_SEARCH_FIELD_ALIASES = {
     "repository_url": "custom_fields.code:codeRepository",
     "repository": "custom_fields.code:codeRepository",
     # --- People (creators + contributors unified) ---
+    # Aliases in PERSON_RESOLVING_ALIASES resolve a local Works user first
+    # (UserSearchHelper expansion); on miss they fall back to this path OR.
     "contributor": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "contributors": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "creator": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "creators": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "author": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "authors": _CREATORS_AND_CONTRIBUTORS_FIELD,
+    "user": _CREATORS_AND_CONTRIBUTORS_FIELD,
+    "name": _CREATORS_AND_CONTRIBUTORS_FIELD,
     "affiliation": _AFFILIATIONS_FIELD,
     "affiliations": _AFFILIATIONS_FIELD,
     "funder": _FUNDER_FIELDS,
@@ -279,6 +284,9 @@ RECORD_SEARCH_FIELD_ALIASES = {
         word=word_internal_notes,
     ),
 }
+
+# Resolve-first person aliases must keep a literal multi-field fallback mapping.
+assert PERSON_RESOLVING_ALIASES <= RECORD_SEARCH_FIELD_ALIASES.keys()
 
 DEFAULT_SEARCH_FIELDS = [
     # Upstream defaults from record-v7.0.0.json mapping

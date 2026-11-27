@@ -43,6 +43,7 @@ class CustomUserProfileSchema(Schema):
     """The default user profile schema."""
 
     full_name = fields.String()
+    display_name = fields.String()
     affiliations = fields.String()
     name_parts = fields.String()
     name_parts_local = fields.String()

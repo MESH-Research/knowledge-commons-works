@@ -136,6 +136,9 @@
     <a href="/search?page=1&amp;size=20&amp;q=author:smith"
       ><code>author:smith</code></a
     >,
+    <a href="/search?page=1&amp;size=20&amp;q=user:jdoe"
+      ><code>user:jdoe</code></a
+    >,
     <a href="/search?page=1&amp;size=20&amp;q=keyword:methodology"
       ><code>keyword:methodology</code></a
     >,
@@ -145,6 +148,15 @@
     <a href="/search?page=1&amp;size=20&amp;q=doi:10.1234%2Fexample"
       ><code>doi:10.1234/example</code></a
     >.
+  </p>
+  <p>
+    Person aliases (<code>author</code>, <code>creator</code>,
+    <code>contributor</code>, <code>user</code>, <code>name</code>) first try to
+    match a Knowledge Commons Works account by ORCID, KC username, or exact
+    profile name, then search works using that person's known name forms and
+    identifiers. If nobody matches (for example an external author, or a
+    wildcard like <code>author:smi*</code>), the query falls back to a plain
+    search of creator/contributor names and identifiers on the records.
   </p>
   <table class="ui celled striped table">
     <thead>
@@ -199,9 +211,10 @@
         <td>
           <code>contributor</code>, <code>contributors</code>,
           <code>creator</code>, <code>creators</code>, <code>author</code>,
-          <code>authors</code>, <code>affiliation</code>,
-          <code>affiliations</code>, <code>funder</code>, <code>funding</code>,
-          <code>award</code>, <code>ror</code>, <code>organization</code>,
+          <code>authors</code>, <code>user</code>, <code>name</code>,
+          <code>affiliation</code>, <code>affiliations</code>,
+          <code>funder</code>, <code>funding</code>, <code>award</code>,
+          <code>ror</code>, <code>organization</code>,
           <code>institution</code>, <code>university</code>,
           <code>sponsoring_institution</code>, <code>sponsor</code>
         </td>

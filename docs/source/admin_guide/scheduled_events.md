@@ -78,7 +78,7 @@ hourly (or longer) intervals.
 | Sun 06:00 | job | `update_awards_cordis` | Enrich existing EC awards from CORDIS (no inserts) | `setup-services*.sh` |
 | Sun 07:00 | job | `merge_names_orcid_duplicates` | Auto-merge safe ORCID-sharing Names pairs | `setup-services*.sh` |
 | Sun 08:00 | job | `find_names_duplicates` | Soft-duplicate Names scan for review | `setup-services*.sh` |
-| Sun 09:00 | job | `sync_names_missing_users` | Backfill missing USER Names rows | `setup-services*.sh` |
+| Sun 09:00 | job | `sync_names_missing_users` | Backfill missing `kcworks-user` Names rows | `setup-services*.sh` |
 
 Sunday vocabulary jobs are staggered by an hour so heavy Zenodo pulls and
 index writes do not overlap. CORDIS runs after OpenAIRE because it only updates
